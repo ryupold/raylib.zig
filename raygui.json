@@ -1,0 +1,3190 @@
+{
+  "structs": [
+    {
+      "name": "Vector2",
+      "description": "Vector2 type",
+      "fields": [
+        {
+          "type": "float",
+          "name": "x",
+          "description": ""
+        },
+        {
+          "type": "float",
+          "name": "y",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Vector3",
+      "description": "Vector3 type                 // -- ConvertHSVtoRGB(), ConvertRGBtoHSV()",
+      "fields": [
+        {
+          "type": "float",
+          "name": "x",
+          "description": ""
+        },
+        {
+          "type": "float",
+          "name": "y",
+          "description": ""
+        },
+        {
+          "type": "float",
+          "name": "z",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Color",
+      "description": "Color type, RGBA (32bit)",
+      "fields": [
+        {
+          "type": "unsigned char",
+          "name": "r",
+          "description": ""
+        },
+        {
+          "type": "unsigned char",
+          "name": "g",
+          "description": ""
+        },
+        {
+          "type": "unsigned char",
+          "name": "b",
+          "description": ""
+        },
+        {
+          "type": "unsigned char",
+          "name": "a",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Rectangle",
+      "description": "Rectangle type",
+      "fields": [
+        {
+          "type": "float",
+          "name": "x",
+          "description": ""
+        },
+        {
+          "type": "float",
+          "name": "y",
+          "description": ""
+        },
+        {
+          "type": "float",
+          "name": "width",
+          "description": ""
+        },
+        {
+          "type": "float",
+          "name": "height",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Texture2D",
+      "description": "It should be redesigned to be provided by user",
+      "fields": [
+        {
+          "type": "unsigned int",
+          "name": "id",
+          "description": "OpenGL texture id"
+        },
+        {
+          "type": "int",
+          "name": "width",
+          "description": "Texture base width"
+        },
+        {
+          "type": "int",
+          "name": "height",
+          "description": "Texture base height"
+        },
+        {
+          "type": "int",
+          "name": "mipmaps",
+          "description": "Mipmap levels, 1 by default"
+        },
+        {
+          "type": "int",
+          "name": "format",
+          "description": "Data format (PixelFormat type)"
+        }
+      ]
+    },
+    {
+      "name": "GlyphInfo",
+      "description": "GlyphInfo, font characters glyphs info",
+      "fields": [
+        {
+          "type": "int",
+          "name": "value",
+          "description": "Character value (Unicode)"
+        },
+        {
+          "type": "int",
+          "name": "offsetX",
+          "description": "Character offset X when drawing"
+        },
+        {
+          "type": "int",
+          "name": "offsetY",
+          "description": "Character offset Y when drawing"
+        },
+        {
+          "type": "int",
+          "name": "advanceX",
+          "description": "Character advance position X"
+        },
+        {
+          "type": "Image",
+          "name": "image",
+          "description": "Character image data"
+        }
+      ]
+    },
+    {
+      "name": "Font",
+      "description": "It should be redesigned to be provided by user",
+      "fields": [
+        {
+          "type": "int",
+          "name": "baseSize",
+          "description": "Base size (default chars height)"
+        },
+        {
+          "type": "int",
+          "name": "glyphCount",
+          "description": "Number of characters"
+        },
+        {
+          "type": "Texture2D",
+          "name": "texture",
+          "description": "Characters texture atlas"
+        },
+        {
+          "type": "Rectangle *",
+          "name": "recs",
+          "description": "Characters rectangles in texture"
+        },
+        {
+          "type": "GlyphInfo *",
+          "name": "chars",
+          "description": "Characters info data"
+        }
+      ]
+    },
+    {
+      "name": "GuiStyleProp",
+      "description": "Style property",
+      "fields": [
+        {
+          "type": "unsigned short",
+          "name": "controlId",
+          "description": ""
+        },
+        {
+          "type": "unsigned short",
+          "name": "propertyId",
+          "description": ""
+        },
+        {
+          "type": "int",
+          "name": "propertyValue",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "GuiControlState",
+      "description": "Gui control state",
+      "values": [
+        {
+          "name": "GUI_STATE_NORMAL",
+          "value": 0,
+          "description": ""
+        },
+        {
+          "name": "GUI_STATE_FOCUSED",
+          "value": 1,
+          "description": ""
+        },
+        {
+          "name": "GUI_STATE_PRESSED",
+          "value": 2,
+          "description": ""
+        },
+        {
+          "name": "GUI_STATE_DISABLED",
+          "value": 3,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiTextAlignment",
+      "description": "Gui control text alignment",
+      "values": [
+        {
+          "name": "GUI_TEXT_ALIGN_LEFT",
+          "value": 0,
+          "description": ""
+        },
+        {
+          "name": "GUI_TEXT_ALIGN_CENTER",
+          "value": 1,
+          "description": ""
+        },
+        {
+          "name": "GUI_TEXT_ALIGN_RIGHT",
+          "value": 2,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiControl",
+      "description": "Gui controls",
+      "values": [
+        {
+          "name": "DEFAULT",
+          "value": 0,
+          "description": "Generic control -> populates to all controls when set"
+        },
+        {
+          "name": "LABEL",
+          "value": 1,
+          "description": "Used also for: LABELBUTTON"
+        },
+        {
+          "name": "BUTTON",
+          "value": 2,
+          "description": ""
+        },
+        {
+          "name": "TOGGLE",
+          "value": 3,
+          "description": "Used also for: TOGGLEGROUP"
+        },
+        {
+          "name": "SLIDER",
+          "value": 4,
+          "description": "Used also for: SLIDERBAR"
+        },
+        {
+          "name": "PROGRESSBAR",
+          "value": 5,
+          "description": ""
+        },
+        {
+          "name": "CHECKBOX",
+          "value": 6,
+          "description": ""
+        },
+        {
+          "name": "COMBOBOX",
+          "value": 7,
+          "description": ""
+        },
+        {
+          "name": "DROPDOWNBOX",
+          "value": 8,
+          "description": ""
+        },
+        {
+          "name": "TEXTBOX",
+          "value": 9,
+          "description": "Used also for: TEXTBOXMULTI"
+        },
+        {
+          "name": "VALUEBOX",
+          "value": 10,
+          "description": ""
+        },
+        {
+          "name": "SPINNER",
+          "value": 11,
+          "description": ""
+        },
+        {
+          "name": "LISTVIEW",
+          "value": 12,
+          "description": ""
+        },
+        {
+          "name": "COLORPICKER",
+          "value": 13,
+          "description": ""
+        },
+        {
+          "name": "SCROLLBAR",
+          "value": 14,
+          "description": ""
+        },
+        {
+          "name": "STATUSBAR",
+          "value": 15,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiControlProperty",
+      "description": "Gui base properties for every control",
+      "values": [
+        {
+          "name": "BORDER_COLOR_NORMAL",
+          "value": 0,
+          "description": ""
+        },
+        {
+          "name": "BASE_COLOR_NORMAL",
+          "value": 1,
+          "description": ""
+        },
+        {
+          "name": "TEXT_COLOR_NORMAL",
+          "value": 2,
+          "description": ""
+        },
+        {
+          "name": "BORDER_COLOR_FOCUSED",
+          "value": 3,
+          "description": ""
+        },
+        {
+          "name": "BASE_COLOR_FOCUSED",
+          "value": 4,
+          "description": ""
+        },
+        {
+          "name": "TEXT_COLOR_FOCUSED",
+          "value": 5,
+          "description": ""
+        },
+        {
+          "name": "BORDER_COLOR_PRESSED",
+          "value": 6,
+          "description": ""
+        },
+        {
+          "name": "BASE_COLOR_PRESSED",
+          "value": 7,
+          "description": ""
+        },
+        {
+          "name": "TEXT_COLOR_PRESSED",
+          "value": 8,
+          "description": ""
+        },
+        {
+          "name": "BORDER_COLOR_DISABLED",
+          "value": 9,
+          "description": ""
+        },
+        {
+          "name": "BASE_COLOR_DISABLED",
+          "value": 10,
+          "description": ""
+        },
+        {
+          "name": "TEXT_COLOR_DISABLED",
+          "value": 11,
+          "description": ""
+        },
+        {
+          "name": "BORDER_WIDTH",
+          "value": 12,
+          "description": ""
+        },
+        {
+          "name": "TEXT_PADDING",
+          "value": 13,
+          "description": ""
+        },
+        {
+          "name": "TEXT_ALIGNMENT",
+          "value": 14,
+          "description": ""
+        },
+        {
+          "name": "RESERVED",
+          "value": 15,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiDefaultProperty",
+      "description": "DEFAULT extended properties",
+      "values": [
+        {
+          "name": "TEXT_SIZE",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "TEXT_SPACING",
+          "value": 17,
+          "description": ""
+        },
+        {
+          "name": "LINE_COLOR",
+          "value": 18,
+          "description": ""
+        },
+        {
+          "name": "BACKGROUND_COLOR",
+          "value": 19,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiToggleProperty",
+      "description": "Toggle/ToggleGroup",
+      "values": [
+        {
+          "name": "GROUP_PADDING",
+          "value": 16,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiSliderProperty",
+      "description": "Slider/SliderBar",
+      "values": [
+        {
+          "name": "SLIDER_WIDTH",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "SLIDER_PADDING",
+          "value": 17,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiProgressBarProperty",
+      "description": "ProgressBar",
+      "values": [
+        {
+          "name": "PROGRESS_PADDING",
+          "value": 16,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiCheckBoxProperty",
+      "description": "CheckBox",
+      "values": [
+        {
+          "name": "CHECK_PADDING",
+          "value": 16,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiComboBoxProperty",
+      "description": "ComboBox",
+      "values": [
+        {
+          "name": "COMBO_BUTTON_WIDTH",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "COMBO_BUTTON_PADDING",
+          "value": 17,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiDropdownBoxProperty",
+      "description": "DropdownBox",
+      "values": [
+        {
+          "name": "ARROW_PADDING",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "DROPDOWN_ITEMS_PADDING",
+          "value": 17,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiTextBoxProperty",
+      "description": "TextBox/TextBoxMulti/ValueBox/Spinner",
+      "values": [
+        {
+          "name": "TEXT_INNER_PADDING",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "TEXT_LINES_PADDING",
+          "value": 17,
+          "description": ""
+        },
+        {
+          "name": "COLOR_SELECTED_FG",
+          "value": 18,
+          "description": ""
+        },
+        {
+          "name": "COLOR_SELECTED_BG",
+          "value": 19,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiSpinnerProperty",
+      "description": "Spinner",
+      "values": [
+        {
+          "name": "SPIN_BUTTON_WIDTH",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "SPIN_BUTTON_PADDING",
+          "value": 17,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiScrollBarProperty",
+      "description": "ScrollBar",
+      "values": [
+        {
+          "name": "ARROWS_SIZE",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "ARROWS_VISIBLE",
+          "value": 17,
+          "description": ""
+        },
+        {
+          "name": "SCROLL_SLIDER_PADDING",
+          "value": 18,
+          "description": ""
+        },
+        {
+          "name": "SCROLL_SLIDER_SIZE",
+          "value": 19,
+          "description": ""
+        },
+        {
+          "name": "SCROLL_PADDING",
+          "value": 20,
+          "description": ""
+        },
+        {
+          "name": "SCROLL_SPEED",
+          "value": 21,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiScrollBarSide",
+      "description": "ScrollBar side",
+      "values": [
+        {
+          "name": "SCROLLBAR_LEFT_SIDE",
+          "value": 0,
+          "description": ""
+        },
+        {
+          "name": "SCROLLBAR_RIGHT_SIDE",
+          "value": 1,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiListViewProperty",
+      "description": "ListView",
+      "values": [
+        {
+          "name": "LIST_ITEMS_HEIGHT",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "LIST_ITEMS_PADDING",
+          "value": 17,
+          "description": ""
+        },
+        {
+          "name": "SCROLLBAR_WIDTH",
+          "value": 18,
+          "description": ""
+        },
+        {
+          "name": "SCROLLBAR_SIDE",
+          "value": 19,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GuiColorPickerProperty",
+      "description": "ColorPicker",
+      "values": [
+        {
+          "name": "COLOR_SELECTOR_SIZE",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "HUEBAR_WIDTH",
+          "value": 17,
+          "description": "Right hue bar width"
+        },
+        {
+          "name": "HUEBAR_PADDING",
+          "value": 18,
+          "description": "Right hue bar separation from panel"
+        },
+        {
+          "name": "HUEBAR_SELECTOR_HEIGHT",
+          "value": 19,
+          "description": "Right hue bar selector height"
+        },
+        {
+          "name": "HUEBAR_SELECTOR_OVERFLOW",
+          "value": 20,
+          "description": "Right hue bar selector overflow"
+        }
+      ]
+    },
+    {
+      "name": "guiIconName",
+      "description": "edef enum {",
+      "values": [
+        {
+          "name": "RICON_NONE",
+          "value": 0,
+          "description": ""
+        },
+        {
+          "name": "RICON_FOLDER_FILE_OPEN",
+          "value": 1,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_SAVE_CLASSIC",
+          "value": 2,
+          "description": ""
+        },
+        {
+          "name": "RICON_FOLDER_OPEN",
+          "value": 3,
+          "description": ""
+        },
+        {
+          "name": "RICON_FOLDER_SAVE",
+          "value": 4,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_OPEN",
+          "value": 5,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_SAVE",
+          "value": 6,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_EXPORT",
+          "value": 7,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_NEW",
+          "value": 8,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_DELETE",
+          "value": 9,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_TEXT",
+          "value": 10,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_AUDIO",
+          "value": 11,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_IMAGE",
+          "value": 12,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_PLAY",
+          "value": 13,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_VIDEO",
+          "value": 14,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_INFO",
+          "value": 15,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_COPY",
+          "value": 16,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_CUT",
+          "value": 17,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILE_PASTE",
+          "value": 18,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_HAND",
+          "value": 19,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_POINTER",
+          "value": 20,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_CLASSIC",
+          "value": 21,
+          "description": ""
+        },
+        {
+          "name": "RICON_PENCIL",
+          "value": 22,
+          "description": ""
+        },
+        {
+          "name": "RICON_PENCIL_BIG",
+          "value": 23,
+          "description": ""
+        },
+        {
+          "name": "RICON_BRUSH_CLASSIC",
+          "value": 24,
+          "description": ""
+        },
+        {
+          "name": "RICON_BRUSH_PAINTER",
+          "value": 25,
+          "description": ""
+        },
+        {
+          "name": "RICON_WATER_DROP",
+          "value": 26,
+          "description": ""
+        },
+        {
+          "name": "RICON_COLOR_PICKER",
+          "value": 27,
+          "description": ""
+        },
+        {
+          "name": "RICON_RUBBER",
+          "value": 28,
+          "description": ""
+        },
+        {
+          "name": "RICON_COLOR_BUCKET",
+          "value": 29,
+          "description": ""
+        },
+        {
+          "name": "RICON_TEXT_T",
+          "value": 30,
+          "description": ""
+        },
+        {
+          "name": "RICON_TEXT_A",
+          "value": 31,
+          "description": ""
+        },
+        {
+          "name": "RICON_SCALE",
+          "value": 32,
+          "description": ""
+        },
+        {
+          "name": "RICON_RESIZE",
+          "value": 33,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILTER_POINT",
+          "value": 34,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILTER_BILINEAR",
+          "value": 35,
+          "description": ""
+        },
+        {
+          "name": "RICON_CROP",
+          "value": 36,
+          "description": ""
+        },
+        {
+          "name": "RICON_CROP_ALPHA",
+          "value": 37,
+          "description": ""
+        },
+        {
+          "name": "RICON_SQUARE_TOGGLE",
+          "value": 38,
+          "description": ""
+        },
+        {
+          "name": "RICON_SYMMETRY",
+          "value": 39,
+          "description": ""
+        },
+        {
+          "name": "RICON_SYMMETRY_HORIZONTAL",
+          "value": 40,
+          "description": ""
+        },
+        {
+          "name": "RICON_SYMMETRY_VERTICAL",
+          "value": 41,
+          "description": ""
+        },
+        {
+          "name": "RICON_LENS",
+          "value": 42,
+          "description": ""
+        },
+        {
+          "name": "RICON_LENS_BIG",
+          "value": 43,
+          "description": ""
+        },
+        {
+          "name": "RICON_EYE_ON",
+          "value": 44,
+          "description": ""
+        },
+        {
+          "name": "RICON_EYE_OFF",
+          "value": 45,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILTER_TOP",
+          "value": 46,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILTER",
+          "value": 47,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET_POINT",
+          "value": 48,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET_SMALL",
+          "value": 49,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET_BIG",
+          "value": 50,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET_MOVE",
+          "value": 51,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_MOVE",
+          "value": 52,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_SCALE",
+          "value": 53,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_SCALE_RIGHT",
+          "value": 54,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_SCALE_LEFT",
+          "value": 55,
+          "description": ""
+        },
+        {
+          "name": "RICON_UNDO",
+          "value": 56,
+          "description": ""
+        },
+        {
+          "name": "RICON_REDO",
+          "value": 57,
+          "description": ""
+        },
+        {
+          "name": "RICON_REREDO",
+          "value": 58,
+          "description": ""
+        },
+        {
+          "name": "RICON_MUTATE",
+          "value": 59,
+          "description": ""
+        },
+        {
+          "name": "RICON_ROTATE",
+          "value": 60,
+          "description": ""
+        },
+        {
+          "name": "RICON_REPEAT",
+          "value": 61,
+          "description": ""
+        },
+        {
+          "name": "RICON_SHUFFLE",
+          "value": 62,
+          "description": ""
+        },
+        {
+          "name": "RICON_EMPTYBOX",
+          "value": 63,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET",
+          "value": 64,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET_SMALL_FILL",
+          "value": 65,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET_BIG_FILL",
+          "value": 66,
+          "description": ""
+        },
+        {
+          "name": "RICON_TARGET_MOVE_FILL",
+          "value": 67,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_MOVE_FILL",
+          "value": 68,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_SCALE_FILL",
+          "value": 69,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_SCALE_RIGHT_FILL",
+          "value": 70,
+          "description": ""
+        },
+        {
+          "name": "RICON_CURSOR_SCALE_LEFT_FILL",
+          "value": 71,
+          "description": ""
+        },
+        {
+          "name": "RICON_UNDO_FILL",
+          "value": 72,
+          "description": ""
+        },
+        {
+          "name": "RICON_REDO_FILL",
+          "value": 73,
+          "description": ""
+        },
+        {
+          "name": "RICON_REREDO_FILL",
+          "value": 74,
+          "description": ""
+        },
+        {
+          "name": "RICON_MUTATE_FILL",
+          "value": 75,
+          "description": ""
+        },
+        {
+          "name": "RICON_ROTATE_FILL",
+          "value": 76,
+          "description": ""
+        },
+        {
+          "name": "RICON_REPEAT_FILL",
+          "value": 77,
+          "description": ""
+        },
+        {
+          "name": "RICON_SHUFFLE_FILL",
+          "value": 78,
+          "description": ""
+        },
+        {
+          "name": "RICON_EMPTYBOX_SMALL",
+          "value": 79,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX",
+          "value": 80,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_TOP",
+          "value": 81,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_TOP_RIGHT",
+          "value": 82,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_RIGHT",
+          "value": 83,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_BOTTOM_RIGHT",
+          "value": 84,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_BOTTOM",
+          "value": 85,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_BOTTOM_LEFT",
+          "value": 86,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_LEFT",
+          "value": 87,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_TOP_LEFT",
+          "value": 88,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_CENTER",
+          "value": 89,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_CIRCLE_MASK",
+          "value": 90,
+          "description": ""
+        },
+        {
+          "name": "RICON_POT",
+          "value": 91,
+          "description": ""
+        },
+        {
+          "name": "RICON_ALPHA_MULTIPLY",
+          "value": 92,
+          "description": ""
+        },
+        {
+          "name": "RICON_ALPHA_CLEAR",
+          "value": 93,
+          "description": ""
+        },
+        {
+          "name": "RICON_DITHERING",
+          "value": 94,
+          "description": ""
+        },
+        {
+          "name": "RICON_MIPMAPS",
+          "value": 95,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_GRID",
+          "value": 96,
+          "description": ""
+        },
+        {
+          "name": "RICON_GRID",
+          "value": 97,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_CORNERS_SMALL",
+          "value": 98,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_CORNERS_BIG",
+          "value": 99,
+          "description": ""
+        },
+        {
+          "name": "RICON_FOUR_BOXES",
+          "value": 100,
+          "description": ""
+        },
+        {
+          "name": "RICON_GRID_FILL",
+          "value": 101,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_MULTISIZE",
+          "value": 102,
+          "description": ""
+        },
+        {
+          "name": "RICON_ZOOM_SMALL",
+          "value": 103,
+          "description": ""
+        },
+        {
+          "name": "RICON_ZOOM_MEDIUM",
+          "value": 104,
+          "description": ""
+        },
+        {
+          "name": "RICON_ZOOM_BIG",
+          "value": 105,
+          "description": ""
+        },
+        {
+          "name": "RICON_ZOOM_ALL",
+          "value": 106,
+          "description": ""
+        },
+        {
+          "name": "RICON_ZOOM_CENTER",
+          "value": 107,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_DOTS_SMALL",
+          "value": 108,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_DOTS_BIG",
+          "value": 109,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_CONCENTRIC",
+          "value": 110,
+          "description": ""
+        },
+        {
+          "name": "RICON_BOX_GRID_BIG",
+          "value": 111,
+          "description": ""
+        },
+        {
+          "name": "RICON_OK_TICK",
+          "value": 112,
+          "description": ""
+        },
+        {
+          "name": "RICON_CROSS",
+          "value": 113,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_LEFT",
+          "value": 114,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_RIGHT",
+          "value": 115,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_DOWN",
+          "value": 116,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_UP",
+          "value": 117,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_LEFT_FILL",
+          "value": 118,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_RIGHT_FILL",
+          "value": 119,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_DOWN_FILL",
+          "value": 120,
+          "description": ""
+        },
+        {
+          "name": "RICON_ARROW_UP_FILL",
+          "value": 121,
+          "description": ""
+        },
+        {
+          "name": "RICON_AUDIO",
+          "value": 122,
+          "description": ""
+        },
+        {
+          "name": "RICON_FX",
+          "value": 123,
+          "description": ""
+        },
+        {
+          "name": "RICON_WAVE",
+          "value": 124,
+          "description": ""
+        },
+        {
+          "name": "RICON_WAVE_SINUS",
+          "value": 125,
+          "description": ""
+        },
+        {
+          "name": "RICON_WAVE_SQUARE",
+          "value": 126,
+          "description": ""
+        },
+        {
+          "name": "RICON_WAVE_TRIANGULAR",
+          "value": 127,
+          "description": ""
+        },
+        {
+          "name": "RICON_CROSS_SMALL",
+          "value": 128,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_PREVIOUS",
+          "value": 129,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_PLAY_BACK",
+          "value": 130,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_PLAY",
+          "value": 131,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_PAUSE",
+          "value": 132,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_STOP",
+          "value": 133,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_NEXT",
+          "value": 134,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_RECORD",
+          "value": 135,
+          "description": ""
+        },
+        {
+          "name": "RICON_MAGNET",
+          "value": 136,
+          "description": ""
+        },
+        {
+          "name": "RICON_LOCK_CLOSE",
+          "value": 137,
+          "description": ""
+        },
+        {
+          "name": "RICON_LOCK_OPEN",
+          "value": 138,
+          "description": ""
+        },
+        {
+          "name": "RICON_CLOCK",
+          "value": 139,
+          "description": ""
+        },
+        {
+          "name": "RICON_TOOLS",
+          "value": 140,
+          "description": ""
+        },
+        {
+          "name": "RICON_GEAR",
+          "value": 141,
+          "description": ""
+        },
+        {
+          "name": "RICON_GEAR_BIG",
+          "value": 142,
+          "description": ""
+        },
+        {
+          "name": "RICON_BIN",
+          "value": 143,
+          "description": ""
+        },
+        {
+          "name": "RICON_HAND_POINTER",
+          "value": 144,
+          "description": ""
+        },
+        {
+          "name": "RICON_LASER",
+          "value": 145,
+          "description": ""
+        },
+        {
+          "name": "RICON_COIN",
+          "value": 146,
+          "description": ""
+        },
+        {
+          "name": "RICON_EXPLOSION",
+          "value": 147,
+          "description": ""
+        },
+        {
+          "name": "RICON_1UP",
+          "value": 148,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER",
+          "value": 149,
+          "description": ""
+        },
+        {
+          "name": "RICON_PLAYER_JUMP",
+          "value": 150,
+          "description": ""
+        },
+        {
+          "name": "RICON_KEY",
+          "value": 151,
+          "description": ""
+        },
+        {
+          "name": "RICON_DEMON",
+          "value": 152,
+          "description": ""
+        },
+        {
+          "name": "RICON_TEXT_POPUP",
+          "value": 153,
+          "description": ""
+        },
+        {
+          "name": "RICON_GEAR_EX",
+          "value": 154,
+          "description": ""
+        },
+        {
+          "name": "RICON_CRACK",
+          "value": 155,
+          "description": ""
+        },
+        {
+          "name": "RICON_CRACK_POINTS",
+          "value": 156,
+          "description": ""
+        },
+        {
+          "name": "RICON_STAR",
+          "value": 157,
+          "description": ""
+        },
+        {
+          "name": "RICON_DOOR",
+          "value": 158,
+          "description": ""
+        },
+        {
+          "name": "RICON_EXIT",
+          "value": 159,
+          "description": ""
+        },
+        {
+          "name": "RICON_MODE_2D",
+          "value": 160,
+          "description": ""
+        },
+        {
+          "name": "RICON_MODE_3D",
+          "value": 161,
+          "description": ""
+        },
+        {
+          "name": "RICON_CUBE",
+          "value": 162,
+          "description": ""
+        },
+        {
+          "name": "RICON_CUBE_FACE_TOP",
+          "value": 163,
+          "description": ""
+        },
+        {
+          "name": "RICON_CUBE_FACE_LEFT",
+          "value": 164,
+          "description": ""
+        },
+        {
+          "name": "RICON_CUBE_FACE_FRONT",
+          "value": 165,
+          "description": ""
+        },
+        {
+          "name": "RICON_CUBE_FACE_BOTTOM",
+          "value": 166,
+          "description": ""
+        },
+        {
+          "name": "RICON_CUBE_FACE_RIGHT",
+          "value": 167,
+          "description": ""
+        },
+        {
+          "name": "RICON_CUBE_FACE_BACK",
+          "value": 168,
+          "description": ""
+        },
+        {
+          "name": "RICON_CAMERA",
+          "value": 169,
+          "description": ""
+        },
+        {
+          "name": "RICON_SPECIAL",
+          "value": 170,
+          "description": ""
+        },
+        {
+          "name": "RICON_LINK_NET",
+          "value": 171,
+          "description": ""
+        },
+        {
+          "name": "RICON_LINK_BOXES",
+          "value": 172,
+          "description": ""
+        },
+        {
+          "name": "RICON_LINK_MULTI",
+          "value": 173,
+          "description": ""
+        },
+        {
+          "name": "RICON_LINK",
+          "value": 174,
+          "description": ""
+        },
+        {
+          "name": "RICON_LINK_BROKE",
+          "value": 175,
+          "description": ""
+        },
+        {
+          "name": "RICON_TEXT_NOTES",
+          "value": 176,
+          "description": ""
+        },
+        {
+          "name": "RICON_NOTEBOOK",
+          "value": 177,
+          "description": ""
+        },
+        {
+          "name": "RICON_SUITCASE",
+          "value": 178,
+          "description": ""
+        },
+        {
+          "name": "RICON_SUITCASE_ZIP",
+          "value": 179,
+          "description": ""
+        },
+        {
+          "name": "RICON_MAILBOX",
+          "value": 180,
+          "description": ""
+        },
+        {
+          "name": "RICON_MONITOR",
+          "value": 181,
+          "description": ""
+        },
+        {
+          "name": "RICON_PRINTER",
+          "value": 182,
+          "description": ""
+        },
+        {
+          "name": "RICON_PHOTO_CAMERA",
+          "value": 183,
+          "description": ""
+        },
+        {
+          "name": "RICON_PHOTO_CAMERA_FLASH",
+          "value": 184,
+          "description": ""
+        },
+        {
+          "name": "RICON_HOUSE",
+          "value": 185,
+          "description": ""
+        },
+        {
+          "name": "RICON_HEART",
+          "value": 186,
+          "description": ""
+        },
+        {
+          "name": "RICON_CORNER",
+          "value": 187,
+          "description": ""
+        },
+        {
+          "name": "RICON_VERTICAL_BARS",
+          "value": 188,
+          "description": ""
+        },
+        {
+          "name": "RICON_VERTICAL_BARS_FILL",
+          "value": 189,
+          "description": ""
+        },
+        {
+          "name": "RICON_LIFE_BARS",
+          "value": 190,
+          "description": ""
+        },
+        {
+          "name": "RICON_INFO",
+          "value": 191,
+          "description": ""
+        },
+        {
+          "name": "RICON_CROSSLINE",
+          "value": 192,
+          "description": ""
+        },
+        {
+          "name": "RICON_HELP",
+          "value": 193,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_ALPHA",
+          "value": 194,
+          "description": ""
+        },
+        {
+          "name": "RICON_FILETYPE_HOME",
+          "value": 195,
+          "description": ""
+        },
+        {
+          "name": "RICON_LAYERS_VISIBLE",
+          "value": 196,
+          "description": ""
+        },
+        {
+          "name": "RICON_LAYERS",
+          "value": 197,
+          "description": ""
+        },
+        {
+          "name": "RICON_WINDOW",
+          "value": 198,
+          "description": ""
+        },
+        {
+          "name": "RICON_HIDPI",
+          "value": 199,
+          "description": ""
+        },
+        {
+          "name": "RICON_200",
+          "value": 200,
+          "description": ""
+        },
+        {
+          "name": "RICON_201",
+          "value": 201,
+          "description": ""
+        },
+        {
+          "name": "RICON_202",
+          "value": 202,
+          "description": ""
+        },
+        {
+          "name": "RICON_203",
+          "value": 203,
+          "description": ""
+        },
+        {
+          "name": "RICON_204",
+          "value": 204,
+          "description": ""
+        },
+        {
+          "name": "RICON_205",
+          "value": 205,
+          "description": ""
+        },
+        {
+          "name": "RICON_206",
+          "value": 206,
+          "description": ""
+        },
+        {
+          "name": "RICON_207",
+          "value": 207,
+          "description": ""
+        },
+        {
+          "name": "RICON_208",
+          "value": 208,
+          "description": ""
+        },
+        {
+          "name": "RICON_209",
+          "value": 209,
+          "description": ""
+        },
+        {
+          "name": "RICON_210",
+          "value": 210,
+          "description": ""
+        },
+        {
+          "name": "RICON_211",
+          "value": 211,
+          "description": ""
+        },
+        {
+          "name": "RICON_212",
+          "value": 212,
+          "description": ""
+        },
+        {
+          "name": "RICON_213",
+          "value": 213,
+          "description": ""
+        },
+        {
+          "name": "RICON_214",
+          "value": 214,
+          "description": ""
+        },
+        {
+          "name": "RICON_215",
+          "value": 215,
+          "description": ""
+        },
+        {
+          "name": "RICON_216",
+          "value": 216,
+          "description": ""
+        },
+        {
+          "name": "RICON_217",
+          "value": 217,
+          "description": ""
+        },
+        {
+          "name": "RICON_218",
+          "value": 218,
+          "description": ""
+        },
+        {
+          "name": "RICON_219",
+          "value": 219,
+          "description": ""
+        },
+        {
+          "name": "RICON_220",
+          "value": 220,
+          "description": ""
+        },
+        {
+          "name": "RICON_221",
+          "value": 221,
+          "description": ""
+        },
+        {
+          "name": "RICON_222",
+          "value": 222,
+          "description": ""
+        },
+        {
+          "name": "RICON_223",
+          "value": 223,
+          "description": ""
+        },
+        {
+          "name": "RICON_224",
+          "value": 224,
+          "description": ""
+        },
+        {
+          "name": "RICON_225",
+          "value": 225,
+          "description": ""
+        },
+        {
+          "name": "RICON_226",
+          "value": 226,
+          "description": ""
+        },
+        {
+          "name": "RICON_227",
+          "value": 227,
+          "description": ""
+        },
+        {
+          "name": "RICON_228",
+          "value": 228,
+          "description": ""
+        },
+        {
+          "name": "RICON_229",
+          "value": 229,
+          "description": ""
+        },
+        {
+          "name": "RICON_230",
+          "value": 230,
+          "description": ""
+        },
+        {
+          "name": "RICON_231",
+          "value": 231,
+          "description": ""
+        },
+        {
+          "name": "RICON_232",
+          "value": 232,
+          "description": ""
+        },
+        {
+          "name": "RICON_233",
+          "value": 233,
+          "description": ""
+        },
+        {
+          "name": "RICON_234",
+          "value": 234,
+          "description": ""
+        },
+        {
+          "name": "RICON_235",
+          "value": 235,
+          "description": ""
+        },
+        {
+          "name": "RICON_236",
+          "value": 236,
+          "description": ""
+        },
+        {
+          "name": "RICON_237",
+          "value": 237,
+          "description": ""
+        },
+        {
+          "name": "RICON_238",
+          "value": 238,
+          "description": ""
+        },
+        {
+          "name": "RICON_239",
+          "value": 239,
+          "description": ""
+        },
+        {
+          "name": "RICON_240",
+          "value": 240,
+          "description": ""
+        },
+        {
+          "name": "RICON_241",
+          "value": 241,
+          "description": ""
+        },
+        {
+          "name": "RICON_242",
+          "value": 242,
+          "description": ""
+        },
+        {
+          "name": "RICON_243",
+          "value": 243,
+          "description": ""
+        },
+        {
+          "name": "RICON_244",
+          "value": 244,
+          "description": ""
+        },
+        {
+          "name": "RICON_245",
+          "value": 245,
+          "description": ""
+        },
+        {
+          "name": "RICON_246",
+          "value": 246,
+          "description": ""
+        },
+        {
+          "name": "RICON_247",
+          "value": 247,
+          "description": ""
+        },
+        {
+          "name": "RICON_248",
+          "value": 248,
+          "description": ""
+        },
+        {
+          "name": "RICON_249",
+          "value": 249,
+          "description": ""
+        },
+        {
+          "name": "RICON_250",
+          "value": 250,
+          "description": ""
+        },
+        {
+          "name": "RICON_251",
+          "value": 251,
+          "description": ""
+        },
+        {
+          "name": "RICON_252",
+          "value": 252,
+          "description": ""
+        },
+        {
+          "name": "RICON_253",
+          "value": 253,
+          "description": ""
+        },
+        {
+          "name": "RICON_254",
+          "value": 254,
+          "description": ""
+        },
+        {
+          "name": "RICON_255",
+          "value": 255,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "defines": [
+    {
+      "name": "RAYGUI_H",
+      "type": "GUARD",
+      "value": "",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_VERSION",
+      "type": "STRING",
+      "value": "3.0",
+      "description": ""
+    },
+    {
+      "name": "RAYGUIAPI",
+      "type": "UNKNOWN",
+      "value": "__declspec(dllexport)",
+      "description": "We are building the library as a Win32 shared library (.dll)"
+    },
+    {
+      "name": "RAYGUI_MALLOC(sz)",
+      "type": "MACRO",
+      "value": "malloc(sz)",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_CALLOC(n,sz)",
+      "type": "MACRO",
+      "value": "calloc(n,sz)",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_FREE(p)",
+      "type": "MACRO",
+      "value": "free(p)",
+      "description": ""
+    },
+    {
+      "name": "TRACELOG(level,",
+      "type": "UNKNOWN",
+      "value": "...) (void)0",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_CLITERAL(name)",
+      "type": "MACRO",
+      "value": "name",
+      "description": ""
+    },
+    {
+      "name": "RICONS_IMPLEMENTATION",
+      "type": "GUARD",
+      "value": "",
+      "description": ""
+    },
+    {
+      "name": "RICON_SIZE",
+      "type": "INT",
+      "value": 16,
+      "description": "Size of icons (squared)"
+    },
+    {
+      "name": "RICON_MAX_ICONS",
+      "type": "INT",
+      "value": 256,
+      "description": "Maximum number of icons"
+    },
+    {
+      "name": "RICON_MAX_NAME_LENGTH",
+      "type": "INT",
+      "value": 32,
+      "description": "Maximum length of icon name id"
+    },
+    {
+      "name": "RICON_DATA_ELEMENTS",
+      "type": "UNKNOWN",
+      "value": "(RICON_SIZE*RICON_SIZE/32)",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_MAX_CONTROLS",
+      "type": "INT",
+      "value": 16,
+      "description": "Maximum number of standard controls"
+    },
+    {
+      "name": "RAYGUI_MAX_PROPS_BASE",
+      "type": "INT",
+      "value": 16,
+      "description": "Maximum number of standard properties"
+    },
+    {
+      "name": "RAYGUI_MAX_PROPS_EXTENDED",
+      "type": "INT",
+      "value": 8,
+      "description": "Maximum number of extended properties"
+    },
+    {
+      "name": "KEY_RIGHT",
+      "type": "INT",
+      "value": 262,
+      "description": ""
+    },
+    {
+      "name": "KEY_LEFT",
+      "type": "INT",
+      "value": 263,
+      "description": ""
+    },
+    {
+      "name": "KEY_DOWN",
+      "type": "INT",
+      "value": 264,
+      "description": ""
+    },
+    {
+      "name": "KEY_UP",
+      "type": "INT",
+      "value": 265,
+      "description": ""
+    },
+    {
+      "name": "KEY_BACKSPACE",
+      "type": "INT",
+      "value": 259,
+      "description": ""
+    },
+    {
+      "name": "KEY_ENTER",
+      "type": "INT",
+      "value": 257,
+      "description": ""
+    },
+    {
+      "name": "MOUSE_LEFT_BUTTON",
+      "type": "INT",
+      "value": 0,
+      "description": ""
+    },
+    {
+      "name": "WINDOW_STATUSBAR_HEIGHT",
+      "type": "INT",
+      "value": 22,
+      "description": ""
+    },
+    {
+      "name": "GROUPBOX_LINE_THICK",
+      "type": "INT",
+      "value": 1,
+      "description": ""
+    },
+    {
+      "name": "GROUPBOX_TEXT_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "LINE_TEXT_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "PANEL_BORDER_WIDTH",
+      "type": "INT",
+      "value": 1,
+      "description": ""
+    },
+    {
+      "name": "TOGGLEGROUP_MAX_ELEMENTS",
+      "type": "INT",
+      "value": 32,
+      "description": ""
+    },
+    {
+      "name": "VALUEBOX_MAX_CHARS",
+      "type": "INT",
+      "value": 32,
+      "description": ""
+    },
+    {
+      "name": "COLORBARALPHA_CHECKED_SIZE",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "MESSAGEBOX_BUTTON_HEIGHT",
+      "type": "INT",
+      "value": 24,
+      "description": ""
+    },
+    {
+      "name": "MESSAGEBOX_BUTTON_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_BUTTON_HEIGHT",
+      "type": "INT",
+      "value": 24,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_BUTTON_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_HEIGHT",
+      "type": "INT",
+      "value": 30,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_MAX_TEXT_LENGTH",
+      "type": "INT",
+      "value": 256,
+      "description": ""
+    },
+    {
+      "name": "GRID_COLOR_ALPHA",
+      "type": "FLOAT",
+      "value": 0.15,
+      "description": "Grid lines alpha amount"
+    },
+    {
+      "name": "BIT_CHECK(a,b)",
+      "type": "MACRO",
+      "value": "((a) & (1<<(b)))",
+      "description": ""
+    },
+    {
+      "name": "BIT_SET(a,b)",
+      "type": "MACRO",
+      "value": "((a) |= (1<<(b)))",
+      "description": ""
+    },
+    {
+      "name": "BIT_CLEAR(a,b)",
+      "type": "MACRO",
+      "value": "((a) &= ~((1)<<(b)))",
+      "description": ""
+    },
+    {
+      "name": "TEXT_VALIGN_PIXEL_OFFSET(h)",
+      "type": "MACRO",
+      "value": "((int)h%2)",
+      "description": "Vertical alignment for pixel perfect"
+    },
+    {
+      "name": "RICON_TEXT_PADDING",
+      "type": "INT",
+      "value": 4,
+      "description": ""
+    },
+    {
+      "name": "TEXTSPLIT_MAX_TEXT_LENGTH",
+      "type": "INT",
+      "value": 1024,
+      "description": ""
+    },
+    {
+      "name": "TEXTSPLIT_MAX_TEXT_ELEMENTS",
+      "type": "INT",
+      "value": 128,
+      "description": ""
+    },
+    {
+      "name": "MAX_FORMATTEXT_LENGTH",
+      "type": "INT",
+      "value": 64,
+      "description": ""
+    },
+    {
+      "name": "TEXTSPLIT_MAX_TEXT_BUFFER_LENGTH",
+      "type": "INT",
+      "value": 1024,
+      "description": "Size of static buffer: TextSplit()"
+    },
+    {
+      "name": "TEXTSPLIT_MAX_SUBSTRINGS_COUNT",
+      "type": "INT",
+      "value": 128,
+      "description": "Size of static pointers array: TextSplit()"
+    }
+  ],
+  "functions": [
+    {
+      "name": "GuiEnable",
+      "description": "Enable gui controls (global state)",
+      "returnType": "void"
+    },
+    {
+      "name": "GuiDisable",
+      "description": "Disable gui controls (global state)",
+      "returnType": "void"
+    },
+    {
+      "name": "GuiLock",
+      "description": "Lock gui controls (global state)",
+      "returnType": "void"
+    },
+    {
+      "name": "GuiUnlock",
+      "description": "Unlock gui controls (global state)",
+      "returnType": "void"
+    },
+    {
+      "name": "GuiIsLocked",
+      "description": "Check if gui is locked (global state)",
+      "returnType": "bool"
+    },
+    {
+      "name": "GuiFade",
+      "description": "Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "float",
+          "name": "alpha"
+        }
+      ]
+    },
+    {
+      "name": "GuiSetState",
+      "description": "Set gui state (global state)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "state"
+        }
+      ]
+    },
+    {
+      "name": "GuiGetState",
+      "description": "Get gui state (global state)",
+      "returnType": "int"
+    },
+    {
+      "name": "GuiSetFont",
+      "description": "Set gui custom font (global state)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Font",
+          "name": "font"
+        }
+      ]
+    },
+    {
+      "name": "GuiGetFont",
+      "description": "Get gui custom font (global state)",
+      "returnType": "Font"
+    },
+    {
+      "name": "GuiSetStyle",
+      "description": "Set one style property",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "control"
+        },
+        {
+          "type": "int",
+          "name": "property"
+        },
+        {
+          "type": "int",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "name": "GuiGetStyle",
+      "description": "Get one style property",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "int",
+          "name": "control"
+        },
+        {
+          "type": "int",
+          "name": "property"
+        }
+      ]
+    },
+    {
+      "name": "GuiWindowBox",
+      "description": "Window Box control, shows a window that can be closed",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "title"
+        }
+      ]
+    },
+    {
+      "name": "GuiGroupBox",
+      "description": "Group Box control with text name",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiLine",
+      "description": "Line separator control, could contain text",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiPanel",
+      "description": "Panel control, useful to group controls",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        }
+      ]
+    },
+    {
+      "name": "GuiScrollPanel",
+      "description": "Scroll Panel control",
+      "returnType": "Rectangle",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "Rectangle",
+          "name": "content"
+        },
+        {
+          "type": "Vector2 *",
+          "name": "scroll"
+        }
+      ]
+    },
+    {
+      "name": "GuiLabel",
+      "description": "Label control, shows text",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiButton",
+      "description": "Button control, returns true when clicked",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiLabelButton",
+      "description": "Label button control, show true when clicked",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiToggle",
+      "description": "Toggle Button control, returns true when active",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "bool",
+          "name": "active"
+        }
+      ]
+    },
+    {
+      "name": "GuiToggleGroup",
+      "description": "Toggle Group control, returns active toggle index",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "int",
+          "name": "active"
+        }
+      ]
+    },
+    {
+      "name": "GuiCheckBox",
+      "description": "Check Box control, returns true when active",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "bool",
+          "name": "checked"
+        }
+      ]
+    },
+    {
+      "name": "GuiComboBox",
+      "description": "Combo Box control, returns selected item index",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "int",
+          "name": "active"
+        }
+      ]
+    },
+    {
+      "name": "GuiDropdownBox",
+      "description": "Dropdown Box control, returns selected item",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "int *",
+          "name": "active"
+        },
+        {
+          "type": "bool",
+          "name": "editMode"
+        }
+      ]
+    },
+    {
+      "name": "GuiSpinner",
+      "description": "Spinner control, returns selected value",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "int *",
+          "name": "value"
+        },
+        {
+          "type": "int",
+          "name": "minValue"
+        },
+        {
+          "type": "int",
+          "name": "maxValue"
+        },
+        {
+          "type": "bool",
+          "name": "editMode"
+        }
+      ]
+    },
+    {
+      "name": "GuiValueBox",
+      "description": "Value Box control, updates input text with numbers",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "int *",
+          "name": "value"
+        },
+        {
+          "type": "int",
+          "name": "minValue"
+        },
+        {
+          "type": "int",
+          "name": "maxValue"
+        },
+        {
+          "type": "bool",
+          "name": "editMode"
+        }
+      ]
+    },
+    {
+      "name": "GuiTextBox",
+      "description": "Text Box control, updates input text",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "char *",
+          "name": "text"
+        },
+        {
+          "type": "int",
+          "name": "textSize"
+        },
+        {
+          "type": "bool",
+          "name": "editMode"
+        }
+      ]
+    },
+    {
+      "name": "GuiTextBoxMulti",
+      "description": "Text Box control with multiple lines",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "char *",
+          "name": "text"
+        },
+        {
+          "type": "int",
+          "name": "textSize"
+        },
+        {
+          "type": "bool",
+          "name": "editMode"
+        }
+      ]
+    },
+    {
+      "name": "GuiSlider",
+      "description": "Slider control, returns selected value",
+      "returnType": "float",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "textLeft"
+        },
+        {
+          "type": "const char *",
+          "name": "textRight"
+        },
+        {
+          "type": "float",
+          "name": "value"
+        },
+        {
+          "type": "float",
+          "name": "minValue"
+        },
+        {
+          "type": "float",
+          "name": "maxValue"
+        }
+      ]
+    },
+    {
+      "name": "GuiSliderBar",
+      "description": "Slider Bar control, returns selected value",
+      "returnType": "float",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "textLeft"
+        },
+        {
+          "type": "const char *",
+          "name": "textRight"
+        },
+        {
+          "type": "float",
+          "name": "value"
+        },
+        {
+          "type": "float",
+          "name": "minValue"
+        },
+        {
+          "type": "float",
+          "name": "maxValue"
+        }
+      ]
+    },
+    {
+      "name": "GuiProgressBar",
+      "description": "Progress Bar control, shows current progress value",
+      "returnType": "float",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "textLeft"
+        },
+        {
+          "type": "const char *",
+          "name": "textRight"
+        },
+        {
+          "type": "float",
+          "name": "value"
+        },
+        {
+          "type": "float",
+          "name": "minValue"
+        },
+        {
+          "type": "float",
+          "name": "maxValue"
+        }
+      ]
+    },
+    {
+      "name": "GuiStatusBar",
+      "description": "Status Bar control, shows info text",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiDummyRec",
+      "description": "Dummy control for placeholders",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiScrollBar",
+      "description": "Scroll Bar control",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "int",
+          "name": "value"
+        },
+        {
+          "type": "int",
+          "name": "minValue"
+        },
+        {
+          "type": "int",
+          "name": "maxValue"
+        }
+      ]
+    },
+    {
+      "name": "GuiGrid",
+      "description": "Grid control",
+      "returnType": "Vector2",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "float",
+          "name": "spacing"
+        },
+        {
+          "type": "int",
+          "name": "subdivs"
+        }
+      ]
+    },
+    {
+      "name": "GuiListView",
+      "description": "List View control, returns selected list item index",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        },
+        {
+          "type": "int *",
+          "name": "scrollIndex"
+        },
+        {
+          "type": "int",
+          "name": "active"
+        }
+      ]
+    },
+    {
+      "name": "GuiListViewEx",
+      "description": "List View with extended parameters",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char **",
+          "name": "text"
+        },
+        {
+          "type": "int",
+          "name": "count"
+        },
+        {
+          "type": "int *",
+          "name": "focus"
+        },
+        {
+          "type": "int *",
+          "name": "scrollIndex"
+        },
+        {
+          "type": "int",
+          "name": "active"
+        }
+      ]
+    },
+    {
+      "name": "GuiMessageBox",
+      "description": "Message Box control, displays a message",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "title"
+        },
+        {
+          "type": "const char *",
+          "name": "message"
+        },
+        {
+          "type": "const char *",
+          "name": "buttons"
+        }
+      ]
+    },
+    {
+      "name": "GuiTextInputBox",
+      "description": "Text Input Box control, ask for text",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "const char *",
+          "name": "title"
+        },
+        {
+          "type": "const char *",
+          "name": "message"
+        },
+        {
+          "type": "const char *",
+          "name": "buttons"
+        },
+        {
+          "type": "char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiColorPicker",
+      "description": "Color Picker control (multiple color controls)",
+      "returnType": "Color",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "Color",
+          "name": "color"
+        }
+      ]
+    },
+    {
+      "name": "GuiColorPanel",
+      "description": "Color Panel control",
+      "returnType": "Color",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "Color",
+          "name": "color"
+        }
+      ]
+    },
+    {
+      "name": "GuiColorBarAlpha",
+      "description": "Color Bar Alpha control",
+      "returnType": "float",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "float",
+          "name": "alpha"
+        }
+      ]
+    },
+    {
+      "name": "GuiColorBarHue",
+      "description": "Color Bar Hue control",
+      "returnType": "float",
+      "params": [
+        {
+          "type": "Rectangle",
+          "name": "bounds"
+        },
+        {
+          "type": "float",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "name": "GuiLoadStyle",
+      "description": "Load style file over global style variable (.rgs)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "const char *",
+          "name": "fileName"
+        }
+      ]
+    },
+    {
+      "name": "GuiLoadStyleDefault",
+      "description": "Load style default over global style",
+      "returnType": "void"
+    },
+    {
+      "name": "LoadGuiStyle",
+      "description": "Load style from file (.rgs)",
+      "returnType": "GuiStyle",
+      "params": [
+        {
+          "type": "const char *",
+          "name": "fileName"
+        }
+      ]
+    },
+    {
+      "name": "UnloadGuiStyle",
+      "description": "Unload style",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "GuiStyle",
+          "name": "style"
+        }
+      ]
+    },
+    {
+      "name": "GuiIconText",
+      "description": "Get text with icon id prepended (if supported)",
+      "returnType": "const char *",
+      "params": [
+        {
+          "type": "int",
+          "name": "iconId"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
+      "name": "GuiDrawIcon",
+      "description": "",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "iconId"
+        },
+        {
+          "type": "int",
+          "name": "posX"
+        },
+        {
+          "type": "int",
+          "name": "posY"
+        },
+        {
+          "type": "int",
+          "name": "pixelSize"
+        },
+        {
+          "type": "Color",
+          "name": "color"
+        }
+      ]
+    },
+    {
+      "name": "GuiGetIcons",
+      "description": "Get full icons data pointer",
+      "returnType": "unsigned int *"
+    },
+    {
+      "name": "GuiGetIconData",
+      "description": "Get icon bit data",
+      "returnType": "unsigned int *",
+      "params": [
+        {
+          "type": "int",
+          "name": "iconId"
+        }
+      ]
+    },
+    {
+      "name": "GuiSetIconData",
+      "description": "Set icon bit data",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "iconId"
+        },
+        {
+          "type": "unsigned int *",
+          "name": "data"
+        }
+      ]
+    },
+    {
+      "name": "GuiSetIconPixel",
+      "description": "Set icon pixel value",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "iconId"
+        },
+        {
+          "type": "int",
+          "name": "x"
+        },
+        {
+          "type": "int",
+          "name": "y"
+        }
+      ]
+    },
+    {
+      "name": "GuiClearIconPixel",
+      "description": "Clear icon pixel value",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "iconId"
+        },
+        {
+          "type": "int",
+          "name": "x"
+        },
+        {
+          "type": "int",
+          "name": "y"
+        }
+      ]
+    },
+    {
+      "name": "GuiCheckIconPixel",
+      "description": "Check icon pixel value",
+      "returnType": "bool",
+      "params": [
+        {
+          "type": "int",
+          "name": "iconId"
+        },
+        {
+          "type": "int",
+          "name": "x"
+        },
+        {
+          "type": "int",
+          "name": "y"
+        }
+      ]
+    }
+  ]
+}
