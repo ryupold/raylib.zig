@@ -1,0 +1,31 @@
+{
+    "excluded_functions": [
+        "LoadCodepoints",
+        "UnloadCodepoints",
+        "GetCodepointCount",
+        "GetCodepoint",
+        "CodepointToUTF8",
+        "TextCodepointsToUTF8",
+        "TextCopy",
+        "TextIsEqual",
+        "TextLength",
+        "TextFormat",
+        "TextSubtext",
+        "TextReplace",
+        "TextInsert",
+        "TextJoin",
+        "TextSplit",
+        "TextAppend",
+        "TextFindIndex",
+        "TextToUpper",
+        "TextToLower",
+        "TextToPascal",
+        "TextToInteger"
+    ],
+    "functionParams": {
+        "GenImageFontAtlas": {
+            "chars": "[]const GlyphInfo",
+            "recs": "[]const *Rectangle"
+        }
+    }
+}

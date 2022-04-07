@@ -52,3 +52,5 @@ Mkfile.old
 dkms.conf
 
 zig-cache/
+
+.vscode/settings.json

@@ -5,7 +5,8 @@ Idomatic [raylib](https://www.raylib.com/) bindings for [Zig](https://ziglang.or
 for current raylib source (submodule)
 
 ```sh
-zig build bindings
+zig build jsons # generate JSON files with raylib_parser
+zig build bindings # generate Zig bindings
 ```
 
 ## usage
