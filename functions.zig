@@ -9,12 +9,12 @@ usingnamespace @import("enums.zig");
 pub fn InitWindow(
     width: i32,
     height: i32,
-    title: []const u8,
+    title: [:0]const u8,
 ) void {
     raylib.InitWindow(
         @intCast(c_int, width),
         @intCast(c_int, height),
-        @ptrCast([*c]const u8, title.ptr),
+        title,
     );
 }
 
@@ -121,10 +121,10 @@ pub fn SetWindowIcon(
 
 /// Set title for window (only PLATFORM_DESKTOP)
 pub fn SetWindowTitle(
-    title: []const u8,
+    title: [:0]const u8,
 ) void {
     raylib.SetWindowTitle(
-        @ptrCast([*c]const u8, title.ptr),
+        title,
     );
 }
 
@@ -281,7 +281,7 @@ pub fn GetWindowScaleDPI() Vector2 {
 /// Get the human-readable, UTF-8 encoded name of the primary monitor
 pub fn GetMonitorName(
     monitor: i32,
-) []const u8 {
+) [:0]const u8 {
     return raylib.GetMonitorName(
         @intCast(c_int, monitor),
     );
@@ -289,15 +289,15 @@ pub fn GetMonitorName(
 
 /// Set clipboard text content
 pub fn SetClipboardText(
-    text: []const u8,
+    text: [:0]const u8,
 ) void {
     raylib.SetClipboardText(
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
 /// Get clipboard text content
-pub fn GetClipboardText() []const u8 {
+pub fn GetClipboardText() [:0]const u8 {
     return raylib.GetClipboardText();
 }
 
@@ -493,45 +493,45 @@ pub fn UnloadVrStereoConfig(
 
 /// Load shader from files and bind default locations
 pub fn LoadShader(
-    vsFileName: []const u8,
-    fsFileName: []const u8,
+    vsFileName: [:0]const u8,
+    fsFileName: [:0]const u8,
 ) Shader {
     return raylib.LoadShader(
-        @ptrCast([*c]const u8, vsFileName.ptr),
-        @ptrCast([*c]const u8, fsFileName.ptr),
+        vsFileName,
+        fsFileName,
     );
 }
 
 /// Load shader from code strings and bind default locations
 pub fn LoadShaderFromMemory(
-    vsCode: []const u8,
-    fsCode: []const u8,
+    vsCode: [:0]const u8,
+    fsCode: [:0]const u8,
 ) Shader {
     return raylib.LoadShaderFromMemory(
-        @ptrCast([*c]const u8, vsCode.ptr),
-        @ptrCast([*c]const u8, fsCode.ptr),
+        vsCode,
+        fsCode,
     );
 }
 
 /// Get shader uniform location
 pub fn GetShaderLocation(
     shader: Shader,
-    uniformName: []const u8,
+    uniformName: [:0]const u8,
 ) i32 {
     return raylib.GetShaderLocation(
         shader,
-        @ptrCast([*c]const u8, uniformName.ptr),
+        uniformName,
     );
 }
 
 /// Get shader attribute location
 pub fn GetShaderLocationAttrib(
     shader: Shader,
-    attribName: []const u8,
+    attribName: [:0]const u8,
 ) i32 {
     return raylib.GetShaderLocationAttrib(
         shader,
-        @ptrCast([*c]const u8, attribName.ptr),
+        attribName,
     );
 }
 
@@ -725,10 +725,10 @@ pub fn SetRandomSeed(
 
 /// Takes a screenshot of current screen (filename extension defines format)
 pub fn TakeScreenshot(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) void {
     raylib.TakeScreenshot(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -824,34 +824,23 @@ pub fn SetSaveFileTextCallback(
     );
 }
 
-/// Load file data as byte array (read)
-pub fn LoadFileData(
-    fileName: []const u8,
-    bytesRead: []u32,
-) []const u8 {
-    return raylib.LoadFileData(
-        @ptrCast([*c]const u8, fileName.ptr),
-        @ptrCast([*c]c_uint, bytesRead.ptr),
-    );
-}
-
 /// Unload file data allocated by LoadFileData()
 pub fn UnloadFileData(
-    data: []const u8,
+    data: [:0]const u8,
 ) void {
     raylib.UnloadFileData(
-        @ptrCast([*c]const u8, data.ptr),
+        data,
     );
 }
 
 /// Save data to file from byte array (write), returns true on success
 pub fn SaveFileData(
-    fileName: []const u8,
+    fileName: [:0]const u8,
     data: *anyopaque,
     bytesToWrite: u32,
 ) bool {
     return raylib.SaveFileData(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
         data,
         @intCast(c_uint, bytesToWrite),
     );
@@ -859,133 +848,133 @@ pub fn SaveFileData(
 
 /// Load text data from file (read), returns a '\0' terminated string
 pub fn LoadFileText(
-    fileName: []const u8,
-) []const u8 {
+    fileName: [:0]const u8,
+) [:0]const u8 {
     return raylib.LoadFileText(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Unload file text data allocated by LoadFileText()
 pub fn UnloadFileText(
-    text: []const u8,
+    text: [:0]const u8,
 ) void {
     raylib.UnloadFileText(
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
 /// Save text data to file (write), string must be '\0' terminated, returns true on success
 pub fn SaveFileText(
-    fileName: []const u8,
-    text: []const u8,
+    fileName: [:0]const u8,
+    text: [:0]const u8,
 ) bool {
     return raylib.SaveFileText(
-        @ptrCast([*c]const u8, fileName.ptr),
-        @ptrCast([*c]const u8, text.ptr),
+        fileName,
+        text,
     );
 }
 
 /// Check if file exists
 pub fn FileExists(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) bool {
     return raylib.FileExists(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Check if a directory path exists
 pub fn DirectoryExists(
-    dirPath: []const u8,
+    dirPath: [:0]const u8,
 ) bool {
     return raylib.DirectoryExists(
-        @ptrCast([*c]const u8, dirPath.ptr),
+        dirPath,
     );
 }
 
 /// Check file extension (including point: .png, .wav)
 pub fn IsFileExtension(
-    fileName: []const u8,
-    ext: []const u8,
+    fileName: [:0]const u8,
+    ext: [:0]const u8,
 ) bool {
     return raylib.IsFileExtension(
-        @ptrCast([*c]const u8, fileName.ptr),
-        @ptrCast([*c]const u8, ext.ptr),
+        fileName,
+        ext,
     );
 }
 
 /// Get file length in bytes (NOTE: GetFileSize() conflicts with windows.h)
 pub fn GetFileLength(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) i32 {
     return raylib.GetFileLength(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Get pointer to extension for a filename string (includes dot: '.png')
 pub fn GetFileExtension(
-    fileName: []const u8,
-) []const u8 {
+    fileName: [:0]const u8,
+) [:0]const u8 {
     return raylib.GetFileExtension(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Get pointer to filename for a path string
 pub fn GetFileName(
-    filePath: []const u8,
-) []const u8 {
+    filePath: [:0]const u8,
+) [:0]const u8 {
     return raylib.GetFileName(
-        @ptrCast([*c]const u8, filePath.ptr),
+        filePath,
     );
 }
 
 /// Get filename string without extension (uses static string)
 pub fn GetFileNameWithoutExt(
-    filePath: []const u8,
-) []const u8 {
+    filePath: [:0]const u8,
+) [:0]const u8 {
     return raylib.GetFileNameWithoutExt(
-        @ptrCast([*c]const u8, filePath.ptr),
+        filePath,
     );
 }
 
 /// Get full path for a given fileName with path (uses static string)
 pub fn GetDirectoryPath(
-    filePath: []const u8,
-) []const u8 {
+    filePath: [:0]const u8,
+) [:0]const u8 {
     return raylib.GetDirectoryPath(
-        @ptrCast([*c]const u8, filePath.ptr),
+        filePath,
     );
 }
 
 /// Get previous directory path for a given path (uses static string)
 pub fn GetPrevDirectoryPath(
-    dirPath: []const u8,
-) []const u8 {
+    dirPath: [:0]const u8,
+) [:0]const u8 {
     return raylib.GetPrevDirectoryPath(
-        @ptrCast([*c]const u8, dirPath.ptr),
+        dirPath,
     );
 }
 
 /// Get current working directory (uses static string)
-pub fn GetWorkingDirectory() []const u8 {
+pub fn GetWorkingDirectory() [:0]const u8 {
     return raylib.GetWorkingDirectory();
 }
 
 /// Get the directory if the running application (uses static string)
-pub fn GetApplicationDirectory() []const u8 {
+pub fn GetApplicationDirectory() [:0]const u8 {
     return raylib.GetApplicationDirectory();
 }
 
 /// Get filenames in a directory path (memory should be freed)
 pub fn GetDirectoryFiles(
-    dirPath: []const u8,
+    dirPath: [:0]const u8,
     count: []i32,
 ) [*c][*c]char {
     return raylib.GetDirectoryFiles(
-        @ptrCast([*c]const u8, dirPath.ptr),
+        dirPath,
         @ptrCast([*c]c_int, count.ptr),
     );
 }
@@ -997,10 +986,10 @@ pub fn ClearDirectoryFiles() void {
 
 /// Change working directory, return true on success
 pub fn ChangeDirectory(
-    dir: []const u8,
+    dir: [:0]const u8,
 ) bool {
     return raylib.ChangeDirectory(
-        @ptrCast([*c]const u8, dir.ptr),
+        dir,
     );
 }
 
@@ -1025,21 +1014,21 @@ pub fn ClearDroppedFiles() void {
 
 /// Get file modification time (last write time)
 pub fn GetFileModTime(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) long {
     return raylib.GetFileModTime(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Compress data (DEFLATE algorithm)
 pub fn CompressData(
-    data: []const u8,
+    data: [:0]const u8,
     dataSize: i32,
     compDataSize: []i32,
-) []const u8 {
+) [:0]const u8 {
     return raylib.CompressData(
-        @ptrCast([*c]const u8, data.ptr),
+        data,
         @intCast(c_int, dataSize),
         @ptrCast([*c]c_int, compDataSize.ptr),
     );
@@ -1047,12 +1036,12 @@ pub fn CompressData(
 
 /// Decompress data (DEFLATE algorithm)
 pub fn DecompressData(
-    compData: []const u8,
+    compData: [:0]const u8,
     compDataSize: i32,
     dataSize: []i32,
-) []const u8 {
+) [:0]const u8 {
     return raylib.DecompressData(
-        @ptrCast([*c]const u8, compData.ptr),
+        compData,
         @intCast(c_int, compDataSize),
         @ptrCast([*c]c_int, dataSize.ptr),
     );
@@ -1060,12 +1049,12 @@ pub fn DecompressData(
 
 /// Encode data to Base64 string
 pub fn EncodeDataBase64(
-    data: []const u8,
+    data: [:0]const u8,
     dataSize: i32,
     outputSize: []i32,
-) []const u8 {
+) [:0]const u8 {
     return raylib.EncodeDataBase64(
-        @ptrCast([*c]const u8, data.ptr),
+        data,
         @intCast(c_int, dataSize),
         @ptrCast([*c]c_int, outputSize.ptr),
     );
@@ -1073,11 +1062,11 @@ pub fn EncodeDataBase64(
 
 /// Decode Base64 string data
 pub fn DecodeDataBase64(
-    data: []const u8,
+    data: [:0]const u8,
     outputSize: []i32,
-) []const u8 {
+) [:0]const u8 {
     return raylib.DecodeDataBase64(
-        @ptrCast([*c]const u8, data.ptr),
+        data,
         @ptrCast([*c]c_int, outputSize.ptr),
     );
 }
@@ -1104,10 +1093,10 @@ pub fn LoadStorageValue(
 
 /// Open URL with default system browser (if available)
 pub fn OpenURL(
-    url: []const u8,
+    url: [:0]const u8,
 ) void {
     raylib.OpenURL(
-        @ptrCast([*c]const u8, url.ptr),
+        url,
     );
 }
 
@@ -1178,7 +1167,7 @@ pub fn IsGamepadAvailable(
 /// Get gamepad internal name id
 pub fn GetGamepadName(
     gamepad: i32,
-) []const u8 {
+) [:0]const u8 {
     return raylib.GetGamepadName(
         @intCast(c_int, gamepad),
     );
@@ -1255,10 +1244,10 @@ pub fn GetGamepadAxisMovement(
 
 /// Set internal gamepad mappings (SDL_GameControllerDB)
 pub fn SetGamepadMappings(
-    mappings: []const u8,
+    mappings: [:0]const u8,
 ) i32 {
     return raylib.SetGamepadMappings(
-        @ptrCast([*c]const u8, mappings.ptr),
+        mappings,
     );
 }
 
@@ -2235,23 +2224,23 @@ pub fn GetCollisionRec(
 
 /// Load image from file into CPU memory (RAM)
 pub fn LoadImage(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) Image {
     return raylib.LoadImage(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Load image from RAW file data
 pub fn LoadImageRaw(
-    fileName: []const u8,
+    fileName: [:0]const u8,
     width: i32,
     height: i32,
     format: i32,
     headerSize: i32,
 ) Image {
     return raylib.LoadImageRaw(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
         @intCast(c_int, width),
         @intCast(c_int, height),
         @intCast(c_int, format),
@@ -2261,24 +2250,24 @@ pub fn LoadImageRaw(
 
 /// Load image sequence from file (frames appended to image.data)
 pub fn LoadImageAnim(
-    fileName: []const u8,
+    fileName: [:0]const u8,
     frames: []i32,
 ) Image {
     return raylib.LoadImageAnim(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
         @ptrCast([*c]c_int, frames.ptr),
     );
 }
 
 /// Load image from memory buffer, fileType refers to extension: i.e. '.png'
 pub fn LoadImageFromMemory(
-    fileType: []const u8,
-    fileData: []const u8,
+    fileType: [:0]const u8,
+    fileData: [:0]const u8,
     dataSize: i32,
 ) Image {
     return raylib.LoadImageFromMemory(
-        @ptrCast([*c]const u8, fileType.ptr),
-        @ptrCast([*c]const u8, fileData.ptr),
+        fileType,
+        fileData,
         @intCast(c_int, dataSize),
     );
 }
@@ -2309,22 +2298,22 @@ pub fn UnloadImage(
 /// Export image data to file, returns true on success
 pub fn ExportImage(
     image: Image,
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) bool {
     return raylib.ExportImage(
         image,
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Export image as code file defining an array of bytes, returns true on success
 pub fn ExportImageAsCode(
     image: Image,
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) bool {
     return raylib.ExportImageAsCode(
         image,
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -2455,12 +2444,12 @@ pub fn ImageFromImage(
 
 /// Create an image from text (default font)
 pub fn ImageText(
-    text: []const u8,
+    text: [:0]const u8,
     fontSize: i32,
     color: Color,
 ) Image {
     return raylib.ImageText(
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, fontSize),
         color,
     );
@@ -2469,14 +2458,14 @@ pub fn ImageText(
 /// Create an image from text (custom sprite font)
 pub fn ImageTextEx(
     font: Font,
-    text: []const u8,
+    text: [:0]const u8,
     fontSize: f32,
     spacing: f32,
     tint: Color,
 ) Image {
     return raylib.ImageTextEx(
         font,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         fontSize,
         spacing,
         tint,
@@ -2734,7 +2723,7 @@ pub fn ImageColorReplace(
 /// Load color data from image as a Color array (RGBA - 32bit)
 pub fn LoadImageColors(
     image: Image,
-) *Color {
+) [*c]Color {
     return raylib.LoadImageColors(
         image,
     );
@@ -2745,7 +2734,7 @@ pub fn LoadImagePalette(
     image: Image,
     maxPaletteSize: i32,
     colorCount: []i32,
-) *Color {
+) [*c]Color {
     return raylib.LoadImagePalette(
         image,
         @intCast(c_int, maxPaletteSize),
@@ -2982,7 +2971,7 @@ pub fn ImageDraw(
 /// Draw text (using default font) within an image (destination)
 pub fn ImageDrawText(
     dst: *Image,
-    text: []const u8,
+    text: [:0]const u8,
     posX: i32,
     posY: i32,
     fontSize: i32,
@@ -2990,7 +2979,7 @@ pub fn ImageDrawText(
 ) void {
     raylib.ImageDrawText(
         @ptrCast([*c]Image, dst),
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, posX),
         @intCast(c_int, posY),
         @intCast(c_int, fontSize),
@@ -3002,7 +2991,7 @@ pub fn ImageDrawText(
 pub fn ImageDrawTextEx(
     dst: *Image,
     font: Font,
-    text: []const u8,
+    text: [:0]const u8,
     position: Vector2,
     fontSize: f32,
     spacing: f32,
@@ -3011,7 +3000,7 @@ pub fn ImageDrawTextEx(
     raylib.ImageDrawTextEx(
         @ptrCast([*c]Image, dst),
         font,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         position,
         fontSize,
         spacing,
@@ -3021,10 +3010,10 @@ pub fn ImageDrawTextEx(
 
 /// Load texture from file into GPU memory (VRAM)
 pub fn LoadTexture(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) Texture2D {
     return raylib.LoadTexture(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -3424,22 +3413,22 @@ pub fn GetFontDefault() Font {
 
 /// Load font from file into GPU memory (VRAM)
 pub fn LoadFont(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) Font {
     return raylib.LoadFont(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Load font from file with extended parameters, use NULL for fontChars and 0 for glyphCount to load the default character set
 pub fn LoadFontEx(
-    fileName: []const u8,
+    fileName: [:0]const u8,
     fontSize: i32,
     fontChars: []i32,
     glyphCount: i32,
 ) Font {
     return raylib.LoadFontEx(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
         @intCast(c_int, fontSize),
         @ptrCast([*c]c_int, fontChars.ptr),
         @intCast(c_int, glyphCount),
@@ -3461,16 +3450,16 @@ pub fn LoadFontFromImage(
 
 /// Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
 pub fn LoadFontFromMemory(
-    fileType: []const u8,
-    fileData: []const u8,
+    fileType: [:0]const u8,
+    fileData: [:0]const u8,
     dataSize: i32,
     fontSize: i32,
     fontChars: []i32,
     glyphCount: i32,
 ) Font {
     return raylib.LoadFontFromMemory(
-        @ptrCast([*c]const u8, fileType.ptr),
-        @ptrCast([*c]const u8, fileData.ptr),
+        fileType,
+        fileData,
         @intCast(c_int, dataSize),
         @intCast(c_int, fontSize),
         @ptrCast([*c]c_int, fontChars.ptr),
@@ -3480,15 +3469,15 @@ pub fn LoadFontFromMemory(
 
 /// Load font data for further use
 pub fn LoadFontData(
-    fileData: []const u8,
+    fileData: [:0]const u8,
     dataSize: i32,
     fontSize: i32,
     fontChars: []i32,
     glyphCount: i32,
     type: i32,
-) *GlyphInfo {
+) [*c]GlyphInfo {
     return raylib.LoadFontData(
-        @ptrCast([*c]const u8, fileData.ptr),
+        fileData,
         @intCast(c_int, dataSize),
         @intCast(c_int, fontSize),
         @ptrCast([*c]c_int, fontChars.ptr),
@@ -3539,11 +3528,11 @@ pub fn UnloadFont(
 /// Export font as code file, returns true on success
 pub fn ExportFontAsCode(
     font: Font,
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) bool {
     return raylib.ExportFontAsCode(
         font,
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -3560,14 +3549,14 @@ pub fn DrawFPS(
 
 /// Draw text (using default font)
 pub fn DrawText(
-    text: []const u8,
+    text: [:0]const u8,
     posX: i32,
     posY: i32,
     fontSize: i32,
     color: Color,
 ) void {
     raylib.DrawText(
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, posX),
         @intCast(c_int, posY),
         @intCast(c_int, fontSize),
@@ -3578,7 +3567,7 @@ pub fn DrawText(
 /// Draw text using font and additional parameters
 pub fn DrawTextEx(
     font: Font,
-    text: []const u8,
+    text: [:0]const u8,
     position: Vector2,
     fontSize: f32,
     spacing: f32,
@@ -3586,7 +3575,7 @@ pub fn DrawTextEx(
 ) void {
     raylib.DrawTextEx(
         font,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         position,
         fontSize,
         spacing,
@@ -3597,7 +3586,7 @@ pub fn DrawTextEx(
 /// Draw text using Font and pro parameters (rotation)
 pub fn DrawTextPro(
     font: Font,
-    text: []const u8,
+    text: [:0]const u8,
     position: Vector2,
     origin: Vector2,
     rotation: f32,
@@ -3607,7 +3596,7 @@ pub fn DrawTextPro(
 ) void {
     raylib.DrawTextPro(
         font,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         position,
         origin,
         rotation,
@@ -3657,11 +3646,11 @@ pub fn DrawTextCodepoints(
 
 /// Measure string width for default font
 pub fn MeasureText(
-    text: []const u8,
+    text: [:0]const u8,
     fontSize: i32,
 ) i32 {
     return raylib.MeasureText(
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, fontSize),
     );
 }
@@ -3669,13 +3658,13 @@ pub fn MeasureText(
 /// Measure string size for Font
 pub fn MeasureTextEx(
     font: Font,
-    text: []const u8,
+    text: [:0]const u8,
     fontSize: f32,
     spacing: f32,
 ) Vector2 {
     return raylib.MeasureTextEx(
         font,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         fontSize,
         spacing,
     );
@@ -4043,10 +4032,10 @@ pub fn DrawGrid(
 
 /// Load model from files (meshes and materials)
 pub fn LoadModel(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) Model {
     return raylib.LoadModel(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -4294,11 +4283,11 @@ pub fn DrawMeshInstanced(
 /// Export mesh data to file, returns true on success
 pub fn ExportMesh(
     mesh: Mesh,
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) bool {
     return raylib.ExportMesh(
         mesh,
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -4474,11 +4463,11 @@ pub fn GenMeshCubicmap(
 
 /// Load materials from model file
 pub fn LoadMaterials(
-    fileName: []const u8,
+    fileName: [:0]const u8,
     materialCount: []i32,
-) *Material {
+) [*c]Material {
     return raylib.LoadMaterials(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
         @ptrCast([*c]c_int, materialCount.ptr),
     );
 }
@@ -4525,11 +4514,11 @@ pub fn SetModelMeshMaterial(
 
 /// Load model animations from file
 pub fn LoadModelAnimations(
-    fileName: []const u8,
+    fileName: [:0]const u8,
     animCount: []u32,
-) *ModelAnimation {
+) [*c]ModelAnimation {
     return raylib.LoadModelAnimations(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
         @ptrCast([*c]c_uint, animCount.ptr),
     );
 }
@@ -4712,32 +4701,32 @@ pub fn SetMasterVolume(
 
 /// Load wave data from file
 pub fn LoadWave(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) Wave {
     return raylib.LoadWave(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Load wave from memory buffer, fileType refers to extension: i.e. '.wav'
 pub fn LoadWaveFromMemory(
-    fileType: []const u8,
-    fileData: []const u8,
+    fileType: [:0]const u8,
+    fileData: [:0]const u8,
     dataSize: i32,
 ) Wave {
     return raylib.LoadWaveFromMemory(
-        @ptrCast([*c]const u8, fileType.ptr),
-        @ptrCast([*c]const u8, fileData.ptr),
+        fileType,
+        fileData,
         @intCast(c_int, dataSize),
     );
 }
 
 /// Load sound from file
 pub fn LoadSound(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) Sound {
     return raylib.LoadSound(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -4784,22 +4773,22 @@ pub fn UnloadSound(
 /// Export wave data to file, returns true on success
 pub fn ExportWave(
     wave: Wave,
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) bool {
     return raylib.ExportWave(
         wave,
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Export wave sample data to code (.h), returns true on success
 pub fn ExportWaveAsCode(
     wave: Wave,
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) bool {
     return raylib.ExportWaveAsCode(
         wave,
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -4940,7 +4929,7 @@ pub fn WaveFormat(
 /// Load samples data from wave as a 32bit float data array
 pub fn LoadWaveSamples(
     wave: Wave,
-) []f32 {
+) [*c]f32 {
     return raylib.LoadWaveSamples(
         wave,
     );
@@ -4957,22 +4946,22 @@ pub fn UnloadWaveSamples(
 
 /// Load music stream from file
 pub fn LoadMusicStream(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) Music {
     return raylib.LoadMusicStream(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
 /// Load music stream from data
 pub fn LoadMusicStreamFromMemory(
-    fileType: []const u8,
-    data: []const u8,
+    fileType: [:0]const u8,
+    data: [:0]const u8,
     dataSize: i32,
 ) Music {
     return raylib.LoadMusicStreamFromMemory(
-        @ptrCast([*c]const u8, fileType.ptr),
-        @ptrCast([*c]const u8, data.ptr),
+        fileType,
+        data,
         @intCast(c_int, dataSize),
     );
 }
@@ -6405,33 +6394,33 @@ pub fn GuiGetStyle(
 /// Window Box control, shows a window that can be closed
 pub fn GuiWindowBox(
     bounds: Rectangle,
-    title: []const u8,
+    title: [:0]const u8,
 ) bool {
     return raylib.GuiWindowBox(
         bounds,
-        @ptrCast([*c]const u8, title.ptr),
+        title,
     );
 }
 
 /// Group Box control with text name
 pub fn GuiGroupBox(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
 ) void {
     raylib.GuiGroupBox(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
 /// Line separator control, could contain text
 pub fn GuiLine(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
 ) void {
     raylib.GuiLine(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
@@ -6460,45 +6449,45 @@ pub fn GuiScrollPanel(
 /// Label control, shows text
 pub fn GuiLabel(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
 ) void {
     raylib.GuiLabel(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
 /// Button control, returns true when clicked
 pub fn GuiButton(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
 ) bool {
     return raylib.GuiButton(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
 /// Label button control, show true when clicked
 pub fn GuiLabelButton(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
 ) bool {
     return raylib.GuiLabelButton(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
 /// Toggle Button control, returns true when active
 pub fn GuiToggle(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     active: bool,
 ) bool {
     return raylib.GuiToggle(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         active,
     );
 }
@@ -6506,12 +6495,12 @@ pub fn GuiToggle(
 /// Toggle Group control, returns active toggle index
 pub fn GuiToggleGroup(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     active: i32,
 ) i32 {
     return raylib.GuiToggleGroup(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, active),
     );
 }
@@ -6519,12 +6508,12 @@ pub fn GuiToggleGroup(
 /// Check Box control, returns true when active
 pub fn GuiCheckBox(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     checked: bool,
 ) bool {
     return raylib.GuiCheckBox(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         checked,
     );
 }
@@ -6532,12 +6521,12 @@ pub fn GuiCheckBox(
 /// Combo Box control, returns selected item index
 pub fn GuiComboBox(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     active: i32,
 ) i32 {
     return raylib.GuiComboBox(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, active),
     );
 }
@@ -6545,13 +6534,13 @@ pub fn GuiComboBox(
 /// Dropdown Box control, returns selected item
 pub fn GuiDropdownBox(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     active: []i32,
     editMode: bool,
 ) bool {
     return raylib.GuiDropdownBox(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @ptrCast([*c]c_int, active.ptr),
         editMode,
     );
@@ -6560,7 +6549,7 @@ pub fn GuiDropdownBox(
 /// Spinner control, returns selected value
 pub fn GuiSpinner(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     value: []i32,
     minValue: i32,
     maxValue: i32,
@@ -6568,7 +6557,7 @@ pub fn GuiSpinner(
 ) bool {
     return raylib.GuiSpinner(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @ptrCast([*c]c_int, value.ptr),
         @intCast(c_int, minValue),
         @intCast(c_int, maxValue),
@@ -6579,7 +6568,7 @@ pub fn GuiSpinner(
 /// Value Box control, updates input text with numbers
 pub fn GuiValueBox(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     value: []i32,
     minValue: i32,
     maxValue: i32,
@@ -6587,7 +6576,7 @@ pub fn GuiValueBox(
 ) bool {
     return raylib.GuiValueBox(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @ptrCast([*c]c_int, value.ptr),
         @intCast(c_int, minValue),
         @intCast(c_int, maxValue),
@@ -6598,13 +6587,13 @@ pub fn GuiValueBox(
 /// Text Box control, updates input text
 pub fn GuiTextBox(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     textSize: i32,
     editMode: bool,
 ) bool {
     return raylib.GuiTextBox(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, textSize),
         editMode,
     );
@@ -6613,13 +6602,13 @@ pub fn GuiTextBox(
 /// Text Box control with multiple lines
 pub fn GuiTextBoxMulti(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     textSize: i32,
     editMode: bool,
 ) bool {
     return raylib.GuiTextBoxMulti(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @intCast(c_int, textSize),
         editMode,
     );
@@ -6628,16 +6617,16 @@ pub fn GuiTextBoxMulti(
 /// Slider control, returns selected value
 pub fn GuiSlider(
     bounds: Rectangle,
-    textLeft: []const u8,
-    textRight: []const u8,
+    textLeft: [:0]const u8,
+    textRight: [:0]const u8,
     value: f32,
     minValue: f32,
     maxValue: f32,
 ) f32 {
     return raylib.GuiSlider(
         bounds,
-        @ptrCast([*c]const u8, textLeft.ptr),
-        @ptrCast([*c]const u8, textRight.ptr),
+        textLeft,
+        textRight,
         value,
         minValue,
         maxValue,
@@ -6647,16 +6636,16 @@ pub fn GuiSlider(
 /// Slider Bar control, returns selected value
 pub fn GuiSliderBar(
     bounds: Rectangle,
-    textLeft: []const u8,
-    textRight: []const u8,
+    textLeft: [:0]const u8,
+    textRight: [:0]const u8,
     value: f32,
     minValue: f32,
     maxValue: f32,
 ) f32 {
     return raylib.GuiSliderBar(
         bounds,
-        @ptrCast([*c]const u8, textLeft.ptr),
-        @ptrCast([*c]const u8, textRight.ptr),
+        textLeft,
+        textRight,
         value,
         minValue,
         maxValue,
@@ -6666,16 +6655,16 @@ pub fn GuiSliderBar(
 /// Progress Bar control, shows current progress value
 pub fn GuiProgressBar(
     bounds: Rectangle,
-    textLeft: []const u8,
-    textRight: []const u8,
+    textLeft: [:0]const u8,
+    textRight: [:0]const u8,
     value: f32,
     minValue: f32,
     maxValue: f32,
 ) f32 {
     return raylib.GuiProgressBar(
         bounds,
-        @ptrCast([*c]const u8, textLeft.ptr),
-        @ptrCast([*c]const u8, textRight.ptr),
+        textLeft,
+        textRight,
         value,
         minValue,
         maxValue,
@@ -6685,22 +6674,22 @@ pub fn GuiProgressBar(
 /// Status Bar control, shows info text
 pub fn GuiStatusBar(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
 ) void {
     raylib.GuiStatusBar(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
 /// Dummy control for placeholders
 pub fn GuiDummyRec(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
 ) void {
     raylib.GuiDummyRec(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
@@ -6735,13 +6724,13 @@ pub fn GuiGrid(
 /// List View control, returns selected list item index
 pub fn GuiListView(
     bounds: Rectangle,
-    text: []const u8,
+    text: [:0]const u8,
     scrollIndex: []i32,
     active: i32,
 ) i32 {
     return raylib.GuiListView(
         bounds,
-        @ptrCast([*c]const u8, text.ptr),
+        text,
         @ptrCast([*c]c_int, scrollIndex.ptr),
         @intCast(c_int, active),
     );
@@ -6769,32 +6758,32 @@ pub fn GuiListViewEx(
 /// Message Box control, displays a message
 pub fn GuiMessageBox(
     bounds: Rectangle,
-    title: []const u8,
-    message: []const u8,
-    buttons: []const u8,
+    title: [:0]const u8,
+    message: [:0]const u8,
+    buttons: [:0]const u8,
 ) i32 {
     return raylib.GuiMessageBox(
         bounds,
-        @ptrCast([*c]const u8, title.ptr),
-        @ptrCast([*c]const u8, message.ptr),
-        @ptrCast([*c]const u8, buttons.ptr),
+        title,
+        message,
+        buttons,
     );
 }
 
 /// Text Input Box control, ask for text
 pub fn GuiTextInputBox(
     bounds: Rectangle,
-    title: []const u8,
-    message: []const u8,
-    buttons: []const u8,
-    text: []const u8,
+    title: [:0]const u8,
+    message: [:0]const u8,
+    buttons: [:0]const u8,
+    text: [:0]const u8,
 ) i32 {
     return raylib.GuiTextInputBox(
         bounds,
-        @ptrCast([*c]const u8, title.ptr),
-        @ptrCast([*c]const u8, message.ptr),
-        @ptrCast([*c]const u8, buttons.ptr),
-        @ptrCast([*c]const u8, text.ptr),
+        title,
+        message,
+        buttons,
+        text,
     );
 }
 
@@ -6844,10 +6833,10 @@ pub fn GuiColorBarHue(
 
 /// Load style file over global style variable (.rgs)
 pub fn GuiLoadStyle(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) void {
     raylib.GuiLoadStyle(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -6858,10 +6847,10 @@ pub fn GuiLoadStyleDefault() void {
 
 /// Load style from file (.rgs)
 pub fn LoadGuiStyle(
-    fileName: []const u8,
+    fileName: [:0]const u8,
 ) GuiStyle {
     return raylib.LoadGuiStyle(
-        @ptrCast([*c]const u8, fileName.ptr),
+        fileName,
     );
 }
 
@@ -6877,11 +6866,11 @@ pub fn UnloadGuiStyle(
 /// Get text with icon id prepended (if supported)
 pub fn GuiIconText(
     iconId: i32,
-    text: []const u8,
-) []const u8 {
+    text: [:0]const u8,
+) [:0]const u8 {
     return raylib.GuiIconText(
         @intCast(c_int, iconId),
-        @ptrCast([*c]const u8, text.ptr),
+        text,
     );
 }
 
@@ -6903,14 +6892,14 @@ pub fn GuiDrawIcon(
 }
 
 /// Get full icons data pointer
-pub fn GuiGetIcons() []u32 {
+pub fn GuiGetIcons() [*c]c_uint {
     return raylib.GuiGetIcons();
 }
 
 /// Get icon bit data
 pub fn GuiGetIconData(
     iconId: i32,
-) []u32 {
+) [*c]c_uint {
     return raylib.GuiGetIconData(
         @intCast(c_int, iconId),
     );

@@ -203,7 +203,7 @@ pub const Mesh = extern struct {
     /// Vertex tangents (XYZW - 4 components per vertex) (shader-location = 4)
     tangents: []f32,
     /// Vertex colors (RGBA - 4 components per vertex) (shader-location = 3)
-    colors: []const u8,
+    colors: [:0]const u8,
     /// Vertex indices (in case vertex data comes indexed)
     indices: []u16,
     /// Animated vertex positions (after bones transformations)
@@ -211,7 +211,7 @@ pub const Mesh = extern struct {
     /// Animated normals (after bones transformations)
     animNormals: []f32,
     /// Vertex bone ids, max 255 bone ids, up to 4 bones influence by vertex (skinning)
-    boneIds: []const u8,
+    boneIds: [:0]const u8,
     /// Vertex bone weight, up to 4 bones influence by vertex (skinning)
     boneWeights: []f32,
     /// OpenGL Vertex Array Object id

@@ -116,9 +116,9 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
         }
 
         const returnTypeCIsh = try mapCType(allocator, func.returnType);
-        const returnType = try mapToIdiomatic(allocator, returnTypeCIsh);
-        const isVoid = eql(returnType, "void");
-        _ = isVoid;
+        const isReturnTypePtr = startsWith(returnTypeCIsh, "[*c]");
+        const returnType = if (isReturnTypePtr) returnTypeCIsh else try mapToIdiomatic(allocator, returnTypeCIsh);
+        const isReturnTypeVoid = eql(returnType, "void");
 
         try file.writeAll(
             try std.fmt.allocPrint(
@@ -129,7 +129,7 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
         );
 
         //--- body ------------------------------
-        if (!isVoid) {
+        if (!isReturnTypeVoid) {
             try file.writeAll(try std.fmt.allocPrint(fba.allocator(), "return ", .{}));
         }
         try file.writeAll(try std.fmt.allocPrint(fba.allocator(), "raylib.{s}(\n", .{func.name}));
@@ -268,11 +268,11 @@ fn mapCType(allocator: std.mem.Allocator, cType: []const u8) ![]const u8 {
         .{ "void *", "*anyopaque" },
         .{ "const void *", "*anyopaque" },
         .{ "unsigned char", "u8" },
-        .{ "unsigned char *", "[*c]const u8" },
-        .{ "const char *", "[*c]const u8" },
-        .{ "const unsigned char *", "[*c]const u8" },
+        .{ "unsigned char *", "[:0]const u8" },
+        .{ "const char *", "[:0]const u8" },
+        .{ "const unsigned char *", "[:0]const u8" },
         .{ "char", "u8" },
-        .{ "char *", "[*c]const u8" },
+        .{ "char *", "[:0]const u8" },
     });
     if (cTypeMap.get(cType)) |mapping| {
         return mapping;

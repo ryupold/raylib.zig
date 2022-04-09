@@ -9,6 +9,20 @@ const r = struct {
     usingnamespace @import("enums.zig");
 };
 
+/// Load file data as byte array (read)
+pub fn LoadFileData(
+    fileName: []const u8,
+) []const u8 {
+    var bytesRead: u32 = undefined;
+
+    const ptr: [*c]const u8 = raylib.LoadFileData(
+        @ptrCast([*c]const u8, fileName.ptr),
+        @ptrCast([*c]c_uint, &bytesRead),
+    );
+
+    return ptr[0..bytesRead];
+}
+
 /// Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
 pub fn TraceLog(
     logLevel: i32,
