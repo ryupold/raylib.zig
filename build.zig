@@ -45,7 +45,8 @@ pub fn build(b: *std.build.Builder) !void {
     const fmt = b.addFmt(&.{
         "structs.zig",
         "enums.zig",
-        // "functions.zig",
+        "functions.zig",
+        "constants.zig",
     });
     fmt.step.dependOn(&generateZig.run().step);
     // bindings.dependOn(&generateZig.run().step);

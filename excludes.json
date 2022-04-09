@@ -1,4 +1,5 @@
 {
+    "doc": "this file contains function names, that should be skipped when generating bindings because it would be better to use the equvalents from std library",
     "excluded_functions": [
         "LoadCodepoints",
         "UnloadCodepoints",
@@ -21,11 +22,5 @@
         "TextToLower",
         "TextToPascal",
         "TextToInteger"
-    ],
-    "functionParams": {
-        "GenImageFontAtlas": {
-            "chars": "[]const GlyphInfo",
-            "recs": "[]const *Rectangle"
-        }
-    }
+    ]
 }

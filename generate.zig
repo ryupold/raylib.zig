@@ -4,12 +4,13 @@ const json = std.json;
 
 /// max files size
 const memoryConstrain: usize = 1024 * 1024 * 1024; // 1 GiB
-const manualMappingFile = "manual_mapping.json";
+const excludesFile = "excludes.json";
 const jsonFiles: []const []const u8 = &.{
     "raylib.json",
     "raymath.json",
     "raygui.json",
 };
+var alreadyProcessed: std.StringArrayHashMap(void) = undefined;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -22,48 +23,73 @@ pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(allocator);
     defer arena.deinit();
 
-    const jsonData = try fs.cwd().readFileAlloc(allocator, jsonFiles[0], memoryConstrain);
-    defer allocator.free(jsonData);
+    alreadyProcessed = std.StringArrayHashMap(void).init(allocator);
+    defer alreadyProcessed.deinit();
 
-    var stream = json.TokenStream.init(jsonData);
-    const res = try json.parse(BindingJson, &stream, .{
+    const excludesData = try fs.cwd().readFileAlloc(allocator, excludesFile, memoryConstrain);
+    defer allocator.free(excludesData);
+    var stream = json.TokenStream.init(excludesData);
+    const excludes = try json.parse(Excludes, &stream, .{
         .allocator = allocator,
         .ignore_unknown_fields = true,
     });
-    defer json.parseFree(BindingJson, res, .{
-        .allocator = allocator,
-        .ignore_unknown_fields = true,
-    });
-
-    const manualMappingData = try fs.cwd().readFileAlloc(allocator, manualMappingFile, memoryConstrain);
-    defer allocator.free(manualMappingData);
-    stream = json.TokenStream.init(manualMappingData);
-    const manualMapping = try json.parse(ManualMapping, &stream, .{
-        .allocator = allocator,
-        .ignore_unknown_fields = true,
-    });
-    defer json.parseFree(ManualMapping, manualMapping, .{
+    defer json.parseFree(Excludes, excludes, .{
         .allocator = allocator,
         .ignore_unknown_fields = true,
     });
 
-    std.log.info("correctly parsed\n", .{});
+    var manuals = try getManualBindings(allocator);
+    defer manuals.deinit();
 
-    try writeStructs(arena.allocator(), "structs.zig", res.structs);
-    try writeEnums("enums.zig", res.enums);
-    try writeFunctions(arena.allocator(), "functions.zig", res.functions, manualMapping);
+    var functions: []const JsonFunction = &[_]JsonFunction{};
+    var enums: []const JsonEnum = &[_]JsonEnum{};
+    var structs: []const JsonStruct = &[_]JsonStruct{};
+    //parse json files
+    for (jsonFiles) |jsonFile| {
+        const jsonData = try fs.cwd().readFileAlloc(allocator, jsonFile, memoryConstrain);
+        defer allocator.free(jsonData);
+
+        stream = json.TokenStream.init(jsonData);
+        const bindingJson = try json.parse(BindingJson, &stream, .{
+            .allocator = arena.allocator(),
+            .ignore_unknown_fields = true,
+        });
+
+        functions = try std.mem.concat(arena.allocator(), JsonFunction, &.{ functions, bindingJson.functions });
+        enums = try std.mem.concat(arena.allocator(), JsonEnum, &.{ enums, bindingJson.enums });
+        structs = try std.mem.concat(arena.allocator(), JsonStruct, &.{ structs, bindingJson.structs });
+    }
+
+    try writeStructs(arena.allocator(), "structs.zig", structs);
+    try writeEnums("enums.zig", enums);
+    try writeFunctions(arena.allocator(), "functions.zig", functions, excludes, manuals);
 }
 
-fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []const JsonFunction, manualMapping: ManualMapping) !void {
+fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []const JsonFunction, excludes: Excludes, manuals: Manuals) !void {
     var file = try fs.cwd().createFile(path, .{});
     defer file.close();
 
     var buf: [51200]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
 
+    //--- imports -------------------------------
+    try file.writeAll(
+        try std.fmt.allocPrint(fba.allocator(),
+            \\const raylib = @cImport({{
+            \\    @cInclude("raylib/src/raylib.h");
+            \\}});
+            \\
+            \\usingnamespace @import("structs.zig");
+            \\usingnamespace @import("enums.zig");
+            \\
+        , .{}),
+    );
+
     for (functions) |func| {
         //ignore everything in 'manual_mapping.json'
-        if (manualMapping.ignoreFunction(func.name)) continue;
+        if (excludes.ignoreFunction(func.name)) continue;
+        if (manuals.containsFunction(func.name)) continue;
+        if (alreadyProcessed.contains(func.name)) continue;
 
         defer fba.reset();
 
@@ -78,21 +104,21 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
 
         if (func.params) |params| {
             for (params) |param| {
-                const t = try mapCType(allocator, param.@"type");
-                const z = try mapToIdiomatic(allocator, t);
+                const cIsh = try mapCType(allocator, param.@"type");
+                const idiomatic = try mapToIdiomatic(allocator, cIsh);
 
-                //TODO: the only variadic parameters are for text formatting (use zig for that)
-                if (std.mem.eql(u8, t, "...")) continue;
-
-                try file.writeAll(try std.fmt.allocPrint(fba.allocator(), "{s}: {s},\n", .{
-                    param.name,
-                    z,
-                }));
+                try file.writeAll(try std.fmt.allocPrint(
+                    fba.allocator(),
+                    "{s}: {s},\n",
+                    .{ param.name, idiomatic },
+                ));
             }
         }
 
         const returnTypeCIsh = try mapCType(allocator, func.returnType);
         const returnType = try mapToIdiomatic(allocator, returnTypeCIsh);
+        const isVoid = eql(returnType, "void");
+        _ = isVoid;
 
         try file.writeAll(
             try std.fmt.allocPrint(
@@ -103,8 +129,50 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
         );
 
         //--- body ------------------------------
+        if (!isVoid) {
+            try file.writeAll(try std.fmt.allocPrint(fba.allocator(), "return ", .{}));
+        }
+        try file.writeAll(try std.fmt.allocPrint(fba.allocator(), "raylib.{s}(\n", .{func.name}));
 
-        try file.writeAll("\n}\n");
+        if (func.params) |params| {
+            for (params) |param| {
+                const cIsh = try mapCType(allocator, param.@"type");
+                const idiomatic = try mapToIdiomatic(allocator, cIsh);
+
+                if (startsWith(cIsh, "[*c]")) { //is pointer
+                    if (startsWith(idiomatic, "[]")) {
+                        try file.writeAll(try std.fmt.allocPrint(
+                            fba.allocator(),
+                            "@ptrCast({s}, {s}.ptr)",
+                            .{ cIsh, param.name },
+                        ));
+                    } else {
+                        try file.writeAll(try std.fmt.allocPrint(
+                            fba.allocator(),
+                            "@ptrCast({s}, {s})",
+                            .{ cIsh, param.name },
+                        ));
+                    }
+                } else if (eql(cIsh, "c_int") or eql(cIsh, "c_uint") or eql(cIsh, "c_short") or eql(cIsh, "c_ushort") or eql(cIsh, "c_long") or eql(cIsh, "c_ulong")) { //is int
+                    try file.writeAll(try std.fmt.allocPrint(
+                        fba.allocator(),
+                        "@intCast({s}, {s})",
+                        .{ cIsh, param.name },
+                    ));
+                } else { //pass as value
+                    try file.writeAll(try std.fmt.allocPrint(
+                        fba.allocator(),
+                        "{s}",
+                        .{param.name},
+                    ));
+                }
+                //comma & newline
+                try file.writeAll(",\n");
+            }
+        }
+        try file.writeAll(");\n}\n");
+
+        try alreadyProcessed.putNoClobber(func.name, {});
     }
 
     std.log.info("generated {s}", .{path});
@@ -118,6 +186,8 @@ fn writeStructs(allocator: std.mem.Allocator, path: []const u8, structs: []const
     var fba = std.heap.FixedBufferAllocator.init(&buf);
 
     for (structs) |s| {
+        if (alreadyProcessed.contains(s.name)) continue;
+
         defer fba.reset();
 
         try file.writeAll(
@@ -131,17 +201,19 @@ fn writeStructs(allocator: std.mem.Allocator, path: []const u8, structs: []const
         for (s.fields) |field| {
             const name = nameContainsArraySize(field.name);
             const arrayPrefix = name.sizeAsString orelse "";
-            const t = try mapCType(allocator, field.@"type");
+            const cIsh = try mapCType(allocator, field.@"type");
+            const idiomatic = try mapToIdiomatic(allocator, cIsh);
 
             try file.writeAll(try std.fmt.allocPrint(fba.allocator(), "/// {s}\n\t{s}: {s}{s},\n", .{
                 field.description,
                 name.name,
                 arrayPrefix,
-                t,
+                idiomatic,
             }));
         }
 
         try file.writeAll("\n};\n");
+        try alreadyProcessed.putNoClobber(s.name, {});
     }
 
     std.log.info("generated {s}", .{path});
@@ -154,18 +226,19 @@ fn writeEnums(path: []const u8, enums: []const JsonEnum) !void {
     var buf: [51200]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
 
-    for (enums) |s| {
+    for (enums) |e| {
+        if (alreadyProcessed.contains(e.name)) continue;
         defer fba.reset();
 
         try file.writeAll(
             try std.fmt.allocPrint(
                 fba.allocator(),
                 "\n/// {s}\npub const {s} = enum(c_int) {{\n",
-                .{ s.description, s.name },
+                .{ e.description, e.name },
             ),
         );
 
-        for (s.values) |value| {
+        for (e.values) |value| {
             try file.writeAll(try std.fmt.allocPrint(fba.allocator(), "/// {s}\n{s} = {d},\n", .{
                 value.description,
                 value.name,
@@ -174,6 +247,7 @@ fn writeEnums(path: []const u8, enums: []const JsonEnum) !void {
         }
 
         try file.writeAll("\n};\n");
+        try alreadyProcessed.putNoClobber(e.name, {});
     }
 
     std.log.info("generated {s}", .{path});
@@ -186,10 +260,10 @@ fn mapCType(allocator: std.mem.Allocator, cType: []const u8) ![]const u8 {
         .{ "float *", "[*c]f32" },
         .{ "int", "c_int" },
         .{ "int *", "[*c]c_int" },
-        .{ "long", "c_long" },
         .{ "const int *", "[*c]c_int" },
         .{ "unsigned int", "c_uint" },
         .{ "unsigned int *", "[*c]c_uint" },
+        .{ "unsigned short", "c_ushort" },
         .{ "unsigned short *", "[*c]c_ushort" },
         .{ "void *", "*anyopaque" },
         .{ "const void *", "*anyopaque" },
@@ -204,20 +278,18 @@ fn mapCType(allocator: std.mem.Allocator, cType: []const u8) ![]const u8 {
         return mapping;
     }
 
-    if (std.mem.endsWith(u8, cType, "**")) {
-        std.log.err("{s} is pointer to pointer and should be mapped manually", .{cType});
-        return error.PointerToPointer;
+    if (endsWith(cType, "**")) {
+        return try std.fmt.allocPrint(allocator, "[*c][*c] {s}", .{cType[0 .. cType.len - 2]});
     }
 
-    if (std.mem.endsWith(u8, cType, "*")) {
+    if (endsWith(cType, "*")) {
         return try std.fmt.allocPrint(allocator, "[*c]{s}", .{cType[0 .. cType.len - 1]});
     }
 
     return cType;
 }
 
-/// map from c style zig type to idomatic zig type
-/// a
+/// map from c style zig type to idiomatic zig type
 fn mapToIdiomatic(allocator: std.mem.Allocator, cIshZigType: []const u8) ![]const u8 {
     const typeMap = std.ComptimeStringMap([]const u8, .{
         .{ "[*c]f32", "[]f32" },
@@ -227,6 +299,8 @@ fn mapToIdiomatic(allocator: std.mem.Allocator, cIshZigType: []const u8) ![]cons
         .{ "[*c]c_int", "[]i32" },
         .{ "c_uint", "u32" },
         .{ "[*c]c_uint", "[]u32" },
+        .{ "c_ushort", "u16" },
+        .{ "c_short", "i16" },
         .{ "[*c]c_ushort", "[]u16" },
         .{ "[*c]const u8", "[]const u8" },
         .{ "[*c]const [*c]const u8", "[]const []const u8" },
@@ -234,14 +308,19 @@ fn mapToIdiomatic(allocator: std.mem.Allocator, cIshZigType: []const u8) ![]cons
 
     if (typeMap.get(cIshZigType)) |primitive| return primitive;
 
-    if (std.mem.startsWith(u8, cIshZigType, "[*c]const [*c]")) {
+    if (startsWith(cIshZigType, "[*c][*c]")) {
         // return try std.fmt.allocPrint(allocator, "*{s}", .{cIshZigType[4..]});
-        std.log.err("{s} is pointer to pointer and should be mapped manually", .{cIshZigType});
-        return error.PointerToPointer;
+        return cIshZigType;
     }
 
-    if (std.mem.startsWith(u8, cIshZigType, "[*c]")) {
+    if (startsWith(cIshZigType, "[*c]")) {
+        // return cIshZigType;
         return try std.fmt.allocPrint(allocator, "*{s}", .{cIshZigType[4..]});
+    }
+
+    if (startsWith(cIshZigType, "const ")) {
+        // return cIshZigType;
+        return try std.fmt.allocPrint(allocator, "{s}", .{cIshZigType[6..]});
     }
 
     return cIshZigType;
@@ -274,12 +353,97 @@ fn nameContainsArraySize(name: []const u8) struct {
     }
 }
 
-const ManualMapping = struct {
+const Manuals = struct {
+    allocator: std.mem.Allocator,
+    structs: []const []const u8,
+    functions: []const []const u8,
+
+    pub fn deinit(self: *@This()) void {
+        for (self.structs) |s| {
+            self.allocator.free(s);
+        }
+        self.allocator.free(self.structs);
+
+        for (self.functions) |f| {
+            self.allocator.free(f);
+        }
+        self.allocator.free(self.functions);
+    }
+
+    pub fn containsFunction(self: @This(), name: []const u8) bool {
+        for (self.functions) |f| {
+            if (eql(f, name)) return true;
+        }
+        return false;
+    }
+    pub fn containsStruct(self: @This(), name: []const u8) bool {
+        for (self.structs) |f| {
+            if (eql(f, name)) return true;
+        }
+        return false;
+    }
+};
+
+/// call .deinit() when done, to release all allocated names
+fn getManualBindings(allocator: std.mem.Allocator) !Manuals {
+    //manual_bindings.zig
+    var file = try fs.cwd().openFile("manual_bindings.zig", .{});
+    defer file.close();
+
+    var buf = std.io.bufferedReader(file.reader());
+    var reader = buf.reader();
+
+    var structs = std.ArrayList([]const u8).init(allocator);
+    var functions = std.ArrayList([]const u8).init(allocator);
+
+    var name = std.ArrayList(u8).init(allocator);
+    defer name.deinit();
+
+    while (try reader.readUntilDelimiterOrEofAlloc(allocator, '\n', memoryConstrain)) |line| {
+        defer allocator.free(line);
+
+        //functions
+        if (std.mem.indexOf(u8, line, "pub fn ")) |start| {
+            if (std.mem.indexOf(u8, line, "(")) |end| {
+                var i: usize = start + "pub fn ".len;
+                while (i < end) : (i += 1) {
+                    if (line[i] != ' ') try name.append(line[i]);
+                }
+                const functionName = name.toOwnedSlice();
+                std.log.info("manually mapped function: {s}", .{functionName});
+                try functions.append(functionName);
+            }
+        }
+
+        //structs
+        if (std.mem.containsAtLeast(u8, line, 1, " = struct")) {
+            if (std.mem.indexOf(u8, line, "pub const ")) |start| {
+                if (std.mem.indexOf(u8, line, " = struct")) |end| {
+                    var i: usize = start + "pub const ".len;
+                    while (i < end) : (i += 1) {
+                        if (line[i] != ' ') try name.append(line[i]);
+                    }
+                    const structName = name.toOwnedSlice();
+                    std.log.info("manually mapped struct: {s}", .{structName});
+                    try structs.append(structName);
+                }
+            }
+        }
+    }
+
+    return Manuals{
+        .allocator = allocator,
+        .structs = structs.toOwnedSlice(),
+        .functions = functions.toOwnedSlice(),
+    };
+}
+
+const Excludes = struct {
     excluded_functions: []const []const u8,
 
     pub fn ignoreFunction(self: @This(), name: []const u8) bool {
         for (self.excluded_functions) |f| {
-            if (std.mem.eql(u8, f, name)) return true;
+            if (eql(f, name)) return true;
         }
         return false;
     }
@@ -325,7 +489,6 @@ const JsonFunction = struct {
 
 const JsonFunctionParam = struct {
     name: []const u8,
-    /// TODO: type can also be '...' or some callback function pointer
     @"type": []const u8,
     description: ?[]const u8 = null,
 };
@@ -336,3 +499,15 @@ const JsonDefine = struct {
     value: union(enum) { string: []const u8, number: f32 },
     description: []const u8,
 };
+
+fn eql(a: []const u8, b: []const u8) bool {
+    return std.mem.eql(u8, a, b);
+}
+
+fn startsWith(haystack: []const u8, needle: []const u8) bool {
+    return std.mem.startsWith(u8, haystack, needle);
+}
+
+fn endsWith(haystack: []const u8, needle: []const u8) bool {
+    return std.mem.endsWith(u8, haystack, needle);
+}
