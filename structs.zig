@@ -1,56 +1,4 @@
-/// Vector2, 2 components
-pub const Vector2 = extern struct {
-    /// Vector x component
-    x: f32,
-    /// Vector y component
-    y: f32,
-};
-
-/// Vector3, 3 components
-pub const Vector3 = extern struct {
-    /// Vector x component
-    x: f32,
-    /// Vector y component
-    y: f32,
-    /// Vector z component
-    z: f32,
-};
-
-/// Vector4, 4 components
-pub const Vector4 = extern struct {
-    /// Vector x component
-    x: f32,
-    /// Vector y component
-    y: f32,
-    /// Vector z component
-    z: f32,
-    /// Vector w component
-    w: f32,
-};
-
-/// Color, 4 components, R8G8B8A8 (32bit)
-pub const Color = extern struct {
-    /// Color red value
-    r: u8,
-    /// Color green value
-    g: u8,
-    /// Color blue value
-    b: u8,
-    /// Color alpha value
-    a: u8,
-};
-
-/// Rectangle, 4 components
-pub const Rectangle = extern struct {
-    /// Rectangle top-left corner position x
-    x: f32,
-    /// Rectangle top-left corner position y
-    y: f32,
-    /// Rectangle width
-    width: f32,
-    /// Rectangle height
-    height: f32,
-};
+const types = @import("manual_bindings.zig");
 
 /// Image, pixel data stored in CPU memory (RAM)
 pub const Image = extern struct {
@@ -93,7 +41,7 @@ pub const RenderTexture = extern struct {
 /// NPatchInfo, n-patch layout info
 pub const NPatchInfo = extern struct {
     /// Texture source rectangle
-    source: Rectangle,
+    source: types.Rectangle,
     /// Left border offset
     left: i32,
     /// Top border offset
@@ -131,7 +79,7 @@ pub const Font = extern struct {
     /// Texture atlas containing the glyphs
     texture: Texture2D,
     /// Rectangles in texture for the glyphs
-    recs: *Rectangle,
+    recs: *types.Rectangle,
     /// Glyphs info data
     glyphs: *GlyphInfo,
 };
@@ -139,11 +87,11 @@ pub const Font = extern struct {
 /// Camera, defines position/orientation in 3d space
 pub const Camera3D = extern struct {
     /// Camera position
-    position: Vector3,
+    position: types.Vector3,
     /// Camera target it looks-at
-    target: Vector3,
+    target: types.Vector3,
     /// Camera up vector (rotation over its axis)
-    up: Vector3,
+    up: types.Vector3,
     /// Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic
     fovy: f32,
     /// Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
@@ -153,13 +101,13 @@ pub const Camera3D = extern struct {
 /// Camera2D, defines position/orientation in 2d space
 pub const Camera2D = extern struct {
     /// Camera offset (displacement from target)
-    offset: Vector2,
+    offset: types.Vector2 = .{.x = 0, .y = 0},
     /// Camera target (rotation and zoom origin)
-    target: Vector2,
+    target: types.Vector2,
     /// Camera rotation in degrees
-    rotation: f32,
+    rotation: f32 = 0,
     /// Camera zoom (scaling), should be 1.0f by default
-    zoom: f32,
+    zoom: f32 = 1,
 };
 
 /// Mesh, vertex data and vao/vbo
@@ -209,7 +157,7 @@ pub const MaterialMap = extern struct {
     /// Material map texture
     texture: Texture2D,
     /// Material map color
-    color: Color,
+    color: types.Color,
     /// Material map value
     value: f32,
 };
@@ -235,9 +183,9 @@ pub const BoneInfo = extern struct {
 /// Ray, ray for raycasting
 pub const Ray = extern struct {
     /// Ray position (origin)
-    position: Vector3,
+    position: types.Vector3,
     /// Ray direction
-    direction: Vector3,
+    direction: types.Vector3,
 };
 
 /// RayCollision, ray hit information
@@ -247,17 +195,17 @@ pub const RayCollision = extern struct {
     /// Distance to nearest hit
     distance: f32,
     /// Point of nearest hit
-    point: Vector3,
+    point: types.Vector3,
     /// Surface normal of hit
-    normal: Vector3,
+    normal: types.Vector3,
 };
 
 /// BoundingBox
 pub const BoundingBox = extern struct {
     /// Minimum vertex box-corner
-    min: Vector3,
+    min: types.Vector3,
     /// Maximum vertex box-corner
-    max: Vector3,
+    max: types.Vector3,
 };
 
 /// Wave, audio wave data
