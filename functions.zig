@@ -1,9 +1,11 @@
 const raylib = @cImport({
     @cInclude("raylib/src/raylib.h");
 });
-
-usingnamespace @import("structs.zig");
-usingnamespace @import("enums.zig");
+const types = struct {
+    usingnamespace @import("structs.zig");
+    usingnamespace @import("enums.zig");
+    usingnamespace @import("manual_bindings.zig");
+};
 
 /// Initialize window and OpenGL context
 pub fn InitWindow(
@@ -112,7 +114,7 @@ pub fn RestoreWindow() void {
 
 /// Set icon for window (only PLATFORM_DESKTOP)
 pub fn SetWindowIcon(
-    image: Image,
+    image: types.Image,
 ) void {
     raylib.SetWindowIcon(
         image,
@@ -217,7 +219,7 @@ pub fn GetCurrentMonitor() i32 {
 /// Get specified monitor position
 pub fn GetMonitorPosition(
     monitor: i32,
-) Vector2 {
+) types.Vector2 {
     return raylib.GetMonitorPosition(
         @intCast(c_int, monitor),
     );
@@ -269,12 +271,12 @@ pub fn GetMonitorRefreshRate(
 }
 
 /// Get window position XY on monitor
-pub fn GetWindowPosition() Vector2 {
+pub fn GetWindowPosition() types.Vector2 {
     return raylib.GetWindowPosition();
 }
 
 /// Get window scale DPI factor
-pub fn GetWindowScaleDPI() Vector2 {
+pub fn GetWindowScaleDPI() types.Vector2 {
     return raylib.GetWindowScaleDPI();
 }
 
@@ -352,7 +354,7 @@ pub fn IsCursorOnScreen() bool {
 
 /// Set background color (framebuffer clear color)
 pub fn ClearBackground(
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ClearBackground(
         color,
@@ -371,7 +373,7 @@ pub fn EndDrawing() void {
 
 /// Begin 2D mode with custom camera (2D)
 pub fn BeginMode2D(
-    camera: Camera2D,
+    camera: types.Camera2D,
 ) void {
     raylib.BeginMode2D(
         camera,
@@ -385,7 +387,7 @@ pub fn EndMode2D() void {
 
 /// Begin 3D mode with custom camera (3D)
 pub fn BeginMode3D(
-    camera: Camera3D,
+    camera: types.Camera3D,
 ) void {
     raylib.BeginMode3D(
         camera,
@@ -399,7 +401,7 @@ pub fn EndMode3D() void {
 
 /// Begin drawing to render texture
 pub fn BeginTextureMode(
-    target: RenderTexture2D,
+    target: types.RenderTexture2D,
 ) void {
     raylib.BeginTextureMode(
         target,
@@ -413,7 +415,7 @@ pub fn EndTextureMode() void {
 
 /// Begin custom shader drawing
 pub fn BeginShaderMode(
-    shader: Shader,
+    shader: types.Shader,
 ) void {
     raylib.BeginShaderMode(
         shader,
@@ -461,7 +463,7 @@ pub fn EndScissorMode() void {
 
 /// Begin stereo rendering (requires VR simulator)
 pub fn BeginVrStereoMode(
-    config: VrStereoConfig,
+    config: types.VrStereoConfig,
 ) void {
     raylib.BeginVrStereoMode(
         config,
@@ -475,8 +477,8 @@ pub fn EndVrStereoMode() void {
 
 /// Load VR stereo config for VR simulator device parameters
 pub fn LoadVrStereoConfig(
-    device: VrDeviceInfo,
-) VrStereoConfig {
+    device: types.VrDeviceInfo,
+) types.VrStereoConfig {
     return raylib.LoadVrStereoConfig(
         device,
     );
@@ -484,7 +486,7 @@ pub fn LoadVrStereoConfig(
 
 /// Unload VR stereo config
 pub fn UnloadVrStereoConfig(
-    config: VrStereoConfig,
+    config: types.VrStereoConfig,
 ) void {
     raylib.UnloadVrStereoConfig(
         config,
@@ -495,7 +497,7 @@ pub fn UnloadVrStereoConfig(
 pub fn LoadShader(
     vsFileName: [:0]const u8,
     fsFileName: [:0]const u8,
-) Shader {
+) types.Shader {
     return raylib.LoadShader(
         vsFileName,
         fsFileName,
@@ -506,7 +508,7 @@ pub fn LoadShader(
 pub fn LoadShaderFromMemory(
     vsCode: [:0]const u8,
     fsCode: [:0]const u8,
-) Shader {
+) types.Shader {
     return raylib.LoadShaderFromMemory(
         vsCode,
         fsCode,
@@ -515,7 +517,7 @@ pub fn LoadShaderFromMemory(
 
 /// Get shader uniform location
 pub fn GetShaderLocation(
-    shader: Shader,
+    shader: types.Shader,
     uniformName: [:0]const u8,
 ) i32 {
     return raylib.GetShaderLocation(
@@ -526,7 +528,7 @@ pub fn GetShaderLocation(
 
 /// Get shader attribute location
 pub fn GetShaderLocationAttrib(
-    shader: Shader,
+    shader: types.Shader,
     attribName: [:0]const u8,
 ) i32 {
     return raylib.GetShaderLocationAttrib(
@@ -537,7 +539,7 @@ pub fn GetShaderLocationAttrib(
 
 /// Set shader uniform value
 pub fn SetShaderValue(
-    shader: Shader,
+    shader: types.Shader,
     locIndex: i32,
     value: *anyopaque,
     uniformType: i32,
@@ -552,7 +554,7 @@ pub fn SetShaderValue(
 
 /// Set shader uniform value vector
 pub fn SetShaderValueV(
-    shader: Shader,
+    shader: types.Shader,
     locIndex: i32,
     value: *anyopaque,
     uniformType: i32,
@@ -569,9 +571,9 @@ pub fn SetShaderValueV(
 
 /// Set shader uniform value (matrix 4x4)
 pub fn SetShaderValueMatrix(
-    shader: Shader,
+    shader: types.Shader,
     locIndex: i32,
-    mat: Matrix,
+    mat: types.Matrix,
 ) void {
     raylib.SetShaderValueMatrix(
         shader,
@@ -582,9 +584,9 @@ pub fn SetShaderValueMatrix(
 
 /// Set shader uniform value for texture (sampler2d)
 pub fn SetShaderValueTexture(
-    shader: Shader,
+    shader: types.Shader,
     locIndex: i32,
-    texture: Texture2D,
+    texture: types.Texture2D,
 ) void {
     raylib.SetShaderValueTexture(
         shader,
@@ -595,7 +597,7 @@ pub fn SetShaderValueTexture(
 
 /// Unload shader from GPU memory (VRAM)
 pub fn UnloadShader(
-    shader: Shader,
+    shader: types.Shader,
 ) void {
     raylib.UnloadShader(
         shader,
@@ -604,9 +606,9 @@ pub fn UnloadShader(
 
 /// Get a ray trace from mouse position
 pub fn GetMouseRay(
-    mousePosition: Vector2,
-    camera: Camera,
-) Ray {
+    mousePosition: types.Vector2,
+    camera: types.Camera,
+) types.Ray {
     return raylib.GetMouseRay(
         mousePosition,
         camera,
@@ -615,8 +617,8 @@ pub fn GetMouseRay(
 
 /// Get camera transform matrix (view matrix)
 pub fn GetCameraMatrix(
-    camera: Camera,
-) Matrix {
+    camera: types.Camera,
+) types.Matrix {
     return raylib.GetCameraMatrix(
         camera,
     );
@@ -624,8 +626,8 @@ pub fn GetCameraMatrix(
 
 /// Get camera 2d transform matrix
 pub fn GetCameraMatrix2D(
-    camera: Camera2D,
-) Matrix {
+    camera: types.Camera2D,
+) types.Matrix {
     return raylib.GetCameraMatrix2D(
         camera,
     );
@@ -633,9 +635,9 @@ pub fn GetCameraMatrix2D(
 
 /// Get the screen space position for a 3d world space position
 pub fn GetWorldToScreen(
-    position: Vector3,
-    camera: Camera,
-) Vector2 {
+    position: types.Vector3,
+    camera: types.Camera,
+) types.Vector2 {
     return raylib.GetWorldToScreen(
         position,
         camera,
@@ -644,11 +646,11 @@ pub fn GetWorldToScreen(
 
 /// Get size position for a 3d world space position
 pub fn GetWorldToScreenEx(
-    position: Vector3,
-    camera: Camera,
+    position: types.Vector3,
+    camera: types.Camera,
     width: i32,
     height: i32,
-) Vector2 {
+) types.Vector2 {
     return raylib.GetWorldToScreenEx(
         position,
         camera,
@@ -659,9 +661,9 @@ pub fn GetWorldToScreenEx(
 
 /// Get the screen space position for a 2d camera world space position
 pub fn GetWorldToScreen2D(
-    position: Vector2,
-    camera: Camera2D,
-) Vector2 {
+    position: types.Vector2,
+    camera: types.Camera2D,
+) types.Vector2 {
     return raylib.GetWorldToScreen2D(
         position,
         camera,
@@ -670,9 +672,9 @@ pub fn GetWorldToScreen2D(
 
 /// Get the world space position for a 2d camera screen space position
 pub fn GetScreenToWorld2D(
-    position: Vector2,
-    camera: Camera2D,
-) Vector2 {
+    position: types.Vector2,
+    camera: types.Camera2D,
+) types.Vector2 {
     return raylib.GetScreenToWorld2D(
         position,
         camera,
@@ -699,7 +701,7 @@ pub fn GetFrameTime() f32 {
 }
 
 /// Get elapsed time in seconds since InitWindow()
-pub fn GetTime() double {
+pub fn GetTime() f64 {
     return raylib.GetTime();
 }
 
@@ -781,7 +783,7 @@ pub fn MemFree(
 
 /// Set custom trace log
 pub fn SetTraceLogCallback(
-    callback: TraceLogCallback,
+    callback: types.TraceLogCallback,
 ) void {
     raylib.SetTraceLogCallback(
         callback,
@@ -790,7 +792,7 @@ pub fn SetTraceLogCallback(
 
 /// Set custom file binary data loader
 pub fn SetLoadFileDataCallback(
-    callback: LoadFileDataCallback,
+    callback: types.LoadFileDataCallback,
 ) void {
     raylib.SetLoadFileDataCallback(
         callback,
@@ -799,7 +801,7 @@ pub fn SetLoadFileDataCallback(
 
 /// Set custom file binary data saver
 pub fn SetSaveFileDataCallback(
-    callback: SaveFileDataCallback,
+    callback: types.SaveFileDataCallback,
 ) void {
     raylib.SetSaveFileDataCallback(
         callback,
@@ -808,7 +810,7 @@ pub fn SetSaveFileDataCallback(
 
 /// Set custom file text data loader
 pub fn SetLoadFileTextCallback(
-    callback: LoadFileTextCallback,
+    callback: types.LoadFileTextCallback,
 ) void {
     raylib.SetLoadFileTextCallback(
         callback,
@@ -817,7 +819,7 @@ pub fn SetLoadFileTextCallback(
 
 /// Set custom file text data saver
 pub fn SetSaveFileTextCallback(
-    callback: SaveFileTextCallback,
+    callback: types.SaveFileTextCallback,
 ) void {
     raylib.SetSaveFileTextCallback(
         callback,
@@ -972,7 +974,7 @@ pub fn GetApplicationDirectory() [:0]const u8 {
 pub fn GetDirectoryFiles(
     dirPath: [:0]const u8,
     count: []i32,
-) [*c][*c]char {
+) [*c][:0]const u8 {
     return raylib.GetDirectoryFiles(
         dirPath,
         @ptrCast([*c]c_int, count.ptr),
@@ -1001,7 +1003,7 @@ pub fn IsFileDropped() bool {
 /// Get dropped files names (memory should be freed)
 pub fn GetDroppedFiles(
     count: []i32,
-) [*c][*c]char {
+) [*c][:0]const u8 {
     return raylib.GetDroppedFiles(
         @ptrCast([*c]c_int, count.ptr),
     );
@@ -1015,7 +1017,7 @@ pub fn ClearDroppedFiles() void {
 /// Get file modification time (last write time)
 pub fn GetFileModTime(
     fileName: [:0]const u8,
-) long {
+) i64 {
     return raylib.GetFileModTime(
         fileName,
     );
@@ -1298,12 +1300,12 @@ pub fn GetMouseY() i32 {
 }
 
 /// Get mouse position XY
-pub fn GetMousePosition() Vector2 {
+pub fn GetMousePosition() types.Vector2 {
     return raylib.GetMousePosition();
 }
 
 /// Get mouse delta between frames
-pub fn GetMouseDelta() Vector2 {
+pub fn GetMouseDelta() types.Vector2 {
     return raylib.GetMouseDelta();
 }
 
@@ -1367,7 +1369,7 @@ pub fn GetTouchY() i32 {
 /// Get touch position XY for a touch point index (relative to screen size)
 pub fn GetTouchPosition(
     index: i32,
-) Vector2 {
+) types.Vector2 {
     return raylib.GetTouchPosition(
         @intCast(c_int, index),
     );
@@ -1416,7 +1418,7 @@ pub fn GetGestureHoldDuration() f32 {
 }
 
 /// Get gesture drag vector
-pub fn GetGestureDragVector() Vector2 {
+pub fn GetGestureDragVector() types.Vector2 {
     return raylib.GetGestureDragVector();
 }
 
@@ -1426,7 +1428,7 @@ pub fn GetGestureDragAngle() f32 {
 }
 
 /// Get gesture pinch delta
-pub fn GetGesturePinchVector() Vector2 {
+pub fn GetGesturePinchVector() types.Vector2 {
     return raylib.GetGesturePinchVector();
 }
 
@@ -1437,7 +1439,7 @@ pub fn GetGesturePinchAngle() f32 {
 
 /// Set camera mode (multiple camera modes available)
 pub fn SetCameraMode(
-    camera: Camera,
+    camera: types.Camera,
     mode: i32,
 ) void {
     raylib.SetCameraMode(
@@ -1448,10 +1450,10 @@ pub fn SetCameraMode(
 
 /// Update camera position for selected mode
 pub fn UpdateCamera(
-    camera: *Camera,
+    camera: *types.Camera,
 ) void {
     raylib.UpdateCamera(
-        @ptrCast([*c]Camera, camera),
+        @ptrCast([*c]types.Camera, camera),
     );
 }
 
@@ -1503,8 +1505,8 @@ pub fn SetCameraMoveControls(
 
 /// Set texture and rectangle to be used on shapes drawing
 pub fn SetShapesTexture(
-    texture: Texture2D,
-    source: Rectangle,
+    texture: types.Texture2D,
+    source: types.Rectangle,
 ) void {
     raylib.SetShapesTexture(
         texture,
@@ -1516,7 +1518,7 @@ pub fn SetShapesTexture(
 pub fn DrawPixel(
     posX: i32,
     posY: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawPixel(
         @intCast(c_int, posX),
@@ -1527,8 +1529,8 @@ pub fn DrawPixel(
 
 /// Draw a pixel (Vector version)
 pub fn DrawPixelV(
-    position: Vector2,
-    color: Color,
+    position: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.DrawPixelV(
         position,
@@ -1542,7 +1544,7 @@ pub fn DrawLine(
     startPosY: i32,
     endPosX: i32,
     endPosY: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawLine(
         @intCast(c_int, startPosX),
@@ -1555,9 +1557,9 @@ pub fn DrawLine(
 
 /// Draw a line (Vector version)
 pub fn DrawLineV(
-    startPos: Vector2,
-    endPos: Vector2,
-    color: Color,
+    startPos: types.Vector2,
+    endPos: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.DrawLineV(
         startPos,
@@ -1568,10 +1570,10 @@ pub fn DrawLineV(
 
 /// Draw a line defining thickness
 pub fn DrawLineEx(
-    startPos: Vector2,
-    endPos: Vector2,
+    startPos: types.Vector2,
+    endPos: types.Vector2,
     thick: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawLineEx(
         startPos,
@@ -1583,10 +1585,10 @@ pub fn DrawLineEx(
 
 /// Draw a line using cubic-bezier curves in-out
 pub fn DrawLineBezier(
-    startPos: Vector2,
-    endPos: Vector2,
+    startPos: types.Vector2,
+    endPos: types.Vector2,
     thick: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawLineBezier(
         startPos,
@@ -1598,11 +1600,11 @@ pub fn DrawLineBezier(
 
 /// Draw line using quadratic bezier curves with a control point
 pub fn DrawLineBezierQuad(
-    startPos: Vector2,
-    endPos: Vector2,
-    controlPos: Vector2,
+    startPos: types.Vector2,
+    endPos: types.Vector2,
+    controlPos: types.Vector2,
     thick: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawLineBezierQuad(
         startPos,
@@ -1615,12 +1617,12 @@ pub fn DrawLineBezierQuad(
 
 /// Draw line using cubic bezier curves with 2 control points
 pub fn DrawLineBezierCubic(
-    startPos: Vector2,
-    endPos: Vector2,
-    startControlPos: Vector2,
-    endControlPos: Vector2,
+    startPos: types.Vector2,
+    endPos: types.Vector2,
+    startControlPos: types.Vector2,
+    endControlPos: types.Vector2,
     thick: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawLineBezierCubic(
         startPos,
@@ -1634,12 +1636,12 @@ pub fn DrawLineBezierCubic(
 
 /// Draw lines sequence
 pub fn DrawLineStrip(
-    points: *Vector2,
+    points: *types.Vector2,
     pointCount: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawLineStrip(
-        @ptrCast([*c]Vector2, points),
+        @ptrCast([*c]types.Vector2, points),
         @intCast(c_int, pointCount),
         color,
     );
@@ -1650,7 +1652,7 @@ pub fn DrawCircle(
     centerX: i32,
     centerY: i32,
     radius: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCircle(
         @intCast(c_int, centerX),
@@ -1662,12 +1664,12 @@ pub fn DrawCircle(
 
 /// Draw a piece of a circle
 pub fn DrawCircleSector(
-    center: Vector2,
+    center: types.Vector2,
     radius: f32,
     startAngle: f32,
     endAngle: f32,
     segments: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCircleSector(
         center,
@@ -1681,12 +1683,12 @@ pub fn DrawCircleSector(
 
 /// Draw circle sector outline
 pub fn DrawCircleSectorLines(
-    center: Vector2,
+    center: types.Vector2,
     radius: f32,
     startAngle: f32,
     endAngle: f32,
     segments: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCircleSectorLines(
         center,
@@ -1703,8 +1705,8 @@ pub fn DrawCircleGradient(
     centerX: i32,
     centerY: i32,
     radius: f32,
-    color1: Color,
-    color2: Color,
+    color1: types.Color,
+    color2: types.Color,
 ) void {
     raylib.DrawCircleGradient(
         @intCast(c_int, centerX),
@@ -1717,9 +1719,9 @@ pub fn DrawCircleGradient(
 
 /// Draw a color-filled circle (Vector version)
 pub fn DrawCircleV(
-    center: Vector2,
+    center: types.Vector2,
     radius: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCircleV(
         center,
@@ -1733,7 +1735,7 @@ pub fn DrawCircleLines(
     centerX: i32,
     centerY: i32,
     radius: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCircleLines(
         @intCast(c_int, centerX),
@@ -1749,7 +1751,7 @@ pub fn DrawEllipse(
     centerY: i32,
     radiusH: f32,
     radiusV: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawEllipse(
         @intCast(c_int, centerX),
@@ -1766,7 +1768,7 @@ pub fn DrawEllipseLines(
     centerY: i32,
     radiusH: f32,
     radiusV: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawEllipseLines(
         @intCast(c_int, centerX),
@@ -1779,13 +1781,13 @@ pub fn DrawEllipseLines(
 
 /// Draw ring
 pub fn DrawRing(
-    center: Vector2,
+    center: types.Vector2,
     innerRadius: f32,
     outerRadius: f32,
     startAngle: f32,
     endAngle: f32,
     segments: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRing(
         center,
@@ -1800,13 +1802,13 @@ pub fn DrawRing(
 
 /// Draw ring outline
 pub fn DrawRingLines(
-    center: Vector2,
+    center: types.Vector2,
     innerRadius: f32,
     outerRadius: f32,
     startAngle: f32,
     endAngle: f32,
     segments: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRingLines(
         center,
@@ -1825,7 +1827,7 @@ pub fn DrawRectangle(
     posY: i32,
     width: i32,
     height: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRectangle(
         @intCast(c_int, posX),
@@ -1838,9 +1840,9 @@ pub fn DrawRectangle(
 
 /// Draw a color-filled rectangle (Vector version)
 pub fn DrawRectangleV(
-    position: Vector2,
-    size: Vector2,
-    color: Color,
+    position: types.Vector2,
+    size: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.DrawRectangleV(
         position,
@@ -1851,8 +1853,8 @@ pub fn DrawRectangleV(
 
 /// Draw a color-filled rectangle
 pub fn DrawRectangleRec(
-    rec: Rectangle,
-    color: Color,
+    rec: types.Rectangle,
+    color: types.Color,
 ) void {
     raylib.DrawRectangleRec(
         rec,
@@ -1862,10 +1864,10 @@ pub fn DrawRectangleRec(
 
 /// Draw a color-filled rectangle with pro parameters
 pub fn DrawRectanglePro(
-    rec: Rectangle,
-    origin: Vector2,
+    rec: types.Rectangle,
+    origin: types.Vector2,
     rotation: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRectanglePro(
         rec,
@@ -1881,8 +1883,8 @@ pub fn DrawRectangleGradientV(
     posY: i32,
     width: i32,
     height: i32,
-    color1: Color,
-    color2: Color,
+    color1: types.Color,
+    color2: types.Color,
 ) void {
     raylib.DrawRectangleGradientV(
         @intCast(c_int, posX),
@@ -1900,8 +1902,8 @@ pub fn DrawRectangleGradientH(
     posY: i32,
     width: i32,
     height: i32,
-    color1: Color,
-    color2: Color,
+    color1: types.Color,
+    color2: types.Color,
 ) void {
     raylib.DrawRectangleGradientH(
         @intCast(c_int, posX),
@@ -1915,11 +1917,11 @@ pub fn DrawRectangleGradientH(
 
 /// Draw a gradient-filled rectangle with custom vertex colors
 pub fn DrawRectangleGradientEx(
-    rec: Rectangle,
-    col1: Color,
-    col2: Color,
-    col3: Color,
-    col4: Color,
+    rec: types.Rectangle,
+    col1: types.Color,
+    col2: types.Color,
+    col3: types.Color,
+    col4: types.Color,
 ) void {
     raylib.DrawRectangleGradientEx(
         rec,
@@ -1936,7 +1938,7 @@ pub fn DrawRectangleLines(
     posY: i32,
     width: i32,
     height: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRectangleLines(
         @intCast(c_int, posX),
@@ -1949,9 +1951,9 @@ pub fn DrawRectangleLines(
 
 /// Draw rectangle outline with extended parameters
 pub fn DrawRectangleLinesEx(
-    rec: Rectangle,
+    rec: types.Rectangle,
     lineThick: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRectangleLinesEx(
         rec,
@@ -1962,10 +1964,10 @@ pub fn DrawRectangleLinesEx(
 
 /// Draw rectangle with rounded edges
 pub fn DrawRectangleRounded(
-    rec: Rectangle,
+    rec: types.Rectangle,
     roundness: f32,
     segments: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRectangleRounded(
         rec,
@@ -1977,11 +1979,11 @@ pub fn DrawRectangleRounded(
 
 /// Draw rectangle with rounded edges outline
 pub fn DrawRectangleRoundedLines(
-    rec: Rectangle,
+    rec: types.Rectangle,
     roundness: f32,
     segments: i32,
     lineThick: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawRectangleRoundedLines(
         rec,
@@ -1994,10 +1996,10 @@ pub fn DrawRectangleRoundedLines(
 
 /// Draw a color-filled triangle (vertex in counter-clockwise order!)
 pub fn DrawTriangle(
-    v1: Vector2,
-    v2: Vector2,
-    v3: Vector2,
-    color: Color,
+    v1: types.Vector2,
+    v2: types.Vector2,
+    v3: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.DrawTriangle(
         v1,
@@ -2009,10 +2011,10 @@ pub fn DrawTriangle(
 
 /// Draw triangle outline (vertex in counter-clockwise order!)
 pub fn DrawTriangleLines(
-    v1: Vector2,
-    v2: Vector2,
-    v3: Vector2,
-    color: Color,
+    v1: types.Vector2,
+    v2: types.Vector2,
+    v3: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.DrawTriangleLines(
         v1,
@@ -2024,12 +2026,12 @@ pub fn DrawTriangleLines(
 
 /// Draw a triangle fan defined by points (first vertex is the center)
 pub fn DrawTriangleFan(
-    points: *Vector2,
+    points: *types.Vector2,
     pointCount: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawTriangleFan(
-        @ptrCast([*c]Vector2, points),
+        @ptrCast([*c]types.Vector2, points),
         @intCast(c_int, pointCount),
         color,
     );
@@ -2037,12 +2039,12 @@ pub fn DrawTriangleFan(
 
 /// Draw a triangle strip defined by points
 pub fn DrawTriangleStrip(
-    points: *Vector2,
+    points: *types.Vector2,
     pointCount: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawTriangleStrip(
-        @ptrCast([*c]Vector2, points),
+        @ptrCast([*c]types.Vector2, points),
         @intCast(c_int, pointCount),
         color,
     );
@@ -2050,11 +2052,11 @@ pub fn DrawTriangleStrip(
 
 /// Draw a regular polygon (Vector version)
 pub fn DrawPoly(
-    center: Vector2,
+    center: types.Vector2,
     sides: i32,
     radius: f32,
     rotation: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawPoly(
         center,
@@ -2067,11 +2069,11 @@ pub fn DrawPoly(
 
 /// Draw a polygon outline of n sides
 pub fn DrawPolyLines(
-    center: Vector2,
+    center: types.Vector2,
     sides: i32,
     radius: f32,
     rotation: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawPolyLines(
         center,
@@ -2084,12 +2086,12 @@ pub fn DrawPolyLines(
 
 /// Draw a polygon outline of n sides with extended parameters
 pub fn DrawPolyLinesEx(
-    center: Vector2,
+    center: types.Vector2,
     sides: i32,
     radius: f32,
     rotation: f32,
     lineThick: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawPolyLinesEx(
         center,
@@ -2103,8 +2105,8 @@ pub fn DrawPolyLinesEx(
 
 /// Check collision between two rectangles
 pub fn CheckCollisionRecs(
-    rec1: Rectangle,
-    rec2: Rectangle,
+    rec1: types.Rectangle,
+    rec2: types.Rectangle,
 ) bool {
     return raylib.CheckCollisionRecs(
         rec1,
@@ -2114,9 +2116,9 @@ pub fn CheckCollisionRecs(
 
 /// Check collision between two circles
 pub fn CheckCollisionCircles(
-    center1: Vector2,
+    center1: types.Vector2,
     radius1: f32,
-    center2: Vector2,
+    center2: types.Vector2,
     radius2: f32,
 ) bool {
     return raylib.CheckCollisionCircles(
@@ -2129,9 +2131,9 @@ pub fn CheckCollisionCircles(
 
 /// Check collision between circle and rectangle
 pub fn CheckCollisionCircleRec(
-    center: Vector2,
+    center: types.Vector2,
     radius: f32,
-    rec: Rectangle,
+    rec: types.Rectangle,
 ) bool {
     return raylib.CheckCollisionCircleRec(
         center,
@@ -2142,8 +2144,8 @@ pub fn CheckCollisionCircleRec(
 
 /// Check if point is inside rectangle
 pub fn CheckCollisionPointRec(
-    point: Vector2,
-    rec: Rectangle,
+    point: types.Vector2,
+    rec: types.Rectangle,
 ) bool {
     return raylib.CheckCollisionPointRec(
         point,
@@ -2153,8 +2155,8 @@ pub fn CheckCollisionPointRec(
 
 /// Check if point is inside circle
 pub fn CheckCollisionPointCircle(
-    point: Vector2,
-    center: Vector2,
+    point: types.Vector2,
+    center: types.Vector2,
     radius: f32,
 ) bool {
     return raylib.CheckCollisionPointCircle(
@@ -2166,10 +2168,10 @@ pub fn CheckCollisionPointCircle(
 
 /// Check if point is inside a triangle
 pub fn CheckCollisionPointTriangle(
-    point: Vector2,
-    p1: Vector2,
-    p2: Vector2,
-    p3: Vector2,
+    point: types.Vector2,
+    p1: types.Vector2,
+    p2: types.Vector2,
+    p3: types.Vector2,
 ) bool {
     return raylib.CheckCollisionPointTriangle(
         point,
@@ -2181,26 +2183,26 @@ pub fn CheckCollisionPointTriangle(
 
 /// Check the collision between two lines defined by two points each, returns collision point by reference
 pub fn CheckCollisionLines(
-    startPos1: Vector2,
-    endPos1: Vector2,
-    startPos2: Vector2,
-    endPos2: Vector2,
-    collisionPoint: *Vector2,
+    startPos1: types.Vector2,
+    endPos1: types.Vector2,
+    startPos2: types.Vector2,
+    endPos2: types.Vector2,
+    collisionPoint: *types.Vector2,
 ) bool {
     return raylib.CheckCollisionLines(
         startPos1,
         endPos1,
         startPos2,
         endPos2,
-        @ptrCast([*c]Vector2, collisionPoint),
+        @ptrCast([*c]types.Vector2, collisionPoint),
     );
 }
 
 /// Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
 pub fn CheckCollisionPointLine(
-    point: Vector2,
-    p1: Vector2,
-    p2: Vector2,
+    point: types.Vector2,
+    p1: types.Vector2,
+    p2: types.Vector2,
     threshold: i32,
 ) bool {
     return raylib.CheckCollisionPointLine(
@@ -2213,9 +2215,9 @@ pub fn CheckCollisionPointLine(
 
 /// Get collision rectangle for two rectangles collision
 pub fn GetCollisionRec(
-    rec1: Rectangle,
-    rec2: Rectangle,
-) Rectangle {
+    rec1: types.Rectangle,
+    rec2: types.Rectangle,
+) types.Rectangle {
     return raylib.GetCollisionRec(
         rec1,
         rec2,
@@ -2225,7 +2227,7 @@ pub fn GetCollisionRec(
 /// Load image from file into CPU memory (RAM)
 pub fn LoadImage(
     fileName: [:0]const u8,
-) Image {
+) types.Image {
     return raylib.LoadImage(
         fileName,
     );
@@ -2238,7 +2240,7 @@ pub fn LoadImageRaw(
     height: i32,
     format: i32,
     headerSize: i32,
-) Image {
+) types.Image {
     return raylib.LoadImageRaw(
         fileName,
         @intCast(c_int, width),
@@ -2252,7 +2254,7 @@ pub fn LoadImageRaw(
 pub fn LoadImageAnim(
     fileName: [:0]const u8,
     frames: []i32,
-) Image {
+) types.Image {
     return raylib.LoadImageAnim(
         fileName,
         @ptrCast([*c]c_int, frames.ptr),
@@ -2264,7 +2266,7 @@ pub fn LoadImageFromMemory(
     fileType: [:0]const u8,
     fileData: [:0]const u8,
     dataSize: i32,
-) Image {
+) types.Image {
     return raylib.LoadImageFromMemory(
         fileType,
         fileData,
@@ -2274,21 +2276,21 @@ pub fn LoadImageFromMemory(
 
 /// Load image from GPU texture data
 pub fn LoadImageFromTexture(
-    texture: Texture2D,
-) Image {
+    texture: types.Texture2D,
+) types.Image {
     return raylib.LoadImageFromTexture(
         texture,
     );
 }
 
 /// Load image from screen buffer and (screenshot)
-pub fn LoadImageFromScreen() Image {
+pub fn LoadImageFromScreen() types.Image {
     return raylib.LoadImageFromScreen();
 }
 
 /// Unload image from CPU memory (RAM)
 pub fn UnloadImage(
-    image: Image,
+    image: types.Image,
 ) void {
     raylib.UnloadImage(
         image,
@@ -2297,7 +2299,7 @@ pub fn UnloadImage(
 
 /// Export image data to file, returns true on success
 pub fn ExportImage(
-    image: Image,
+    image: types.Image,
     fileName: [:0]const u8,
 ) bool {
     return raylib.ExportImage(
@@ -2308,7 +2310,7 @@ pub fn ExportImage(
 
 /// Export image as code file defining an array of bytes, returns true on success
 pub fn ExportImageAsCode(
-    image: Image,
+    image: types.Image,
     fileName: [:0]const u8,
 ) bool {
     return raylib.ExportImageAsCode(
@@ -2321,8 +2323,8 @@ pub fn ExportImageAsCode(
 pub fn GenImageColor(
     width: i32,
     height: i32,
-    color: Color,
-) Image {
+    color: types.Color,
+) types.Image {
     return raylib.GenImageColor(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -2334,9 +2336,9 @@ pub fn GenImageColor(
 pub fn GenImageGradientV(
     width: i32,
     height: i32,
-    top: Color,
-    bottom: Color,
-) Image {
+    top: types.Color,
+    bottom: types.Color,
+) types.Image {
     return raylib.GenImageGradientV(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -2349,9 +2351,9 @@ pub fn GenImageGradientV(
 pub fn GenImageGradientH(
     width: i32,
     height: i32,
-    left: Color,
-    right: Color,
-) Image {
+    left: types.Color,
+    right: types.Color,
+) types.Image {
     return raylib.GenImageGradientH(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -2365,9 +2367,9 @@ pub fn GenImageGradientRadial(
     width: i32,
     height: i32,
     density: f32,
-    inner: Color,
-    outer: Color,
-) Image {
+    inner: types.Color,
+    outer: types.Color,
+) types.Image {
     return raylib.GenImageGradientRadial(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -2383,9 +2385,9 @@ pub fn GenImageChecked(
     height: i32,
     checksX: i32,
     checksY: i32,
-    col1: Color,
-    col2: Color,
-) Image {
+    col1: types.Color,
+    col2: types.Color,
+) types.Image {
     return raylib.GenImageChecked(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -2401,7 +2403,7 @@ pub fn GenImageWhiteNoise(
     width: i32,
     height: i32,
     factor: f32,
-) Image {
+) types.Image {
     return raylib.GenImageWhiteNoise(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -2414,7 +2416,7 @@ pub fn GenImageCellular(
     width: i32,
     height: i32,
     tileSize: i32,
-) Image {
+) types.Image {
     return raylib.GenImageCellular(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -2424,8 +2426,8 @@ pub fn GenImageCellular(
 
 /// Create an image duplicate (useful for transformations)
 pub fn ImageCopy(
-    image: Image,
-) Image {
+    image: types.Image,
+) types.Image {
     return raylib.ImageCopy(
         image,
     );
@@ -2433,9 +2435,9 @@ pub fn ImageCopy(
 
 /// Create an image from another image piece
 pub fn ImageFromImage(
-    image: Image,
-    rec: Rectangle,
-) Image {
+    image: types.Image,
+    rec: types.Rectangle,
+) types.Image {
     return raylib.ImageFromImage(
         image,
         rec,
@@ -2446,8 +2448,8 @@ pub fn ImageFromImage(
 pub fn ImageText(
     text: [:0]const u8,
     fontSize: i32,
-    color: Color,
-) Image {
+    color: types.Color,
+) types.Image {
     return raylib.ImageText(
         text,
         @intCast(c_int, fontSize),
@@ -2457,12 +2459,12 @@ pub fn ImageText(
 
 /// Create an image from text (custom sprite font)
 pub fn ImageTextEx(
-    font: Font,
+    font: types.Font,
     text: [:0]const u8,
     fontSize: f32,
     spacing: f32,
-    tint: Color,
-) Image {
+    tint: types.Color,
+) types.Image {
     return raylib.ImageTextEx(
         font,
         text,
@@ -2474,56 +2476,56 @@ pub fn ImageTextEx(
 
 /// Convert image data to desired format
 pub fn ImageFormat(
-    image: *Image,
+    image: *types.Image,
     newFormat: i32,
 ) void {
     raylib.ImageFormat(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         @intCast(c_int, newFormat),
     );
 }
 
 /// Convert image to POT (power-of-two)
 pub fn ImageToPOT(
-    image: *Image,
-    fill: Color,
+    image: *types.Image,
+    fill: types.Color,
 ) void {
     raylib.ImageToPOT(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         fill,
     );
 }
 
 /// Crop an image to a defined rectangle
 pub fn ImageCrop(
-    image: *Image,
-    crop: Rectangle,
+    image: *types.Image,
+    crop: types.Rectangle,
 ) void {
     raylib.ImageCrop(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         crop,
     );
 }
 
 /// Crop image depending on alpha value
 pub fn ImageAlphaCrop(
-    image: *Image,
+    image: *types.Image,
     threshold: f32,
 ) void {
     raylib.ImageAlphaCrop(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         threshold,
     );
 }
 
 /// Clear alpha channel to desired color
 pub fn ImageAlphaClear(
-    image: *Image,
-    color: Color,
+    image: *types.Image,
+    color: types.Color,
     threshold: f32,
 ) void {
     raylib.ImageAlphaClear(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         color,
         threshold,
     );
@@ -2531,32 +2533,32 @@ pub fn ImageAlphaClear(
 
 /// Apply alpha mask to image
 pub fn ImageAlphaMask(
-    image: *Image,
-    alphaMask: Image,
+    image: *types.Image,
+    alphaMask: types.Image,
 ) void {
     raylib.ImageAlphaMask(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         alphaMask,
     );
 }
 
 /// Premultiply alpha channel
 pub fn ImageAlphaPremultiply(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageAlphaPremultiply(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Resize image (Bicubic scaling algorithm)
 pub fn ImageResize(
-    image: *Image,
+    image: *types.Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
     raylib.ImageResize(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         @intCast(c_int, newWidth),
         @intCast(c_int, newHeight),
     );
@@ -2564,12 +2566,12 @@ pub fn ImageResize(
 
 /// Resize image (Nearest-Neighbor scaling algorithm)
 pub fn ImageResizeNN(
-    image: *Image,
+    image: *types.Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
     raylib.ImageResizeNN(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         @intCast(c_int, newWidth),
         @intCast(c_int, newHeight),
     );
@@ -2577,15 +2579,15 @@ pub fn ImageResizeNN(
 
 /// Resize canvas and fill with color
 pub fn ImageResizeCanvas(
-    image: *Image,
+    image: *types.Image,
     newWidth: i32,
     newHeight: i32,
     offsetX: i32,
     offsetY: i32,
-    fill: Color,
+    fill: types.Color,
 ) void {
     raylib.ImageResizeCanvas(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         @intCast(c_int, newWidth),
         @intCast(c_int, newHeight),
         @intCast(c_int, offsetX),
@@ -2596,23 +2598,23 @@ pub fn ImageResizeCanvas(
 
 /// Compute all mipmap levels for a provided image
 pub fn ImageMipmaps(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageMipmaps(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
 pub fn ImageDither(
-    image: *Image,
+    image: *types.Image,
     rBpp: i32,
     gBpp: i32,
     bBpp: i32,
     aBpp: i32,
 ) void {
     raylib.ImageDither(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         @intCast(c_int, rBpp),
         @intCast(c_int, gBpp),
         @intCast(c_int, bBpp),
@@ -2622,99 +2624,99 @@ pub fn ImageDither(
 
 /// Flip image vertically
 pub fn ImageFlipVertical(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageFlipVertical(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Flip image horizontally
 pub fn ImageFlipHorizontal(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageFlipHorizontal(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Rotate image clockwise 90deg
 pub fn ImageRotateCW(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageRotateCW(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Rotate image counter-clockwise 90deg
 pub fn ImageRotateCCW(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageRotateCCW(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Modify image color: tint
 pub fn ImageColorTint(
-    image: *Image,
-    color: Color,
+    image: *types.Image,
+    color: types.Color,
 ) void {
     raylib.ImageColorTint(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         color,
     );
 }
 
 /// Modify image color: invert
 pub fn ImageColorInvert(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageColorInvert(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Modify image color: grayscale
 pub fn ImageColorGrayscale(
-    image: *Image,
+    image: *types.Image,
 ) void {
     raylib.ImageColorGrayscale(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
     );
 }
 
 /// Modify image color: contrast (-100 to 100)
 pub fn ImageColorContrast(
-    image: *Image,
+    image: *types.Image,
     contrast: f32,
 ) void {
     raylib.ImageColorContrast(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         contrast,
     );
 }
 
 /// Modify image color: brightness (-255 to 255)
 pub fn ImageColorBrightness(
-    image: *Image,
+    image: *types.Image,
     brightness: i32,
 ) void {
     raylib.ImageColorBrightness(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         @intCast(c_int, brightness),
     );
 }
 
 /// Modify image color: replace color
 pub fn ImageColorReplace(
-    image: *Image,
-    color: Color,
-    replace: Color,
+    image: *types.Image,
+    color: types.Color,
+    replace: types.Color,
 ) void {
     raylib.ImageColorReplace(
-        @ptrCast([*c]Image, image),
+        @ptrCast([*c]types.Image, image),
         color,
         replace,
     );
@@ -2722,8 +2724,8 @@ pub fn ImageColorReplace(
 
 /// Load color data from image as a Color array (RGBA - 32bit)
 pub fn LoadImageColors(
-    image: Image,
-) [*c]Color {
+    image: types.Image,
+) [*c]types.Color {
     return raylib.LoadImageColors(
         image,
     );
@@ -2731,10 +2733,10 @@ pub fn LoadImageColors(
 
 /// Load colors palette from image as a Color array (RGBA - 32bit)
 pub fn LoadImagePalette(
-    image: Image,
+    image: types.Image,
     maxPaletteSize: i32,
     colorCount: []i32,
-) [*c]Color {
+) [*c]types.Color {
     return raylib.LoadImagePalette(
         image,
         @intCast(c_int, maxPaletteSize),
@@ -2744,27 +2746,27 @@ pub fn LoadImagePalette(
 
 /// Unload color data loaded with LoadImageColors()
 pub fn UnloadImageColors(
-    colors: *Color,
+    colors: *types.Color,
 ) void {
     raylib.UnloadImageColors(
-        @ptrCast([*c]Color, colors),
+        @ptrCast([*c]types.Color, colors),
     );
 }
 
 /// Unload colors palette loaded with LoadImagePalette()
 pub fn UnloadImagePalette(
-    colors: *Color,
+    colors: *types.Color,
 ) void {
     raylib.UnloadImagePalette(
-        @ptrCast([*c]Color, colors),
+        @ptrCast([*c]types.Color, colors),
     );
 }
 
 /// Get image alpha border rectangle
 pub fn GetImageAlphaBorder(
-    image: Image,
+    image: types.Image,
     threshold: f32,
-) Rectangle {
+) types.Rectangle {
     return raylib.GetImageAlphaBorder(
         image,
         threshold,
@@ -2773,10 +2775,10 @@ pub fn GetImageAlphaBorder(
 
 /// Get image pixel color at (x, y) position
 pub fn GetImageColor(
-    image: Image,
+    image: types.Image,
     x: i32,
     y: i32,
-) Color {
+) types.Color {
     return raylib.GetImageColor(
         image,
         @intCast(c_int, x),
@@ -2786,24 +2788,24 @@ pub fn GetImageColor(
 
 /// Clear image background with given color
 pub fn ImageClearBackground(
-    dst: *Image,
-    color: Color,
+    dst: *types.Image,
+    color: types.Color,
 ) void {
     raylib.ImageClearBackground(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         color,
     );
 }
 
 /// Draw pixel within an image
 pub fn ImageDrawPixel(
-    dst: *Image,
+    dst: *types.Image,
     posX: i32,
     posY: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ImageDrawPixel(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         @intCast(c_int, posX),
         @intCast(c_int, posY),
         color,
@@ -2812,12 +2814,12 @@ pub fn ImageDrawPixel(
 
 /// Draw pixel within an image (Vector version)
 pub fn ImageDrawPixelV(
-    dst: *Image,
-    position: Vector2,
-    color: Color,
+    dst: *types.Image,
+    position: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.ImageDrawPixelV(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         position,
         color,
     );
@@ -2825,15 +2827,15 @@ pub fn ImageDrawPixelV(
 
 /// Draw line within an image
 pub fn ImageDrawLine(
-    dst: *Image,
+    dst: *types.Image,
     startPosX: i32,
     startPosY: i32,
     endPosX: i32,
     endPosY: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ImageDrawLine(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         @intCast(c_int, startPosX),
         @intCast(c_int, startPosY),
         @intCast(c_int, endPosX),
@@ -2844,13 +2846,13 @@ pub fn ImageDrawLine(
 
 /// Draw line within an image (Vector version)
 pub fn ImageDrawLineV(
-    dst: *Image,
-    start: Vector2,
-    end: Vector2,
-    color: Color,
+    dst: *types.Image,
+    start: types.Vector2,
+    end: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.ImageDrawLineV(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         start,
         end,
         color,
@@ -2859,14 +2861,14 @@ pub fn ImageDrawLineV(
 
 /// Draw circle within an image
 pub fn ImageDrawCircle(
-    dst: *Image,
+    dst: *types.Image,
     centerX: i32,
     centerY: i32,
     radius: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ImageDrawCircle(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         @intCast(c_int, centerX),
         @intCast(c_int, centerY),
         @intCast(c_int, radius),
@@ -2876,13 +2878,13 @@ pub fn ImageDrawCircle(
 
 /// Draw circle within an image (Vector version)
 pub fn ImageDrawCircleV(
-    dst: *Image,
-    center: Vector2,
+    dst: *types.Image,
+    center: types.Vector2,
     radius: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ImageDrawCircleV(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         center,
         @intCast(c_int, radius),
         color,
@@ -2891,15 +2893,15 @@ pub fn ImageDrawCircleV(
 
 /// Draw rectangle within an image
 pub fn ImageDrawRectangle(
-    dst: *Image,
+    dst: *types.Image,
     posX: i32,
     posY: i32,
     width: i32,
     height: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ImageDrawRectangle(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         @intCast(c_int, posX),
         @intCast(c_int, posY),
         @intCast(c_int, width),
@@ -2910,13 +2912,13 @@ pub fn ImageDrawRectangle(
 
 /// Draw rectangle within an image (Vector version)
 pub fn ImageDrawRectangleV(
-    dst: *Image,
-    position: Vector2,
-    size: Vector2,
-    color: Color,
+    dst: *types.Image,
+    position: types.Vector2,
+    size: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.ImageDrawRectangleV(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         position,
         size,
         color,
@@ -2925,12 +2927,12 @@ pub fn ImageDrawRectangleV(
 
 /// Draw rectangle within an image
 pub fn ImageDrawRectangleRec(
-    dst: *Image,
-    rec: Rectangle,
-    color: Color,
+    dst: *types.Image,
+    rec: types.Rectangle,
+    color: types.Color,
 ) void {
     raylib.ImageDrawRectangleRec(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         rec,
         color,
     );
@@ -2938,13 +2940,13 @@ pub fn ImageDrawRectangleRec(
 
 /// Draw rectangle lines within an image
 pub fn ImageDrawRectangleLines(
-    dst: *Image,
-    rec: Rectangle,
+    dst: *types.Image,
+    rec: types.Rectangle,
     thick: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ImageDrawRectangleLines(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         rec,
         @intCast(c_int, thick),
         color,
@@ -2953,14 +2955,14 @@ pub fn ImageDrawRectangleLines(
 
 /// Draw a source image within a destination image (tint applied to source)
 pub fn ImageDraw(
-    dst: *Image,
-    src: Image,
-    srcRec: Rectangle,
-    dstRec: Rectangle,
-    tint: Color,
+    dst: *types.Image,
+    src: types.Image,
+    srcRec: types.Rectangle,
+    dstRec: types.Rectangle,
+    tint: types.Color,
 ) void {
     raylib.ImageDraw(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         src,
         srcRec,
         dstRec,
@@ -2970,15 +2972,15 @@ pub fn ImageDraw(
 
 /// Draw text (using default font) within an image (destination)
 pub fn ImageDrawText(
-    dst: *Image,
+    dst: *types.Image,
     text: [:0]const u8,
     posX: i32,
     posY: i32,
     fontSize: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.ImageDrawText(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         text,
         @intCast(c_int, posX),
         @intCast(c_int, posY),
@@ -2989,16 +2991,16 @@ pub fn ImageDrawText(
 
 /// Draw text (custom sprite font) within an image (destination)
 pub fn ImageDrawTextEx(
-    dst: *Image,
-    font: Font,
+    dst: *types.Image,
+    font: types.Font,
     text: [:0]const u8,
-    position: Vector2,
+    position: types.Vector2,
     fontSize: f32,
     spacing: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.ImageDrawTextEx(
-        @ptrCast([*c]Image, dst),
+        @ptrCast([*c]types.Image, dst),
         font,
         text,
         position,
@@ -3011,7 +3013,7 @@ pub fn ImageDrawTextEx(
 /// Load texture from file into GPU memory (VRAM)
 pub fn LoadTexture(
     fileName: [:0]const u8,
-) Texture2D {
+) types.Texture2D {
     return raylib.LoadTexture(
         fileName,
     );
@@ -3019,8 +3021,8 @@ pub fn LoadTexture(
 
 /// Load texture from image data
 pub fn LoadTextureFromImage(
-    image: Image,
-) Texture2D {
+    image: types.Image,
+) types.Texture2D {
     return raylib.LoadTextureFromImage(
         image,
     );
@@ -3028,9 +3030,9 @@ pub fn LoadTextureFromImage(
 
 /// Load cubemap from image, multiple image cubemap layouts supported
 pub fn LoadTextureCubemap(
-    image: Image,
+    image: types.Image,
     layout: i32,
-) TextureCubemap {
+) types.TextureCubemap {
     return raylib.LoadTextureCubemap(
         image,
         @intCast(c_int, layout),
@@ -3041,7 +3043,7 @@ pub fn LoadTextureCubemap(
 pub fn LoadRenderTexture(
     width: i32,
     height: i32,
-) RenderTexture2D {
+) types.RenderTexture2D {
     return raylib.LoadRenderTexture(
         @intCast(c_int, width),
         @intCast(c_int, height),
@@ -3050,7 +3052,7 @@ pub fn LoadRenderTexture(
 
 /// Unload texture from GPU memory (VRAM)
 pub fn UnloadTexture(
-    texture: Texture2D,
+    texture: types.Texture2D,
 ) void {
     raylib.UnloadTexture(
         texture,
@@ -3059,7 +3061,7 @@ pub fn UnloadTexture(
 
 /// Unload render texture from GPU memory (VRAM)
 pub fn UnloadRenderTexture(
-    target: RenderTexture2D,
+    target: types.RenderTexture2D,
 ) void {
     raylib.UnloadRenderTexture(
         target,
@@ -3068,7 +3070,7 @@ pub fn UnloadRenderTexture(
 
 /// Update GPU texture with new data
 pub fn UpdateTexture(
-    texture: Texture2D,
+    texture: types.Texture2D,
     pixels: *anyopaque,
 ) void {
     raylib.UpdateTexture(
@@ -3079,8 +3081,8 @@ pub fn UpdateTexture(
 
 /// Update GPU texture rectangle with new data
 pub fn UpdateTextureRec(
-    texture: Texture2D,
-    rec: Rectangle,
+    texture: types.Texture2D,
+    rec: types.Rectangle,
     pixels: *anyopaque,
 ) void {
     raylib.UpdateTextureRec(
@@ -3092,16 +3094,16 @@ pub fn UpdateTextureRec(
 
 /// Generate GPU mipmaps for a texture
 pub fn GenTextureMipmaps(
-    texture: *Texture2D,
+    texture: *types.Texture2D,
 ) void {
     raylib.GenTextureMipmaps(
-        @ptrCast([*c]Texture2D, texture),
+        @ptrCast([*c]types.Texture2D, texture),
     );
 }
 
 /// Set texture scaling filter mode
 pub fn SetTextureFilter(
-    texture: Texture2D,
+    texture: types.Texture2D,
     filter: i32,
 ) void {
     raylib.SetTextureFilter(
@@ -3112,7 +3114,7 @@ pub fn SetTextureFilter(
 
 /// Set texture wrapping mode
 pub fn SetTextureWrap(
-    texture: Texture2D,
+    texture: types.Texture2D,
     wrap: i32,
 ) void {
     raylib.SetTextureWrap(
@@ -3123,10 +3125,10 @@ pub fn SetTextureWrap(
 
 /// Draw a Texture2D
 pub fn DrawTexture(
-    texture: Texture2D,
+    texture: types.Texture2D,
     posX: i32,
     posY: i32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTexture(
         texture,
@@ -3138,9 +3140,9 @@ pub fn DrawTexture(
 
 /// Draw a Texture2D with position defined as Vector2
 pub fn DrawTextureV(
-    texture: Texture2D,
-    position: Vector2,
-    tint: Color,
+    texture: types.Texture2D,
+    position: types.Vector2,
+    tint: types.Color,
 ) void {
     raylib.DrawTextureV(
         texture,
@@ -3151,11 +3153,11 @@ pub fn DrawTextureV(
 
 /// Draw a Texture2D with extended parameters
 pub fn DrawTextureEx(
-    texture: Texture2D,
-    position: Vector2,
+    texture: types.Texture2D,
+    position: types.Vector2,
     rotation: f32,
     scale: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTextureEx(
         texture,
@@ -3168,10 +3170,10 @@ pub fn DrawTextureEx(
 
 /// Draw a part of a texture defined by a rectangle
 pub fn DrawTextureRec(
-    texture: Texture2D,
-    source: Rectangle,
-    position: Vector2,
-    tint: Color,
+    texture: types.Texture2D,
+    source: types.Rectangle,
+    position: types.Vector2,
+    tint: types.Color,
 ) void {
     raylib.DrawTextureRec(
         texture,
@@ -3183,11 +3185,11 @@ pub fn DrawTextureRec(
 
 /// Draw texture quad with tiling and offset parameters
 pub fn DrawTextureQuad(
-    texture: Texture2D,
-    tiling: Vector2,
-    offset: Vector2,
-    quad: Rectangle,
-    tint: Color,
+    texture: types.Texture2D,
+    tiling: types.Vector2,
+    offset: types.Vector2,
+    quad: types.Rectangle,
+    tint: types.Color,
 ) void {
     raylib.DrawTextureQuad(
         texture,
@@ -3200,13 +3202,13 @@ pub fn DrawTextureQuad(
 
 /// Draw part of a texture (defined by a rectangle) with rotation and scale tiled into dest.
 pub fn DrawTextureTiled(
-    texture: Texture2D,
-    source: Rectangle,
-    dest: Rectangle,
-    origin: Vector2,
+    texture: types.Texture2D,
+    source: types.Rectangle,
+    dest: types.Rectangle,
+    origin: types.Vector2,
     rotation: f32,
     scale: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTextureTiled(
         texture,
@@ -3221,12 +3223,12 @@ pub fn DrawTextureTiled(
 
 /// Draw a part of a texture defined by a rectangle with 'pro' parameters
 pub fn DrawTexturePro(
-    texture: Texture2D,
-    source: Rectangle,
-    dest: Rectangle,
-    origin: Vector2,
+    texture: types.Texture2D,
+    source: types.Rectangle,
+    dest: types.Rectangle,
+    origin: types.Vector2,
     rotation: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTexturePro(
         texture,
@@ -3240,12 +3242,12 @@ pub fn DrawTexturePro(
 
 /// Draws a texture (or part of it) that stretches or shrinks nicely
 pub fn DrawTextureNPatch(
-    texture: Texture2D,
-    nPatchInfo: NPatchInfo,
-    dest: Rectangle,
-    origin: Vector2,
+    texture: types.Texture2D,
+    nPatchInfo: types.NPatchInfo,
+    dest: types.Rectangle,
+    origin: types.Vector2,
     rotation: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTextureNPatch(
         texture,
@@ -3259,18 +3261,18 @@ pub fn DrawTextureNPatch(
 
 /// Draw a textured polygon
 pub fn DrawTexturePoly(
-    texture: Texture2D,
-    center: Vector2,
-    points: *Vector2,
-    texcoords: *Vector2,
+    texture: types.Texture2D,
+    center: types.Vector2,
+    points: *types.Vector2,
+    texcoords: *types.Vector2,
     pointCount: i32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTexturePoly(
         texture,
         center,
-        @ptrCast([*c]Vector2, points),
-        @ptrCast([*c]Vector2, texcoords),
+        @ptrCast([*c]types.Vector2, points),
+        @ptrCast([*c]types.Vector2, texcoords),
         @intCast(c_int, pointCount),
         tint,
     );
@@ -3278,9 +3280,9 @@ pub fn DrawTexturePoly(
 
 /// Get color with alpha applied, alpha goes from 0.0f to 1.0f
 pub fn Fade(
-    color: Color,
+    color: types.Color,
     alpha: f32,
-) Color {
+) types.Color {
     return raylib.Fade(
         color,
         alpha,
@@ -3289,7 +3291,7 @@ pub fn Fade(
 
 /// Get hexadecimal value for a Color
 pub fn ColorToInt(
-    color: Color,
+    color: types.Color,
 ) i32 {
     return raylib.ColorToInt(
         color,
@@ -3298,8 +3300,8 @@ pub fn ColorToInt(
 
 /// Get Color normalized as float [0..1]
 pub fn ColorNormalize(
-    color: Color,
-) Vector4 {
+    color: types.Color,
+) types.Vector4 {
     return raylib.ColorNormalize(
         color,
     );
@@ -3307,8 +3309,8 @@ pub fn ColorNormalize(
 
 /// Get Color from normalized values [0..1]
 pub fn ColorFromNormalized(
-    normalized: Vector4,
-) Color {
+    normalized: types.Vector4,
+) types.Color {
     return raylib.ColorFromNormalized(
         normalized,
     );
@@ -3316,8 +3318,8 @@ pub fn ColorFromNormalized(
 
 /// Get HSV values for a Color, hue [0..360], saturation/value [0..1]
 pub fn ColorToHSV(
-    color: Color,
-) Vector3 {
+    color: types.Color,
+) types.Vector3 {
     return raylib.ColorToHSV(
         color,
     );
@@ -3328,7 +3330,7 @@ pub fn ColorFromHSV(
     hue: f32,
     saturation: f32,
     value: f32,
-) Color {
+) types.Color {
     return raylib.ColorFromHSV(
         hue,
         saturation,
@@ -3338,9 +3340,9 @@ pub fn ColorFromHSV(
 
 /// Get color with alpha applied, alpha goes from 0.0f to 1.0f
 pub fn ColorAlpha(
-    color: Color,
+    color: types.Color,
     alpha: f32,
-) Color {
+) types.Color {
     return raylib.ColorAlpha(
         color,
         alpha,
@@ -3349,10 +3351,10 @@ pub fn ColorAlpha(
 
 /// Get src alpha-blended into dst color with tint
 pub fn ColorAlphaBlend(
-    dst: Color,
-    src: Color,
-    tint: Color,
-) Color {
+    dst: types.Color,
+    src: types.Color,
+    tint: types.Color,
+) types.Color {
     return raylib.ColorAlphaBlend(
         dst,
         src,
@@ -3363,7 +3365,7 @@ pub fn ColorAlphaBlend(
 /// Get Color structure from hexadecimal value
 pub fn GetColor(
     hexValue: u32,
-) Color {
+) types.Color {
     return raylib.GetColor(
         @intCast(c_uint, hexValue),
     );
@@ -3373,7 +3375,7 @@ pub fn GetColor(
 pub fn GetPixelColor(
     srcPtr: *anyopaque,
     format: i32,
-) Color {
+) types.Color {
     return raylib.GetPixelColor(
         srcPtr,
         @intCast(c_int, format),
@@ -3383,7 +3385,7 @@ pub fn GetPixelColor(
 /// Set color formatted into destination pixel pointer
 pub fn SetPixelColor(
     dstPtr: *anyopaque,
-    color: Color,
+    color: types.Color,
     format: i32,
 ) void {
     raylib.SetPixelColor(
@@ -3407,14 +3409,14 @@ pub fn GetPixelDataSize(
 }
 
 /// Get the default Font
-pub fn GetFontDefault() Font {
+pub fn GetFontDefault() types.Font {
     return raylib.GetFontDefault();
 }
 
 /// Load font from file into GPU memory (VRAM)
 pub fn LoadFont(
     fileName: [:0]const u8,
-) Font {
+) types.Font {
     return raylib.LoadFont(
         fileName,
     );
@@ -3426,7 +3428,7 @@ pub fn LoadFontEx(
     fontSize: i32,
     fontChars: []i32,
     glyphCount: i32,
-) Font {
+) types.Font {
     return raylib.LoadFontEx(
         fileName,
         @intCast(c_int, fontSize),
@@ -3437,10 +3439,10 @@ pub fn LoadFontEx(
 
 /// Load font from Image (XNA style)
 pub fn LoadFontFromImage(
-    image: Image,
-    key: Color,
+    image: types.Image,
+    key: types.Color,
     firstChar: i32,
-) Font {
+) types.Font {
     return raylib.LoadFontFromImage(
         image,
         key,
@@ -3456,7 +3458,7 @@ pub fn LoadFontFromMemory(
     fontSize: i32,
     fontChars: []i32,
     glyphCount: i32,
-) Font {
+) types.Font {
     return raylib.LoadFontFromMemory(
         fileType,
         fileData,
@@ -3467,37 +3469,18 @@ pub fn LoadFontFromMemory(
     );
 }
 
-/// Load font data for further use
-pub fn LoadFontData(
-    fileData: [:0]const u8,
-    dataSize: i32,
-    fontSize: i32,
-    fontChars: []i32,
-    glyphCount: i32,
-    type: i32,
-) [*c]GlyphInfo {
-    return raylib.LoadFontData(
-        fileData,
-        @intCast(c_int, dataSize),
-        @intCast(c_int, fontSize),
-        @ptrCast([*c]c_int, fontChars.ptr),
-        @intCast(c_int, glyphCount),
-        @intCast(c_int, type),
-    );
-}
-
 /// Generate image font atlas using chars info
 pub fn GenImageFontAtlas(
-    chars: *const GlyphInfo,
-    recs: [*c][*c]Rectangle,
+    chars: *const types.GlyphInfo,
+    recs: [*c][*c]types.Rectangle,
     glyphCount: i32,
     fontSize: i32,
     padding: i32,
     packMethod: i32,
-) Image {
+) types.Image {
     return raylib.GenImageFontAtlas(
-        @ptrCast([*c]const GlyphInfo, chars),
-        @ptrCast([*c][*c]Rectangle, recs),
+        @ptrCast([*c]const types.GlyphInfo, chars),
+        @ptrCast([*c][*c]types.Rectangle, recs),
         @intCast(c_int, glyphCount),
         @intCast(c_int, fontSize),
         @intCast(c_int, padding),
@@ -3507,18 +3490,18 @@ pub fn GenImageFontAtlas(
 
 /// Unload font chars info data (RAM)
 pub fn UnloadFontData(
-    chars: *GlyphInfo,
+    chars: *types.GlyphInfo,
     glyphCount: i32,
 ) void {
     raylib.UnloadFontData(
-        @ptrCast([*c]GlyphInfo, chars),
+        @ptrCast([*c]types.GlyphInfo, chars),
         @intCast(c_int, glyphCount),
     );
 }
 
 /// Unload font from GPU memory (VRAM)
 pub fn UnloadFont(
-    font: Font,
+    font: types.Font,
 ) void {
     raylib.UnloadFont(
         font,
@@ -3527,7 +3510,7 @@ pub fn UnloadFont(
 
 /// Export font as code file, returns true on success
 pub fn ExportFontAsCode(
-    font: Font,
+    font: types.Font,
     fileName: [:0]const u8,
 ) bool {
     return raylib.ExportFontAsCode(
@@ -3553,7 +3536,7 @@ pub fn DrawText(
     posX: i32,
     posY: i32,
     fontSize: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawText(
         text,
@@ -3566,12 +3549,12 @@ pub fn DrawText(
 
 /// Draw text using font and additional parameters
 pub fn DrawTextEx(
-    font: Font,
+    font: types.Font,
     text: [:0]const u8,
-    position: Vector2,
+    position: types.Vector2,
     fontSize: f32,
     spacing: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTextEx(
         font,
@@ -3585,14 +3568,14 @@ pub fn DrawTextEx(
 
 /// Draw text using Font and pro parameters (rotation)
 pub fn DrawTextPro(
-    font: Font,
+    font: types.Font,
     text: [:0]const u8,
-    position: Vector2,
-    origin: Vector2,
+    position: types.Vector2,
+    origin: types.Vector2,
     rotation: f32,
     fontSize: f32,
     spacing: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTextPro(
         font,
@@ -3608,11 +3591,11 @@ pub fn DrawTextPro(
 
 /// Draw one character (codepoint)
 pub fn DrawTextCodepoint(
-    font: Font,
+    font: types.Font,
     codepoint: i32,
-    position: Vector2,
+    position: types.Vector2,
     fontSize: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTextCodepoint(
         font,
@@ -3625,13 +3608,13 @@ pub fn DrawTextCodepoint(
 
 /// Draw multiple character (codepoint)
 pub fn DrawTextCodepoints(
-    font: Font,
+    font: types.Font,
     codepoints: []i32,
     count: i32,
-    position: Vector2,
+    position: types.Vector2,
     fontSize: f32,
     spacing: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawTextCodepoints(
         font,
@@ -3657,11 +3640,11 @@ pub fn MeasureText(
 
 /// Measure string size for Font
 pub fn MeasureTextEx(
-    font: Font,
+    font: types.Font,
     text: [:0]const u8,
     fontSize: f32,
     spacing: f32,
-) Vector2 {
+) types.Vector2 {
     return raylib.MeasureTextEx(
         font,
         text,
@@ -3672,7 +3655,7 @@ pub fn MeasureTextEx(
 
 /// Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
 pub fn GetGlyphIndex(
-    font: Font,
+    font: types.Font,
     codepoint: i32,
 ) i32 {
     return raylib.GetGlyphIndex(
@@ -3683,9 +3666,9 @@ pub fn GetGlyphIndex(
 
 /// Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
 pub fn GetGlyphInfo(
-    font: Font,
+    font: types.Font,
     codepoint: i32,
-) GlyphInfo {
+) types.GlyphInfo {
     return raylib.GetGlyphInfo(
         font,
         @intCast(c_int, codepoint),
@@ -3694,9 +3677,9 @@ pub fn GetGlyphInfo(
 
 /// Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
 pub fn GetGlyphAtlasRec(
-    font: Font,
+    font: types.Font,
     codepoint: i32,
-) Rectangle {
+) types.Rectangle {
     return raylib.GetGlyphAtlasRec(
         font,
         @intCast(c_int, codepoint),
@@ -3705,9 +3688,9 @@ pub fn GetGlyphAtlasRec(
 
 /// Draw a line in 3D world space
 pub fn DrawLine3D(
-    startPos: Vector3,
-    endPos: Vector3,
-    color: Color,
+    startPos: types.Vector3,
+    endPos: types.Vector3,
+    color: types.Color,
 ) void {
     raylib.DrawLine3D(
         startPos,
@@ -3718,8 +3701,8 @@ pub fn DrawLine3D(
 
 /// Draw a point in 3D space, actually a small line
 pub fn DrawPoint3D(
-    position: Vector3,
-    color: Color,
+    position: types.Vector3,
+    color: types.Color,
 ) void {
     raylib.DrawPoint3D(
         position,
@@ -3729,11 +3712,11 @@ pub fn DrawPoint3D(
 
 /// Draw a circle in 3D world space
 pub fn DrawCircle3D(
-    center: Vector3,
+    center: types.Vector3,
     radius: f32,
-    rotationAxis: Vector3,
+    rotationAxis: types.Vector3,
     rotationAngle: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCircle3D(
         center,
@@ -3746,10 +3729,10 @@ pub fn DrawCircle3D(
 
 /// Draw a color-filled triangle (vertex in counter-clockwise order!)
 pub fn DrawTriangle3D(
-    v1: Vector3,
-    v2: Vector3,
-    v3: Vector3,
-    color: Color,
+    v1: types.Vector3,
+    v2: types.Vector3,
+    v3: types.Vector3,
+    color: types.Color,
 ) void {
     raylib.DrawTriangle3D(
         v1,
@@ -3761,12 +3744,12 @@ pub fn DrawTriangle3D(
 
 /// Draw a triangle strip defined by points
 pub fn DrawTriangleStrip3D(
-    points: *Vector3,
+    points: *types.Vector3,
     pointCount: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawTriangleStrip3D(
-        @ptrCast([*c]Vector3, points),
+        @ptrCast([*c]types.Vector3, points),
         @intCast(c_int, pointCount),
         color,
     );
@@ -3774,11 +3757,11 @@ pub fn DrawTriangleStrip3D(
 
 /// Draw cube
 pub fn DrawCube(
-    position: Vector3,
+    position: types.Vector3,
     width: f32,
     height: f32,
     length: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCube(
         position,
@@ -3791,9 +3774,9 @@ pub fn DrawCube(
 
 /// Draw cube (Vector version)
 pub fn DrawCubeV(
-    position: Vector3,
-    size: Vector3,
-    color: Color,
+    position: types.Vector3,
+    size: types.Vector3,
+    color: types.Color,
 ) void {
     raylib.DrawCubeV(
         position,
@@ -3804,11 +3787,11 @@ pub fn DrawCubeV(
 
 /// Draw cube wires
 pub fn DrawCubeWires(
-    position: Vector3,
+    position: types.Vector3,
     width: f32,
     height: f32,
     length: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCubeWires(
         position,
@@ -3821,9 +3804,9 @@ pub fn DrawCubeWires(
 
 /// Draw cube wires (Vector version)
 pub fn DrawCubeWiresV(
-    position: Vector3,
-    size: Vector3,
-    color: Color,
+    position: types.Vector3,
+    size: types.Vector3,
+    color: types.Color,
 ) void {
     raylib.DrawCubeWiresV(
         position,
@@ -3834,12 +3817,12 @@ pub fn DrawCubeWiresV(
 
 /// Draw cube textured
 pub fn DrawCubeTexture(
-    texture: Texture2D,
-    position: Vector3,
+    texture: types.Texture2D,
+    position: types.Vector3,
     width: f32,
     height: f32,
     length: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCubeTexture(
         texture,
@@ -3853,13 +3836,13 @@ pub fn DrawCubeTexture(
 
 /// Draw cube with a region of a texture
 pub fn DrawCubeTextureRec(
-    texture: Texture2D,
-    source: Rectangle,
-    position: Vector3,
+    texture: types.Texture2D,
+    source: types.Rectangle,
+    position: types.Vector3,
     width: f32,
     height: f32,
     length: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCubeTextureRec(
         texture,
@@ -3874,9 +3857,9 @@ pub fn DrawCubeTextureRec(
 
 /// Draw sphere
 pub fn DrawSphere(
-    centerPos: Vector3,
+    centerPos: types.Vector3,
     radius: f32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawSphere(
         centerPos,
@@ -3887,11 +3870,11 @@ pub fn DrawSphere(
 
 /// Draw sphere with extended parameters
 pub fn DrawSphereEx(
-    centerPos: Vector3,
+    centerPos: types.Vector3,
     radius: f32,
     rings: i32,
     slices: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawSphereEx(
         centerPos,
@@ -3904,11 +3887,11 @@ pub fn DrawSphereEx(
 
 /// Draw sphere wires
 pub fn DrawSphereWires(
-    centerPos: Vector3,
+    centerPos: types.Vector3,
     radius: f32,
     rings: i32,
     slices: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawSphereWires(
         centerPos,
@@ -3921,12 +3904,12 @@ pub fn DrawSphereWires(
 
 /// Draw a cylinder/cone
 pub fn DrawCylinder(
-    position: Vector3,
+    position: types.Vector3,
     radiusTop: f32,
     radiusBottom: f32,
     height: f32,
     slices: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCylinder(
         position,
@@ -3940,12 +3923,12 @@ pub fn DrawCylinder(
 
 /// Draw a cylinder with base at startPos and top at endPos
 pub fn DrawCylinderEx(
-    startPos: Vector3,
-    endPos: Vector3,
+    startPos: types.Vector3,
+    endPos: types.Vector3,
     startRadius: f32,
     endRadius: f32,
     sides: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCylinderEx(
         startPos,
@@ -3959,12 +3942,12 @@ pub fn DrawCylinderEx(
 
 /// Draw a cylinder/cone wires
 pub fn DrawCylinderWires(
-    position: Vector3,
+    position: types.Vector3,
     radiusTop: f32,
     radiusBottom: f32,
     height: f32,
     slices: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCylinderWires(
         position,
@@ -3978,12 +3961,12 @@ pub fn DrawCylinderWires(
 
 /// Draw a cylinder wires with base at startPos and top at endPos
 pub fn DrawCylinderWiresEx(
-    startPos: Vector3,
-    endPos: Vector3,
+    startPos: types.Vector3,
+    endPos: types.Vector3,
     startRadius: f32,
     endRadius: f32,
     sides: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.DrawCylinderWiresEx(
         startPos,
@@ -3997,9 +3980,9 @@ pub fn DrawCylinderWiresEx(
 
 /// Draw a plane XZ
 pub fn DrawPlane(
-    centerPos: Vector3,
-    size: Vector2,
-    color: Color,
+    centerPos: types.Vector3,
+    size: types.Vector2,
+    color: types.Color,
 ) void {
     raylib.DrawPlane(
         centerPos,
@@ -4010,8 +3993,8 @@ pub fn DrawPlane(
 
 /// Draw a ray line
 pub fn DrawRay(
-    ray: Ray,
-    color: Color,
+    ray: types.Ray,
+    color: types.Color,
 ) void {
     raylib.DrawRay(
         ray,
@@ -4033,7 +4016,7 @@ pub fn DrawGrid(
 /// Load model from files (meshes and materials)
 pub fn LoadModel(
     fileName: [:0]const u8,
-) Model {
+) types.Model {
     return raylib.LoadModel(
         fileName,
     );
@@ -4041,8 +4024,8 @@ pub fn LoadModel(
 
 /// Load model from generated mesh (default material)
 pub fn LoadModelFromMesh(
-    mesh: Mesh,
-) Model {
+    mesh: types.Mesh,
+) types.Model {
     return raylib.LoadModelFromMesh(
         mesh,
     );
@@ -4050,7 +4033,7 @@ pub fn LoadModelFromMesh(
 
 /// Unload model (including meshes) from memory (RAM and/or VRAM)
 pub fn UnloadModel(
-    model: Model,
+    model: types.Model,
 ) void {
     raylib.UnloadModel(
         model,
@@ -4059,7 +4042,7 @@ pub fn UnloadModel(
 
 /// Unload model (but not meshes) from memory (RAM and/or VRAM)
 pub fn UnloadModelKeepMeshes(
-    model: Model,
+    model: types.Model,
 ) void {
     raylib.UnloadModelKeepMeshes(
         model,
@@ -4068,8 +4051,8 @@ pub fn UnloadModelKeepMeshes(
 
 /// Compute model bounding box limits (considers all meshes)
 pub fn GetModelBoundingBox(
-    model: Model,
-) BoundingBox {
+    model: types.Model,
+) types.BoundingBox {
     return raylib.GetModelBoundingBox(
         model,
     );
@@ -4077,10 +4060,10 @@ pub fn GetModelBoundingBox(
 
 /// Draw a model (with texture if set)
 pub fn DrawModel(
-    model: Model,
-    position: Vector3,
+    model: types.Model,
+    position: types.Vector3,
     scale: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawModel(
         model,
@@ -4092,12 +4075,12 @@ pub fn DrawModel(
 
 /// Draw a model with extended parameters
 pub fn DrawModelEx(
-    model: Model,
-    position: Vector3,
-    rotationAxis: Vector3,
+    model: types.Model,
+    position: types.Vector3,
+    rotationAxis: types.Vector3,
     rotationAngle: f32,
-    scale: Vector3,
-    tint: Color,
+    scale: types.Vector3,
+    tint: types.Color,
 ) void {
     raylib.DrawModelEx(
         model,
@@ -4111,10 +4094,10 @@ pub fn DrawModelEx(
 
 /// Draw a model wires (with texture if set)
 pub fn DrawModelWires(
-    model: Model,
-    position: Vector3,
+    model: types.Model,
+    position: types.Vector3,
     scale: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawModelWires(
         model,
@@ -4126,12 +4109,12 @@ pub fn DrawModelWires(
 
 /// Draw a model wires (with texture if set) with extended parameters
 pub fn DrawModelWiresEx(
-    model: Model,
-    position: Vector3,
-    rotationAxis: Vector3,
+    model: types.Model,
+    position: types.Vector3,
+    rotationAxis: types.Vector3,
     rotationAngle: f32,
-    scale: Vector3,
-    tint: Color,
+    scale: types.Vector3,
+    tint: types.Color,
 ) void {
     raylib.DrawModelWiresEx(
         model,
@@ -4145,8 +4128,8 @@ pub fn DrawModelWiresEx(
 
 /// Draw bounding box (wires)
 pub fn DrawBoundingBox(
-    box: BoundingBox,
-    color: Color,
+    box: types.BoundingBox,
+    color: types.Color,
 ) void {
     raylib.DrawBoundingBox(
         box,
@@ -4156,11 +4139,11 @@ pub fn DrawBoundingBox(
 
 /// Draw a billboard texture
 pub fn DrawBillboard(
-    camera: Camera,
-    texture: Texture2D,
-    position: Vector3,
+    camera: types.Camera,
+    texture: types.Texture2D,
+    position: types.Vector3,
     size: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawBillboard(
         camera,
@@ -4173,12 +4156,12 @@ pub fn DrawBillboard(
 
 /// Draw a billboard texture defined by source
 pub fn DrawBillboardRec(
-    camera: Camera,
-    texture: Texture2D,
-    source: Rectangle,
-    position: Vector3,
-    size: Vector2,
-    tint: Color,
+    camera: types.Camera,
+    texture: types.Texture2D,
+    source: types.Rectangle,
+    position: types.Vector3,
+    size: types.Vector2,
+    tint: types.Color,
 ) void {
     raylib.DrawBillboardRec(
         camera,
@@ -4192,15 +4175,15 @@ pub fn DrawBillboardRec(
 
 /// Draw a billboard texture defined by source and rotation
 pub fn DrawBillboardPro(
-    camera: Camera,
-    texture: Texture2D,
-    source: Rectangle,
-    position: Vector3,
-    up: Vector3,
-    size: Vector2,
-    origin: Vector2,
+    camera: types.Camera,
+    texture: types.Texture2D,
+    source: types.Rectangle,
+    position: types.Vector3,
+    up: types.Vector3,
+    size: types.Vector2,
+    origin: types.Vector2,
     rotation: f32,
-    tint: Color,
+    tint: types.Color,
 ) void {
     raylib.DrawBillboardPro(
         camera,
@@ -4217,18 +4200,18 @@ pub fn DrawBillboardPro(
 
 /// Upload mesh vertex data in GPU and provide VAO/VBO ids
 pub fn UploadMesh(
-    mesh: *Mesh,
+    mesh: *types.Mesh,
     dynamic: bool,
 ) void {
     raylib.UploadMesh(
-        @ptrCast([*c]Mesh, mesh),
+        @ptrCast([*c]types.Mesh, mesh),
         dynamic,
     );
 }
 
 /// Update mesh vertex data in GPU for a specific buffer index
 pub fn UpdateMeshBuffer(
-    mesh: Mesh,
+    mesh: types.Mesh,
     index: i32,
     data: *anyopaque,
     dataSize: i32,
@@ -4245,7 +4228,7 @@ pub fn UpdateMeshBuffer(
 
 /// Unload mesh data from CPU and GPU
 pub fn UnloadMesh(
-    mesh: Mesh,
+    mesh: types.Mesh,
 ) void {
     raylib.UnloadMesh(
         mesh,
@@ -4254,9 +4237,9 @@ pub fn UnloadMesh(
 
 /// Draw a 3d mesh with material and transform
 pub fn DrawMesh(
-    mesh: Mesh,
-    material: Material,
-    transform: Matrix,
+    mesh: types.Mesh,
+    material: types.Material,
+    transform: types.Matrix,
 ) void {
     raylib.DrawMesh(
         mesh,
@@ -4267,22 +4250,22 @@ pub fn DrawMesh(
 
 /// Draw multiple mesh instances with material and different transforms
 pub fn DrawMeshInstanced(
-    mesh: Mesh,
-    material: Material,
-    transforms: *const Matrix,
+    mesh: types.Mesh,
+    material: types.Material,
+    transforms: *const types.Matrix,
     instances: i32,
 ) void {
     raylib.DrawMeshInstanced(
         mesh,
         material,
-        @ptrCast([*c]const Matrix, transforms),
+        @ptrCast([*c]const types.Matrix, transforms),
         @intCast(c_int, instances),
     );
 }
 
 /// Export mesh data to file, returns true on success
 pub fn ExportMesh(
-    mesh: Mesh,
+    mesh: types.Mesh,
     fileName: [:0]const u8,
 ) bool {
     return raylib.ExportMesh(
@@ -4293,8 +4276,8 @@ pub fn ExportMesh(
 
 /// Compute mesh bounding box limits
 pub fn GetMeshBoundingBox(
-    mesh: Mesh,
-) BoundingBox {
+    mesh: types.Mesh,
+) types.BoundingBox {
     return raylib.GetMeshBoundingBox(
         mesh,
     );
@@ -4302,19 +4285,19 @@ pub fn GetMeshBoundingBox(
 
 /// Compute mesh tangents
 pub fn GenMeshTangents(
-    mesh: *Mesh,
+    mesh: *types.Mesh,
 ) void {
     raylib.GenMeshTangents(
-        @ptrCast([*c]Mesh, mesh),
+        @ptrCast([*c]types.Mesh, mesh),
     );
 }
 
 /// Compute mesh binormals
 pub fn GenMeshBinormals(
-    mesh: *Mesh,
+    mesh: *types.Mesh,
 ) void {
     raylib.GenMeshBinormals(
-        @ptrCast([*c]Mesh, mesh),
+        @ptrCast([*c]types.Mesh, mesh),
     );
 }
 
@@ -4322,7 +4305,7 @@ pub fn GenMeshBinormals(
 pub fn GenMeshPoly(
     sides: i32,
     radius: f32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshPoly(
         @intCast(c_int, sides),
         radius,
@@ -4335,7 +4318,7 @@ pub fn GenMeshPlane(
     length: f32,
     resX: i32,
     resZ: i32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshPlane(
         width,
         length,
@@ -4349,7 +4332,7 @@ pub fn GenMeshCube(
     width: f32,
     height: f32,
     length: f32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshCube(
         width,
         height,
@@ -4362,7 +4345,7 @@ pub fn GenMeshSphere(
     radius: f32,
     rings: i32,
     slices: i32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshSphere(
         radius,
         @intCast(c_int, rings),
@@ -4375,7 +4358,7 @@ pub fn GenMeshHemiSphere(
     radius: f32,
     rings: i32,
     slices: i32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshHemiSphere(
         radius,
         @intCast(c_int, rings),
@@ -4388,7 +4371,7 @@ pub fn GenMeshCylinder(
     radius: f32,
     height: f32,
     slices: i32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshCylinder(
         radius,
         height,
@@ -4401,7 +4384,7 @@ pub fn GenMeshCone(
     radius: f32,
     height: f32,
     slices: i32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshCone(
         radius,
         height,
@@ -4415,7 +4398,7 @@ pub fn GenMeshTorus(
     size: f32,
     radSeg: i32,
     sides: i32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshTorus(
         radius,
         size,
@@ -4430,7 +4413,7 @@ pub fn GenMeshKnot(
     size: f32,
     radSeg: i32,
     sides: i32,
-) Mesh {
+) types.Mesh {
     return raylib.GenMeshKnot(
         radius,
         size,
@@ -4441,9 +4424,9 @@ pub fn GenMeshKnot(
 
 /// Generate heightmap mesh from image data
 pub fn GenMeshHeightmap(
-    heightmap: Image,
-    size: Vector3,
-) Mesh {
+    heightmap: types.Image,
+    size: types.Vector3,
+) types.Mesh {
     return raylib.GenMeshHeightmap(
         heightmap,
         size,
@@ -4452,9 +4435,9 @@ pub fn GenMeshHeightmap(
 
 /// Generate cubes-based map mesh from image data
 pub fn GenMeshCubicmap(
-    cubicmap: Image,
-    cubeSize: Vector3,
-) Mesh {
+    cubicmap: types.Image,
+    cubeSize: types.Vector3,
+) types.Mesh {
     return raylib.GenMeshCubicmap(
         cubicmap,
         cubeSize,
@@ -4465,7 +4448,7 @@ pub fn GenMeshCubicmap(
 pub fn LoadMaterials(
     fileName: [:0]const u8,
     materialCount: []i32,
-) [*c]Material {
+) [*c]types.Material {
     return raylib.LoadMaterials(
         fileName,
         @ptrCast([*c]c_int, materialCount.ptr),
@@ -4473,13 +4456,13 @@ pub fn LoadMaterials(
 }
 
 /// Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
-pub fn LoadMaterialDefault() Material {
+pub fn LoadMaterialDefault() types.Material {
     return raylib.LoadMaterialDefault();
 }
 
 /// Unload material from GPU memory (VRAM)
 pub fn UnloadMaterial(
-    material: Material,
+    material: types.Material,
 ) void {
     raylib.UnloadMaterial(
         material,
@@ -4488,12 +4471,12 @@ pub fn UnloadMaterial(
 
 /// Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
 pub fn SetMaterialTexture(
-    material: *Material,
+    material: *types.Material,
     mapType: i32,
-    texture: Texture2D,
+    texture: types.Texture2D,
 ) void {
     raylib.SetMaterialTexture(
-        @ptrCast([*c]Material, material),
+        @ptrCast([*c]types.Material, material),
         @intCast(c_int, mapType),
         texture,
     );
@@ -4501,12 +4484,12 @@ pub fn SetMaterialTexture(
 
 /// Set material for a mesh
 pub fn SetModelMeshMaterial(
-    model: *Model,
+    model: *types.Model,
     meshId: i32,
     materialId: i32,
 ) void {
     raylib.SetModelMeshMaterial(
-        @ptrCast([*c]Model, model),
+        @ptrCast([*c]types.Model, model),
         @intCast(c_int, meshId),
         @intCast(c_int, materialId),
     );
@@ -4516,7 +4499,7 @@ pub fn SetModelMeshMaterial(
 pub fn LoadModelAnimations(
     fileName: [:0]const u8,
     animCount: []u32,
-) [*c]ModelAnimation {
+) [*c]types.ModelAnimation {
     return raylib.LoadModelAnimations(
         fileName,
         @ptrCast([*c]c_uint, animCount.ptr),
@@ -4525,8 +4508,8 @@ pub fn LoadModelAnimations(
 
 /// Update model animation pose
 pub fn UpdateModelAnimation(
-    model: Model,
-    anim: ModelAnimation,
+    model: types.Model,
+    anim: types.ModelAnimation,
     frame: i32,
 ) void {
     raylib.UpdateModelAnimation(
@@ -4538,7 +4521,7 @@ pub fn UpdateModelAnimation(
 
 /// Unload animation data
 pub fn UnloadModelAnimation(
-    anim: ModelAnimation,
+    anim: types.ModelAnimation,
 ) void {
     raylib.UnloadModelAnimation(
         anim,
@@ -4547,19 +4530,19 @@ pub fn UnloadModelAnimation(
 
 /// Unload animation array data
 pub fn UnloadModelAnimations(
-    animations: *ModelAnimation,
+    animations: *types.ModelAnimation,
     count: u32,
 ) void {
     raylib.UnloadModelAnimations(
-        @ptrCast([*c]ModelAnimation, animations),
+        @ptrCast([*c]types.ModelAnimation, animations),
         @intCast(c_uint, count),
     );
 }
 
 /// Check model animation skeleton match
 pub fn IsModelAnimationValid(
-    model: Model,
-    anim: ModelAnimation,
+    model: types.Model,
+    anim: types.ModelAnimation,
 ) bool {
     return raylib.IsModelAnimationValid(
         model,
@@ -4569,9 +4552,9 @@ pub fn IsModelAnimationValid(
 
 /// Check collision between two spheres
 pub fn CheckCollisionSpheres(
-    center1: Vector3,
+    center1: types.Vector3,
     radius1: f32,
-    center2: Vector3,
+    center2: types.Vector3,
     radius2: f32,
 ) bool {
     return raylib.CheckCollisionSpheres(
@@ -4584,8 +4567,8 @@ pub fn CheckCollisionSpheres(
 
 /// Check collision between two bounding boxes
 pub fn CheckCollisionBoxes(
-    box1: BoundingBox,
-    box2: BoundingBox,
+    box1: types.BoundingBox,
+    box2: types.BoundingBox,
 ) bool {
     return raylib.CheckCollisionBoxes(
         box1,
@@ -4595,8 +4578,8 @@ pub fn CheckCollisionBoxes(
 
 /// Check collision between box and sphere
 pub fn CheckCollisionBoxSphere(
-    box: BoundingBox,
-    center: Vector3,
+    box: types.BoundingBox,
+    center: types.Vector3,
     radius: f32,
 ) bool {
     return raylib.CheckCollisionBoxSphere(
@@ -4608,10 +4591,10 @@ pub fn CheckCollisionBoxSphere(
 
 /// Get collision info between ray and sphere
 pub fn GetRayCollisionSphere(
-    ray: Ray,
-    center: Vector3,
+    ray: types.Ray,
+    center: types.Vector3,
     radius: f32,
-) RayCollision {
+) types.RayCollision {
     return raylib.GetRayCollisionSphere(
         ray,
         center,
@@ -4621,9 +4604,9 @@ pub fn GetRayCollisionSphere(
 
 /// Get collision info between ray and box
 pub fn GetRayCollisionBox(
-    ray: Ray,
-    box: BoundingBox,
-) RayCollision {
+    ray: types.Ray,
+    box: types.BoundingBox,
+) types.RayCollision {
     return raylib.GetRayCollisionBox(
         ray,
         box,
@@ -4632,10 +4615,10 @@ pub fn GetRayCollisionBox(
 
 /// Get collision info between ray and mesh
 pub fn GetRayCollisionMesh(
-    ray: Ray,
-    mesh: Mesh,
-    transform: Matrix,
-) RayCollision {
+    ray: types.Ray,
+    mesh: types.Mesh,
+    transform: types.Matrix,
+) types.RayCollision {
     return raylib.GetRayCollisionMesh(
         ray,
         mesh,
@@ -4645,11 +4628,11 @@ pub fn GetRayCollisionMesh(
 
 /// Get collision info between ray and triangle
 pub fn GetRayCollisionTriangle(
-    ray: Ray,
-    p1: Vector3,
-    p2: Vector3,
-    p3: Vector3,
-) RayCollision {
+    ray: types.Ray,
+    p1: types.Vector3,
+    p2: types.Vector3,
+    p3: types.Vector3,
+) types.RayCollision {
     return raylib.GetRayCollisionTriangle(
         ray,
         p1,
@@ -4660,12 +4643,12 @@ pub fn GetRayCollisionTriangle(
 
 /// Get collision info between ray and quad
 pub fn GetRayCollisionQuad(
-    ray: Ray,
-    p1: Vector3,
-    p2: Vector3,
-    p3: Vector3,
-    p4: Vector3,
-) RayCollision {
+    ray: types.Ray,
+    p1: types.Vector3,
+    p2: types.Vector3,
+    p3: types.Vector3,
+    p4: types.Vector3,
+) types.RayCollision {
     return raylib.GetRayCollisionQuad(
         ray,
         p1,
@@ -4702,7 +4685,7 @@ pub fn SetMasterVolume(
 /// Load wave data from file
 pub fn LoadWave(
     fileName: [:0]const u8,
-) Wave {
+) types.Wave {
     return raylib.LoadWave(
         fileName,
     );
@@ -4713,7 +4696,7 @@ pub fn LoadWaveFromMemory(
     fileType: [:0]const u8,
     fileData: [:0]const u8,
     dataSize: i32,
-) Wave {
+) types.Wave {
     return raylib.LoadWaveFromMemory(
         fileType,
         fileData,
@@ -4724,7 +4707,7 @@ pub fn LoadWaveFromMemory(
 /// Load sound from file
 pub fn LoadSound(
     fileName: [:0]const u8,
-) Sound {
+) types.Sound {
     return raylib.LoadSound(
         fileName,
     );
@@ -4732,8 +4715,8 @@ pub fn LoadSound(
 
 /// Load sound from wave data
 pub fn LoadSoundFromWave(
-    wave: Wave,
-) Sound {
+    wave: types.Wave,
+) types.Sound {
     return raylib.LoadSoundFromWave(
         wave,
     );
@@ -4741,7 +4724,7 @@ pub fn LoadSoundFromWave(
 
 /// Update sound buffer with new data
 pub fn UpdateSound(
-    sound: Sound,
+    sound: types.Sound,
     data: *anyopaque,
     sampleCount: i32,
 ) void {
@@ -4754,7 +4737,7 @@ pub fn UpdateSound(
 
 /// Unload wave data
 pub fn UnloadWave(
-    wave: Wave,
+    wave: types.Wave,
 ) void {
     raylib.UnloadWave(
         wave,
@@ -4763,7 +4746,7 @@ pub fn UnloadWave(
 
 /// Unload sound
 pub fn UnloadSound(
-    sound: Sound,
+    sound: types.Sound,
 ) void {
     raylib.UnloadSound(
         sound,
@@ -4772,7 +4755,7 @@ pub fn UnloadSound(
 
 /// Export wave data to file, returns true on success
 pub fn ExportWave(
-    wave: Wave,
+    wave: types.Wave,
     fileName: [:0]const u8,
 ) bool {
     return raylib.ExportWave(
@@ -4783,7 +4766,7 @@ pub fn ExportWave(
 
 /// Export wave sample data to code (.h), returns true on success
 pub fn ExportWaveAsCode(
-    wave: Wave,
+    wave: types.Wave,
     fileName: [:0]const u8,
 ) bool {
     return raylib.ExportWaveAsCode(
@@ -4794,7 +4777,7 @@ pub fn ExportWaveAsCode(
 
 /// Play a sound
 pub fn PlaySound(
-    sound: Sound,
+    sound: types.Sound,
 ) void {
     raylib.PlaySound(
         sound,
@@ -4803,7 +4786,7 @@ pub fn PlaySound(
 
 /// Stop playing a sound
 pub fn StopSound(
-    sound: Sound,
+    sound: types.Sound,
 ) void {
     raylib.StopSound(
         sound,
@@ -4812,7 +4795,7 @@ pub fn StopSound(
 
 /// Pause a sound
 pub fn PauseSound(
-    sound: Sound,
+    sound: types.Sound,
 ) void {
     raylib.PauseSound(
         sound,
@@ -4821,7 +4804,7 @@ pub fn PauseSound(
 
 /// Resume a paused sound
 pub fn ResumeSound(
-    sound: Sound,
+    sound: types.Sound,
 ) void {
     raylib.ResumeSound(
         sound,
@@ -4830,7 +4813,7 @@ pub fn ResumeSound(
 
 /// Play a sound (using multichannel buffer pool)
 pub fn PlaySoundMulti(
-    sound: Sound,
+    sound: types.Sound,
 ) void {
     raylib.PlaySoundMulti(
         sound,
@@ -4849,7 +4832,7 @@ pub fn GetSoundsPlaying() i32 {
 
 /// Check if a sound is currently playing
 pub fn IsSoundPlaying(
-    sound: Sound,
+    sound: types.Sound,
 ) bool {
     return raylib.IsSoundPlaying(
         sound,
@@ -4858,7 +4841,7 @@ pub fn IsSoundPlaying(
 
 /// Set volume for a sound (1.0 is max level)
 pub fn SetSoundVolume(
-    sound: Sound,
+    sound: types.Sound,
     volume: f32,
 ) void {
     raylib.SetSoundVolume(
@@ -4869,7 +4852,7 @@ pub fn SetSoundVolume(
 
 /// Set pitch for a sound (1.0 is base level)
 pub fn SetSoundPitch(
-    sound: Sound,
+    sound: types.Sound,
     pitch: f32,
 ) void {
     raylib.SetSoundPitch(
@@ -4880,7 +4863,7 @@ pub fn SetSoundPitch(
 
 /// Set pan for a sound (0.5 is center)
 pub fn SetSoundPan(
-    sound: Sound,
+    sound: types.Sound,
     pan: f32,
 ) void {
     raylib.SetSoundPan(
@@ -4891,8 +4874,8 @@ pub fn SetSoundPan(
 
 /// Copy a wave to a new wave
 pub fn WaveCopy(
-    wave: Wave,
-) Wave {
+    wave: types.Wave,
+) types.Wave {
     return raylib.WaveCopy(
         wave,
     );
@@ -4900,12 +4883,12 @@ pub fn WaveCopy(
 
 /// Crop a wave to defined samples range
 pub fn WaveCrop(
-    wave: *Wave,
+    wave: *types.Wave,
     initSample: i32,
     finalSample: i32,
 ) void {
     raylib.WaveCrop(
-        @ptrCast([*c]Wave, wave),
+        @ptrCast([*c]types.Wave, wave),
         @intCast(c_int, initSample),
         @intCast(c_int, finalSample),
     );
@@ -4913,13 +4896,13 @@ pub fn WaveCrop(
 
 /// Convert wave data to desired format
 pub fn WaveFormat(
-    wave: *Wave,
+    wave: *types.Wave,
     sampleRate: i32,
     sampleSize: i32,
     channels: i32,
 ) void {
     raylib.WaveFormat(
-        @ptrCast([*c]Wave, wave),
+        @ptrCast([*c]types.Wave, wave),
         @intCast(c_int, sampleRate),
         @intCast(c_int, sampleSize),
         @intCast(c_int, channels),
@@ -4928,7 +4911,7 @@ pub fn WaveFormat(
 
 /// Load samples data from wave as a 32bit float data array
 pub fn LoadWaveSamples(
-    wave: Wave,
+    wave: types.Wave,
 ) [*c]f32 {
     return raylib.LoadWaveSamples(
         wave,
@@ -4947,7 +4930,7 @@ pub fn UnloadWaveSamples(
 /// Load music stream from file
 pub fn LoadMusicStream(
     fileName: [:0]const u8,
-) Music {
+) types.Music {
     return raylib.LoadMusicStream(
         fileName,
     );
@@ -4958,7 +4941,7 @@ pub fn LoadMusicStreamFromMemory(
     fileType: [:0]const u8,
     data: [:0]const u8,
     dataSize: i32,
-) Music {
+) types.Music {
     return raylib.LoadMusicStreamFromMemory(
         fileType,
         data,
@@ -4968,7 +4951,7 @@ pub fn LoadMusicStreamFromMemory(
 
 /// Unload music stream
 pub fn UnloadMusicStream(
-    music: Music,
+    music: types.Music,
 ) void {
     raylib.UnloadMusicStream(
         music,
@@ -4977,7 +4960,7 @@ pub fn UnloadMusicStream(
 
 /// Start music playing
 pub fn PlayMusicStream(
-    music: Music,
+    music: types.Music,
 ) void {
     raylib.PlayMusicStream(
         music,
@@ -4986,7 +4969,7 @@ pub fn PlayMusicStream(
 
 /// Check if music is playing
 pub fn IsMusicStreamPlaying(
-    music: Music,
+    music: types.Music,
 ) bool {
     return raylib.IsMusicStreamPlaying(
         music,
@@ -4995,7 +4978,7 @@ pub fn IsMusicStreamPlaying(
 
 /// Updates buffers for music streaming
 pub fn UpdateMusicStream(
-    music: Music,
+    music: types.Music,
 ) void {
     raylib.UpdateMusicStream(
         music,
@@ -5004,7 +4987,7 @@ pub fn UpdateMusicStream(
 
 /// Stop music playing
 pub fn StopMusicStream(
-    music: Music,
+    music: types.Music,
 ) void {
     raylib.StopMusicStream(
         music,
@@ -5013,7 +4996,7 @@ pub fn StopMusicStream(
 
 /// Pause music playing
 pub fn PauseMusicStream(
-    music: Music,
+    music: types.Music,
 ) void {
     raylib.PauseMusicStream(
         music,
@@ -5022,7 +5005,7 @@ pub fn PauseMusicStream(
 
 /// Resume playing paused music
 pub fn ResumeMusicStream(
-    music: Music,
+    music: types.Music,
 ) void {
     raylib.ResumeMusicStream(
         music,
@@ -5031,7 +5014,7 @@ pub fn ResumeMusicStream(
 
 /// Seek music to a position (in seconds)
 pub fn SeekMusicStream(
-    music: Music,
+    music: types.Music,
     position: f32,
 ) void {
     raylib.SeekMusicStream(
@@ -5042,7 +5025,7 @@ pub fn SeekMusicStream(
 
 /// Set volume for music (1.0 is max level)
 pub fn SetMusicVolume(
-    music: Music,
+    music: types.Music,
     volume: f32,
 ) void {
     raylib.SetMusicVolume(
@@ -5053,7 +5036,7 @@ pub fn SetMusicVolume(
 
 /// Set pitch for a music (1.0 is base level)
 pub fn SetMusicPitch(
-    music: Music,
+    music: types.Music,
     pitch: f32,
 ) void {
     raylib.SetMusicPitch(
@@ -5064,7 +5047,7 @@ pub fn SetMusicPitch(
 
 /// Set pan for a music (0.5 is center)
 pub fn SetMusicPan(
-    music: Music,
+    music: types.Music,
     pan: f32,
 ) void {
     raylib.SetMusicPan(
@@ -5075,7 +5058,7 @@ pub fn SetMusicPan(
 
 /// Get music time length (in seconds)
 pub fn GetMusicTimeLength(
-    music: Music,
+    music: types.Music,
 ) f32 {
     return raylib.GetMusicTimeLength(
         music,
@@ -5084,7 +5067,7 @@ pub fn GetMusicTimeLength(
 
 /// Get current music time played (in seconds)
 pub fn GetMusicTimePlayed(
-    music: Music,
+    music: types.Music,
 ) f32 {
     return raylib.GetMusicTimePlayed(
         music,
@@ -5096,7 +5079,7 @@ pub fn LoadAudioStream(
     sampleRate: u32,
     sampleSize: u32,
     channels: u32,
-) AudioStream {
+) types.AudioStream {
     return raylib.LoadAudioStream(
         @intCast(c_uint, sampleRate),
         @intCast(c_uint, sampleSize),
@@ -5106,7 +5089,7 @@ pub fn LoadAudioStream(
 
 /// Unload audio stream and free memory
 pub fn UnloadAudioStream(
-    stream: AudioStream,
+    stream: types.AudioStream,
 ) void {
     raylib.UnloadAudioStream(
         stream,
@@ -5115,7 +5098,7 @@ pub fn UnloadAudioStream(
 
 /// Update audio stream buffers with data
 pub fn UpdateAudioStream(
-    stream: AudioStream,
+    stream: types.AudioStream,
     data: *anyopaque,
     frameCount: i32,
 ) void {
@@ -5128,7 +5111,7 @@ pub fn UpdateAudioStream(
 
 /// Check if any audio stream buffers requires refill
 pub fn IsAudioStreamProcessed(
-    stream: AudioStream,
+    stream: types.AudioStream,
 ) bool {
     return raylib.IsAudioStreamProcessed(
         stream,
@@ -5137,7 +5120,7 @@ pub fn IsAudioStreamProcessed(
 
 /// Play audio stream
 pub fn PlayAudioStream(
-    stream: AudioStream,
+    stream: types.AudioStream,
 ) void {
     raylib.PlayAudioStream(
         stream,
@@ -5146,7 +5129,7 @@ pub fn PlayAudioStream(
 
 /// Pause audio stream
 pub fn PauseAudioStream(
-    stream: AudioStream,
+    stream: types.AudioStream,
 ) void {
     raylib.PauseAudioStream(
         stream,
@@ -5155,7 +5138,7 @@ pub fn PauseAudioStream(
 
 /// Resume audio stream
 pub fn ResumeAudioStream(
-    stream: AudioStream,
+    stream: types.AudioStream,
 ) void {
     raylib.ResumeAudioStream(
         stream,
@@ -5164,7 +5147,7 @@ pub fn ResumeAudioStream(
 
 /// Check if audio stream is playing
 pub fn IsAudioStreamPlaying(
-    stream: AudioStream,
+    stream: types.AudioStream,
 ) bool {
     return raylib.IsAudioStreamPlaying(
         stream,
@@ -5173,7 +5156,7 @@ pub fn IsAudioStreamPlaying(
 
 /// Stop audio stream
 pub fn StopAudioStream(
-    stream: AudioStream,
+    stream: types.AudioStream,
 ) void {
     raylib.StopAudioStream(
         stream,
@@ -5182,7 +5165,7 @@ pub fn StopAudioStream(
 
 /// Set volume for audio stream (1.0 is max level)
 pub fn SetAudioStreamVolume(
-    stream: AudioStream,
+    stream: types.AudioStream,
     volume: f32,
 ) void {
     raylib.SetAudioStreamVolume(
@@ -5193,7 +5176,7 @@ pub fn SetAudioStreamVolume(
 
 /// Set pitch for audio stream (1.0 is base level)
 pub fn SetAudioStreamPitch(
-    stream: AudioStream,
+    stream: types.AudioStream,
     pitch: f32,
 ) void {
     raylib.SetAudioStreamPitch(
@@ -5204,7 +5187,7 @@ pub fn SetAudioStreamPitch(
 
 /// Set pan for audio stream (0.5 is centered)
 pub fn SetAudioStreamPan(
-    stream: AudioStream,
+    stream: types.AudioStream,
     pan: f32,
 ) void {
     raylib.SetAudioStreamPan(
@@ -5224,8 +5207,8 @@ pub fn SetAudioStreamBufferSizeDefault(
 
 /// Audio thread callback to request new data
 pub fn SetAudioStreamCallback(
-    stream: AudioStream,
-    callback: AudioCallback,
+    stream: types.AudioStream,
+    callback: types.AudioCallback,
 ) void {
     raylib.SetAudioStreamCallback(
         stream,
@@ -5235,8 +5218,8 @@ pub fn SetAudioStreamCallback(
 
 /// 
 pub fn AttachAudioStreamProcessor(
-    stream: AudioStream,
-    processor: AudioCallback,
+    stream: types.AudioStream,
+    processor: types.AudioCallback,
 ) void {
     raylib.AttachAudioStreamProcessor(
         stream,
@@ -5246,8 +5229,8 @@ pub fn AttachAudioStreamProcessor(
 
 /// 
 pub fn DetachAudioStreamProcessor(
-    stream: AudioStream,
-    processor: AudioCallback,
+    stream: types.AudioStream,
+    processor: types.AudioCallback,
 ) void {
     raylib.DetachAudioStreamProcessor(
         stream,
@@ -5312,20 +5295,20 @@ pub fn Remap(
 }
 
 /// 
-pub fn Vector2Zero() Vector2 {
+pub fn Vector2Zero() types.Vector2 {
     return raylib.Vector2Zero();
 }
 
 /// 
-pub fn Vector2One() Vector2 {
+pub fn Vector2One() types.Vector2 {
     return raylib.Vector2One();
 }
 
 /// 
 pub fn Vector2Add(
-    v1: Vector2,
-    v2: Vector2,
-) Vector2 {
+    v1: types.Vector2,
+    v2: types.Vector2,
+) types.Vector2 {
     return raylib.Vector2Add(
         v1,
         v2,
@@ -5334,9 +5317,9 @@ pub fn Vector2Add(
 
 /// 
 pub fn Vector2AddValue(
-    v: Vector2,
+    v: types.Vector2,
     add: f32,
-) Vector2 {
+) types.Vector2 {
     return raylib.Vector2AddValue(
         v,
         add,
@@ -5345,9 +5328,9 @@ pub fn Vector2AddValue(
 
 /// 
 pub fn Vector2Subtract(
-    v1: Vector2,
-    v2: Vector2,
-) Vector2 {
+    v1: types.Vector2,
+    v2: types.Vector2,
+) types.Vector2 {
     return raylib.Vector2Subtract(
         v1,
         v2,
@@ -5356,9 +5339,9 @@ pub fn Vector2Subtract(
 
 /// 
 pub fn Vector2SubtractValue(
-    v: Vector2,
+    v: types.Vector2,
     sub: f32,
-) Vector2 {
+) types.Vector2 {
     return raylib.Vector2SubtractValue(
         v,
         sub,
@@ -5367,7 +5350,7 @@ pub fn Vector2SubtractValue(
 
 /// 
 pub fn Vector2Length(
-    v: Vector2,
+    v: types.Vector2,
 ) f32 {
     return raylib.Vector2Length(
         v,
@@ -5376,7 +5359,7 @@ pub fn Vector2Length(
 
 /// 
 pub fn Vector2LengthSqr(
-    v: Vector2,
+    v: types.Vector2,
 ) f32 {
     return raylib.Vector2LengthSqr(
         v,
@@ -5385,8 +5368,8 @@ pub fn Vector2LengthSqr(
 
 /// 
 pub fn Vector2DotProduct(
-    v1: Vector2,
-    v2: Vector2,
+    v1: types.Vector2,
+    v2: types.Vector2,
 ) f32 {
     return raylib.Vector2DotProduct(
         v1,
@@ -5396,8 +5379,8 @@ pub fn Vector2DotProduct(
 
 /// 
 pub fn Vector2Distance(
-    v1: Vector2,
-    v2: Vector2,
+    v1: types.Vector2,
+    v2: types.Vector2,
 ) f32 {
     return raylib.Vector2Distance(
         v1,
@@ -5407,8 +5390,8 @@ pub fn Vector2Distance(
 
 /// 
 pub fn Vector2DistanceSqr(
-    v1: Vector2,
-    v2: Vector2,
+    v1: types.Vector2,
+    v2: types.Vector2,
 ) f32 {
     return raylib.Vector2DistanceSqr(
         v1,
@@ -5418,8 +5401,8 @@ pub fn Vector2DistanceSqr(
 
 /// 
 pub fn Vector2Angle(
-    v1: Vector2,
-    v2: Vector2,
+    v1: types.Vector2,
+    v2: types.Vector2,
 ) f32 {
     return raylib.Vector2Angle(
         v1,
@@ -5429,9 +5412,9 @@ pub fn Vector2Angle(
 
 /// 
 pub fn Vector2Scale(
-    v: Vector2,
+    v: types.Vector2,
     scale: f32,
-) Vector2 {
+) types.Vector2 {
     return raylib.Vector2Scale(
         v,
         scale,
@@ -5440,9 +5423,9 @@ pub fn Vector2Scale(
 
 /// 
 pub fn Vector2Multiply(
-    v1: Vector2,
-    v2: Vector2,
-) Vector2 {
+    v1: types.Vector2,
+    v2: types.Vector2,
+) types.Vector2 {
     return raylib.Vector2Multiply(
         v1,
         v2,
@@ -5451,8 +5434,8 @@ pub fn Vector2Multiply(
 
 /// 
 pub fn Vector2Negate(
-    v: Vector2,
-) Vector2 {
+    v: types.Vector2,
+) types.Vector2 {
     return raylib.Vector2Negate(
         v,
     );
@@ -5460,9 +5443,9 @@ pub fn Vector2Negate(
 
 /// 
 pub fn Vector2Divide(
-    v1: Vector2,
-    v2: Vector2,
-) Vector2 {
+    v1: types.Vector2,
+    v2: types.Vector2,
+) types.Vector2 {
     return raylib.Vector2Divide(
         v1,
         v2,
@@ -5471,8 +5454,8 @@ pub fn Vector2Divide(
 
 /// 
 pub fn Vector2Normalize(
-    v: Vector2,
-) Vector2 {
+    v: types.Vector2,
+) types.Vector2 {
     return raylib.Vector2Normalize(
         v,
     );
@@ -5480,9 +5463,9 @@ pub fn Vector2Normalize(
 
 /// 
 pub fn Vector2Transform(
-    v: Vector2,
-    mat: Matrix,
-) Vector2 {
+    v: types.Vector2,
+    mat: types.Matrix,
+) types.Vector2 {
     return raylib.Vector2Transform(
         v,
         mat,
@@ -5491,10 +5474,10 @@ pub fn Vector2Transform(
 
 /// 
 pub fn Vector2Lerp(
-    v1: Vector2,
-    v2: Vector2,
+    v1: types.Vector2,
+    v2: types.Vector2,
     amount: f32,
-) Vector2 {
+) types.Vector2 {
     return raylib.Vector2Lerp(
         v1,
         v2,
@@ -5504,9 +5487,9 @@ pub fn Vector2Lerp(
 
 /// 
 pub fn Vector2Reflect(
-    v: Vector2,
-    normal: Vector2,
-) Vector2 {
+    v: types.Vector2,
+    normal: types.Vector2,
+) types.Vector2 {
     return raylib.Vector2Reflect(
         v,
         normal,
@@ -5515,9 +5498,9 @@ pub fn Vector2Reflect(
 
 /// 
 pub fn Vector2Rotate(
-    v: Vector2,
+    v: types.Vector2,
     angle: f32,
-) Vector2 {
+) types.Vector2 {
     return raylib.Vector2Rotate(
         v,
         angle,
@@ -5526,10 +5509,10 @@ pub fn Vector2Rotate(
 
 /// 
 pub fn Vector2MoveTowards(
-    v: Vector2,
-    target: Vector2,
+    v: types.Vector2,
+    target: types.Vector2,
     maxDistance: f32,
-) Vector2 {
+) types.Vector2 {
     return raylib.Vector2MoveTowards(
         v,
         target,
@@ -5538,20 +5521,20 @@ pub fn Vector2MoveTowards(
 }
 
 /// 
-pub fn Vector3Zero() Vector3 {
+pub fn Vector3Zero() types.Vector3 {
     return raylib.Vector3Zero();
 }
 
 /// 
-pub fn Vector3One() Vector3 {
+pub fn Vector3One() types.Vector3 {
     return raylib.Vector3One();
 }
 
 /// 
 pub fn Vector3Add(
-    v1: Vector3,
-    v2: Vector3,
-) Vector3 {
+    v1: types.Vector3,
+    v2: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Add(
         v1,
         v2,
@@ -5560,9 +5543,9 @@ pub fn Vector3Add(
 
 /// 
 pub fn Vector3AddValue(
-    v: Vector3,
+    v: types.Vector3,
     add: f32,
-) Vector3 {
+) types.Vector3 {
     return raylib.Vector3AddValue(
         v,
         add,
@@ -5571,9 +5554,9 @@ pub fn Vector3AddValue(
 
 /// 
 pub fn Vector3Subtract(
-    v1: Vector3,
-    v2: Vector3,
-) Vector3 {
+    v1: types.Vector3,
+    v2: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Subtract(
         v1,
         v2,
@@ -5582,9 +5565,9 @@ pub fn Vector3Subtract(
 
 /// 
 pub fn Vector3SubtractValue(
-    v: Vector3,
+    v: types.Vector3,
     sub: f32,
-) Vector3 {
+) types.Vector3 {
     return raylib.Vector3SubtractValue(
         v,
         sub,
@@ -5593,9 +5576,9 @@ pub fn Vector3SubtractValue(
 
 /// 
 pub fn Vector3Scale(
-    v: Vector3,
+    v: types.Vector3,
     scalar: f32,
-) Vector3 {
+) types.Vector3 {
     return raylib.Vector3Scale(
         v,
         scalar,
@@ -5604,9 +5587,9 @@ pub fn Vector3Scale(
 
 /// 
 pub fn Vector3Multiply(
-    v1: Vector3,
-    v2: Vector3,
-) Vector3 {
+    v1: types.Vector3,
+    v2: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Multiply(
         v1,
         v2,
@@ -5615,9 +5598,9 @@ pub fn Vector3Multiply(
 
 /// 
 pub fn Vector3CrossProduct(
-    v1: Vector3,
-    v2: Vector3,
-) Vector3 {
+    v1: types.Vector3,
+    v2: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3CrossProduct(
         v1,
         v2,
@@ -5626,8 +5609,8 @@ pub fn Vector3CrossProduct(
 
 /// 
 pub fn Vector3Perpendicular(
-    v: Vector3,
-) Vector3 {
+    v: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Perpendicular(
         v,
     );
@@ -5635,7 +5618,7 @@ pub fn Vector3Perpendicular(
 
 /// 
 pub fn Vector3Length(
-    v: Vector3,
+    v: types.Vector3,
 ) f32 {
     return raylib.Vector3Length(
         v,
@@ -5644,7 +5627,7 @@ pub fn Vector3Length(
 
 /// 
 pub fn Vector3LengthSqr(
-    v: Vector3,
+    v: types.Vector3,
 ) f32 {
     return raylib.Vector3LengthSqr(
         v,
@@ -5653,8 +5636,8 @@ pub fn Vector3LengthSqr(
 
 /// 
 pub fn Vector3DotProduct(
-    v1: Vector3,
-    v2: Vector3,
+    v1: types.Vector3,
+    v2: types.Vector3,
 ) f32 {
     return raylib.Vector3DotProduct(
         v1,
@@ -5664,8 +5647,8 @@ pub fn Vector3DotProduct(
 
 /// 
 pub fn Vector3Distance(
-    v1: Vector3,
-    v2: Vector3,
+    v1: types.Vector3,
+    v2: types.Vector3,
 ) f32 {
     return raylib.Vector3Distance(
         v1,
@@ -5675,8 +5658,8 @@ pub fn Vector3Distance(
 
 /// 
 pub fn Vector3DistanceSqr(
-    v1: Vector3,
-    v2: Vector3,
+    v1: types.Vector3,
+    v2: types.Vector3,
 ) f32 {
     return raylib.Vector3DistanceSqr(
         v1,
@@ -5686,8 +5669,8 @@ pub fn Vector3DistanceSqr(
 
 /// 
 pub fn Vector3Angle(
-    v1: Vector3,
-    v2: Vector3,
+    v1: types.Vector3,
+    v2: types.Vector3,
 ) f32 {
     return raylib.Vector3Angle(
         v1,
@@ -5697,8 +5680,8 @@ pub fn Vector3Angle(
 
 /// 
 pub fn Vector3Negate(
-    v: Vector3,
-) Vector3 {
+    v: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Negate(
         v,
     );
@@ -5706,9 +5689,9 @@ pub fn Vector3Negate(
 
 /// 
 pub fn Vector3Divide(
-    v1: Vector3,
-    v2: Vector3,
-) Vector3 {
+    v1: types.Vector3,
+    v2: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Divide(
         v1,
         v2,
@@ -5717,8 +5700,8 @@ pub fn Vector3Divide(
 
 /// 
 pub fn Vector3Normalize(
-    v: Vector3,
-) Vector3 {
+    v: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Normalize(
         v,
     );
@@ -5726,20 +5709,20 @@ pub fn Vector3Normalize(
 
 /// 
 pub fn Vector3OrthoNormalize(
-    v1: *Vector3,
-    v2: *Vector3,
+    v1: *types.Vector3,
+    v2: *types.Vector3,
 ) void {
     raylib.Vector3OrthoNormalize(
-        @ptrCast([*c]Vector3, v1),
-        @ptrCast([*c]Vector3, v2),
+        @ptrCast([*c]types.Vector3, v1),
+        @ptrCast([*c]types.Vector3, v2),
     );
 }
 
 /// 
 pub fn Vector3Transform(
-    v: Vector3,
-    mat: Matrix,
-) Vector3 {
+    v: types.Vector3,
+    mat: types.Matrix,
+) types.Vector3 {
     return raylib.Vector3Transform(
         v,
         mat,
@@ -5748,9 +5731,9 @@ pub fn Vector3Transform(
 
 /// 
 pub fn Vector3RotateByQuaternion(
-    v: Vector3,
-    q: Quaternion,
-) Vector3 {
+    v: types.Vector3,
+    q: types.Quaternion,
+) types.Vector3 {
     return raylib.Vector3RotateByQuaternion(
         v,
         q,
@@ -5759,10 +5742,10 @@ pub fn Vector3RotateByQuaternion(
 
 /// 
 pub fn Vector3Lerp(
-    v1: Vector3,
-    v2: Vector3,
+    v1: types.Vector3,
+    v2: types.Vector3,
     amount: f32,
-) Vector3 {
+) types.Vector3 {
     return raylib.Vector3Lerp(
         v1,
         v2,
@@ -5772,9 +5755,9 @@ pub fn Vector3Lerp(
 
 /// 
 pub fn Vector3Reflect(
-    v: Vector3,
-    normal: Vector3,
-) Vector3 {
+    v: types.Vector3,
+    normal: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Reflect(
         v,
         normal,
@@ -5783,9 +5766,9 @@ pub fn Vector3Reflect(
 
 /// 
 pub fn Vector3Min(
-    v1: Vector3,
-    v2: Vector3,
-) Vector3 {
+    v1: types.Vector3,
+    v2: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Min(
         v1,
         v2,
@@ -5794,9 +5777,9 @@ pub fn Vector3Min(
 
 /// 
 pub fn Vector3Max(
-    v1: Vector3,
-    v2: Vector3,
-) Vector3 {
+    v1: types.Vector3,
+    v2: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Max(
         v1,
         v2,
@@ -5805,11 +5788,11 @@ pub fn Vector3Max(
 
 /// 
 pub fn Vector3Barycenter(
-    p: Vector3,
-    a: Vector3,
-    b: Vector3,
-    c: Vector3,
-) Vector3 {
+    p: types.Vector3,
+    a: types.Vector3,
+    b: types.Vector3,
+    c: types.Vector3,
+) types.Vector3 {
     return raylib.Vector3Barycenter(
         p,
         a,
@@ -5820,10 +5803,10 @@ pub fn Vector3Barycenter(
 
 /// 
 pub fn Vector3Unproject(
-    source: Vector3,
-    projection: Matrix,
-    view: Matrix,
-) Vector3 {
+    source: types.Vector3,
+    projection: types.Matrix,
+    view: types.Matrix,
+) types.Vector3 {
     return raylib.Vector3Unproject(
         source,
         projection,
@@ -5833,8 +5816,8 @@ pub fn Vector3Unproject(
 
 /// 
 pub fn Vector3ToFloatV(
-    v: Vector3,
-) float3 {
+    v: types.Vector3,
+) types.float3 {
     return raylib.Vector3ToFloatV(
         v,
     );
@@ -5842,7 +5825,7 @@ pub fn Vector3ToFloatV(
 
 /// 
 pub fn MatrixDeterminant(
-    mat: Matrix,
+    mat: types.Matrix,
 ) f32 {
     return raylib.MatrixDeterminant(
         mat,
@@ -5851,7 +5834,7 @@ pub fn MatrixDeterminant(
 
 /// 
 pub fn MatrixTrace(
-    mat: Matrix,
+    mat: types.Matrix,
 ) f32 {
     return raylib.MatrixTrace(
         mat,
@@ -5860,8 +5843,8 @@ pub fn MatrixTrace(
 
 /// 
 pub fn MatrixTranspose(
-    mat: Matrix,
-) Matrix {
+    mat: types.Matrix,
+) types.Matrix {
     return raylib.MatrixTranspose(
         mat,
     );
@@ -5869,23 +5852,23 @@ pub fn MatrixTranspose(
 
 /// 
 pub fn MatrixInvert(
-    mat: Matrix,
-) Matrix {
+    mat: types.Matrix,
+) types.Matrix {
     return raylib.MatrixInvert(
         mat,
     );
 }
 
 /// 
-pub fn MatrixIdentity() Matrix {
+pub fn MatrixIdentity() types.Matrix {
     return raylib.MatrixIdentity();
 }
 
 /// 
 pub fn MatrixAdd(
-    left: Matrix,
-    right: Matrix,
-) Matrix {
+    left: types.Matrix,
+    right: types.Matrix,
+) types.Matrix {
     return raylib.MatrixAdd(
         left,
         right,
@@ -5894,9 +5877,9 @@ pub fn MatrixAdd(
 
 /// 
 pub fn MatrixSubtract(
-    left: Matrix,
-    right: Matrix,
-) Matrix {
+    left: types.Matrix,
+    right: types.Matrix,
+) types.Matrix {
     return raylib.MatrixSubtract(
         left,
         right,
@@ -5905,9 +5888,9 @@ pub fn MatrixSubtract(
 
 /// 
 pub fn MatrixMultiply(
-    left: Matrix,
-    right: Matrix,
-) Matrix {
+    left: types.Matrix,
+    right: types.Matrix,
+) types.Matrix {
     return raylib.MatrixMultiply(
         left,
         right,
@@ -5919,7 +5902,7 @@ pub fn MatrixTranslate(
     x: f32,
     y: f32,
     z: f32,
-) Matrix {
+) types.Matrix {
     return raylib.MatrixTranslate(
         x,
         y,
@@ -5929,9 +5912,9 @@ pub fn MatrixTranslate(
 
 /// 
 pub fn MatrixRotate(
-    axis: Vector3,
+    axis: types.Vector3,
     angle: f32,
-) Matrix {
+) types.Matrix {
     return raylib.MatrixRotate(
         axis,
         angle,
@@ -5941,7 +5924,7 @@ pub fn MatrixRotate(
 /// 
 pub fn MatrixRotateX(
     angle: f32,
-) Matrix {
+) types.Matrix {
     return raylib.MatrixRotateX(
         angle,
     );
@@ -5950,7 +5933,7 @@ pub fn MatrixRotateX(
 /// 
 pub fn MatrixRotateY(
     angle: f32,
-) Matrix {
+) types.Matrix {
     return raylib.MatrixRotateY(
         angle,
     );
@@ -5959,7 +5942,7 @@ pub fn MatrixRotateY(
 /// 
 pub fn MatrixRotateZ(
     angle: f32,
-) Matrix {
+) types.Matrix {
     return raylib.MatrixRotateZ(
         angle,
     );
@@ -5967,8 +5950,8 @@ pub fn MatrixRotateZ(
 
 /// 
 pub fn MatrixRotateXYZ(
-    ang: Vector3,
-) Matrix {
+    ang: types.Vector3,
+) types.Matrix {
     return raylib.MatrixRotateXYZ(
         ang,
     );
@@ -5976,8 +5959,8 @@ pub fn MatrixRotateXYZ(
 
 /// 
 pub fn MatrixRotateZYX(
-    ang: Vector3,
-) Matrix {
+    ang: types.Vector3,
+) types.Matrix {
     return raylib.MatrixRotateZYX(
         ang,
     );
@@ -5988,7 +5971,7 @@ pub fn MatrixScale(
     x: f32,
     y: f32,
     z: f32,
-) Matrix {
+) types.Matrix {
     return raylib.MatrixScale(
         x,
         y,
@@ -5998,13 +5981,13 @@ pub fn MatrixScale(
 
 /// 
 pub fn MatrixFrustum(
-    left: double,
-    right: double,
-    bottom: double,
-    top: double,
-    near: double,
-    far: double,
-) Matrix {
+    left: f64,
+    right: f64,
+    bottom: f64,
+    top: f64,
+    near: f64,
+    far: f64,
+) types.Matrix {
     return raylib.MatrixFrustum(
         left,
         right,
@@ -6017,11 +6000,11 @@ pub fn MatrixFrustum(
 
 /// 
 pub fn MatrixPerspective(
-    fovy: double,
-    aspect: double,
-    near: double,
-    far: double,
-) Matrix {
+    fovy: f64,
+    aspect: f64,
+    near: f64,
+    far: f64,
+) types.Matrix {
     return raylib.MatrixPerspective(
         fovy,
         aspect,
@@ -6032,13 +6015,13 @@ pub fn MatrixPerspective(
 
 /// 
 pub fn MatrixOrtho(
-    left: double,
-    right: double,
-    bottom: double,
-    top: double,
-    near: double,
-    far: double,
-) Matrix {
+    left: f64,
+    right: f64,
+    bottom: f64,
+    top: f64,
+    near: f64,
+    far: f64,
+) types.Matrix {
     return raylib.MatrixOrtho(
         left,
         right,
@@ -6051,10 +6034,10 @@ pub fn MatrixOrtho(
 
 /// 
 pub fn MatrixLookAt(
-    eye: Vector3,
-    target: Vector3,
-    up: Vector3,
-) Matrix {
+    eye: types.Vector3,
+    target: types.Vector3,
+    up: types.Vector3,
+) types.Matrix {
     return raylib.MatrixLookAt(
         eye,
         target,
@@ -6064,8 +6047,8 @@ pub fn MatrixLookAt(
 
 /// 
 pub fn MatrixToFloatV(
-    mat: Matrix,
-) float16 {
+    mat: types.Matrix,
+) types.float16 {
     return raylib.MatrixToFloatV(
         mat,
     );
@@ -6073,9 +6056,9 @@ pub fn MatrixToFloatV(
 
 /// 
 pub fn QuaternionAdd(
-    q1: Quaternion,
-    q2: Quaternion,
-) Quaternion {
+    q1: types.Quaternion,
+    q2: types.Quaternion,
+) types.Quaternion {
     return raylib.QuaternionAdd(
         q1,
         q2,
@@ -6084,9 +6067,9 @@ pub fn QuaternionAdd(
 
 /// 
 pub fn QuaternionAddValue(
-    q: Quaternion,
+    q: types.Quaternion,
     add: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionAddValue(
         q,
         add,
@@ -6095,9 +6078,9 @@ pub fn QuaternionAddValue(
 
 /// 
 pub fn QuaternionSubtract(
-    q1: Quaternion,
-    q2: Quaternion,
-) Quaternion {
+    q1: types.Quaternion,
+    q2: types.Quaternion,
+) types.Quaternion {
     return raylib.QuaternionSubtract(
         q1,
         q2,
@@ -6106,9 +6089,9 @@ pub fn QuaternionSubtract(
 
 /// 
 pub fn QuaternionSubtractValue(
-    q: Quaternion,
+    q: types.Quaternion,
     sub: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionSubtractValue(
         q,
         sub,
@@ -6116,13 +6099,13 @@ pub fn QuaternionSubtractValue(
 }
 
 /// 
-pub fn QuaternionIdentity() Quaternion {
+pub fn QuaternionIdentity() types.Quaternion {
     return raylib.QuaternionIdentity();
 }
 
 /// 
 pub fn QuaternionLength(
-    q: Quaternion,
+    q: types.Quaternion,
 ) f32 {
     return raylib.QuaternionLength(
         q,
@@ -6131,8 +6114,8 @@ pub fn QuaternionLength(
 
 /// 
 pub fn QuaternionNormalize(
-    q: Quaternion,
-) Quaternion {
+    q: types.Quaternion,
+) types.Quaternion {
     return raylib.QuaternionNormalize(
         q,
     );
@@ -6140,8 +6123,8 @@ pub fn QuaternionNormalize(
 
 /// 
 pub fn QuaternionInvert(
-    q: Quaternion,
-) Quaternion {
+    q: types.Quaternion,
+) types.Quaternion {
     return raylib.QuaternionInvert(
         q,
     );
@@ -6149,9 +6132,9 @@ pub fn QuaternionInvert(
 
 /// 
 pub fn QuaternionMultiply(
-    q1: Quaternion,
-    q2: Quaternion,
-) Quaternion {
+    q1: types.Quaternion,
+    q2: types.Quaternion,
+) types.Quaternion {
     return raylib.QuaternionMultiply(
         q1,
         q2,
@@ -6160,9 +6143,9 @@ pub fn QuaternionMultiply(
 
 /// 
 pub fn QuaternionScale(
-    q: Quaternion,
+    q: types.Quaternion,
     mul: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionScale(
         q,
         mul,
@@ -6171,9 +6154,9 @@ pub fn QuaternionScale(
 
 /// 
 pub fn QuaternionDivide(
-    q1: Quaternion,
-    q2: Quaternion,
-) Quaternion {
+    q1: types.Quaternion,
+    q2: types.Quaternion,
+) types.Quaternion {
     return raylib.QuaternionDivide(
         q1,
         q2,
@@ -6182,10 +6165,10 @@ pub fn QuaternionDivide(
 
 /// 
 pub fn QuaternionLerp(
-    q1: Quaternion,
-    q2: Quaternion,
+    q1: types.Quaternion,
+    q2: types.Quaternion,
     amount: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionLerp(
         q1,
         q2,
@@ -6195,10 +6178,10 @@ pub fn QuaternionLerp(
 
 /// 
 pub fn QuaternionNlerp(
-    q1: Quaternion,
-    q2: Quaternion,
+    q1: types.Quaternion,
+    q2: types.Quaternion,
     amount: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionNlerp(
         q1,
         q2,
@@ -6208,10 +6191,10 @@ pub fn QuaternionNlerp(
 
 /// 
 pub fn QuaternionSlerp(
-    q1: Quaternion,
-    q2: Quaternion,
+    q1: types.Quaternion,
+    q2: types.Quaternion,
     amount: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionSlerp(
         q1,
         q2,
@@ -6221,9 +6204,9 @@ pub fn QuaternionSlerp(
 
 /// 
 pub fn QuaternionFromVector3ToVector3(
-    from: Vector3,
-    to: Vector3,
-) Quaternion {
+    from: types.Vector3,
+    to: types.Vector3,
+) types.Quaternion {
     return raylib.QuaternionFromVector3ToVector3(
         from,
         to,
@@ -6232,8 +6215,8 @@ pub fn QuaternionFromVector3ToVector3(
 
 /// 
 pub fn QuaternionFromMatrix(
-    mat: Matrix,
-) Quaternion {
+    mat: types.Matrix,
+) types.Quaternion {
     return raylib.QuaternionFromMatrix(
         mat,
     );
@@ -6241,8 +6224,8 @@ pub fn QuaternionFromMatrix(
 
 /// 
 pub fn QuaternionToMatrix(
-    q: Quaternion,
-) Matrix {
+    q: types.Quaternion,
+) types.Matrix {
     return raylib.QuaternionToMatrix(
         q,
     );
@@ -6250,9 +6233,9 @@ pub fn QuaternionToMatrix(
 
 /// 
 pub fn QuaternionFromAxisAngle(
-    axis: Vector3,
+    axis: types.Vector3,
     angle: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionFromAxisAngle(
         axis,
         angle,
@@ -6261,13 +6244,13 @@ pub fn QuaternionFromAxisAngle(
 
 /// 
 pub fn QuaternionToAxisAngle(
-    q: Quaternion,
-    outAxis: *Vector3,
+    q: types.Quaternion,
+    outAxis: *types.Vector3,
     outAngle: []f32,
 ) void {
     raylib.QuaternionToAxisAngle(
         q,
-        @ptrCast([*c]Vector3, outAxis),
+        @ptrCast([*c]types.Vector3, outAxis),
         @ptrCast([*c]f32, outAngle.ptr),
     );
 }
@@ -6277,7 +6260,7 @@ pub fn QuaternionFromEuler(
     pitch: f32,
     yaw: f32,
     roll: f32,
-) Quaternion {
+) types.Quaternion {
     return raylib.QuaternionFromEuler(
         pitch,
         yaw,
@@ -6287,8 +6270,8 @@ pub fn QuaternionFromEuler(
 
 /// 
 pub fn QuaternionToEuler(
-    q: Quaternion,
-) Vector3 {
+    q: types.Quaternion,
+) types.Vector3 {
     return raylib.QuaternionToEuler(
         q,
     );
@@ -6296,9 +6279,9 @@ pub fn QuaternionToEuler(
 
 /// 
 pub fn QuaternionTransform(
-    q: Quaternion,
-    mat: Matrix,
-) Quaternion {
+    q: types.Quaternion,
+    mat: types.Matrix,
+) types.Quaternion {
     return raylib.QuaternionTransform(
         q,
         mat,
@@ -6355,7 +6338,7 @@ pub fn GuiGetState() i32 {
 
 /// Set gui custom font (global state)
 pub fn GuiSetFont(
-    font: Font,
+    font: types.Font,
 ) void {
     raylib.GuiSetFont(
         font,
@@ -6363,7 +6346,7 @@ pub fn GuiSetFont(
 }
 
 /// Get gui custom font (global state)
-pub fn GuiGetFont() Font {
+pub fn GuiGetFont() types.Font {
     return raylib.GuiGetFont();
 }
 
@@ -6393,7 +6376,7 @@ pub fn GuiGetStyle(
 
 /// Window Box control, shows a window that can be closed
 pub fn GuiWindowBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     title: [:0]const u8,
 ) bool {
     return raylib.GuiWindowBox(
@@ -6404,7 +6387,7 @@ pub fn GuiWindowBox(
 
 /// Group Box control with text name
 pub fn GuiGroupBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
 ) void {
     raylib.GuiGroupBox(
@@ -6415,7 +6398,7 @@ pub fn GuiGroupBox(
 
 /// Line separator control, could contain text
 pub fn GuiLine(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
 ) void {
     raylib.GuiLine(
@@ -6426,7 +6409,7 @@ pub fn GuiLine(
 
 /// Panel control, useful to group controls
 pub fn GuiPanel(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
 ) void {
     raylib.GuiPanel(
         bounds,
@@ -6435,20 +6418,20 @@ pub fn GuiPanel(
 
 /// Scroll Panel control
 pub fn GuiScrollPanel(
-    bounds: Rectangle,
-    content: Rectangle,
-    scroll: *Vector2,
-) Rectangle {
+    bounds: types.Rectangle,
+    content: types.Rectangle,
+    scroll: *types.Vector2,
+) types.Rectangle {
     return raylib.GuiScrollPanel(
         bounds,
         content,
-        @ptrCast([*c]Vector2, scroll),
+        @ptrCast([*c]types.Vector2, scroll),
     );
 }
 
 /// Label control, shows text
 pub fn GuiLabel(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
 ) void {
     raylib.GuiLabel(
@@ -6459,7 +6442,7 @@ pub fn GuiLabel(
 
 /// Button control, returns true when clicked
 pub fn GuiButton(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
 ) bool {
     return raylib.GuiButton(
@@ -6470,7 +6453,7 @@ pub fn GuiButton(
 
 /// Label button control, show true when clicked
 pub fn GuiLabelButton(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
 ) bool {
     return raylib.GuiLabelButton(
@@ -6481,7 +6464,7 @@ pub fn GuiLabelButton(
 
 /// Toggle Button control, returns true when active
 pub fn GuiToggle(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     active: bool,
 ) bool {
@@ -6494,7 +6477,7 @@ pub fn GuiToggle(
 
 /// Toggle Group control, returns active toggle index
 pub fn GuiToggleGroup(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     active: i32,
 ) i32 {
@@ -6507,7 +6490,7 @@ pub fn GuiToggleGroup(
 
 /// Check Box control, returns true when active
 pub fn GuiCheckBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     checked: bool,
 ) bool {
@@ -6520,7 +6503,7 @@ pub fn GuiCheckBox(
 
 /// Combo Box control, returns selected item index
 pub fn GuiComboBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     active: i32,
 ) i32 {
@@ -6533,7 +6516,7 @@ pub fn GuiComboBox(
 
 /// Dropdown Box control, returns selected item
 pub fn GuiDropdownBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     active: []i32,
     editMode: bool,
@@ -6548,7 +6531,7 @@ pub fn GuiDropdownBox(
 
 /// Spinner control, returns selected value
 pub fn GuiSpinner(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     value: []i32,
     minValue: i32,
@@ -6567,7 +6550,7 @@ pub fn GuiSpinner(
 
 /// Value Box control, updates input text with numbers
 pub fn GuiValueBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     value: []i32,
     minValue: i32,
@@ -6586,7 +6569,7 @@ pub fn GuiValueBox(
 
 /// Text Box control, updates input text
 pub fn GuiTextBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     textSize: i32,
     editMode: bool,
@@ -6601,7 +6584,7 @@ pub fn GuiTextBox(
 
 /// Text Box control with multiple lines
 pub fn GuiTextBoxMulti(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     textSize: i32,
     editMode: bool,
@@ -6616,7 +6599,7 @@ pub fn GuiTextBoxMulti(
 
 /// Slider control, returns selected value
 pub fn GuiSlider(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     textLeft: [:0]const u8,
     textRight: [:0]const u8,
     value: f32,
@@ -6635,7 +6618,7 @@ pub fn GuiSlider(
 
 /// Slider Bar control, returns selected value
 pub fn GuiSliderBar(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     textLeft: [:0]const u8,
     textRight: [:0]const u8,
     value: f32,
@@ -6654,7 +6637,7 @@ pub fn GuiSliderBar(
 
 /// Progress Bar control, shows current progress value
 pub fn GuiProgressBar(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     textLeft: [:0]const u8,
     textRight: [:0]const u8,
     value: f32,
@@ -6673,7 +6656,7 @@ pub fn GuiProgressBar(
 
 /// Status Bar control, shows info text
 pub fn GuiStatusBar(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
 ) void {
     raylib.GuiStatusBar(
@@ -6684,7 +6667,7 @@ pub fn GuiStatusBar(
 
 /// Dummy control for placeholders
 pub fn GuiDummyRec(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
 ) void {
     raylib.GuiDummyRec(
@@ -6695,7 +6678,7 @@ pub fn GuiDummyRec(
 
 /// Scroll Bar control
 pub fn GuiScrollBar(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     value: i32,
     minValue: i32,
     maxValue: i32,
@@ -6710,10 +6693,10 @@ pub fn GuiScrollBar(
 
 /// Grid control
 pub fn GuiGrid(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     spacing: f32,
     subdivs: i32,
-) Vector2 {
+) types.Vector2 {
     return raylib.GuiGrid(
         bounds,
         spacing,
@@ -6723,7 +6706,7 @@ pub fn GuiGrid(
 
 /// List View control, returns selected list item index
 pub fn GuiListView(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     text: [:0]const u8,
     scrollIndex: []i32,
     active: i32,
@@ -6738,8 +6721,8 @@ pub fn GuiListView(
 
 /// List View with extended parameters
 pub fn GuiListViewEx(
-    bounds: Rectangle,
-    text: [*c][*c]const char,
+    bounds: types.Rectangle,
+    text: [*c][:0]const u8,
     count: i32,
     focus: []i32,
     scrollIndex: []i32,
@@ -6747,7 +6730,7 @@ pub fn GuiListViewEx(
 ) i32 {
     return raylib.GuiListViewEx(
         bounds,
-        @ptrCast([*c][*c]const char, text),
+        @ptrCast([*c][:0]const u8, text),
         @intCast(c_int, count),
         @ptrCast([*c]c_int, focus.ptr),
         @ptrCast([*c]c_int, scrollIndex.ptr),
@@ -6757,7 +6740,7 @@ pub fn GuiListViewEx(
 
 /// Message Box control, displays a message
 pub fn GuiMessageBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     title: [:0]const u8,
     message: [:0]const u8,
     buttons: [:0]const u8,
@@ -6772,7 +6755,7 @@ pub fn GuiMessageBox(
 
 /// Text Input Box control, ask for text
 pub fn GuiTextInputBox(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     title: [:0]const u8,
     message: [:0]const u8,
     buttons: [:0]const u8,
@@ -6789,9 +6772,9 @@ pub fn GuiTextInputBox(
 
 /// Color Picker control (multiple color controls)
 pub fn GuiColorPicker(
-    bounds: Rectangle,
-    color: Color,
-) Color {
+    bounds: types.Rectangle,
+    color: types.Color,
+) types.Color {
     return raylib.GuiColorPicker(
         bounds,
         color,
@@ -6800,9 +6783,9 @@ pub fn GuiColorPicker(
 
 /// Color Panel control
 pub fn GuiColorPanel(
-    bounds: Rectangle,
-    color: Color,
-) Color {
+    bounds: types.Rectangle,
+    color: types.Color,
+) types.Color {
     return raylib.GuiColorPanel(
         bounds,
         color,
@@ -6811,7 +6794,7 @@ pub fn GuiColorPanel(
 
 /// Color Bar Alpha control
 pub fn GuiColorBarAlpha(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     alpha: f32,
 ) f32 {
     return raylib.GuiColorBarAlpha(
@@ -6822,7 +6805,7 @@ pub fn GuiColorBarAlpha(
 
 /// Color Bar Hue control
 pub fn GuiColorBarHue(
-    bounds: Rectangle,
+    bounds: types.Rectangle,
     value: f32,
 ) f32 {
     return raylib.GuiColorBarHue(
@@ -6848,7 +6831,7 @@ pub fn GuiLoadStyleDefault() void {
 /// Load style from file (.rgs)
 pub fn LoadGuiStyle(
     fileName: [:0]const u8,
-) GuiStyle {
+) types.GuiStyle {
     return raylib.LoadGuiStyle(
         fileName,
     );
@@ -6856,7 +6839,7 @@ pub fn LoadGuiStyle(
 
 /// Unload style
 pub fn UnloadGuiStyle(
-    style: GuiStyle,
+    style: types.GuiStyle,
 ) void {
     raylib.UnloadGuiStyle(
         style,
@@ -6880,7 +6863,7 @@ pub fn GuiDrawIcon(
     posX: i32,
     posY: i32,
     pixelSize: i32,
-    color: Color,
+    color: types.Color,
 ) void {
     raylib.GuiDrawIcon(
         @intCast(c_int, iconId),

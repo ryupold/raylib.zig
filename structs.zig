@@ -28,30 +28,6 @@ pub const Vector4 = extern struct {
     w: f32,
 };
 
-/// Matrix, 4x4 components, column major, OpenGL style, right handed
-pub const Matrix = extern struct {
-    /// Matrix first row (4 components)
-    m0,
-    m4,
-    m8,
-    m12: f32,
-    /// Matrix second row (4 components)
-    m1,
-    m5,
-    m9,
-    m13: f32,
-    /// Matrix third row (4 components)
-    m2,
-    m6,
-    m10,
-    m14: f32,
-    /// Matrix fourth row (4 components)
-    m3,
-    m7,
-    m11,
-    m15: f32,
-};
-
 /// Color, 4 components, R8G8B8A8 (32bit)
 pub const Color = extern struct {
     /// Color red value
@@ -248,56 +224,12 @@ pub const Material = extern struct {
     params: [4]f32,
 };
 
-/// Transform, vectex transformation data
-pub const Transform = extern struct {
-    /// Translation
-    translation: Vector3,
-    /// Rotation
-    rotation: Quaternion,
-    /// Scale
-    scale: Vector3,
-};
-
 /// Bone, skeletal animation bone
 pub const BoneInfo = extern struct {
     /// Bone name
     name: [32]u8,
     /// Bone parent
     parent: i32,
-};
-
-/// Model, meshes, materials and animation data
-pub const Model = extern struct {
-    /// Local transform matrix
-    transform: Matrix,
-    /// Number of meshes
-    meshCount: i32,
-    /// Number of materials
-    materialCount: i32,
-    /// Meshes array
-    meshes: *Mesh,
-    /// Materials array
-    materials: *Material,
-    /// Mesh material number
-    meshMaterial: []i32,
-    /// Number of bones
-    boneCount: i32,
-    /// Bones information (skeleton)
-    bones: *BoneInfo,
-    /// Bones base transformation (pose)
-    bindPose: *Transform,
-};
-
-/// ModelAnimation
-pub const ModelAnimation = extern struct {
-    /// Number of bones
-    boneCount: i32,
-    /// Number of animation frames
-    frameCount: i32,
-    /// Bones information (skeleton)
-    bones: *BoneInfo,
-    /// Poses array by frame
-    framePoses: [*c][*c]Transform,
 };
 
 /// Ray, ray for raycasting
@@ -345,9 +277,9 @@ pub const Wave = extern struct {
 /// AudioStream, custom audio stream
 pub const AudioStream = extern struct {
     /// Pointer to internal data used by the audio system
-    buffer: *rAudioBuffer,
+    buffer: *anyopaque,
     /// Pointer to internal data processor, useful for audio effects
-    processor: *rAudioProcessor,
+    processor: *anyopaque,
     /// Frequency (samples per second)
     sampleRate: u32,
     /// Bit depth (bits per sample): 8, 16, 32 (24 not supported)
@@ -400,26 +332,6 @@ pub const VrDeviceInfo = extern struct {
     lensDistortionValues: [4]f32,
     /// Chromatic aberration correction parameters
     chromaAbCorrection: [4]f32,
-};
-
-/// VrStereoConfig, VR stereo rendering configuration for simulator
-pub const VrStereoConfig = extern struct {
-    /// VR projection matrices (per eye)
-    projection: [2]Matrix,
-    /// VR view offset matrices (per eye)
-    viewOffset: [2]Matrix,
-    /// VR left lens center
-    leftLensCenter: [2]f32,
-    /// VR right lens center
-    rightLensCenter: [2]f32,
-    /// VR left screen center
-    leftScreenCenter: [2]f32,
-    /// VR right screen center
-    rightScreenCenter: [2]f32,
-    /// VR distortion scale
-    scale: [2]f32,
-    /// VR distortion scale in
-    scaleIn: [2]f32,
 };
 
 /// NOTE: Helper types to be used instead of array return types for *ToFloat functions

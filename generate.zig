@@ -1,6 +1,10 @@
 const std = @import("std");
 const fs = std.fs;
 const json = std.json;
+const allocPrint = std.fmt.allocPrint;
+fn trim(s: []const u8) []const u8 {
+    return std.mem.trim(u8, s, &[_]u8{ ' ', '\t', '\n' });
+}
 
 /// max files size
 const memoryConstrain: usize = 1024 * 1024 * 1024; // 1 GiB
@@ -60,12 +64,20 @@ pub fn main() !void {
         structs = try std.mem.concat(arena.allocator(), JsonStruct, &.{ structs, bindingJson.structs });
     }
 
-    try writeStructs(arena.allocator(), "structs.zig", structs);
+    try writeStructs(arena.allocator(), "structs.zig", structs, manuals);
     try writeEnums("enums.zig", enums);
-    try writeFunctions(arena.allocator(), "functions.zig", functions, excludes, manuals);
+    try writeFunctions(arena.allocator(), "functions.zig", functions, excludes, manuals, enums, structs);
 }
 
-fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []const JsonFunction, excludes: Excludes, manuals: Manuals) !void {
+fn writeFunctions(
+    allocator: std.mem.Allocator,
+    path: []const u8,
+    functions: []const JsonFunction,
+    excludes: Excludes,
+    manuals: Manuals,
+    enums: []const JsonEnum,
+    structs: []const JsonStruct,
+) !void {
     var file = try fs.cwd().createFile(path, .{});
     defer file.close();
 
@@ -78,9 +90,11 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
             \\const raylib = @cImport({{
             \\    @cInclude("raylib/src/raylib.h");
             \\}});
-            \\
-            \\usingnamespace @import("structs.zig");
-            \\usingnamespace @import("enums.zig");
+            \\const types = struct {{
+            \\  usingnamespace @import("structs.zig");
+            \\  usingnamespace @import("enums.zig");
+            \\  usingnamespace @import("manual_bindings.zig");
+            \\}};
             \\
         , .{}),
     );
@@ -105,7 +119,13 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
         if (func.params) |params| {
             for (params) |param| {
                 const cIsh = try mapCType(allocator, param.@"type");
-                const idiomatic = try mapToIdiomatic(allocator, cIsh);
+                const idiomatic = try addTypesPrefix(
+                    allocator,
+                    manuals,
+                    enums,
+                    structs,
+                    try mapToIdiomatic(allocator, cIsh),
+                );
 
                 try file.writeAll(try std.fmt.allocPrint(
                     fba.allocator(),
@@ -117,7 +137,13 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
 
         const returnTypeCIsh = try mapCType(allocator, func.returnType);
         const isReturnTypePtr = startsWith(returnTypeCIsh, "[*c]");
-        const returnType = if (isReturnTypePtr) returnTypeCIsh else try mapToIdiomatic(allocator, returnTypeCIsh);
+        const returnType = try addTypesPrefix(
+            allocator,
+            manuals,
+            enums,
+            structs,
+            if (isReturnTypePtr) returnTypeCIsh else try mapToIdiomatic(allocator, returnTypeCIsh),
+        );
         const isReturnTypeVoid = eql(returnType, "void");
 
         try file.writeAll(
@@ -138,19 +164,20 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
             for (params) |param| {
                 const cIsh = try mapCType(allocator, param.@"type");
                 const idiomatic = try mapToIdiomatic(allocator, cIsh);
+                const prefixedCish = try addTypesPrefix(allocator, manuals, enums, structs, cIsh);
 
                 if (startsWith(cIsh, "[*c]")) { //is pointer
                     if (startsWith(idiomatic, "[]")) {
                         try file.writeAll(try std.fmt.allocPrint(
                             fba.allocator(),
                             "@ptrCast({s}, {s}.ptr)",
-                            .{ cIsh, param.name },
+                            .{ prefixedCish, param.name },
                         ));
                     } else {
                         try file.writeAll(try std.fmt.allocPrint(
                             fba.allocator(),
                             "@ptrCast({s}, {s})",
-                            .{ cIsh, param.name },
+                            .{ prefixedCish, param.name },
                         ));
                     }
                 } else if (eql(cIsh, "c_int") or eql(cIsh, "c_uint") or eql(cIsh, "c_short") or eql(cIsh, "c_ushort") or eql(cIsh, "c_long") or eql(cIsh, "c_ulong")) { //is int
@@ -178,7 +205,7 @@ fn writeFunctions(allocator: std.mem.Allocator, path: []const u8, functions: []c
     std.log.info("generated {s}", .{path});
 }
 
-fn writeStructs(allocator: std.mem.Allocator, path: []const u8, structs: []const JsonStruct) !void {
+fn writeStructs(allocator: std.mem.Allocator, path: []const u8, structs: []const JsonStruct, manuals: Manuals) !void {
     var file = try fs.cwd().createFile(path, .{});
     defer file.close();
 
@@ -186,6 +213,7 @@ fn writeStructs(allocator: std.mem.Allocator, path: []const u8, structs: []const
     var fba = std.heap.FixedBufferAllocator.init(&buf);
 
     for (structs) |s| {
+        if(manuals.containsStruct(s.name)) continue;
         if (alreadyProcessed.contains(s.name)) continue;
 
         defer fba.reset();
@@ -258,6 +286,8 @@ fn mapCType(allocator: std.mem.Allocator, cType: []const u8) ![]const u8 {
     const cTypeMap = std.ComptimeStringMap([]const u8, .{
         .{ "float", "f32" },
         .{ "float *", "[*c]f32" },
+        .{ "double", "f64" },
+        .{ "double *", "[*c]f64" },
         .{ "int", "c_int" },
         .{ "int *", "[*c]c_int" },
         .{ "const int *", "[*c]c_int" },
@@ -265,11 +295,17 @@ fn mapCType(allocator: std.mem.Allocator, cType: []const u8) ![]const u8 {
         .{ "unsigned int *", "[*c]c_uint" },
         .{ "unsigned short", "c_ushort" },
         .{ "unsigned short *", "[*c]c_ushort" },
+        .{ "long", "c_long" },
+        .{ "unsigned long", "c_ulong" },
         .{ "void *", "*anyopaque" },
+        .{ "rAudioBuffer *", "*anyopaque" },
+        .{ "rAudioProcessor *", "*anyopaque" },
         .{ "const void *", "*anyopaque" },
         .{ "unsigned char", "u8" },
         .{ "unsigned char *", "[:0]const u8" },
         .{ "const char *", "[:0]const u8" },
+        .{ "const char **", "[*c][:0]const u8" },
+        .{ "char **", "[*c][:0]const u8" },
         .{ "const unsigned char *", "[:0]const u8" },
         .{ "char", "u8" },
         .{ "char *", "[:0]const u8" },
@@ -302,6 +338,8 @@ fn mapToIdiomatic(allocator: std.mem.Allocator, cIshZigType: []const u8) ![]cons
         .{ "c_ushort", "u16" },
         .{ "c_short", "i16" },
         .{ "[*c]c_ushort", "[]u16" },
+        .{ "c_long", "i64" },
+        .{ "c_ulong", "u64" },
         .{ "[*c]const u8", "[]const u8" },
         .{ "[*c]const [*c]const u8", "[]const []const u8" },
     });
@@ -310,6 +348,10 @@ fn mapToIdiomatic(allocator: std.mem.Allocator, cIshZigType: []const u8) ![]cons
 
     if (startsWith(cIshZigType, "[*c][*c]")) {
         // return try std.fmt.allocPrint(allocator, "*{s}", .{cIshZigType[4..]});
+        return cIshZigType;
+    }
+
+    if (startsWith(cIshZigType, "[*c][:0]")) {
         return cIshZigType;
     }
 
@@ -322,6 +364,8 @@ fn mapToIdiomatic(allocator: std.mem.Allocator, cIshZigType: []const u8) ![]cons
         // return cIshZigType;
         return try std.fmt.allocPrint(allocator, "{s}", .{cIshZigType[6..]});
     }
+
+    // return try std.fmt.allocPrint(allocator, "types.{s}", .{cIshZigType});
 
     return cIshZigType;
 }
@@ -351,6 +395,77 @@ fn nameContainsArraySize(name: []const u8) struct {
     } else {
         return .{ .name = name };
     }
+}
+
+fn addTypesPrefix(allocator: std.mem.Allocator, manuals: Manuals, enums: []const JsonEnum, structs: []const JsonStruct, name: []const u8) ![]const u8 {
+    if (startsWith(name, "[*c][*c]")) {
+        const n = trim(name[8..]);
+        if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
+            return try allocPrint(allocator, "[*c][*c]types.{s}", .{n});
+        }
+    }
+
+    if (startsWith(name, "[*c]const ")) {
+        const n = trim(name[10..]);
+        if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
+            return try allocPrint(allocator, "[*c]const types.{s}", .{n});
+        }
+    }
+    
+    if (startsWith(name, "*const ")) {
+        const n = trim(name[7..]);
+        if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
+            return try allocPrint(allocator, "*const types.{s}", .{n});
+        }
+    }
+
+    if (startsWith(name, "**")) {
+        const n = trim(name[2..]);
+        if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
+            return try allocPrint(allocator, "**types.{s}", .{n});
+        }
+    }
+
+    if (startsWith(name, "[*c]")) {
+        const n = trim(name[4..]);
+        if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
+            return try allocPrint(allocator, "[*c]types.{s}", .{n});
+        }
+    }
+
+    if (startsWith(name, "*")) {
+        const n = trim(name[1..]);
+        if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
+            return try allocPrint(allocator, "*types.{s}", .{n});
+        }
+    }
+
+    if (containsStructInManuals(manuals, name) or containsStruct(structs, name) or containsEnum(enums, name)) {
+        return try allocPrint(allocator, "types.{s}", .{name});
+    }
+
+    return name;
+}
+
+fn containsStructInManuals(manuals: Manuals, name: []const u8) bool {
+    for (manuals.structs) |s| {
+        if (eql(s, name)) return true;
+    }
+    return false;
+}
+
+fn containsStruct(structs: []const JsonStruct, name: []const u8) bool {
+    for (structs) |s| {
+        if (eql(s.name, name)) return true;
+    }
+    return false;
+}
+
+fn containsEnum(enums: []const JsonEnum, name: []const u8) bool {
+    for (enums) |e| {
+        if (eql(e.name, name)) return true;
+    }
+    return false;
 }
 
 const Manuals = struct {
@@ -416,9 +531,9 @@ fn getManualBindings(allocator: std.mem.Allocator) !Manuals {
         }
 
         //structs
-        if (std.mem.containsAtLeast(u8, line, 1, " = struct")) {
+        if (std.mem.containsAtLeast(u8, line, 1, " = ")) {
             if (std.mem.indexOf(u8, line, "pub const ")) |start| {
-                if (std.mem.indexOf(u8, line, " = struct")) |end| {
+                if (std.mem.indexOf(u8, line, " = ")) |end| {
                     var i: usize = start + "pub const ".len;
                     while (i < end) : (i += 1) {
                         if (line[i] != ' ') try name.append(line[i]);
