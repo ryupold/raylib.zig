@@ -43,10 +43,7 @@ pub fn build(b: *std.build.Builder) !void {
     const bindings = b.step("bindings", "generate raylib zig bindings");
     const generateZig = b.addExecutable("generate", "generate.zig");
     const fmt = b.addFmt(&.{
-        "structs.zig",
-        "enums.zig",
-        "functions.zig",
-        "constants.zig",
+        "raylib.zig",
     });
     fmt.step.dependOn(&generateZig.run().step);
     // bindings.dependOn(&generateZig.run().step);

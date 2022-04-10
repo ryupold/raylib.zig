@@ -14,6 +14,7 @@ const jsonFiles: []const []const u8 = &.{
     "raymath.json",
     "raygui.json",
 };
+const generatorMarker = "//--- generated -----------------------------------------------------------------------------------";
 var alreadyProcessed: std.StringArrayHashMap(void) = undefined;
 
 pub fn main() !void {
@@ -42,8 +43,14 @@ pub fn main() !void {
         .ignore_unknown_fields = true,
     });
 
-    var manuals = try getManualBindings(allocator);
+    var file = try fs.cwd().openFile("raylib.zig", .{ .write = true });
+    defer file.close();
+
+    var manuals = try getManualBindings(allocator, &file, generatorMarker);
     defer manuals.deinit();
+
+    const filePosAfterMarker = try file.getPos();
+    std.log.info("after generate maker at pos {d}", .{filePosAfterMarker});
 
     var functions: []const JsonFunction = &[_]JsonFunction{};
     var enums: []const JsonEnum = &[_]JsonEnum{};
@@ -64,40 +71,30 @@ pub fn main() !void {
         structs = try std.mem.concat(arena.allocator(), JsonStruct, &.{ structs, bindingJson.structs });
     }
 
-    try writeStructs(arena.allocator(), "structs.zig", structs, manuals);
-    try writeEnums("enums.zig", enums);
-    try writeFunctions(arena.allocator(), "functions.zig", functions, excludes, manuals, enums, structs);
+    // seekUntilGenerateMarker(&file, generatorMarker);
+
+    try file.writeAll("\n\n");
+
+    try writeStructs(arena.allocator(), &file, structs, manuals);
+    try writeEnums(&file, enums);
+    try writeFunctions(arena.allocator(), &file, functions, excludes, manuals, enums, structs);
+
+    const filePosAfterWrite = try file.getPos();
+    try file.setEndPos(filePosAfterWrite);
+    std.log.info("new file lenght: {d}", .{filePosAfterWrite});
 }
 
 fn writeFunctions(
     allocator: std.mem.Allocator,
-    path: []const u8,
+    file: *fs.File,
     functions: []const JsonFunction,
     excludes: Excludes,
     manuals: Manuals,
     enums: []const JsonEnum,
     structs: []const JsonStruct,
 ) !void {
-    var file = try fs.cwd().createFile(path, .{});
-    defer file.close();
-
     var buf: [51200]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
-
-    //--- imports -------------------------------
-    try file.writeAll(
-        try std.fmt.allocPrint(fba.allocator(),
-            \\const raylib = @cImport({{
-            \\    @cInclude("raylib/src/raylib.h");
-            \\}});
-            \\const types = struct {{
-            \\  usingnamespace @import("structs.zig");
-            \\  usingnamespace @import("enums.zig");
-            \\  usingnamespace @import("manual_bindings.zig");
-            \\}};
-            \\
-        , .{}),
-    );
 
     for (functions) |func| {
         //ignore everything in 'manual_mapping.json'
@@ -119,7 +116,7 @@ fn writeFunctions(
         if (func.params) |params| {
             for (params) |param| {
                 const cIsh = try mapCType(allocator, param.@"type");
-                const idiomatic = try addTypesPrefix(
+                const idiomatic = try replaceAlias(
                     allocator,
                     manuals,
                     enums,
@@ -137,7 +134,7 @@ fn writeFunctions(
 
         const returnTypeCIsh = try mapCType(allocator, func.returnType);
         const isReturnTypePtr = startsWith(returnTypeCIsh, "[*c]");
-        const returnType = try addTypesPrefix(
+        const returnType = try replaceAlias(
             allocator,
             manuals,
             enums,
@@ -164,7 +161,9 @@ fn writeFunctions(
             for (params) |param| {
                 const cIsh = try mapCType(allocator, param.@"type");
                 const idiomatic = try mapToIdiomatic(allocator, cIsh);
-                const prefixedCish = try addTypesPrefix(allocator, manuals, enums, structs, cIsh);
+                const aliasedCish = try replaceAlias(allocator, manuals, enums, structs, cIsh);
+
+                const prefixedCish = try addRaylibPrefix(allocator, manuals, enums, structs, aliasedCish);
 
                 if (startsWith(cIsh, "[*c]")) { //is pointer
                     if (startsWith(idiomatic, "[]")) {
@@ -186,11 +185,17 @@ fn writeFunctions(
                         "@intCast({s}, {s})",
                         .{ cIsh, param.name },
                     ));
-                } else { //pass as value
+                } else if (startsWith(prefixedCish, "[")) { //pass as value
                     try file.writeAll(try std.fmt.allocPrint(
                         fba.allocator(),
                         "{s}",
                         .{param.name},
+                    ));
+                } else { //bit cast to raylib type
+                    try file.writeAll(try std.fmt.allocPrint(
+                        fba.allocator(),
+                        "@bitCast({s}, {s})",
+                        .{ prefixedCish, param.name },
                     ));
                 }
                 //comma & newline
@@ -202,18 +207,20 @@ fn writeFunctions(
         try alreadyProcessed.putNoClobber(func.name, {});
     }
 
-    std.log.info("generated {s}", .{path});
+    std.log.info("generated functions", .{});
 }
 
-fn writeStructs(allocator: std.mem.Allocator, path: []const u8, structs: []const JsonStruct, manuals: Manuals) !void {
-    var file = try fs.cwd().createFile(path, .{});
-    defer file.close();
-
+fn writeStructs(
+    allocator: std.mem.Allocator,
+    file: *fs.File,
+    structs: []const JsonStruct,
+    manuals: Manuals,
+) !void {
     var buf: [51200]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
 
     for (structs) |s| {
-        if(manuals.containsStruct(s.name)) continue;
+        if (manuals.containsStruct(s.name)) continue;
         if (alreadyProcessed.contains(s.name)) continue;
 
         defer fba.reset();
@@ -244,13 +251,13 @@ fn writeStructs(allocator: std.mem.Allocator, path: []const u8, structs: []const
         try alreadyProcessed.putNoClobber(s.name, {});
     }
 
-    std.log.info("generated {s}", .{path});
+    std.log.info("generated structs", .{});
 }
 
-fn writeEnums(path: []const u8, enums: []const JsonEnum) !void {
-    var file = try fs.cwd().createFile(path, .{});
-    defer file.close();
-
+fn writeEnums(
+    file: *fs.File,
+    enums: []const JsonEnum,
+) !void {
     var buf: [51200]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
 
@@ -261,7 +268,7 @@ fn writeEnums(path: []const u8, enums: []const JsonEnum) !void {
         try file.writeAll(
             try std.fmt.allocPrint(
                 fba.allocator(),
-                "\n/// {s}\npub const {s} = enum(c_int) {{\n",
+                "\n/// {s}\npub const {s} = enum(i32) {{\n",
                 .{ e.description, e.name },
             ),
         );
@@ -278,7 +285,7 @@ fn writeEnums(path: []const u8, enums: []const JsonEnum) !void {
         try alreadyProcessed.putNoClobber(e.name, {});
     }
 
-    std.log.info("generated {s}", .{path});
+    std.log.info("generated enums", .{});
 }
 
 /// return (non-idiomatic) zig type for c type
@@ -397,51 +404,69 @@ fn nameContainsArraySize(name: []const u8) struct {
     }
 }
 
-fn addTypesPrefix(allocator: std.mem.Allocator, manuals: Manuals, enums: []const JsonEnum, structs: []const JsonStruct, name: []const u8) ![]const u8 {
+fn addRaylibPrefix(
+    allocator: std.mem.Allocator,
+    manuals: Manuals,
+    enums: []const JsonEnum,
+    structs: []const JsonStruct,
+    name: []const u8,
+) ![]const u8 {
     if (startsWith(name, "[*c][*c]")) {
         const n = trim(name[8..]);
         if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
-            return try allocPrint(allocator, "[*c][*c]types.{s}", .{n});
+            return try allocPrint(allocator, "[*c][*c]raylib.{s}", .{n});
         }
     }
 
     if (startsWith(name, "[*c]const ")) {
         const n = trim(name[10..]);
         if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
-            return try allocPrint(allocator, "[*c]const types.{s}", .{n});
+            return try allocPrint(allocator, "[*c]const raylib.{s}", .{n});
         }
     }
-    
+
     if (startsWith(name, "*const ")) {
         const n = trim(name[7..]);
         if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
-            return try allocPrint(allocator, "*const types.{s}", .{n});
+            return try allocPrint(allocator, "*const raylib.{s}", .{n});
         }
     }
 
     if (startsWith(name, "**")) {
         const n = trim(name[2..]);
         if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
-            return try allocPrint(allocator, "**types.{s}", .{n});
+            return try allocPrint(allocator, "**raylib.{s}", .{n});
         }
     }
 
     if (startsWith(name, "[*c]")) {
         const n = trim(name[4..]);
         if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
-            return try allocPrint(allocator, "[*c]types.{s}", .{n});
+            return try allocPrint(allocator, "[*c]raylib.{s}", .{n});
         }
     }
 
     if (startsWith(name, "*")) {
         const n = trim(name[1..]);
         if (containsStructInManuals(manuals, n) or containsStruct(structs, n) or containsEnum(enums, n)) {
-            return try allocPrint(allocator, "*types.{s}", .{n});
+            return try allocPrint(allocator, "*raylib.{s}", .{n});
         }
     }
 
     if (containsStructInManuals(manuals, name) or containsStruct(structs, name) or containsEnum(enums, name)) {
-        return try allocPrint(allocator, "types.{s}", .{name});
+        return try allocPrint(allocator, "raylib.{s}", .{name});
+    }
+
+    return name;
+}
+
+fn replaceAlias(_: std.mem.Allocator, _: Manuals, _: []const JsonEnum, _: []const JsonStruct, name: []const u8) ![]const u8 {
+    const aliasMap = std.ComptimeStringMap([]const u8, .{
+        .{ "Texture2D", "Texture" },
+    });
+
+    if (aliasMap.get(name)) |alias| {
+        return alias;
     }
 
     return name;
@@ -500,11 +525,7 @@ const Manuals = struct {
 };
 
 /// call .deinit() when done, to release all allocated names
-fn getManualBindings(allocator: std.mem.Allocator) !Manuals {
-    //manual_bindings.zig
-    var file = try fs.cwd().openFile("manual_bindings.zig", .{});
-    defer file.close();
-
+fn getManualBindings(allocator: std.mem.Allocator, file: *fs.File, marker: []const u8) !Manuals {
     var buf = std.io.bufferedReader(file.reader());
     var reader = buf.reader();
 
@@ -516,6 +537,11 @@ fn getManualBindings(allocator: std.mem.Allocator) !Manuals {
 
     while (try reader.readUntilDelimiterOrEofAlloc(allocator, '\n', memoryConstrain)) |line| {
         defer allocator.free(line);
+        if (startsWith(line, marker)) {
+            const markerAt = try file.getPos();
+            std.log.info("found generator marker at {d}", .{markerAt});
+            break;
+        }
 
         //functions
         if (std.mem.indexOf(u8, line, "pub fn ")) |start| {
@@ -530,7 +556,7 @@ fn getManualBindings(allocator: std.mem.Allocator) !Manuals {
             }
         }
 
-        //structs
+        //types/constants
         if (std.mem.containsAtLeast(u8, line, 1, " = ")) {
             if (std.mem.indexOf(u8, line, "pub const ")) |start| {
                 if (std.mem.indexOf(u8, line, " = ")) |end| {
@@ -539,7 +565,7 @@ fn getManualBindings(allocator: std.mem.Allocator) !Manuals {
                         if (line[i] != ' ') try name.append(line[i]);
                     }
                     const structName = name.toOwnedSlice();
-                    std.log.info("manually mapped struct: {s}", .{structName});
+                    std.log.info("manually mapped type/constant: {s}", .{structName});
                     try structs.append(structName);
                 }
             }
