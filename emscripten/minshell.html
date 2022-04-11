@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!--no caching for now, the game is still pretty small-->
+  <meta http-equiv="cache-control" content="no-cache"/>
+  <meta http-equiv="expires" content="0"/>
+
+  <title>demo</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/assets/_favicon.ico" />
+
+  <style>
+    body {
+      background-color: rgb(42, 42, 42);
+      margin: 0px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      /* Internet Explorer 10+ */
+      -ms-overflow-style: none;
+      /*Firefox*/
+      scrollbar-width: none;
+    }
+
+    body::-webkit-scrollbar {
+      /*Chrome and Safari*/
+      display: none;
+    }
+
+    canvas.emscripten {
+      border: 0px none;
+      background-color: transparent;
+    }
+  </style>
+  <script>
+    function setResizeInterval(delay, repetitions) {
+      let x = 0;
+      let intervalID = window.setInterval(function () {
+
+        Module.resizeWindow(document.documentElement.clientWidth - 16, document.documentElement.clientHeight - 16);
+
+        if (++x === repetitions) {
+          window.clearInterval(intervalID);
+        }
+      }, delay);
+    }
+  </script>
+</head>
+
+<body onload="setResizeInterval(300, 5)"
+  onresize="Module.resizeWindow(document.documentElement.clientWidth-16,document.documentElement.clientHeight-16)">
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"
+    tabindex="-1"></canvas>
+  <!-- <p id="output" /> -->
+  <script>
+    var Module = {
+      print: (function () {
+        var element = document.getElementById("output");
+        if (element) element.value = ""; // clear browser cache
+        return function (text) {
+          if (arguments.length > 1)
+            text = Array.prototype.slice.call(arguments).join(" ");
+          console.log(text);
+          if (element) {
+            element.value += text + "\n";
+            element.scrollTop = element.scrollHeight; // focus on bottom
+          }
+        };
+      })(),
+      canvas: (function () {
+        var canvas = document.getElementById("canvas");
+        return canvas;
+      })(),
+    };
+    Module.resizeWindow = function (w, h) {
+      Module.ccall(
+        "emsc_set_window_size",
+        null,
+        ["number", "number"],
+        [w, h]
+      );
+    };
+    Module.onRuntimeInitialized = function () {
+      Module.resizeWindow(document.documentElement.clientWidth - 16, document.documentElement.clientHeight - 16);
+    };
+  </script>
+  {{{ SCRIPT }}}
+</body>
+
+</html>
