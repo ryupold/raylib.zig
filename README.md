@@ -2,9 +2,9 @@
 Idomatic [raylib](https://www.raylib.com/) (4.0) bindings for [Zig](https://ziglang.org/) (0.9.1)
 
 ## supported APIs
-- [x] RLAPI (raylib.h)
-- [x] RMAPI (raymath.h)
-- [x] RAYGUIAPI (extras/raygui.h)
+- [ ] RLAPI (raylib.h)
+- [ ] RMAPI (raymath.h)
+- [ ] RAYGUIAPI (extras/raygui.h)
 - [ ] PHYSACDEF (extras/physac.h)
 - [ ] Constants
   - [ ] Colors
@@ -46,12 +46,6 @@ for current raylib source (submodule)
 ```sh
 zig build jsons # generate JSON files with raylib_parser
 zig build bindings # generate Zig bindings
-```
-
-## usage
-
-```zig
-const raylib = @import("./raylib.zig");
 ```
 
 ## build raylib_parser (executable)

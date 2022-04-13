@@ -39,6 +39,11 @@ pub fn build(b: *std.build.Builder) !void {
     });
     jsons.dependOn(&raygui_H.step);
 
+    //--- Generate intermediate -------------------------------------------------------------------
+    const intermediate = b.step("intermediate", "generate intermediate representation (keep custom=true)");
+    const intermediateZig = b.addExecutable("intermediate", "intermediate.zig");
+    intermediate.dependOn(&intermediateZig.run().step);
+    
     //--- Generate bindings -----------------------------------------------------------------------
     const bindings = b.step("bindings", "generate raylib zig bindings");
     const generateZig = b.addExecutable("generate", "generate.zig");
@@ -46,7 +51,6 @@ pub fn build(b: *std.build.Builder) !void {
         "raylib.zig",
     });
     fmt.step.dependOn(&generateZig.run().step);
-    // bindings.dependOn(&generateZig.run().step);
     bindings.dependOn(&fmt.step);
 
     //--- just build raylib_parser.exe ------------------------------------------------------------
