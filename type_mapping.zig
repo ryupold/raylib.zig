@@ -1,7 +1,7 @@
 //! Strategy:
 //! 1. generate raylib JSONs
 //! 2. combine in a union RaylibJson
-//! 3. convert to intermediate representation 
+//! 3. convert to intermediate representation
 //! 4. read adjusted intermediate JSONs
 //! 5. generate raylib.zig // wrap paramters and pass them to marshall versions of the raylib functions
 //! 6. generate marshall.c // unwrap parameters from zig function and call the actual raylib function
@@ -19,11 +19,14 @@ const expectEqualStrings = std.testing.expectEqualStrings;
 //--- Intermediate Format -------------------------------------------------------------------------
 
 pub const Intermediate = struct {
+    imports: []const []const u8,
     functions: []Function,
-    types: []Type,
+    enums: []Enum,
+    structs: []Struct,
 
     pub fn loadCustoms(allocator: Allocator, jsonFile: []const u8) !@This() {
-        var types = std.ArrayList(Type).init(allocator);
+        var enums = std.ArrayList(Enum).init(allocator);
+        var structs = std.ArrayList(Struct).init(allocator);
         var functions = std.ArrayList(Function).init(allocator);
 
         const jsonData = try std.fs.cwd().readFileAlloc(allocator, jsonFile, memoryConstrain);
@@ -35,9 +38,15 @@ pub const Intermediate = struct {
             .ignore_unknown_fields = true,
         });
 
-        for (bindingJson.types) |t| {
+        for (bindingJson.enums) |t| {
             if (t.custom) {
-                try types.append(t);
+                try enums.append(t);
+            }
+        }
+
+        for (bindingJson.structs) |t| {
+            if (t.custom) {
+                try structs.append(t);
             }
         }
 
@@ -48,17 +57,62 @@ pub const Intermediate = struct {
         }
 
         return @This(){
-            .allocator = allocator,
-            .types = types.toOwnedSlice(),
+            .imports = bindingJson.imports,
+            .enums = enums.toOwnedSlice(),
+            .structs = structs.toOwnedSlice(),
             .functions = functions.toOwnedSlice(),
         };
+    }
+
+    pub fn addNonCustom(self: *@This(), allocator: Allocator, rlJson: CombinedRaylib) !void {
+        var enums = std.ArrayList(Enum).fromOwnedSlice(allocator, self.enums);
+        var structs = std.ArrayList(Struct).fromOwnedSlice(allocator, self.structs);
+        var functions = std.ArrayList(Function).fromOwnedSlice(allocator, self.functions);
+
+        for (rlJson.enums.values()) |e| {
+            if (!self.containsType(e.name)) {
+                try enums.append(try parseRaylibEnum(allocator, e));
+            }
+        }
+        for (rlJson.structs.values()) |s| {
+            if (!self.containsType(s.name)) {
+                try structs.append(try parseRaylibStruct(allocator, s));
+            }
+        }
+        for (rlJson.defines.values()) |_| {}
+
+        for (rlJson.functions.values()) |f| {
+            if (!self.containsFunction(f.name)) {
+                try functions.append(try parseRaylibFunction(allocator, f));
+            }
+        }
+
+        self.enums = enums.toOwnedSlice();
+        self.structs = structs.toOwnedSlice();
+        self.functions = functions.toOwnedSlice();
+    }
+
+    pub fn containsFunction(self: @This(), name: []const u8) bool {
+        for (self.functions) |f| {
+            if (eql(f.name, name)) return true;
+        }
+        return false;
+    }
+    pub fn containsType(self: @This(), name: []const u8) bool {
+        for (self.enums) |e| {
+            if (eql(e.name, name)) return true;
+        }
+        for (self.structs) |s| {
+            if (eql(s.name, name)) return true;
+        }
+        return false;
     }
 };
 
 pub const Function = struct {
     name: []const u8,
     params: []FunctionParameter,
-    returnType: Type,
+    returnType: []const u8,
     description: ?[]const u8 = null,
     custom: bool = false,
 
@@ -83,34 +137,69 @@ pub const Function = struct {
     }
 };
 
-pub fn parseRaylibFunction(allocator: Allocator, func: RaylibFunction, raylibTypes: []const Type) !Function {
+pub const FunctionParameter = struct {
+    name: []const u8,
+    typ: []const u8,
+    description: ?[]const u8 = null,
+};
+
+pub fn parseRaylibFunction(allocator: Allocator, func: RaylibFunction) !Function {
     var args = std.ArrayList(FunctionParameter).init(allocator);
-    for (func.params) |p| {
-        const t = try parseType(allocator, p.typ, raylibTypes);
-        try args.append(.{
-            .name = p.name,
-            .typ = t,
-            .description = p.description,
-        });
+    if (func.params) |params| {
+        for (params) |p| {
+            const t = try toZig(allocator, p.@"type");
+            try args.append(.{
+                .name = p.name,
+                .typ = t,
+                .description = p.description,
+            });
+        }
     }
 
-    return .{
+    const returnType = try toZig(allocator, func.returnType);
+
+    return Function{
         .name = func.name,
         .params = args.toOwnedSlice(),
+        .returnType = returnType,
         .description = func.description,
     };
 }
 
-pub const FunctionParameter = struct {
+pub const Struct = struct {
     name: []const u8,
-    typ: Type,
+    fields: []const StructField,
     description: ?[]const u8 = null,
     custom: bool = false,
 };
 
 pub const StructField = struct {
     name: []const u8,
-    typ: Type,
+    typ: []const u8,
+    description: ?[]const u8 = null,
+};
+
+pub fn parseRaylibStruct(allocator: Allocator, s: RaylibStruct) !Struct {
+    var fields = std.ArrayList(StructField).init(allocator);
+    for (s.fields) |field| {
+        const typ = try toZig(allocator, field.@"type");
+        try fields.append(.{
+            .name = field.name,
+            .typ = typ,
+            .description = field.description,
+        });
+    }
+
+    return Struct{
+        .name = s.name,
+        .fields = fields.toOwnedSlice(),
+        .description = s.description,
+    };
+}
+
+pub const Enum = struct {
+    name: []const u8,
+    values: []const EnumValue,
     description: ?[]const u8 = null,
     custom: bool = false,
 };
@@ -119,151 +208,131 @@ pub const EnumValue = struct {
     name: []const u8,
     value: c_int,
     description: ?[]const u8 = null,
-    custom: bool = false,
 };
 
-/// fat type, holding infos of type
-pub const Type = struct {
-    /// mapping was edited so it will not be cleaned up after load
-    custom: bool = false,
-
-    /// idiomatic zig representation in zig signature
-    zig: []const u8,
-
-    /// c-ish type for marshalling
-    c: []const u8,
-
-    /// is a struct defined in raylib (Vector2, Matrix, etc.)
-    isStruct: bool = false,
-
-    /// is an enum defined in raylib (ConfigFlags, BlendMode, etc.)
-    isEnum: bool = false,
-
-    /// is an array with defined length
-    isArray: bool = false,
-
-    /// is void return type or void pointer (void, void *, const void *)
-    isVoid: bool = false,
-
-    /// is a pointer (unsigned char *, Vector2 *, etc.)
-    isPointer: bool = false,
-
-    /// is a const pointer (const char *, const GlyphInfo *, etc.)
-    isConst: bool = false,
-
-    /// optional documentation
-    description: ?[]const u8 = null,
-
-    /// struct fields
-    fields: ?[]StructField = null,
-
-    /// enum values
-    values: ?[]EnumValue = null,
-};
-
-pub fn parseRaylibStruct(allocator: Allocator, s: RaylibStruct) !Type {
-    var fields = std.ArrayList(StructField).init(allocator);
-    for (s.fields) |field| {
-        try fields.append(.{
-            .name = field.name,
-            .typ = field.@"type",
-            .description = field.description,
-        });
-    }
-
-    var t: Type = .{
-        .c = s.name,
-        .zig = s.name,
-        .isStruct = true,
-        .fields = fields.toOwnedSlice(),
-    };
-
-    return t;
-}
-
-pub fn parseRaylibEnum(allocator: Allocator, e: RaylibEnum) !Type {
+pub fn parseRaylibEnum(allocator: Allocator, e: RaylibEnum) !Enum {
     var values = std.ArrayList(EnumValue).init(allocator);
     for (e.values) |value| {
         try values.append(.{
             .name = value.name,
-            .typ = value.value,
+            .value = value.value,
             .description = value.description,
         });
     }
 
-    var t: Type = .{
-        .c = e.name,
-        .zig = e.name,
-        .isEnum = true,
+    return Enum{
+        .name = e.name,
         .values = values.toOwnedSlice(),
+        .description = e.description,
     };
-
-    return t;
 }
 
-fn parseType(allocator: Allocator, t: []const u8, raylibTypes: []const Type) !Type {
-    if (fixedMapping.get(t)) |fixed| return fixed;
+fn isConst(c: []const u8) bool {
+    return startsWith(c, "const ");
+}
+test "isConst" {
+    try expect(!isConst("char *"));
+    try expect(!isConst("unsigned char *"));
+    try expect(isConst("const unsigned char *"));
+    try expect(isConst("const unsigned int *"));
+    try expect(isConst("const void *"));
+    try expect(!isConst("Vector2 *"));
+    try expect(!isConst("Vector2"));
+    try expect(!isConst("int"));
+}
 
-    const isConst = startsWith(t, "const ");
-    const isPointer = endsWith(t, "*");
+fn isPointer(c: []const u8) bool {
+    return endsWith(c, "*");
+}
+test "isPointer" {
+    try expect(isPointer("char *"));
+    try expect(isPointer("unsigned char *"));
+    try expect(isPointer("const unsigned char *"));
+    try expect(isPointer("const unsigned int *"));
+    try expect(isPointer("Vector2 *"));
+    try expect(!isPointer("Vector2"));
+    try expect(!isPointer("int"));
+}
 
-    const ptrS = if (isPointer) "[*c]" else "";
-    const constS = if (isPointer and isConst) "const " else "";
-    var name = if (isConst) t["const ".len..];
-    name = if (isPointer) t[0 .. t.len - 1];
+fn isPointerToPointer(c: []const u8) bool {
+    return endsWith(c, "**");
+}
+
+fn isVoid(c: []const u8) bool {
+    return eql(stripType(c), "void");
+}
+test "isVoid" {
+    try expect(!isVoid("char *"));
+    try expect(!isVoid("unsigned char *"));
+    try expect(!isVoid("const unsigned char *"));
+    try expect(isVoid("const void *"));
+    try expect(isVoid("void *"));
+    try expect(isVoid("void"));
+    try expect(isVoid("void **"));
+}
+
+/// strips const and pointer annotations
+/// const TName * -> TName
+fn stripType(c: []const u8) []const u8 {
+    var name = if (isConst(c)) c["const ".len..] else c;
+    name = if (isPointer(name)) name[0 .. name.len - 1] else name;
+    // double pointer?
+    name = if (isPointer(name)) name[0 .. name.len - 1] else name;
     name = std.mem.trim(u8, name, " \t\n");
-    const isVoid = eql(name, "void");
+    if (alias.get(name)) |ali| {
+        name = ali;
+    }
+    return name;
+}
+test "stripType" {
+    try expectEqualStrings("void", stripType("const void *"));
+    try expectEqualStrings("unsinged int", stripType("unsinged int *"));
+    try expectEqualStrings("Vector2", stripType("const Vector2 *"));
+}
 
-    //TODO: handle double pointer
-    std.debug.assert(name[name.len - 1] != '*');
-
-    for (raylibTypes) |rlType| {
-        const c = try fmt(allocator, "{s}{s}{s}", .{ ptrS, constS, name });
-        const zig = try fmt(allocator, "{s}{s}{s}", .{ ptrS, constS, name });
-        if (eql(rlType.name, name)) {
-            var typ = rlType;
-            typ.c = c;
-            typ.zig = zig;
-            typ.isConst = isConst;
-            typ.isPointer = isPointer;
-            return typ;
+fn getArraySize(name: []const u8) ?usize {
+    if (std.mem.indexOf(u8, name, "[")) |open| {
+        if (std.mem.indexOf(u8, name, "]")) |close| {
+            return std.fmt.parseInt(usize, name[open + 1 .. close], 10) catch null;
         }
     }
+    return null;
+}
+test "getArraySize" {
+    const expectEqual = std.testing.expectEqual;
 
-    if (raylibToZigType.get(name)) |primitive| {
-        const c = try fmt(allocator, "{s}{s}{s}", .{ ptrS, constS, primitive });
-        const zig = try fmt(allocator, "{s}{s}{s}", .{ ptrS, constS, primitive });
+    try expectEqual(@as(?usize, 4), getArraySize("this[4]"));
+    try expectEqual(@as(?usize, 44), getArraySize("is[44]"));
+    try expectEqual(@as(?usize, 123456), getArraySize("a[123456]"));
+    try expectEqual(@as(?usize, 1), getArraySize("test[1] "));
+    try expectEqual(@as(?usize, null), getArraySize("foo[]"));
+    try expectEqual(@as(?usize, null), getArraySize("bar"));
+    try expectEqual(@as(?usize, null), getArraySize("foo["));
+    try expectEqual(@as(?usize, null), getArraySize("bar]"));
+    try expectEqual(@as(?usize, 42), getArraySize(" lol this is ok[42] "));
+}
 
-        return .{
-            .c = c,
-            .zig = zig,
-            .isVoid = isVoid,
-        };
+fn toZig(allocator: Allocator, c: []const u8) ![]const u8 {
+    if (fixedMapping.get(c)) |fixed| {
+        return fixed;
     }
+
+    const consT = if (isConst(c)) "const " else "";
+    const pointeR = if (isPointer(c)) "[*]" else "";
+    const stripped = stripType(c);
+
+    const name = if (raylibToZigType.get(stripped)) |primitive| primitive else stripped;
+
+    return try fmt(allocator, "{s}{s}{s}", .{ pointeR, consT, name });
 }
+test "toZig" {
+    var arena = std.heap.ArenaAllocator.init(talloc);
+    defer arena.deinit();
+    const a = arena.allocator();
 
-test "'int' becomes 'i32'" {
-    const sut: Type = try parseType(talloc, "int");
-
-    try expect(!sut.isConst);
-    try expect(!sut.isEnum);
-    try expect(sut.isPointer);
-    try expect(!sut.isStruct);
-    try expect(!sut.isVoid);
-
-    try expectEqualStrings("i32", sut.zig);
-}
-
-test "'unsigned char *' becomes '[:0]u8'" {
-    const sut: Type = try parseType(talloc, "unsigned char *");
-
-    try expect(!sut.isConst);
-    try expect(!sut.isEnum);
-    try expect(sut.isPointer);
-    try expect(!sut.isStruct);
-    try expect(!sut.isVoid);
-
-    try expectEqualStrings("[:0]u8", sut.zig);
+    try expectEqualStrings("i32", try toZig(a, "int"));
+    try expectEqualStrings("const i32", try toZig(a, "const int"));
+    try expectEqualStrings("[*]Vector2", try toZig(a, "Vector2 *"));
 }
 
 const raylibToZigType = std.ComptimeStringMap([]const u8, .{
@@ -281,47 +350,14 @@ const raylibToZigType = std.ComptimeStringMap([]const u8, .{
     .{ "double", "f64" },
 });
 
-const fixedMapping = std.ComptimeStringMap(Type, .{
-    .{ "void *", Type{
-        .c = "*anyopaque",
-        .zig = "*anyopaque",
-        .isPointer = true,
-        .isVoid = true,
-    } },
-    .{ "const void *", Type{
-        .c = "*anyopaque",
-        .zig = "*anyopaque",
-        .isPointer = true,
-        .isVoid = true,
-        .isConst = true,
-    } },
-    .{ "const unsigned char *", Type{
-        .c = "[*:0]const u8",
-        .zig = "[*:0]const u8",
-        .isPointer = true,
-        .isConst = true,
-    } },
-    .{ "const char *", Type{
-        .c = "[*:0]const u8",
-        .zig = "[*:0]const u8",
-        .isPointer = true,
-        .isConst = true,
-    } },
-    .{ "const char **", Type{
-        .c = "[*]const [*:0]const u8",
-        .zig = "[*]const [*:0]const u8",
-        .isPointer = true,
-    } },
-    .{ "rAudioBuffer *", Type{
-        .c = "*anyopaque",
-        .zig = "*anyopaque",
-        .isPointer = true,
-    } },
-    .{ "rAudioProcessor *", Type{
-        .c = "*anyopaque",
-        .zig = "*anyopaque",
-        .isPointer = true,
-    } },
+const fixedMapping = std.ComptimeStringMap([]const u8, .{
+    .{ "void *", "*anyopaque" },
+    .{ "const void *", "*anyopaque" },
+    .{ "const unsigned char *", "[*:0]const u8" },
+    .{ "const char *", "[*:0]const u8" },
+    .{ "const char **", "[*]const [*:0]const u8" },
+    .{ "rAudioBuffer *", "*anyopaque" },
+    .{ "rAudioProcessor *", "*anyopaque" },
 });
 
 //--- Raylib parser JSONs -------------------------------------------------------------------------
@@ -387,19 +423,20 @@ pub const CombinedRaylib = struct {
 
     pub fn toIntermediate(self: @This(), allocator: Allocator, customs: Intermediate) !Intermediate {
         var functions = std.ArrayList(Function).init(allocator);
-        var types = std.ArrayList(Type).init(allocator);
+        var enums = std.ArrayList(Enum).init(allocator);
+        var structs = std.ArrayList(Struct).init(allocator);
 
         enums: for (self.enums.values()) |e| {
-            for (customs.types) |tt| {
+            for (customs.enums) |tt| {
                 if (eql(tt.name, e.name)) break :enums;
             }
-            try types.append(parseRaylibEnum(allocator, e));
+            try enums.append(try parseRaylibEnum(allocator, e));
         }
         structs: for (self.structs.values()) |s| {
-            for (customs.types) |tt| {
+            for (customs.structs) |tt| {
                 if (eql(tt.name, s.name)) break :structs;
             }
-            try types.append(parseRaylibStruct(allocator, s));
+            try structs.append(try parseRaylibStruct(allocator, s, customs));
         }
         for (self.defines.values()) |_| {}
 
@@ -410,9 +447,10 @@ pub const CombinedRaylib = struct {
             try functions.append(try parseRaylibFunction(allocator, f, customs.types));
         }
 
-        return .{
+        return Intermediate{
             .functions = functions.toOwnedSlice(),
-            .types = types.toOwnedSlice(),
+            .enums = enums.toOwnedSlice(),
+            .structs = structs.toOwnedSlice(),
         };
     }
 

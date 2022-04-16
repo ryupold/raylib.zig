@@ -29,31 +29,27 @@ pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(allocator);
     defer arena.deinit();
 
-    // const excludesData = try fs.cwd().readFileAlloc(allocator, excludesFile, memoryConstrain);
-    // defer allocator.free(excludesData);
-    // var stream = json.TokenStream.init(excludesData);
-    // const excludes = try json.parse(Excludes, &stream, .{
-    //     .allocator = allocator,
-    //     .ignore_unknown_fields = true,
-    // });
-    // defer json.parseFree(Excludes, excludes, .{
-    //     .allocator = allocator,
-    //     .ignore_unknown_fields = true,
-    // });
-
     const raylib: mapping.CombinedRaylib = try mapping.CombinedRaylib.load(arena.allocator(), jsonFiles);
-    const customs: mapping.Intermediate = try mapping.Intermediate.loadCustoms(arena.allocator(), bindingsJSON) catch |err| Catch: {
+
+    var bindings: mapping.Intermediate = mapping.Intermediate.loadCustoms(arena.allocator(), bindingsJSON) catch |err| Catch: {
         std.log.warn("could not open {s}: {?}\n", .{ bindingsJSON, err });
         break :Catch mapping.Intermediate{
-            .types = &[_]mapping.Type{},
+            .imports = &.{},
+            .enums = &[_]mapping.Enum{},
+            .structs = &[_]mapping.Struct{},
             .functions = &[_]mapping.Function{},
         };
     };
 
-    const bindings = try raylib.toIntermediate(arena.allocator(), customs.types);
+    try bindings.addNonCustom(arena.allocator(), raylib);
 
     var file = try fs.cwd().createFile(bindingsJSON, .{});
     defer file.close();
 
-    try json.stringify(bindings, .{ .emit_null_optional_fields = false }, file.writer());
+    try json.stringify(bindings, .{
+        .emit_null_optional_fields = false,
+        .whitespace = .{},
+    }, file.writer());
+
+    std.log.info("done", .{});
 }
