@@ -1,4 +1,5 @@
 const std = @import("std");
+const generate = @import("generate.zig");
 
 const raylibSrc = "raylib/src/";
 
@@ -7,7 +8,7 @@ pub fn build(b: *std.build.Builder) !void {
     const mode = b.standardReleaseOptions();
 
     //--- parse raylib and generate JSONs for all signatures --------------------------------------
-    const jsons = b.step("jsons", "generate raylib jsons");
+    const jsons = b.step("parse", "parse raylib headers and generate raylib jsons");
     const raylib_parser_build = b.addExecutable("raylib_parser", "raylib_parser.zig");
     raylib_parser_build.addCSourceFile("raylib/parser/raylib_parser.c", &.{});
     raylib_parser_build.setTarget(target);
@@ -40,15 +41,15 @@ pub fn build(b: *std.build.Builder) !void {
     jsons.dependOn(&raygui_H.step);
 
     //--- Generate intermediate -------------------------------------------------------------------
-    const intermediate = b.step("intermediate", "generate intermediate representation (keep custom=true)");
+    const intermediate = b.step("intermediate", "generate intermediate representation of the results from 'zig build parse' (keep custom=true)");
     const intermediateZig = b.addExecutable("intermediate", "intermediate.zig");
     intermediate.dependOn(&intermediateZig.run().step);
-    
+
     //--- Generate bindings -----------------------------------------------------------------------
-    const bindings = b.step("bindings", "generate raylib zig bindings");
+    const bindings = b.step("bindings", "generate bindings in from bindings.json");
     const generateZig = b.addExecutable("generate", "generate.zig");
     const fmt = b.addFmt(&.{
-        "raylib.zig",
+        generate.outputFile,
     });
     fmt.step.dependOn(&generateZig.run().step);
     bindings.dependOn(&fmt.step);

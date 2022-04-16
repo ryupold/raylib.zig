@@ -2,23 +2,16 @@ const std = @import("std");
 const fs = std.fs;
 const mapping = @import("type_mapping.zig");
 const json = std.json;
-const allocPrint = std.fmt.allocPrint;
 
-fn trim(s: []const u8) []const u8 {
-    return std.mem.trim(u8, s, &[_]u8{ ' ', '\t', '\n' });
-}
-
-/// max files size
-const memoryConstrain: usize = 1024 * 1024 * 1024; // 1 GiB
-const excludesFile = "excludes.json";
-const jsonFiles: []const []const u8 = &.{
+pub const jsonFiles: []const []const u8 = &.{
     "raylib.json",
     "raymath.json",
     "raygui.json",
 };
-const bindingsJSON = "bindings.json";
+pub const bindingsJSON = "bindings.json";
 
 pub fn main() !void {
+    std.log.info("updating bindings.json ...", .{});
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer {
         if (gpa.deinit()) {
@@ -51,5 +44,5 @@ pub fn main() !void {
         .whitespace = .{},
     }, file.writer());
 
-    std.log.info("done", .{});
+    std.log.info("... done", .{});
 }

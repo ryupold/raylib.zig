@@ -1,6 +1,93 @@
 {
-    "imports": [],
+    "imports": [
+        "const std = @import(\"std\");",
+        "const raylib = @cImport({@cInclude(\"raylib.h\");\n@cInclude(\"raymath.h\");\n@cInclude(\"extras/raygui.h\");\n});"
+    ],
     "functions": [
+        {
+            "name": "TraceLog",
+            "params": [
+                {
+                    "name": "logLevel",
+                    "typ": "i32"
+                },
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "void",
+            "description": "Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)",
+            "custom": true
+        },
+        {
+            "name": "TextFormat",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "[*:0]const u8",
+            "description": "Text formatting with variables (sprintf() style)",
+            "custom": true
+        },
+        {
+            "name": "Vector3Length",
+            "params": [
+                {
+                    "name": "v",
+                    "typ": "Vector3"
+                }
+            ],
+            "returnType": "f32",
+            "description": "",
+            "custom": true
+        },
+        {
+            "name": "Vector3LengthSqr",
+            "params": [
+                {
+                    "name": "v",
+                    "typ": "Vector3"
+                }
+            ],
+            "returnType": "f32",
+            "description": "",
+            "custom": true
+        },
+        {
+            "name": "LoadFontData",
+            "params": [
+                {
+                    "name": "fileData",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "dataSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontChars",
+                    "typ": "[*]i32"
+                },
+                {
+                    "name": "glyphCount",
+                    "typ": "i32"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "[*]GlyphInfo",
+            "description": "Load font data for further use",
+            "custom": true
+        },
         {
             "name": "InitWindow",
             "params": [
@@ -1036,26 +1123,6 @@
             ],
             "returnType": "void",
             "description": "Setup init configuration flags (view FLAGS)",
-            "custom": false
-        },
-        {
-            "name": "TraceLog",
-            "params": [
-                {
-                    "name": "logLevel",
-                    "typ": "i32"
-                },
-                {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "args",
-                    "typ": "..."
-                }
-            ],
-            "returnType": "void",
-            "description": "Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)",
             "custom": false
         },
         {
@@ -4531,7 +4598,7 @@
                     "typ": "i32"
                 }
             ],
-            "returnType": "TextureCubemap",
+            "returnType": "Texture2D",
             "description": "Load cubemap from image, multiple image cubemap layouts supported",
             "custom": false
         },
@@ -5195,38 +5262,6 @@
             "custom": false
         },
         {
-            "name": "LoadFontData",
-            "params": [
-                {
-                    "name": "fileData",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "dataSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontChars",
-                    "typ": "[*]i32"
-                },
-                {
-                    "name": "glyphCount",
-                    "typ": "i32"
-                },
-                {
-                    "name": "type",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "[*]GlyphInfo",
-            "description": "Load font data for further use",
-            "custom": false
-        },
-        {
             "name": "GenImageFontAtlas",
             "params": [
                 {
@@ -5700,22 +5735,6 @@
             ],
             "returnType": "u32",
             "description": "Get text length, checks for '\\0' ending",
-            "custom": false
-        },
-        {
-            "name": "TextFormat",
-            "params": [
-                {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "args",
-                    "typ": "..."
-                }
-            ],
-            "returnType": "[*:0]const u8",
-            "description": "Text formatting with variables (sprintf() style)",
             "custom": false
         },
         {
@@ -8785,30 +8804,6 @@
             "custom": false
         },
         {
-            "name": "Vector3Length",
-            "params": [
-                {
-                    "name": "v",
-                    "typ": "const Vector3"
-                }
-            ],
-            "returnType": "f32",
-            "description": "",
-            "custom": false
-        },
-        {
-            "name": "Vector3LengthSqr",
-            "params": [
-                {
-                    "name": "v",
-                    "typ": "const Vector3"
-                }
-            ],
-            "returnType": "f32",
-            "description": "",
-            "custom": false
-        },
-        {
             "name": "Vector3DotProduct",
             "params": [
                 {
@@ -8953,7 +8948,7 @@
                 },
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
             "returnType": "Vector3",
@@ -9428,14 +9423,14 @@
             "params": [
                 {
                     "name": "q1",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "q2",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9444,14 +9439,14 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "add",
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9460,14 +9455,14 @@
             "params": [
                 {
                     "name": "q1",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "q2",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9476,21 +9471,21 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "sub",
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
         {
             "name": "QuaternionIdentity",
             "params": [],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9499,7 +9494,7 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
             "returnType": "f32",
@@ -9511,10 +9506,10 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9523,10 +9518,10 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9535,14 +9530,14 @@
             "params": [
                 {
                     "name": "q1",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "q2",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9551,14 +9546,14 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "mul",
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9567,14 +9562,14 @@
             "params": [
                 {
                     "name": "q1",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "q2",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9583,18 +9578,18 @@
             "params": [
                 {
                     "name": "q1",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "q2",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "amount",
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9603,18 +9598,18 @@
             "params": [
                 {
                     "name": "q1",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "q2",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "amount",
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9623,18 +9618,18 @@
             "params": [
                 {
                     "name": "q1",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "q2",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "amount",
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9650,7 +9645,7 @@
                     "typ": "Vector3"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9662,7 +9657,7 @@
                     "typ": "Matrix"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9671,7 +9666,7 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
             "returnType": "Matrix",
@@ -9690,7 +9685,7 @@
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9699,7 +9694,7 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "outAxis",
@@ -9730,7 +9725,7 @@
                     "typ": "f32"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -9739,7 +9734,7 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 }
             ],
             "returnType": "Vector3",
@@ -9751,14 +9746,14 @@
             "params": [
                 {
                     "name": "q",
-                    "typ": "Quaternion"
+                    "typ": "Vector4"
                 },
                 {
                     "name": "mat",
                     "typ": "Matrix"
                 }
             ],
-            "returnType": "Quaternion",
+            "returnType": "Vector4",
             "description": "",
             "custom": false
         },
@@ -10598,7 +10593,7 @@
                     "typ": "[*:0]const u8"
                 }
             ],
-            "returnType": "GuiStyle",
+            "returnType": "u32",
             "description": "Load style from file (.rgs)",
             "custom": false
         },
@@ -10607,7 +10602,7 @@
             "params": [
                 {
                     "name": "style",
-                    "typ": "GuiStyle"
+                    "typ": "u32"
                 }
             ],
             "returnType": "void",
@@ -14325,7 +14320,7 @@
             "custom": false
         },
         {
-            "name": "Texture",
+            "name": "Texture2D",
             "fields": [
                 {
                     "name": "id",
@@ -14357,7 +14352,7 @@
             "custom": false
         },
         {
-            "name": "RenderTexture",
+            "name": "RenderTexture2D",
             "fields": [
                 {
                     "name": "id",
@@ -14673,8 +14668,8 @@
                     "description": "Material maps array (MAX_MATERIAL_MAPS)"
                 },
                 {
-                    "name": "params[4]",
-                    "typ": "f32",
+                    "name": "params",
+                    "typ": "[4]f32",
                     "description": "Material generic parameters (if required)"
                 }
             ],
@@ -14691,7 +14686,7 @@
                 },
                 {
                     "name": "rotation",
-                    "typ": "Quaternion",
+                    "typ": "Vector4",
                     "description": "Rotation"
                 },
                 {
@@ -14707,8 +14702,8 @@
             "name": "BoneInfo",
             "fields": [
                 {
-                    "name": "name[32]",
-                    "typ": "u8",
+                    "name": "name",
+                    "typ": "[32]u8",
                     "description": "Bone name"
                 },
                 {
@@ -15017,13 +15012,13 @@
                     "description": "IPD (distance between pupils) in meters"
                 },
                 {
-                    "name": "lensDistortionValues[4]",
-                    "typ": "f32",
+                    "name": "lensDistortionValues",
+                    "typ": "[4]f32",
                     "description": "Lens distortion constant parameters"
                 },
                 {
-                    "name": "chromaAbCorrection[4]",
-                    "typ": "f32",
+                    "name": "chromaAbCorrection",
+                    "typ": "[4]f32",
                     "description": "Chromatic aberration correction parameters"
                 }
             ],
@@ -15034,43 +15029,43 @@
             "name": "VrStereoConfig",
             "fields": [
                 {
-                    "name": "projection[2]",
-                    "typ": "Matrix",
+                    "name": "projection",
+                    "typ": "[2]Matrix",
                     "description": "VR projection matrices (per eye)"
                 },
                 {
-                    "name": "viewOffset[2]",
-                    "typ": "Matrix",
+                    "name": "viewOffset",
+                    "typ": "[2]Matrix",
                     "description": "VR view offset matrices (per eye)"
                 },
                 {
-                    "name": "leftLensCenter[2]",
-                    "typ": "f32",
+                    "name": "leftLensCenter",
+                    "typ": "[2]f32",
                     "description": "VR left lens center"
                 },
                 {
-                    "name": "rightLensCenter[2]",
-                    "typ": "f32",
+                    "name": "rightLensCenter",
+                    "typ": "[2]f32",
                     "description": "VR right lens center"
                 },
                 {
-                    "name": "leftScreenCenter[2]",
-                    "typ": "f32",
+                    "name": "leftScreenCenter",
+                    "typ": "[2]f32",
                     "description": "VR left screen center"
                 },
                 {
-                    "name": "rightScreenCenter[2]",
-                    "typ": "f32",
+                    "name": "rightScreenCenter",
+                    "typ": "[2]f32",
                     "description": "VR right screen center"
                 },
                 {
-                    "name": "scale[2]",
-                    "typ": "f32",
+                    "name": "scale",
+                    "typ": "[2]f32",
                     "description": "VR distortion scale"
                 },
                 {
-                    "name": "scaleIn[2]",
-                    "typ": "f32",
+                    "name": "scaleIn",
+                    "typ": "[2]f32",
                     "description": "VR distortion scale in"
                 }
             ],
@@ -15081,8 +15076,8 @@
             "name": "float3",
             "fields": [
                 {
-                    "name": "v[3]",
-                    "typ": "f32",
+                    "name": "v",
+                    "typ": "[3]f32",
                     "description": ""
                 }
             ],
@@ -15093,44 +15088,12 @@
             "name": "float16",
             "fields": [
                 {
-                    "name": "v[16]",
-                    "typ": "f32",
+                    "name": "v",
+                    "typ": "[16]f32",
                     "description": ""
                 }
             ],
             "description": "",
-            "custom": false
-        },
-        {
-            "name": "Texture2D",
-            "fields": [
-                {
-                    "name": "id",
-                    "typ": "u32",
-                    "description": "OpenGL texture id"
-                },
-                {
-                    "name": "width",
-                    "typ": "i32",
-                    "description": "Texture base width"
-                },
-                {
-                    "name": "height",
-                    "typ": "i32",
-                    "description": "Texture base height"
-                },
-                {
-                    "name": "mipmaps",
-                    "typ": "i32",
-                    "description": "Mipmap levels, 1 by default"
-                },
-                {
-                    "name": "format",
-                    "typ": "i32",
-                    "description": "Data format (PixelFormat type)"
-                }
-            ],
-            "description": "It should be redesigned to be provided by user",
             "custom": false
         },
         {

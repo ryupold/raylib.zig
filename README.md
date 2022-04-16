@@ -26,6 +26,9 @@ Then @import raylib.zig
 const raylib = @import("raylib/raylib.zig");
 ```
 
+## custom definitions
+An easy way to fix binding mistakes is to edit them in `bindings.json` and setting the custom flag to true. This way the binding will not be overriden when calling `zig build intermediate`. imports are always kept in the bindings.json.
+
 ## disclaimer
 I haven't tested nearly all generated functions, so there might be bugs. Especially when it comes to pointers as it is not decidable (for the generator) what a pointer to C means. Could be single item, array, sentinel terminated and/or nullable. If you run into crashes using one of the functions or types in `raylib.zig` feel free to [create an issue](https://github.com/ryupold/raylib.zig/issues) and I will look into it.
 
@@ -44,12 +47,15 @@ defer UnloadFileData(data);
 for current raylib source (submodule)
 
 ```sh
-zig build jsons # generate JSON files with raylib_parser
-zig build bindings # generate Zig bindings
+zig build parse # create JSON files with raylib_parser
+zig build intermediate # generate bindings.json (keeps definitions with custom=true)
+zig build bindings # write all intermediate bindings to raylib.zig
 ```
 
-## build raylib_parser (executable)
+For easier diffing and to follow changes to the raylib repository I commit also the generated json files.
 
+## build raylib_parser (executable)
+If you want to build the raylib_parser executable without a C compiler.
 ```sh
 zig build raylib_parser
 ```
