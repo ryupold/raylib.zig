@@ -426,25 +426,182 @@ pub const Camera2D = extern struct {
 //--- callbacks -----------------------------------------------------------------------------------
 
 /// Logging: Redirect trace log messages
-pub const TraceLogCallback = fn (logLevel: i32, text: [:0]const u8) void;
+pub const TraceLogCallback = fn (logLevel: c_int, text: [*c]const u8, args: ?*anyopaque) callconv(.C) void;
 
 /// FileIO: Load binary data
-pub const LoadFileDataCallback = fn (fileName: [:0]const u8, bytesRead: *u32) [:0]const u8;
+pub const LoadFileDataCallback = fn (fileName: [*c]const u8, bytesRead: [*c]c_uint) callconv(.C) [*c]u8;
 
 /// FileIO: Save binary data
-pub const SaveFileDataCallback = fn (fileName: [:0]const u8, data: *anyopaque, bytesToWrite: u32) bool;
+pub const SaveFileDataCallback = fn (fileName: [*c]const u8, data: ?*anyopaque, bytesToWrite: c_uint) callconv(.C) bool;
 
 /// FileIO: Load text data
-pub const LoadFileTextCallback = fn (fileName: [:0]const u8) [:0]u8;
+pub const LoadFileTextCallback = fn (fileName: [*c]const u8) callconv(.C) [*c]u8;
 
 /// FileIO: Save text data
-pub const SaveFileTextCallback = fn (fileName: [:0]const u8, text: [:0]const u8) bool;
+pub const SaveFileTextCallback = fn (fileName: [*c]const u8, text: [*c]const u8) callconv(.C) bool;
 
 /// Audio Loading and Playing Functions (Module: audio)
-pub const AudioCallback = fn (bufferData: *anyopaque, frames: u32) void;
+pub const AudioCallback = fn (bufferData: ?*anyopaque, frames: u32) callconv(.C) void;
 
 //--- utils ---------------------------------------------------------------------------------------
 
 pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
     return rng.float(f32) * (max - min) + min;
+}
+
+//--- functions -----------------------------------------------------------------------------------
+
+/// Load style from file (.rgs)
+pub fn LoadGuiStyle(_: [*:0]const u8) u32 {
+    @panic("LoadGuiStyle is not implemented");
+    //return raylib.LoadGuiStyle(fileName);
+}
+
+/// Unload style
+pub fn UnloadGuiStyle(_: u32) void {
+    @panic("UnloadGuiStyle is not implemented");
+    // raylib.UnloadGuiStyle(style);
+}
+
+pub fn TextSplit() void {
+    @panic("use std lib for that");
+}
+pub fn TextJoin() void {
+    @panic("use std lib for that");
+}
+pub fn TextAppend() void {
+    @panic("use std lib for that");
+}
+
+/// Set custom trace log
+pub fn SetTraceLogCallback(
+    _: TraceLogCallback,
+) void {
+    @panic("use log.zig for that");
+}
+
+/// Text Box control with multiple lines
+pub fn GuiTextBoxMulti(_: Rectangle, _: [*]u8, _: i32, _: bool) bool {
+    @panic("this gets translated wrong with cImport");
+}
+
+/// List View with extended parameters
+pub fn GuiListViewEx(
+    _: Rectangle,
+    _: [*]const [*:0]const u8,
+    _: i32,
+    _: [*]i32,
+    _: [*]i32,
+    _: i32,
+) i32 {
+    @panic("TODO: link with raygui somehow");
+}
+
+/// Generate image font atlas using chars info
+pub fn GenImageFontAtlas(
+    chars: [*]const GlyphInfo,
+    recs: [*]const [*]const Rectangle,
+    glyphCount: i32,
+    fontSize: i32,
+    padding: i32,
+    packMethod: i32,
+) Image {
+    var out: Image = undefined;
+    mGenImageFontAtlas(
+        @ptrCast([*c]raylib.Image, &out),
+        @ptrCast([*c]raylib.GlyphInfo, chars),
+        @ptrCast([*c][*c]raylib.Rectangle, recs),
+        glyphCount,
+        fontSize,
+        padding,
+        packMethod,
+    );
+    return out;
+}
+export fn mGenImageFontAtlas(
+    out: [*c]raylib.Image,
+    chars: [*c]raylib.GlyphInfo,
+    recs: [*c][*c]raylib.Rectangle,
+    glyphCount: i32,
+    fontSize: i32,
+    padding: i32,
+    packMethod: i32,
+) void {
+    out.* = raylib.GenImageFontAtlas(
+        chars,
+        recs,
+        glyphCount,
+        fontSize,
+        padding,
+        packMethod,
+    );
+}
+
+/// Get dropped files names (memory should be freed)
+pub fn GetDroppedFiles(
+    count: [*]i32,
+) [*]const [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mGetDroppedFiles(
+            @ptrCast([*c]i32, count),
+        ),
+    );
+}
+export fn mGetDroppedFiles(
+    count: [*c]i32,
+) [*c]const [*c]const u8 {
+    return raylib.GetDroppedFiles(
+        count,
+    );
+}
+
+/// Get filenames in a directory path (memory should be freed)
+pub fn GetDirectoryFiles(
+    dirPath: [*:0]const u8,
+    count: [*]i32,
+) [*]const [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mGetDirectoryFiles(
+            @ptrCast([*c]u8, dirPath),
+            @ptrCast([*c]i32, count),
+        ),
+    );
+}
+export fn mGetDirectoryFiles(
+    dirPath: [*c]u8,
+    count: [*c]i32,
+) [*c]const [*c]const u8 {
+    return raylib.GetDirectoryFiles(
+        dirPath,
+        count,
+    );
+}
+
+/// Get native window handle
+pub fn GetWindowHandle() ?*anyopaque {
+    return raylib.GetWindowHandle();
+}
+
+/// Internal memory allocator
+pub fn MemAlloc(
+    size: i32,
+) ?*anyopaque {
+    return raylib.MemAlloc(size);
+}
+
+/// Internal memory reallocator
+pub fn MemRealloc(
+    ptr: ?*anyopaque,
+    size: i32,
+) ?*anyopaque {
+    return raylib.MemRealloc(ptr, size);
+}
+
+/// Internal memory free
+pub fn MemFree(
+    ptr: ?*anyopaque,
+) void {
+    raylib.MemFree(ptr);
 }

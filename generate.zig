@@ -69,6 +69,13 @@ const Injections = struct {
                     std.log.debug("inject symbol: {s}", .{s});
                 }
             }
+            if (std.mem.indexOf(u8, line, "pub fn ")) |startIndex| {
+                if (std.mem.indexOf(u8, line, "(")) |endIndex| {
+                    const s = line["pub fn ".len + startIndex .. endIndex];
+                    try symbols.append(s);
+                    std.log.debug("inject symbol: {s}", .{s});
+                }
+            }
             try injectZigLines.append(line);
         }
 
@@ -117,23 +124,35 @@ fn writeFunctions(
             ));
         }
 
-        try file.writeAll(
-            try allocPrint(
-                allocator,
-                ") {s} {{\n",
-                .{func.returnType},
-            ),
-        );
+        if (isPointer(func.returnType)) {
+            try file.writeAll(
+                try allocPrint(
+                    allocator,
+                    ") [*]const {s} {{\n",
+                    .{stripType(func.returnType)},
+                ),
+            );
+        } else {
+            try file.writeAll(
+                try allocPrint(
+                    allocator,
+                    ") {s} {{\n",
+                    .{func.returnType},
+                ),
+            );
+        }
         const returnTypeIsVoid = eql(func.returnType, "void");
 
         //--- body ------------------------------
-        if (!returnTypeIsVoid) {
+        if (isPointer(func.returnType)) {
+            try file.writeAll(try allocPrint(allocator, "return @ptrCast({s},\n", .{func.returnType}));
+        } else if (!returnTypeIsVoid) {
             try file.writeAll(try allocPrint(allocator, "var out: {s} = undefined;\n", .{func.returnType}));
         }
         try file.writeAll(try allocPrint(allocator, "m{s}(\n", .{func.name}));
 
-        if (!returnTypeIsVoid) {
-            if (bindings.containsStruct(mapping.stripType(func.returnType))) {
+        if (!returnTypeIsVoid and !isPointer(func.returnType)) {
+            if (bindings.containsStruct(stripType(func.returnType))) {
                 try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]raylib.{s}, &out),\n", .{func.returnType}));
             } else {
                 try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]{s}, &out),\n", .{func.returnType}));
@@ -141,16 +160,28 @@ fn writeFunctions(
         }
 
         for (func.params) |param| {
-            if (bindings.containsStruct(mapping.stripType(param.typ))) {
-                try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]raylib.{s}, &{s}),\n", .{ param.typ, param.name }));
+            if (bindings.containsStruct(stripType(param.typ)) and isPointer(param.typ)) {
+                try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]raylib.{s}, @ptrToInt({s})),\n", .{ stripType(param.typ), param.name }));
+            } else if (bindings.containsStruct(stripType(param.typ))) {
+                try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]raylib.{s}, @ptrToInt(&{s})),\n", .{ stripType(param.typ), param.name }));
+            } else if (isPointer(param.typ)) {
+                if (isConst(param.typ)) {
+                    try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]const {s}, @ptrToInt({s})),\n", .{ stripType(param.typ), param.name }));
+                } else {
+                    try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]{s}, {s}),\n", .{ stripType(param.typ), param.name }));
+                }
             } else {
                 try file.writeAll(try allocPrint(allocator, "{s},\n", .{param.name}));
             }
         }
 
-        try file.writeAll(");\n");
+        if (isPointer(func.returnType)) {
+            try file.writeAll("),\n);\n");
+        } else {
+            try file.writeAll(");\n");
+        }
 
-        if (!returnTypeIsVoid) {
+        if (!returnTypeIsVoid and !isPointer(func.returnType)) {
             try file.writeAll("return out;\n");
         }
 
@@ -166,8 +197,8 @@ fn writeFunctions(
             ),
         );
 
-        if (!returnTypeIsVoid) {
-            if (bindings.containsStruct(mapping.stripType(func.returnType))) {
+        if (!returnTypeIsVoid and !isPointer(func.returnType)) {
+            if (bindings.containsStruct(stripType(func.returnType))) {
                 try file.writeAll(try allocPrint(allocator, "out: [*c]raylib.{s},\n", .{func.returnType}));
             } else {
                 try file.writeAll(try allocPrint(allocator, "out: [*c]{s},\n", .{func.returnType}));
@@ -175,13 +206,14 @@ fn writeFunctions(
         }
 
         for (func.params) |param| {
-            var typ = if (mapping.isPointer(param.typ))
-                try allocPrint(allocator, "[*c]{s}", .{mapping.stripType(param.typ)})
+            var typ = if (isPointer(param.typ) and !eql(param.typ, "*anyopaque"))
+                if(isConst(param.typ)) try allocPrint(allocator, "[*c]const {s}", .{stripType(param.typ)})
+                else try allocPrint(allocator, "[*c]{s}", .{stripType(param.typ)})
             else
                 param.typ;
 
-            if (bindings.containsStruct(mapping.stripType(param.typ))) {
-                typ = try allocPrint(allocator, "[*c]raylib.{s}", .{mapping.stripType(param.typ)});
+            if (bindings.containsStruct(stripType(param.typ))) {
+                typ = try allocPrint(allocator, "[*c]raylib.{s}", .{stripType(param.typ)});
             }
 
             try file.writeAll(try allocPrint(
@@ -191,16 +223,40 @@ fn writeFunctions(
             ));
         }
 
-        try file.writeAll(
-            try allocPrint(
-                allocator,
-                ") void {{\n",
-                .{},
-            ),
-        );
+        if (isPointer(func.returnType)) {
+            if (bindings.containsStruct(stripType(func.returnType))) {
+                try file.writeAll(
+                    try allocPrint(
+                        allocator,
+                        ") [*c]const raylib.{s} {{\n",
+                        .{stripType(func.returnType)},
+                    ),
+                );
+            } else {
+                try file.writeAll(
+                    try allocPrint(
+                        allocator,
+                        ") [*c]const {s} {{\n",
+                        .{stripType(func.returnType)},
+                    ),
+                );
+            }
+        } else {
+            try file.writeAll(
+                try allocPrint(
+                    allocator,
+                    ") void {{\n",
+                    .{},
+                ),
+            );
+        }
 
         if (!returnTypeIsVoid) {
-            try file.writeAll("out.* = ");
+            if (isPointer(func.returnType)) {
+                try file.writeAll("return ");
+            } else {
+                try file.writeAll("out.* = ");
+            }
         }
 
         try file.writeAll(
@@ -212,7 +268,13 @@ fn writeFunctions(
         );
 
         for (func.params) |param| {
-            if (bindings.containsStruct(mapping.stripType(param.typ))) {
+            if (isPointer(param.typ)) {
+                try file.writeAll(try allocPrint(
+                    allocator,
+                    "{s},\n",
+                    .{param.name},
+                ));
+            } else if (bindings.containsStruct(stripType(param.typ))) {
                 try file.writeAll(try allocPrint(
                     allocator,
                     "{s}.*,\n",
@@ -319,7 +381,7 @@ fn writeImports(
 
     try file.writeAll("\n");
 
-    std.log.info("appended inject.zig", .{});
+    std.log.info("written imports", .{});
 }
 
 fn writeInjections(
@@ -349,4 +411,35 @@ fn startsWith(haystack: []const u8, needle: []const u8) bool {
 
 fn endsWith(haystack: []const u8, needle: []const u8) bool {
     return std.mem.endsWith(u8, haystack, needle);
+}
+
+/// is c pointer type
+fn isPointer(z: []const u8) bool {
+    return pointerOffset(z) > 0;
+}
+
+fn pointerOffset(z: []const u8) usize {
+    if (startsWith(z, "*")) return 1;
+    if (startsWith(z, "[*]")) return 3;
+    if (startsWith(z, "[*c]")) return 4;
+    if (startsWith(z, "[*:0]")) return 5;
+
+    return 0;
+}
+
+fn isConst(z: []const u8) bool {
+    return startsWith(z[pointerOffset(z)..], "const ");
+}
+
+fn isVoid(z: []const u8) bool {
+    return eql(stripType(z), "void");
+}
+
+/// strips const and pointer annotations
+/// *const TName -> TName
+fn stripType(z: []const u8) []const u8 {
+    var name = z[pointerOffset(z)..];
+    name = if (startsWith(name, "const ")) name["const ".len..] else name;
+
+    return std.mem.trim(u8, name, " \t\n");
 }

@@ -222,6 +222,7 @@ pub fn parseRaylibEnum(allocator: Allocator, e: RaylibEnum) !Enum {
     };
 }
 
+/// is c const type
 pub fn isConst(c: []const u8) bool {
     return startsWith(c, "const ");
 }
@@ -236,6 +237,7 @@ test "isConst" {
     try expect(!isConst("int"));
 }
 
+/// is c pointer type
 pub fn isPointer(c: []const u8) bool {
     return endsWith(c, "*");
 }

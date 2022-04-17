@@ -6,7 +6,7 @@ const json = std.json;
 pub const jsonFiles: []const []const u8 = &.{
     "raylib.json",
     "raymath.json",
-    "raygui.json",
+    // "raygui.json",
 };
 pub const bindingsJSON = "bindings.json";
 

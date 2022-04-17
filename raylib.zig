@@ -1,8 +1,8 @@
 const std = @import("std");
 const raylib = @cImport({
+    @cDefine("RAYMATH_IMPLEMENTATION", {});
     @cInclude("raylib.h");
     @cInclude("raymath.h");
-    @cInclude("extras/raygui.h");
 });
 
 /// Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
@@ -12,13 +12,13 @@ pub fn TraceLog(
 ) void {
     mTraceLog(
         logLevel,
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
     );
 }
 
 export fn mTraceLog(
     logLevel: i32,
-    text: [*:0]const u8,
+    text: [*c]const u8,
 ) void {
     raylib.TraceLog(
         logLevel,
@@ -29,32 +29,31 @@ export fn mTraceLog(
 /// Text formatting with variables (sprintf() style)
 pub fn TextFormat(
     text: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mTextFormat(
-        @ptrCast([*c][*:0]const u8, &out),
-        text,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mTextFormat(
+            @intToPtr([*c]const u8, @ptrToInt(text)),
+        ),
     );
-    return out;
 }
 
 export fn mTextFormat(
-    out: [*c][*:0]const u8,
-    text: [*:0]const u8,
-) void {
-    out.* = raylib.TextFormat(
+    text: [*c]const u8,
+) [*c]const u8 {
+    return raylib.TextFormat(
         text,
     );
 }
 
-///
+/// 
 pub fn Vector3Length(
     v: Vector3,
 ) f32 {
     var out: f32 = undefined;
     mVector3Length(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
     );
     return out;
 }
@@ -68,14 +67,14 @@ export fn mVector3Length(
     );
 }
 
-///
+/// 
 pub fn Vector3LengthSqr(
     v: Vector3,
 ) f32 {
     var out: f32 = undefined;
     mVector3LengthSqr(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
     );
     return out;
 }
@@ -97,30 +96,29 @@ pub fn LoadFontData(
     fontChars: [*]i32,
     glyphCount: i32,
     typ: i32,
-) [*]GlyphInfo {
-    var out: [*]GlyphInfo = undefined;
-    mLoadFontData(
-        @ptrCast([*c][*]GlyphInfo, &out),
-        fileData,
-        dataSize,
-        fontSize,
-        fontChars,
-        glyphCount,
-        typ,
+) [*]const GlyphInfo {
+    return @ptrCast(
+        [*]GlyphInfo,
+        mLoadFontData(
+            @intToPtr([*c]const u8, @ptrToInt(fileData)),
+            dataSize,
+            fontSize,
+            @ptrCast([*c]i32, fontChars),
+            glyphCount,
+            typ,
+        ),
     );
-    return out;
 }
 
 export fn mLoadFontData(
-    out: [*c][*]GlyphInfo,
-    fileData: [*:0]const u8,
+    fileData: [*c]const u8,
     dataSize: i32,
     fontSize: i32,
-    fontChars: [*]i32,
+    fontChars: [*c]i32,
     glyphCount: i32,
     typ: i32,
-) void {
-    out.* = raylib.LoadFontData(
+) [*c]const raylib.GlyphInfo {
+    return raylib.LoadFontData(
         fileData,
         dataSize,
         fontSize,
@@ -139,14 +137,14 @@ pub fn InitWindow(
     mInitWindow(
         width,
         height,
-        title,
+        @intToPtr([*c]const u8, @ptrToInt(title)),
     );
 }
 
 export fn mInitWindow(
     width: i32,
     height: i32,
-    title: [*:0]const u8,
+    title: [*c]const u8,
 ) void {
     raylib.InitWindow(
         width,
@@ -380,7 +378,7 @@ pub fn SetWindowIcon(
     image: Image,
 ) void {
     mSetWindowIcon(
-        @ptrCast([*c]raylib.Image, &image),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
     );
 }
 
@@ -397,12 +395,12 @@ pub fn SetWindowTitle(
     title: [*:0]const u8,
 ) void {
     mSetWindowTitle(
-        title,
+        @intToPtr([*c]const u8, @ptrToInt(title)),
     );
 }
 
 export fn mSetWindowTitle(
-    title: [*:0]const u8,
+    title: [*c]const u8,
 ) void {
     raylib.SetWindowTitle(
         title,
@@ -504,21 +502,6 @@ export fn mSetWindowOpacity(
     raylib.SetWindowOpacity(
         opacity,
     );
-}
-
-/// Get native window handle
-pub fn GetWindowHandle() *anyopaque {
-    var out: *anyopaque = undefined;
-    mGetWindowHandle(
-        @ptrCast([*c]*anyopaque, &out),
-    );
-    return out;
-}
-
-export fn mGetWindowHandle(
-    out: [*c]*anyopaque,
-) void {
-    out.* = raylib.GetWindowHandle();
 }
 
 /// Get current screen width
@@ -770,20 +753,19 @@ export fn mGetWindowScaleDPI(
 /// Get the human-readable, UTF-8 encoded name of the primary monitor
 pub fn GetMonitorName(
     monitor: i32,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetMonitorName(
-        @ptrCast([*c][*:0]const u8, &out),
-        monitor,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetMonitorName(
+            monitor,
+        ),
     );
-    return out;
 }
 
 export fn mGetMonitorName(
-    out: [*c][*:0]const u8,
     monitor: i32,
-) void {
-    out.* = raylib.GetMonitorName(
+) [*c]const u8 {
+    return raylib.GetMonitorName(
         monitor,
     );
 }
@@ -793,12 +775,12 @@ pub fn SetClipboardText(
     text: [*:0]const u8,
 ) void {
     mSetClipboardText(
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
     );
 }
 
 export fn mSetClipboardText(
-    text: [*:0]const u8,
+    text: [*c]const u8,
 ) void {
     raylib.SetClipboardText(
         text,
@@ -806,18 +788,15 @@ export fn mSetClipboardText(
 }
 
 /// Get clipboard text content
-pub fn GetClipboardText() [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetClipboardText(
-        @ptrCast([*c][*:0]const u8, &out),
+pub fn GetClipboardText() [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetClipboardText(),
     );
-    return out;
 }
 
-export fn mGetClipboardText(
-    out: [*c][*:0]const u8,
-) void {
-    out.* = raylib.GetClipboardText();
+export fn mGetClipboardText() [*c]const u8 {
+    return raylib.GetClipboardText();
 }
 
 /// Swap back buffer with front buffer (screen drawing)
@@ -926,7 +905,7 @@ pub fn ClearBackground(
     color: Color,
 ) void {
     mClearBackground(
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -961,7 +940,7 @@ pub fn BeginMode2D(
     camera: Camera2D,
 ) void {
     mBeginMode2D(
-        @ptrCast([*c]raylib.Camera2D, &camera),
+        @intToPtr([*c]raylib.Camera2D, @ptrToInt(&camera)),
     );
 }
 
@@ -987,7 +966,7 @@ pub fn BeginMode3D(
     camera: Camera3D,
 ) void {
     mBeginMode3D(
-        @ptrCast([*c]raylib.Camera3D, &camera),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
     );
 }
 
@@ -1013,7 +992,7 @@ pub fn BeginTextureMode(
     target: RenderTexture2D,
 ) void {
     mBeginTextureMode(
-        @ptrCast([*c]raylib.RenderTexture2D, &target),
+        @intToPtr([*c]raylib.RenderTexture2D, @ptrToInt(&target)),
     );
 }
 
@@ -1039,7 +1018,7 @@ pub fn BeginShaderMode(
     shader: Shader,
 ) void {
     mBeginShaderMode(
-        @ptrCast([*c]raylib.Shader, &shader),
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
     );
 }
 
@@ -1129,7 +1108,7 @@ pub fn BeginVrStereoMode(
     config: VrStereoConfig,
 ) void {
     mBeginVrStereoMode(
-        @ptrCast([*c]raylib.VrStereoConfig, &config),
+        @intToPtr([*c]raylib.VrStereoConfig, @ptrToInt(&config)),
     );
 }
 
@@ -1157,7 +1136,7 @@ pub fn LoadVrStereoConfig(
     var out: VrStereoConfig = undefined;
     mLoadVrStereoConfig(
         @ptrCast([*c]raylib.VrStereoConfig, &out),
-        @ptrCast([*c]raylib.VrDeviceInfo, &device),
+        @intToPtr([*c]raylib.VrDeviceInfo, @ptrToInt(&device)),
     );
     return out;
 }
@@ -1176,7 +1155,7 @@ pub fn UnloadVrStereoConfig(
     config: VrStereoConfig,
 ) void {
     mUnloadVrStereoConfig(
-        @ptrCast([*c]raylib.VrStereoConfig, &config),
+        @intToPtr([*c]raylib.VrStereoConfig, @ptrToInt(&config)),
     );
 }
 
@@ -1196,16 +1175,16 @@ pub fn LoadShader(
     var out: Shader = undefined;
     mLoadShader(
         @ptrCast([*c]raylib.Shader, &out),
-        vsFileName,
-        fsFileName,
+        @intToPtr([*c]const u8, @ptrToInt(vsFileName)),
+        @intToPtr([*c]const u8, @ptrToInt(fsFileName)),
     );
     return out;
 }
 
 export fn mLoadShader(
     out: [*c]raylib.Shader,
-    vsFileName: [*:0]const u8,
-    fsFileName: [*:0]const u8,
+    vsFileName: [*c]const u8,
+    fsFileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadShader(
         vsFileName,
@@ -1221,16 +1200,16 @@ pub fn LoadShaderFromMemory(
     var out: Shader = undefined;
     mLoadShaderFromMemory(
         @ptrCast([*c]raylib.Shader, &out),
-        vsCode,
-        fsCode,
+        @intToPtr([*c]const u8, @ptrToInt(vsCode)),
+        @intToPtr([*c]const u8, @ptrToInt(fsCode)),
     );
     return out;
 }
 
 export fn mLoadShaderFromMemory(
     out: [*c]raylib.Shader,
-    vsCode: [*:0]const u8,
-    fsCode: [*:0]const u8,
+    vsCode: [*c]const u8,
+    fsCode: [*c]const u8,
 ) void {
     out.* = raylib.LoadShaderFromMemory(
         vsCode,
@@ -1246,8 +1225,8 @@ pub fn GetShaderLocation(
     var out: i32 = undefined;
     mGetShaderLocation(
         @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Shader, &shader),
-        uniformName,
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
+        @intToPtr([*c]const u8, @ptrToInt(uniformName)),
     );
     return out;
 }
@@ -1255,7 +1234,7 @@ pub fn GetShaderLocation(
 export fn mGetShaderLocation(
     out: [*c]i32,
     shader: [*c]raylib.Shader,
-    uniformName: [*:0]const u8,
+    uniformName: [*c]const u8,
 ) void {
     out.* = raylib.GetShaderLocation(
         shader.*,
@@ -1271,8 +1250,8 @@ pub fn GetShaderLocationAttrib(
     var out: i32 = undefined;
     mGetShaderLocationAttrib(
         @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Shader, &shader),
-        attribName,
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
+        @intToPtr([*c]const u8, @ptrToInt(attribName)),
     );
     return out;
 }
@@ -1280,7 +1259,7 @@ pub fn GetShaderLocationAttrib(
 export fn mGetShaderLocationAttrib(
     out: [*c]i32,
     shader: [*c]raylib.Shader,
-    attribName: [*:0]const u8,
+    attribName: [*c]const u8,
 ) void {
     out.* = raylib.GetShaderLocationAttrib(
         shader.*,
@@ -1296,9 +1275,9 @@ pub fn SetShaderValue(
     uniformType: i32,
 ) void {
     mSetShaderValue(
-        @ptrCast([*c]raylib.Shader, &shader),
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
         locIndex,
-        value,
+        @ptrCast([*c]anyopaque, value),
         uniformType,
     );
 }
@@ -1326,9 +1305,9 @@ pub fn SetShaderValueV(
     count: i32,
 ) void {
     mSetShaderValueV(
-        @ptrCast([*c]raylib.Shader, &shader),
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
         locIndex,
-        value,
+        @ptrCast([*c]anyopaque, value),
         uniformType,
         count,
     );
@@ -1357,9 +1336,9 @@ pub fn SetShaderValueMatrix(
     mat: Matrix,
 ) void {
     mSetShaderValueMatrix(
-        @ptrCast([*c]raylib.Shader, &shader),
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
         locIndex,
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
 }
 
@@ -1382,9 +1361,9 @@ pub fn SetShaderValueTexture(
     texture: Texture2D,
 ) void {
     mSetShaderValueTexture(
-        @ptrCast([*c]raylib.Shader, &shader),
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
         locIndex,
-        @ptrCast([*c]raylib.Texture2D, &texture),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
     );
 }
 
@@ -1405,7 +1384,7 @@ pub fn UnloadShader(
     shader: Shader,
 ) void {
     mUnloadShader(
-        @ptrCast([*c]raylib.Shader, &shader),
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
     );
 }
 
@@ -1425,8 +1404,8 @@ pub fn GetMouseRay(
     var out: Ray = undefined;
     mGetMouseRay(
         @ptrCast([*c]raylib.Ray, &out),
-        @ptrCast([*c]raylib.Vector2, &mousePosition),
-        @ptrCast([*c]raylib.Camera3D, &camera),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&mousePosition)),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
     );
     return out;
 }
@@ -1449,7 +1428,7 @@ pub fn GetCameraMatrix(
     var out: Matrix = undefined;
     mGetCameraMatrix(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Camera3D, &camera),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
     );
     return out;
 }
@@ -1470,7 +1449,7 @@ pub fn GetCameraMatrix2D(
     var out: Matrix = undefined;
     mGetCameraMatrix2D(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Camera2D, &camera),
+        @intToPtr([*c]raylib.Camera2D, @ptrToInt(&camera)),
     );
     return out;
 }
@@ -1492,8 +1471,8 @@ pub fn GetWorldToScreen(
     var out: Vector2 = undefined;
     mGetWorldToScreen(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Camera3D, &camera),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
     );
     return out;
 }
@@ -1519,8 +1498,8 @@ pub fn GetWorldToScreenEx(
     var out: Vector2 = undefined;
     mGetWorldToScreenEx(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Camera3D, &camera),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
         width,
         height,
     );
@@ -1550,8 +1529,8 @@ pub fn GetWorldToScreen2D(
     var out: Vector2 = undefined;
     mGetWorldToScreen2D(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Camera2D, &camera),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Camera2D, @ptrToInt(&camera)),
     );
     return out;
 }
@@ -1575,8 +1554,8 @@ pub fn GetScreenToWorld2D(
     var out: Vector2 = undefined;
     mGetScreenToWorld2D(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Camera2D, &camera),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Camera2D, @ptrToInt(&camera)),
     );
     return out;
 }
@@ -1701,12 +1680,12 @@ pub fn TakeScreenshot(
     fileName: [*:0]const u8,
 ) void {
     mTakeScreenshot(
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
 }
 
 export fn mTakeScreenshot(
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     raylib.TakeScreenshot(
         fileName,
@@ -1744,86 +1723,6 @@ export fn mSetTraceLogLevel(
 ) void {
     raylib.SetTraceLogLevel(
         logLevel,
-    );
-}
-
-/// Internal memory allocator
-pub fn MemAlloc(
-    size: i32,
-) *anyopaque {
-    var out: *anyopaque = undefined;
-    mMemAlloc(
-        @ptrCast([*c]*anyopaque, &out),
-        size,
-    );
-    return out;
-}
-
-export fn mMemAlloc(
-    out: [*c]*anyopaque,
-    size: i32,
-) void {
-    out.* = raylib.MemAlloc(
-        size,
-    );
-}
-
-/// Internal memory reallocator
-pub fn MemRealloc(
-    ptr: *anyopaque,
-    size: i32,
-) *anyopaque {
-    var out: *anyopaque = undefined;
-    mMemRealloc(
-        @ptrCast([*c]*anyopaque, &out),
-        ptr,
-        size,
-    );
-    return out;
-}
-
-export fn mMemRealloc(
-    out: [*c]*anyopaque,
-    ptr: *anyopaque,
-    size: i32,
-) void {
-    out.* = raylib.MemRealloc(
-        ptr,
-        size,
-    );
-}
-
-/// Internal memory free
-pub fn MemFree(
-    ptr: *anyopaque,
-) void {
-    mMemFree(
-        ptr,
-    );
-}
-
-export fn mMemFree(
-    ptr: *anyopaque,
-) void {
-    raylib.MemFree(
-        ptr,
-    );
-}
-
-/// Set custom trace log
-pub fn SetTraceLogCallback(
-    callback: TraceLogCallback,
-) void {
-    mSetTraceLogCallback(
-        callback,
-    );
-}
-
-export fn mSetTraceLogCallback(
-    callback: TraceLogCallback,
-) void {
-    raylib.SetTraceLogCallback(
-        callback,
     );
 }
 
@@ -1899,22 +1798,21 @@ export fn mSetSaveFileTextCallback(
 pub fn LoadFileData(
     fileName: [*:0]const u8,
     bytesRead: [*]u32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mLoadFileData(
-        @ptrCast([*c][*]u8, &out),
-        fileName,
-        bytesRead,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mLoadFileData(
+            @intToPtr([*c]const u8, @ptrToInt(fileName)),
+            @ptrCast([*c]u32, bytesRead),
+        ),
     );
-    return out;
 }
 
 export fn mLoadFileData(
-    out: [*c][*]u8,
-    fileName: [*:0]const u8,
-    bytesRead: [*]u32,
-) void {
-    out.* = raylib.LoadFileData(
+    fileName: [*c]const u8,
+    bytesRead: [*c]u32,
+) [*c]const u8 {
+    return raylib.LoadFileData(
         fileName,
         bytesRead,
     );
@@ -1925,12 +1823,12 @@ pub fn UnloadFileData(
     data: [*]u8,
 ) void {
     mUnloadFileData(
-        data,
+        @ptrCast([*c]u8, data),
     );
 }
 
 export fn mUnloadFileData(
-    data: [*]u8,
+    data: [*c]u8,
 ) void {
     raylib.UnloadFileData(
         data,
@@ -1946,8 +1844,8 @@ pub fn SaveFileData(
     var out: bool = undefined;
     mSaveFileData(
         @ptrCast([*c]bool, &out),
-        fileName,
-        data,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        @ptrCast([*c]anyopaque, data),
         bytesToWrite,
     );
     return out;
@@ -1955,7 +1853,7 @@ pub fn SaveFileData(
 
 export fn mSaveFileData(
     out: [*c]bool,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
     data: *anyopaque,
     bytesToWrite: u32,
 ) void {
@@ -1969,20 +1867,19 @@ export fn mSaveFileData(
 /// Load text data from file (read), returns a '\0' terminated string
 pub fn LoadFileText(
     fileName: [*:0]const u8,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mLoadFileText(
-        @ptrCast([*c][*]u8, &out),
-        fileName,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mLoadFileText(
+            @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        ),
     );
-    return out;
 }
 
 export fn mLoadFileText(
-    out: [*c][*]u8,
-    fileName: [*:0]const u8,
-) void {
-    out.* = raylib.LoadFileText(
+    fileName: [*c]const u8,
+) [*c]const u8 {
+    return raylib.LoadFileText(
         fileName,
     );
 }
@@ -1992,12 +1889,12 @@ pub fn UnloadFileText(
     text: [*]u8,
 ) void {
     mUnloadFileText(
-        text,
+        @ptrCast([*c]u8, text),
     );
 }
 
 export fn mUnloadFileText(
-    text: [*]u8,
+    text: [*c]u8,
 ) void {
     raylib.UnloadFileText(
         text,
@@ -2012,16 +1909,16 @@ pub fn SaveFileText(
     var out: bool = undefined;
     mSaveFileText(
         @ptrCast([*c]bool, &out),
-        fileName,
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        @ptrCast([*c]u8, text),
     );
     return out;
 }
 
 export fn mSaveFileText(
     out: [*c]bool,
-    fileName: [*:0]const u8,
-    text: [*]u8,
+    fileName: [*c]const u8,
+    text: [*c]u8,
 ) void {
     out.* = raylib.SaveFileText(
         fileName,
@@ -2036,14 +1933,14 @@ pub fn FileExists(
     var out: bool = undefined;
     mFileExists(
         @ptrCast([*c]bool, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mFileExists(
     out: [*c]bool,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.FileExists(
         fileName,
@@ -2057,14 +1954,14 @@ pub fn DirectoryExists(
     var out: bool = undefined;
     mDirectoryExists(
         @ptrCast([*c]bool, &out),
-        dirPath,
+        @intToPtr([*c]const u8, @ptrToInt(dirPath)),
     );
     return out;
 }
 
 export fn mDirectoryExists(
     out: [*c]bool,
-    dirPath: [*:0]const u8,
+    dirPath: [*c]const u8,
 ) void {
     out.* = raylib.DirectoryExists(
         dirPath,
@@ -2079,16 +1976,16 @@ pub fn IsFileExtension(
     var out: bool = undefined;
     mIsFileExtension(
         @ptrCast([*c]bool, &out),
-        fileName,
-        ext,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        @intToPtr([*c]const u8, @ptrToInt(ext)),
     );
     return out;
 }
 
 export fn mIsFileExtension(
     out: [*c]bool,
-    fileName: [*:0]const u8,
-    ext: [*:0]const u8,
+    fileName: [*c]const u8,
+    ext: [*c]const u8,
 ) void {
     out.* = raylib.IsFileExtension(
         fileName,
@@ -2103,14 +2000,14 @@ pub fn GetFileLength(
     var out: i32 = undefined;
     mGetFileLength(
         @ptrCast([*c]i32, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mGetFileLength(
     out: [*c]i32,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.GetFileLength(
         fileName,
@@ -2120,20 +2017,19 @@ export fn mGetFileLength(
 /// Get pointer to extension for a filename string (includes dot: '.png')
 pub fn GetFileExtension(
     fileName: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetFileExtension(
-        @ptrCast([*c][*:0]const u8, &out),
-        fileName,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetFileExtension(
+            @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        ),
     );
-    return out;
 }
 
 export fn mGetFileExtension(
-    out: [*c][*:0]const u8,
-    fileName: [*:0]const u8,
-) void {
-    out.* = raylib.GetFileExtension(
+    fileName: [*c]const u8,
+) [*c]const u8 {
+    return raylib.GetFileExtension(
         fileName,
     );
 }
@@ -2141,20 +2037,19 @@ export fn mGetFileExtension(
 /// Get pointer to filename for a path string
 pub fn GetFileName(
     filePath: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetFileName(
-        @ptrCast([*c][*:0]const u8, &out),
-        filePath,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetFileName(
+            @intToPtr([*c]const u8, @ptrToInt(filePath)),
+        ),
     );
-    return out;
 }
 
 export fn mGetFileName(
-    out: [*c][*:0]const u8,
-    filePath: [*:0]const u8,
-) void {
-    out.* = raylib.GetFileName(
+    filePath: [*c]const u8,
+) [*c]const u8 {
+    return raylib.GetFileName(
         filePath,
     );
 }
@@ -2162,20 +2057,19 @@ export fn mGetFileName(
 /// Get filename string without extension (uses static string)
 pub fn GetFileNameWithoutExt(
     filePath: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetFileNameWithoutExt(
-        @ptrCast([*c][*:0]const u8, &out),
-        filePath,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetFileNameWithoutExt(
+            @intToPtr([*c]const u8, @ptrToInt(filePath)),
+        ),
     );
-    return out;
 }
 
 export fn mGetFileNameWithoutExt(
-    out: [*c][*:0]const u8,
-    filePath: [*:0]const u8,
-) void {
-    out.* = raylib.GetFileNameWithoutExt(
+    filePath: [*c]const u8,
+) [*c]const u8 {
+    return raylib.GetFileNameWithoutExt(
         filePath,
     );
 }
@@ -2183,20 +2077,19 @@ export fn mGetFileNameWithoutExt(
 /// Get full path for a given fileName with path (uses static string)
 pub fn GetDirectoryPath(
     filePath: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetDirectoryPath(
-        @ptrCast([*c][*:0]const u8, &out),
-        filePath,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetDirectoryPath(
+            @intToPtr([*c]const u8, @ptrToInt(filePath)),
+        ),
     );
-    return out;
 }
 
 export fn mGetDirectoryPath(
-    out: [*c][*:0]const u8,
-    filePath: [*:0]const u8,
-) void {
-    out.* = raylib.GetDirectoryPath(
+    filePath: [*c]const u8,
+) [*c]const u8 {
+    return raylib.GetDirectoryPath(
         filePath,
     );
 }
@@ -2204,77 +2097,45 @@ export fn mGetDirectoryPath(
 /// Get previous directory path for a given path (uses static string)
 pub fn GetPrevDirectoryPath(
     dirPath: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetPrevDirectoryPath(
-        @ptrCast([*c][*:0]const u8, &out),
-        dirPath,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetPrevDirectoryPath(
+            @intToPtr([*c]const u8, @ptrToInt(dirPath)),
+        ),
     );
-    return out;
 }
 
 export fn mGetPrevDirectoryPath(
-    out: [*c][*:0]const u8,
-    dirPath: [*:0]const u8,
-) void {
-    out.* = raylib.GetPrevDirectoryPath(
+    dirPath: [*c]const u8,
+) [*c]const u8 {
+    return raylib.GetPrevDirectoryPath(
         dirPath,
     );
 }
 
 /// Get current working directory (uses static string)
-pub fn GetWorkingDirectory() [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetWorkingDirectory(
-        @ptrCast([*c][*:0]const u8, &out),
+pub fn GetWorkingDirectory() [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetWorkingDirectory(),
     );
-    return out;
 }
 
-export fn mGetWorkingDirectory(
-    out: [*c][*:0]const u8,
-) void {
-    out.* = raylib.GetWorkingDirectory();
+export fn mGetWorkingDirectory() [*c]const u8 {
+    return raylib.GetWorkingDirectory();
 }
 
 /// Get the directory if the running application (uses static string)
-pub fn GetApplicationDirectory() [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetApplicationDirectory(
-        @ptrCast([*c][*:0]const u8, &out),
+pub fn GetApplicationDirectory() [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetApplicationDirectory(),
     );
-    return out;
 }
 
-export fn mGetApplicationDirectory(
-    out: [*c][*:0]const u8,
-) void {
-    out.* = raylib.GetApplicationDirectory();
-}
-
-/// Get filenames in a directory path (memory should be freed)
-pub fn GetDirectoryFiles(
-    dirPath: [*:0]const u8,
-    count: [*]i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mGetDirectoryFiles(
-        @ptrCast([*c][*]u8, &out),
-        dirPath,
-        count,
-    );
-    return out;
-}
-
-export fn mGetDirectoryFiles(
-    out: [*c][*]u8,
-    dirPath: [*:0]const u8,
-    count: [*]i32,
-) void {
-    out.* = raylib.GetDirectoryFiles(
-        dirPath,
-        count,
-    );
+export fn mGetApplicationDirectory() [*c]const u8 {
+    return raylib.GetApplicationDirectory();
 }
 
 /// Clear directory files paths buffers (free memory)
@@ -2293,14 +2154,14 @@ pub fn ChangeDirectory(
     var out: bool = undefined;
     mChangeDirectory(
         @ptrCast([*c]bool, &out),
-        dir,
+        @intToPtr([*c]const u8, @ptrToInt(dir)),
     );
     return out;
 }
 
 export fn mChangeDirectory(
     out: [*c]bool,
-    dir: [*:0]const u8,
+    dir: [*c]const u8,
 ) void {
     out.* = raylib.ChangeDirectory(
         dir,
@@ -2322,27 +2183,6 @@ export fn mIsFileDropped(
     out.* = raylib.IsFileDropped();
 }
 
-/// Get dropped files names (memory should be freed)
-pub fn GetDroppedFiles(
-    count: [*]i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mGetDroppedFiles(
-        @ptrCast([*c][*]u8, &out),
-        count,
-    );
-    return out;
-}
-
-export fn mGetDroppedFiles(
-    out: [*c][*]u8,
-    count: [*]i32,
-) void {
-    out.* = raylib.GetDroppedFiles(
-        count,
-    );
-}
-
 /// Clear dropped files paths buffer (free memory)
 pub fn ClearDroppedFiles() void {
     mClearDroppedFiles();
@@ -2359,14 +2199,14 @@ pub fn GetFileModTime(
     var out: i64 = undefined;
     mGetFileModTime(
         @ptrCast([*c]i64, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mGetFileModTime(
     out: [*c]i64,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.GetFileModTime(
         fileName,
@@ -2378,24 +2218,23 @@ pub fn CompressData(
     data: [*:0]const u8,
     dataSize: i32,
     compDataSize: [*]i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mCompressData(
-        @ptrCast([*c][*]u8, &out),
-        data,
-        dataSize,
-        compDataSize,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mCompressData(
+            @intToPtr([*c]const u8, @ptrToInt(data)),
+            dataSize,
+            @ptrCast([*c]i32, compDataSize),
+        ),
     );
-    return out;
 }
 
 export fn mCompressData(
-    out: [*c][*]u8,
-    data: [*:0]const u8,
+    data: [*c]const u8,
     dataSize: i32,
-    compDataSize: [*]i32,
-) void {
-    out.* = raylib.CompressData(
+    compDataSize: [*c]i32,
+) [*c]const u8 {
+    return raylib.CompressData(
         data,
         dataSize,
         compDataSize,
@@ -2407,24 +2246,23 @@ pub fn DecompressData(
     compData: [*:0]const u8,
     compDataSize: i32,
     dataSize: [*]i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mDecompressData(
-        @ptrCast([*c][*]u8, &out),
-        compData,
-        compDataSize,
-        dataSize,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mDecompressData(
+            @intToPtr([*c]const u8, @ptrToInt(compData)),
+            compDataSize,
+            @ptrCast([*c]i32, dataSize),
+        ),
     );
-    return out;
 }
 
 export fn mDecompressData(
-    out: [*c][*]u8,
-    compData: [*:0]const u8,
+    compData: [*c]const u8,
     compDataSize: i32,
-    dataSize: [*]i32,
-) void {
-    out.* = raylib.DecompressData(
+    dataSize: [*c]i32,
+) [*c]const u8 {
+    return raylib.DecompressData(
         compData,
         compDataSize,
         dataSize,
@@ -2436,24 +2274,23 @@ pub fn EncodeDataBase64(
     data: [*:0]const u8,
     dataSize: i32,
     outputSize: [*]i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mEncodeDataBase64(
-        @ptrCast([*c][*]u8, &out),
-        data,
-        dataSize,
-        outputSize,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mEncodeDataBase64(
+            @intToPtr([*c]const u8, @ptrToInt(data)),
+            dataSize,
+            @ptrCast([*c]i32, outputSize),
+        ),
     );
-    return out;
 }
 
 export fn mEncodeDataBase64(
-    out: [*c][*]u8,
-    data: [*:0]const u8,
+    data: [*c]const u8,
     dataSize: i32,
-    outputSize: [*]i32,
-) void {
-    out.* = raylib.EncodeDataBase64(
+    outputSize: [*c]i32,
+) [*c]const u8 {
+    return raylib.EncodeDataBase64(
         data,
         dataSize,
         outputSize,
@@ -2464,22 +2301,21 @@ export fn mEncodeDataBase64(
 pub fn DecodeDataBase64(
     data: [*:0]const u8,
     outputSize: [*]i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mDecodeDataBase64(
-        @ptrCast([*c][*]u8, &out),
-        data,
-        outputSize,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mDecodeDataBase64(
+            @intToPtr([*c]const u8, @ptrToInt(data)),
+            @ptrCast([*c]i32, outputSize),
+        ),
     );
-    return out;
 }
 
 export fn mDecodeDataBase64(
-    out: [*c][*]u8,
-    data: [*:0]const u8,
-    outputSize: [*]i32,
-) void {
-    out.* = raylib.DecodeDataBase64(
+    data: [*c]const u8,
+    outputSize: [*c]i32,
+) [*c]const u8 {
+    return raylib.DecodeDataBase64(
         data,
         outputSize,
     );
@@ -2536,12 +2372,12 @@ pub fn OpenURL(
     url: [*:0]const u8,
 ) void {
     mOpenURL(
-        url,
+        @intToPtr([*c]const u8, @ptrToInt(url)),
     );
 }
 
 export fn mOpenURL(
-    url: [*:0]const u8,
+    url: [*c]const u8,
 ) void {
     raylib.OpenURL(
         url,
@@ -2703,20 +2539,19 @@ export fn mIsGamepadAvailable(
 /// Get gamepad internal name id
 pub fn GetGamepadName(
     gamepad: i32,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGetGamepadName(
-        @ptrCast([*c][*:0]const u8, &out),
-        gamepad,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mGetGamepadName(
+            gamepad,
+        ),
     );
-    return out;
 }
 
 export fn mGetGamepadName(
-    out: [*c][*:0]const u8,
     gamepad: i32,
-) void {
-    out.* = raylib.GetGamepadName(
+) [*c]const u8 {
+    return raylib.GetGamepadName(
         gamepad,
     );
 }
@@ -2889,14 +2724,14 @@ pub fn SetGamepadMappings(
     var out: i32 = undefined;
     mSetGamepadMappings(
         @ptrCast([*c]i32, &out),
-        mappings,
+        @intToPtr([*c]const u8, @ptrToInt(mappings)),
     );
     return out;
 }
 
 export fn mSetGamepadMappings(
     out: [*c]i32,
-    mappings: [*:0]const u8,
+    mappings: [*c]const u8,
 ) void {
     out.* = raylib.SetGamepadMappings(
         mappings,
@@ -3363,7 +3198,7 @@ pub fn SetCameraMode(
     mode: i32,
 ) void {
     mSetCameraMode(
-        @ptrCast([*c]raylib.Camera3D, &camera),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
         mode,
     );
 }
@@ -3383,12 +3218,12 @@ pub fn UpdateCamera(
     camera: [*]Camera3D,
 ) void {
     mUpdateCamera(
-        camera,
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
     );
 }
 
 export fn mUpdateCamera(
-    camera: [*]Camera3D,
+    camera: [*c]raylib.Camera3D,
 ) void {
     raylib.UpdateCamera(
         camera,
@@ -3489,8 +3324,8 @@ pub fn SetShapesTexture(
     source: Rectangle,
 ) void {
     mSetShapesTexture(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &source),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
     );
 }
 
@@ -3513,7 +3348,7 @@ pub fn DrawPixel(
     mDrawPixel(
         posX,
         posY,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3535,8 +3370,8 @@ pub fn DrawPixelV(
     color: Color,
 ) void {
     mDrawPixelV(
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3563,7 +3398,7 @@ pub fn DrawLine(
         startPosY,
         endPosX,
         endPosY,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3590,9 +3425,9 @@ pub fn DrawLineV(
     color: Color,
 ) void {
     mDrawLineV(
-        @ptrCast([*c]raylib.Vector2, &startPos),
-        @ptrCast([*c]raylib.Vector2, &endPos),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3616,10 +3451,10 @@ pub fn DrawLineEx(
     color: Color,
 ) void {
     mDrawLineEx(
-        @ptrCast([*c]raylib.Vector2, &startPos),
-        @ptrCast([*c]raylib.Vector2, &endPos),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos)),
         thick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3645,10 +3480,10 @@ pub fn DrawLineBezier(
     color: Color,
 ) void {
     mDrawLineBezier(
-        @ptrCast([*c]raylib.Vector2, &startPos),
-        @ptrCast([*c]raylib.Vector2, &endPos),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos)),
         thick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3675,11 +3510,11 @@ pub fn DrawLineBezierQuad(
     color: Color,
 ) void {
     mDrawLineBezierQuad(
-        @ptrCast([*c]raylib.Vector2, &startPos),
-        @ptrCast([*c]raylib.Vector2, &endPos),
-        @ptrCast([*c]raylib.Vector2, &controlPos),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&controlPos)),
         thick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3709,12 +3544,12 @@ pub fn DrawLineBezierCubic(
     color: Color,
 ) void {
     mDrawLineBezierCubic(
-        @ptrCast([*c]raylib.Vector2, &startPos),
-        @ptrCast([*c]raylib.Vector2, &endPos),
-        @ptrCast([*c]raylib.Vector2, &startControlPos),
-        @ptrCast([*c]raylib.Vector2, &endControlPos),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startControlPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endControlPos)),
         thick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3743,14 +3578,14 @@ pub fn DrawLineStrip(
     color: Color,
 ) void {
     mDrawLineStrip(
-        points,
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
         pointCount,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mDrawLineStrip(
-    points: [*]Vector2,
+    points: [*c]raylib.Vector2,
     pointCount: i32,
     color: [*c]raylib.Color,
 ) void {
@@ -3772,7 +3607,7 @@ pub fn DrawCircle(
         centerX,
         centerY,
         radius,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3800,12 +3635,12 @@ pub fn DrawCircleSector(
     color: Color,
 ) void {
     mDrawCircleSector(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
         startAngle,
         endAngle,
         segments,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3837,12 +3672,12 @@ pub fn DrawCircleSectorLines(
     color: Color,
 ) void {
     mDrawCircleSectorLines(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
         startAngle,
         endAngle,
         segments,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3876,8 +3711,8 @@ pub fn DrawCircleGradient(
         centerX,
         centerY,
         radius,
-        @ptrCast([*c]raylib.Color, &color1),
-        @ptrCast([*c]raylib.Color, &color2),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color1)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color2)),
     );
 }
 
@@ -3904,9 +3739,9 @@ pub fn DrawCircleV(
     color: Color,
 ) void {
     mDrawCircleV(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3933,7 +3768,7 @@ pub fn DrawCircleLines(
         centerX,
         centerY,
         radius,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3964,7 +3799,7 @@ pub fn DrawEllipse(
         centerY,
         radiusH,
         radiusV,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -3997,7 +3832,7 @@ pub fn DrawEllipseLines(
         centerY,
         radiusH,
         radiusV,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4028,13 +3863,13 @@ pub fn DrawRing(
     color: Color,
 ) void {
     mDrawRing(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         innerRadius,
         outerRadius,
         startAngle,
         endAngle,
         segments,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4069,13 +3904,13 @@ pub fn DrawRingLines(
     color: Color,
 ) void {
     mDrawRingLines(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         innerRadius,
         outerRadius,
         startAngle,
         endAngle,
         segments,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4112,7 +3947,7 @@ pub fn DrawRectangle(
         posY,
         width,
         height,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4139,9 +3974,9 @@ pub fn DrawRectangleV(
     color: Color,
 ) void {
     mDrawRectangleV(
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Vector2, &size),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&size)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4163,8 +3998,8 @@ pub fn DrawRectangleRec(
     color: Color,
 ) void {
     mDrawRectangleRec(
-        @ptrCast([*c]raylib.Rectangle, &rec),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4186,10 +4021,10 @@ pub fn DrawRectanglePro(
     color: Color,
 ) void {
     mDrawRectanglePro(
-        @ptrCast([*c]raylib.Rectangle, &rec),
-        @ptrCast([*c]raylib.Vector2, &origin),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
         rotation,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4221,8 +4056,8 @@ pub fn DrawRectangleGradientV(
         posY,
         width,
         height,
-        @ptrCast([*c]raylib.Color, &color1),
-        @ptrCast([*c]raylib.Color, &color2),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color1)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color2)),
     );
 }
 
@@ -4258,8 +4093,8 @@ pub fn DrawRectangleGradientH(
         posY,
         width,
         height,
-        @ptrCast([*c]raylib.Color, &color1),
-        @ptrCast([*c]raylib.Color, &color2),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color1)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color2)),
     );
 }
 
@@ -4290,11 +4125,11 @@ pub fn DrawRectangleGradientEx(
     col4: Color,
 ) void {
     mDrawRectangleGradientEx(
-        @ptrCast([*c]raylib.Rectangle, &rec),
-        @ptrCast([*c]raylib.Color, &col1),
-        @ptrCast([*c]raylib.Color, &col2),
-        @ptrCast([*c]raylib.Color, &col3),
-        @ptrCast([*c]raylib.Color, &col4),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&col1)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&col2)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&col3)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&col4)),
     );
 }
 
@@ -4327,7 +4162,7 @@ pub fn DrawRectangleLines(
         posY,
         width,
         height,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4354,9 +4189,9 @@ pub fn DrawRectangleLinesEx(
     color: Color,
 ) void {
     mDrawRectangleLinesEx(
-        @ptrCast([*c]raylib.Rectangle, &rec),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
         lineThick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4380,10 +4215,10 @@ pub fn DrawRectangleRounded(
     color: Color,
 ) void {
     mDrawRectangleRounded(
-        @ptrCast([*c]raylib.Rectangle, &rec),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
         roundness,
         segments,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4410,11 +4245,11 @@ pub fn DrawRectangleRoundedLines(
     color: Color,
 ) void {
     mDrawRectangleRoundedLines(
-        @ptrCast([*c]raylib.Rectangle, &rec),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
         roundness,
         segments,
         lineThick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4442,10 +4277,10 @@ pub fn DrawTriangle(
     color: Color,
 ) void {
     mDrawTriangle(
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
-        @ptrCast([*c]raylib.Vector2, &v3),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v3)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4471,10 +4306,10 @@ pub fn DrawTriangleLines(
     color: Color,
 ) void {
     mDrawTriangleLines(
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
-        @ptrCast([*c]raylib.Vector2, &v3),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v3)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4499,14 +4334,14 @@ pub fn DrawTriangleFan(
     color: Color,
 ) void {
     mDrawTriangleFan(
-        points,
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
         pointCount,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mDrawTriangleFan(
-    points: [*]Vector2,
+    points: [*c]raylib.Vector2,
     pointCount: i32,
     color: [*c]raylib.Color,
 ) void {
@@ -4524,14 +4359,14 @@ pub fn DrawTriangleStrip(
     color: Color,
 ) void {
     mDrawTriangleStrip(
-        points,
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
         pointCount,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mDrawTriangleStrip(
-    points: [*]Vector2,
+    points: [*c]raylib.Vector2,
     pointCount: i32,
     color: [*c]raylib.Color,
 ) void {
@@ -4551,11 +4386,11 @@ pub fn DrawPoly(
     color: Color,
 ) void {
     mDrawPoly(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         sides,
         radius,
         rotation,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4584,11 +4419,11 @@ pub fn DrawPolyLines(
     color: Color,
 ) void {
     mDrawPolyLines(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         sides,
         radius,
         rotation,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4618,12 +4453,12 @@ pub fn DrawPolyLinesEx(
     color: Color,
 ) void {
     mDrawPolyLinesEx(
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         sides,
         radius,
         rotation,
         lineThick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -4653,8 +4488,8 @@ pub fn CheckCollisionRecs(
     var out: bool = undefined;
     mCheckCollisionRecs(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &rec1),
-        @ptrCast([*c]raylib.Rectangle, &rec2),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec1)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec2)),
     );
     return out;
 }
@@ -4680,9 +4515,9 @@ pub fn CheckCollisionCircles(
     var out: bool = undefined;
     mCheckCollisionCircles(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector2, &center1),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center1)),
         radius1,
-        @ptrCast([*c]raylib.Vector2, &center2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center2)),
         radius2,
     );
     return out;
@@ -4712,9 +4547,9 @@ pub fn CheckCollisionCircleRec(
     var out: bool = undefined;
     mCheckCollisionCircleRec(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
-        @ptrCast([*c]raylib.Rectangle, &rec),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
     );
     return out;
 }
@@ -4740,8 +4575,8 @@ pub fn CheckCollisionPointRec(
     var out: bool = undefined;
     mCheckCollisionPointRec(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector2, &point),
-        @ptrCast([*c]raylib.Rectangle, &rec),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&point)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
     );
     return out;
 }
@@ -4766,8 +4601,8 @@ pub fn CheckCollisionPointCircle(
     var out: bool = undefined;
     mCheckCollisionPointCircle(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector2, &point),
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&point)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
     );
     return out;
@@ -4796,10 +4631,10 @@ pub fn CheckCollisionPointTriangle(
     var out: bool = undefined;
     mCheckCollisionPointTriangle(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector2, &point),
-        @ptrCast([*c]raylib.Vector2, &p1),
-        @ptrCast([*c]raylib.Vector2, &p2),
-        @ptrCast([*c]raylib.Vector2, &p3),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&point)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&p1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&p2)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&p3)),
     );
     return out;
 }
@@ -4830,11 +4665,11 @@ pub fn CheckCollisionLines(
     var out: bool = undefined;
     mCheckCollisionLines(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector2, &startPos1),
-        @ptrCast([*c]raylib.Vector2, &endPos1),
-        @ptrCast([*c]raylib.Vector2, &startPos2),
-        @ptrCast([*c]raylib.Vector2, &endPos2),
-        collisionPoint,
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos2)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos2)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(collisionPoint)),
     );
     return out;
 }
@@ -4845,7 +4680,7 @@ export fn mCheckCollisionLines(
     endPos1: [*c]raylib.Vector2,
     startPos2: [*c]raylib.Vector2,
     endPos2: [*c]raylib.Vector2,
-    collisionPoint: [*]Vector2,
+    collisionPoint: [*c]raylib.Vector2,
 ) void {
     out.* = raylib.CheckCollisionLines(
         startPos1.*,
@@ -4866,9 +4701,9 @@ pub fn CheckCollisionPointLine(
     var out: bool = undefined;
     mCheckCollisionPointLine(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector2, &point),
-        @ptrCast([*c]raylib.Vector2, &p1),
-        @ptrCast([*c]raylib.Vector2, &p2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&point)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&p1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&p2)),
         threshold,
     );
     return out;
@@ -4897,8 +4732,8 @@ pub fn GetCollisionRec(
     var out: Rectangle = undefined;
     mGetCollisionRec(
         @ptrCast([*c]raylib.Rectangle, &out),
-        @ptrCast([*c]raylib.Rectangle, &rec1),
-        @ptrCast([*c]raylib.Rectangle, &rec2),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec1)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec2)),
     );
     return out;
 }
@@ -4921,14 +4756,14 @@ pub fn LoadImage(
     var out: Image = undefined;
     mLoadImage(
         @ptrCast([*c]raylib.Image, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mLoadImage(
     out: [*c]raylib.Image,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadImage(
         fileName,
@@ -4946,7 +4781,7 @@ pub fn LoadImageRaw(
     var out: Image = undefined;
     mLoadImageRaw(
         @ptrCast([*c]raylib.Image, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
         width,
         height,
         format,
@@ -4957,7 +4792,7 @@ pub fn LoadImageRaw(
 
 export fn mLoadImageRaw(
     out: [*c]raylib.Image,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
     width: i32,
     height: i32,
     format: i32,
@@ -4980,16 +4815,16 @@ pub fn LoadImageAnim(
     var out: Image = undefined;
     mLoadImageAnim(
         @ptrCast([*c]raylib.Image, &out),
-        fileName,
-        frames,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        @ptrCast([*c]i32, frames),
     );
     return out;
 }
 
 export fn mLoadImageAnim(
     out: [*c]raylib.Image,
-    fileName: [*:0]const u8,
-    frames: [*]i32,
+    fileName: [*c]const u8,
+    frames: [*c]i32,
 ) void {
     out.* = raylib.LoadImageAnim(
         fileName,
@@ -5006,8 +4841,8 @@ pub fn LoadImageFromMemory(
     var out: Image = undefined;
     mLoadImageFromMemory(
         @ptrCast([*c]raylib.Image, &out),
-        fileType,
-        fileData,
+        @intToPtr([*c]const u8, @ptrToInt(fileType)),
+        @intToPtr([*c]const u8, @ptrToInt(fileData)),
         dataSize,
     );
     return out;
@@ -5015,8 +4850,8 @@ pub fn LoadImageFromMemory(
 
 export fn mLoadImageFromMemory(
     out: [*c]raylib.Image,
-    fileType: [*:0]const u8,
-    fileData: [*:0]const u8,
+    fileType: [*c]const u8,
+    fileData: [*c]const u8,
     dataSize: i32,
 ) void {
     out.* = raylib.LoadImageFromMemory(
@@ -5033,7 +4868,7 @@ pub fn LoadImageFromTexture(
     var out: Image = undefined;
     mLoadImageFromTexture(
         @ptrCast([*c]raylib.Image, &out),
-        @ptrCast([*c]raylib.Texture2D, &texture),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
     );
     return out;
 }
@@ -5067,7 +4902,7 @@ pub fn UnloadImage(
     image: Image,
 ) void {
     mUnloadImage(
-        @ptrCast([*c]raylib.Image, &image),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
     );
 }
 
@@ -5087,8 +4922,8 @@ pub fn ExportImage(
     var out: bool = undefined;
     mExportImage(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Image, &image),
-        fileName,
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
@@ -5096,7 +4931,7 @@ pub fn ExportImage(
 export fn mExportImage(
     out: [*c]bool,
     image: [*c]raylib.Image,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.ExportImage(
         image.*,
@@ -5112,8 +4947,8 @@ pub fn ExportImageAsCode(
     var out: bool = undefined;
     mExportImageAsCode(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Image, &image),
-        fileName,
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
@@ -5121,7 +4956,7 @@ pub fn ExportImageAsCode(
 export fn mExportImageAsCode(
     out: [*c]bool,
     image: [*c]raylib.Image,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.ExportImageAsCode(
         image.*,
@@ -5140,7 +4975,7 @@ pub fn GenImageColor(
         @ptrCast([*c]raylib.Image, &out),
         width,
         height,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
     return out;
 }
@@ -5170,8 +5005,8 @@ pub fn GenImageGradientV(
         @ptrCast([*c]raylib.Image, &out),
         width,
         height,
-        @ptrCast([*c]raylib.Color, &top),
-        @ptrCast([*c]raylib.Color, &bottom),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&top)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&bottom)),
     );
     return out;
 }
@@ -5203,8 +5038,8 @@ pub fn GenImageGradientH(
         @ptrCast([*c]raylib.Image, &out),
         width,
         height,
-        @ptrCast([*c]raylib.Color, &left),
-        @ptrCast([*c]raylib.Color, &right),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&left)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&right)),
     );
     return out;
 }
@@ -5238,8 +5073,8 @@ pub fn GenImageGradientRadial(
         width,
         height,
         density,
-        @ptrCast([*c]raylib.Color, &inner),
-        @ptrCast([*c]raylib.Color, &outer),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&inner)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&outer)),
     );
     return out;
 }
@@ -5277,8 +5112,8 @@ pub fn GenImageChecked(
         height,
         checksX,
         checksY,
-        @ptrCast([*c]raylib.Color, &col1),
-        @ptrCast([*c]raylib.Color, &col2),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&col1)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&col2)),
     );
     return out;
 }
@@ -5367,7 +5202,7 @@ pub fn ImageCopy(
     var out: Image = undefined;
     mImageCopy(
         @ptrCast([*c]raylib.Image, &out),
-        @ptrCast([*c]raylib.Image, &image),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
     );
     return out;
 }
@@ -5389,8 +5224,8 @@ pub fn ImageFromImage(
     var out: Image = undefined;
     mImageFromImage(
         @ptrCast([*c]raylib.Image, &out),
-        @ptrCast([*c]raylib.Image, &image),
-        @ptrCast([*c]raylib.Rectangle, &rec),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
     );
     return out;
 }
@@ -5415,16 +5250,16 @@ pub fn ImageText(
     var out: Image = undefined;
     mImageText(
         @ptrCast([*c]raylib.Image, &out),
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
         fontSize,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
     return out;
 }
 
 export fn mImageText(
     out: [*c]raylib.Image,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     fontSize: i32,
     color: [*c]raylib.Color,
 ) void {
@@ -5446,11 +5281,11 @@ pub fn ImageTextEx(
     var out: Image = undefined;
     mImageTextEx(
         @ptrCast([*c]raylib.Image, &out),
-        @ptrCast([*c]raylib.Font, &font),
-        text,
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
         fontSize,
         spacing,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
     return out;
 }
@@ -5458,7 +5293,7 @@ pub fn ImageTextEx(
 export fn mImageTextEx(
     out: [*c]raylib.Image,
     font: [*c]raylib.Font,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     fontSize: f32,
     spacing: f32,
     tint: [*c]raylib.Color,
@@ -5478,13 +5313,13 @@ pub fn ImageFormat(
     newFormat: i32,
 ) void {
     mImageFormat(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         newFormat,
     );
 }
 
 export fn mImageFormat(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     newFormat: i32,
 ) void {
     raylib.ImageFormat(
@@ -5499,13 +5334,13 @@ pub fn ImageToPOT(
     fill: Color,
 ) void {
     mImageToPOT(
-        image,
-        @ptrCast([*c]raylib.Color, &fill),
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&fill)),
     );
 }
 
 export fn mImageToPOT(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     fill: [*c]raylib.Color,
 ) void {
     raylib.ImageToPOT(
@@ -5520,13 +5355,13 @@ pub fn ImageCrop(
     crop: Rectangle,
 ) void {
     mImageCrop(
-        image,
-        @ptrCast([*c]raylib.Rectangle, &crop),
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&crop)),
     );
 }
 
 export fn mImageCrop(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     crop: [*c]raylib.Rectangle,
 ) void {
     raylib.ImageCrop(
@@ -5541,13 +5376,13 @@ pub fn ImageAlphaCrop(
     threshold: f32,
 ) void {
     mImageAlphaCrop(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         threshold,
     );
 }
 
 export fn mImageAlphaCrop(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     threshold: f32,
 ) void {
     raylib.ImageAlphaCrop(
@@ -5563,14 +5398,14 @@ pub fn ImageAlphaClear(
     threshold: f32,
 ) void {
     mImageAlphaClear(
-        image,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         threshold,
     );
 }
 
 export fn mImageAlphaClear(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     color: [*c]raylib.Color,
     threshold: f32,
 ) void {
@@ -5587,13 +5422,13 @@ pub fn ImageAlphaMask(
     alphaMask: Image,
 ) void {
     mImageAlphaMask(
-        image,
-        @ptrCast([*c]raylib.Image, &alphaMask),
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&alphaMask)),
     );
 }
 
 export fn mImageAlphaMask(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     alphaMask: [*c]raylib.Image,
 ) void {
     raylib.ImageAlphaMask(
@@ -5607,12 +5442,12 @@ pub fn ImageAlphaPremultiply(
     image: [*]Image,
 ) void {
     mImageAlphaPremultiply(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageAlphaPremultiply(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageAlphaPremultiply(
         image,
@@ -5626,14 +5461,14 @@ pub fn ImageResize(
     newHeight: i32,
 ) void {
     mImageResize(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         newWidth,
         newHeight,
     );
 }
 
 export fn mImageResize(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
@@ -5651,14 +5486,14 @@ pub fn ImageResizeNN(
     newHeight: i32,
 ) void {
     mImageResizeNN(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         newWidth,
         newHeight,
     );
 }
 
 export fn mImageResizeNN(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
@@ -5679,17 +5514,17 @@ pub fn ImageResizeCanvas(
     fill: Color,
 ) void {
     mImageResizeCanvas(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         newWidth,
         newHeight,
         offsetX,
         offsetY,
-        @ptrCast([*c]raylib.Color, &fill),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&fill)),
     );
 }
 
 export fn mImageResizeCanvas(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     newWidth: i32,
     newHeight: i32,
     offsetX: i32,
@@ -5711,12 +5546,12 @@ pub fn ImageMipmaps(
     image: [*]Image,
 ) void {
     mImageMipmaps(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageMipmaps(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageMipmaps(
         image,
@@ -5732,7 +5567,7 @@ pub fn ImageDither(
     aBpp: i32,
 ) void {
     mImageDither(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         rBpp,
         gBpp,
         bBpp,
@@ -5741,7 +5576,7 @@ pub fn ImageDither(
 }
 
 export fn mImageDither(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     rBpp: i32,
     gBpp: i32,
     bBpp: i32,
@@ -5761,12 +5596,12 @@ pub fn ImageFlipVertical(
     image: [*]Image,
 ) void {
     mImageFlipVertical(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageFlipVertical(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageFlipVertical(
         image,
@@ -5778,12 +5613,12 @@ pub fn ImageFlipHorizontal(
     image: [*]Image,
 ) void {
     mImageFlipHorizontal(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageFlipHorizontal(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageFlipHorizontal(
         image,
@@ -5795,12 +5630,12 @@ pub fn ImageRotateCW(
     image: [*]Image,
 ) void {
     mImageRotateCW(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageRotateCW(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageRotateCW(
         image,
@@ -5812,12 +5647,12 @@ pub fn ImageRotateCCW(
     image: [*]Image,
 ) void {
     mImageRotateCCW(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageRotateCCW(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageRotateCCW(
         image,
@@ -5830,13 +5665,13 @@ pub fn ImageColorTint(
     color: Color,
 ) void {
     mImageColorTint(
-        image,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageColorTint(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     color: [*c]raylib.Color,
 ) void {
     raylib.ImageColorTint(
@@ -5850,12 +5685,12 @@ pub fn ImageColorInvert(
     image: [*]Image,
 ) void {
     mImageColorInvert(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageColorInvert(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageColorInvert(
         image,
@@ -5867,12 +5702,12 @@ pub fn ImageColorGrayscale(
     image: [*]Image,
 ) void {
     mImageColorGrayscale(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 export fn mImageColorGrayscale(
-    image: [*]Image,
+    image: [*c]raylib.Image,
 ) void {
     raylib.ImageColorGrayscale(
         image,
@@ -5885,13 +5720,13 @@ pub fn ImageColorContrast(
     contrast: f32,
 ) void {
     mImageColorContrast(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         contrast,
     );
 }
 
 export fn mImageColorContrast(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     contrast: f32,
 ) void {
     raylib.ImageColorContrast(
@@ -5906,13 +5741,13 @@ pub fn ImageColorBrightness(
     brightness: i32,
 ) void {
     mImageColorBrightness(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         brightness,
     );
 }
 
 export fn mImageColorBrightness(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     brightness: i32,
 ) void {
     raylib.ImageColorBrightness(
@@ -5928,14 +5763,14 @@ pub fn ImageColorReplace(
     replace: Color,
 ) void {
     mImageColorReplace(
-        image,
-        @ptrCast([*c]raylib.Color, &color),
-        @ptrCast([*c]raylib.Color, &replace),
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&replace)),
     );
 }
 
 export fn mImageColorReplace(
-    image: [*]Image,
+    image: [*c]raylib.Image,
     color: [*c]raylib.Color,
     replace: [*c]raylib.Color,
 ) void {
@@ -5949,20 +5784,19 @@ export fn mImageColorReplace(
 /// Load color data from image as a Color array (RGBA - 32bit)
 pub fn LoadImageColors(
     image: Image,
-) [*]Color {
-    var out: [*]Color = undefined;
-    mLoadImageColors(
-        @ptrCast([*c][*]Color, &out),
-        @ptrCast([*c]raylib.Image, &image),
+) [*]const Color {
+    return @ptrCast(
+        [*]Color,
+        mLoadImageColors(
+            @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+        ),
     );
-    return out;
 }
 
 export fn mLoadImageColors(
-    out: [*c][*]Color,
     image: [*c]raylib.Image,
-) void {
-    out.* = raylib.LoadImageColors(
+) [*c]const raylib.Color {
+    return raylib.LoadImageColors(
         image.*,
     );
 }
@@ -5972,24 +5806,23 @@ pub fn LoadImagePalette(
     image: Image,
     maxPaletteSize: i32,
     colorCount: [*]i32,
-) [*]Color {
-    var out: [*]Color = undefined;
-    mLoadImagePalette(
-        @ptrCast([*c][*]Color, &out),
-        @ptrCast([*c]raylib.Image, &image),
-        maxPaletteSize,
-        colorCount,
+) [*]const Color {
+    return @ptrCast(
+        [*]Color,
+        mLoadImagePalette(
+            @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+            maxPaletteSize,
+            @ptrCast([*c]i32, colorCount),
+        ),
     );
-    return out;
 }
 
 export fn mLoadImagePalette(
-    out: [*c][*]Color,
     image: [*c]raylib.Image,
     maxPaletteSize: i32,
-    colorCount: [*]i32,
-) void {
-    out.* = raylib.LoadImagePalette(
+    colorCount: [*c]i32,
+) [*c]const raylib.Color {
+    return raylib.LoadImagePalette(
         image.*,
         maxPaletteSize,
         colorCount,
@@ -6001,12 +5834,12 @@ pub fn UnloadImageColors(
     colors: [*]Color,
 ) void {
     mUnloadImageColors(
-        colors,
+        @intToPtr([*c]raylib.Color, @ptrToInt(colors)),
     );
 }
 
 export fn mUnloadImageColors(
-    colors: [*]Color,
+    colors: [*c]raylib.Color,
 ) void {
     raylib.UnloadImageColors(
         colors,
@@ -6018,12 +5851,12 @@ pub fn UnloadImagePalette(
     colors: [*]Color,
 ) void {
     mUnloadImagePalette(
-        colors,
+        @intToPtr([*c]raylib.Color, @ptrToInt(colors)),
     );
 }
 
 export fn mUnloadImagePalette(
-    colors: [*]Color,
+    colors: [*c]raylib.Color,
 ) void {
     raylib.UnloadImagePalette(
         colors,
@@ -6038,7 +5871,7 @@ pub fn GetImageAlphaBorder(
     var out: Rectangle = undefined;
     mGetImageAlphaBorder(
         @ptrCast([*c]raylib.Rectangle, &out),
-        @ptrCast([*c]raylib.Image, &image),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
         threshold,
     );
     return out;
@@ -6064,7 +5897,7 @@ pub fn GetImageColor(
     var out: Color = undefined;
     mGetImageColor(
         @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]raylib.Image, &image),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
         x,
         y,
     );
@@ -6090,13 +5923,13 @@ pub fn ImageClearBackground(
     color: Color,
 ) void {
     mImageClearBackground(
-        dst,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageClearBackground(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     color: [*c]raylib.Color,
 ) void {
     raylib.ImageClearBackground(
@@ -6113,15 +5946,15 @@ pub fn ImageDrawPixel(
     color: Color,
 ) void {
     mImageDrawPixel(
-        dst,
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
         posX,
         posY,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawPixel(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     posX: i32,
     posY: i32,
     color: [*c]raylib.Color,
@@ -6141,14 +5974,14 @@ pub fn ImageDrawPixelV(
     color: Color,
 ) void {
     mImageDrawPixelV(
-        dst,
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawPixelV(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     position: [*c]raylib.Vector2,
     color: [*c]raylib.Color,
 ) void {
@@ -6169,17 +6002,17 @@ pub fn ImageDrawLine(
     color: Color,
 ) void {
     mImageDrawLine(
-        dst,
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
         startPosX,
         startPosY,
         endPosX,
         endPosY,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawLine(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     startPosX: i32,
     startPosY: i32,
     endPosX: i32,
@@ -6204,15 +6037,15 @@ pub fn ImageDrawLineV(
     color: Color,
 ) void {
     mImageDrawLineV(
-        dst,
-        @ptrCast([*c]raylib.Vector2, &start),
-        @ptrCast([*c]raylib.Vector2, &end),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&start)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&end)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawLineV(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     start: [*c]raylib.Vector2,
     end: [*c]raylib.Vector2,
     color: [*c]raylib.Color,
@@ -6234,16 +6067,16 @@ pub fn ImageDrawCircle(
     color: Color,
 ) void {
     mImageDrawCircle(
-        dst,
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
         centerX,
         centerY,
         radius,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawCircle(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     centerX: i32,
     centerY: i32,
     radius: i32,
@@ -6266,15 +6099,15 @@ pub fn ImageDrawCircleV(
     color: Color,
 ) void {
     mImageDrawCircleV(
-        dst,
-        @ptrCast([*c]raylib.Vector2, &center),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawCircleV(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     center: [*c]raylib.Vector2,
     radius: i32,
     color: [*c]raylib.Color,
@@ -6297,17 +6130,17 @@ pub fn ImageDrawRectangle(
     color: Color,
 ) void {
     mImageDrawRectangle(
-        dst,
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
         posX,
         posY,
         width,
         height,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawRectangle(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     posX: i32,
     posY: i32,
     width: i32,
@@ -6332,15 +6165,15 @@ pub fn ImageDrawRectangleV(
     color: Color,
 ) void {
     mImageDrawRectangleV(
-        dst,
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Vector2, &size),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&size)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawRectangleV(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     position: [*c]raylib.Vector2,
     size: [*c]raylib.Vector2,
     color: [*c]raylib.Color,
@@ -6360,14 +6193,14 @@ pub fn ImageDrawRectangleRec(
     color: Color,
 ) void {
     mImageDrawRectangleRec(
-        dst,
-        @ptrCast([*c]raylib.Rectangle, &rec),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawRectangleRec(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     rec: [*c]raylib.Rectangle,
     color: [*c]raylib.Color,
 ) void {
@@ -6386,15 +6219,15 @@ pub fn ImageDrawRectangleLines(
     color: Color,
 ) void {
     mImageDrawRectangleLines(
-        dst,
-        @ptrCast([*c]raylib.Rectangle, &rec),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
         thick,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawRectangleLines(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     rec: [*c]raylib.Rectangle,
     thick: i32,
     color: [*c]raylib.Color,
@@ -6416,16 +6249,16 @@ pub fn ImageDraw(
     tint: Color,
 ) void {
     mImageDraw(
-        dst,
-        @ptrCast([*c]raylib.Image, &src),
-        @ptrCast([*c]raylib.Rectangle, &srcRec),
-        @ptrCast([*c]raylib.Rectangle, &dstRec),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&src)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&srcRec)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&dstRec)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
 export fn mImageDraw(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     src: [*c]raylib.Image,
     srcRec: [*c]raylib.Rectangle,
     dstRec: [*c]raylib.Rectangle,
@@ -6450,18 +6283,18 @@ pub fn ImageDrawText(
     color: Color,
 ) void {
     mImageDrawText(
-        dst,
-        text,
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
         posX,
         posY,
         fontSize,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mImageDrawText(
-    dst: [*]Image,
-    text: [*:0]const u8,
+    dst: [*c]raylib.Image,
+    text: [*c]const u8,
     posX: i32,
     posY: i32,
     fontSize: i32,
@@ -6488,20 +6321,20 @@ pub fn ImageDrawTextEx(
     tint: Color,
 ) void {
     mImageDrawTextEx(
-        dst,
-        @ptrCast([*c]raylib.Font, &font),
-        text,
-        @ptrCast([*c]raylib.Vector2, &position),
+        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         fontSize,
         spacing,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
 export fn mImageDrawTextEx(
-    dst: [*]Image,
+    dst: [*c]raylib.Image,
     font: [*c]raylib.Font,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     position: [*c]raylib.Vector2,
     fontSize: f32,
     spacing: f32,
@@ -6525,14 +6358,14 @@ pub fn LoadTexture(
     var out: Texture2D = undefined;
     mLoadTexture(
         @ptrCast([*c]raylib.Texture2D, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mLoadTexture(
     out: [*c]raylib.Texture2D,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadTexture(
         fileName,
@@ -6546,7 +6379,7 @@ pub fn LoadTextureFromImage(
     var out: Texture2D = undefined;
     mLoadTextureFromImage(
         @ptrCast([*c]raylib.Texture2D, &out),
-        @ptrCast([*c]raylib.Image, &image),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
     );
     return out;
 }
@@ -6568,7 +6401,7 @@ pub fn LoadTextureCubemap(
     var out: Texture2D = undefined;
     mLoadTextureCubemap(
         @ptrCast([*c]raylib.Texture2D, &out),
-        @ptrCast([*c]raylib.Image, &image),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
         layout,
     );
     return out;
@@ -6615,7 +6448,7 @@ pub fn UnloadTexture(
     texture: Texture2D,
 ) void {
     mUnloadTexture(
-        @ptrCast([*c]raylib.Texture2D, &texture),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
     );
 }
 
@@ -6632,7 +6465,7 @@ pub fn UnloadRenderTexture(
     target: RenderTexture2D,
 ) void {
     mUnloadRenderTexture(
-        @ptrCast([*c]raylib.RenderTexture2D, &target),
+        @intToPtr([*c]raylib.RenderTexture2D, @ptrToInt(&target)),
     );
 }
 
@@ -6650,8 +6483,8 @@ pub fn UpdateTexture(
     pixels: *anyopaque,
 ) void {
     mUpdateTexture(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        pixels,
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @ptrCast([*c]anyopaque, pixels),
     );
 }
 
@@ -6672,9 +6505,9 @@ pub fn UpdateTextureRec(
     pixels: *anyopaque,
 ) void {
     mUpdateTextureRec(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &rec),
-        pixels,
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
+        @ptrCast([*c]anyopaque, pixels),
     );
 }
 
@@ -6695,12 +6528,12 @@ pub fn GenTextureMipmaps(
     texture: [*]Texture2D,
 ) void {
     mGenTextureMipmaps(
-        texture,
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(texture)),
     );
 }
 
 export fn mGenTextureMipmaps(
-    texture: [*]Texture2D,
+    texture: [*c]raylib.Texture2D,
 ) void {
     raylib.GenTextureMipmaps(
         texture,
@@ -6713,7 +6546,7 @@ pub fn SetTextureFilter(
     filter: i32,
 ) void {
     mSetTextureFilter(
-        @ptrCast([*c]raylib.Texture2D, &texture),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
         filter,
     );
 }
@@ -6734,7 +6567,7 @@ pub fn SetTextureWrap(
     wrap: i32,
 ) void {
     mSetTextureWrap(
-        @ptrCast([*c]raylib.Texture2D, &texture),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
         wrap,
     );
 }
@@ -6757,10 +6590,10 @@ pub fn DrawTexture(
     tint: Color,
 ) void {
     mDrawTexture(
-        @ptrCast([*c]raylib.Texture2D, &texture),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
         posX,
         posY,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -6785,9 +6618,9 @@ pub fn DrawTextureV(
     tint: Color,
 ) void {
     mDrawTextureV(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -6812,11 +6645,11 @@ pub fn DrawTextureEx(
     tint: Color,
 ) void {
     mDrawTextureEx(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Vector2, &position),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         rotation,
         scale,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -6844,10 +6677,10 @@ pub fn DrawTextureRec(
     tint: Color,
 ) void {
     mDrawTextureRec(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &source),
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -6874,11 +6707,11 @@ pub fn DrawTextureQuad(
     tint: Color,
 ) void {
     mDrawTextureQuad(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Vector2, &tiling),
-        @ptrCast([*c]raylib.Vector2, &offset),
-        @ptrCast([*c]raylib.Rectangle, &quad),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&tiling)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&offset)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&quad)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -6909,13 +6742,13 @@ pub fn DrawTextureTiled(
     tint: Color,
 ) void {
     mDrawTextureTiled(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &source),
-        @ptrCast([*c]raylib.Rectangle, &dest),
-        @ptrCast([*c]raylib.Vector2, &origin),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&dest)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
         rotation,
         scale,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -6949,12 +6782,12 @@ pub fn DrawTexturePro(
     tint: Color,
 ) void {
     mDrawTexturePro(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &source),
-        @ptrCast([*c]raylib.Rectangle, &dest),
-        @ptrCast([*c]raylib.Vector2, &origin),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&dest)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
         rotation,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -6986,12 +6819,12 @@ pub fn DrawTextureNPatch(
     tint: Color,
 ) void {
     mDrawTextureNPatch(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.NPatchInfo, &nPatchInfo),
-        @ptrCast([*c]raylib.Rectangle, &dest),
-        @ptrCast([*c]raylib.Vector2, &origin),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.NPatchInfo, @ptrToInt(&nPatchInfo)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&dest)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
         rotation,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -7023,20 +6856,20 @@ pub fn DrawTexturePoly(
     tint: Color,
 ) void {
     mDrawTexturePoly(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Vector2, &center),
-        points,
-        texcoords,
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(texcoords)),
         pointCount,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
 export fn mDrawTexturePoly(
     texture: [*c]raylib.Texture2D,
     center: [*c]raylib.Vector2,
-    points: [*]Vector2,
-    texcoords: [*]Vector2,
+    points: [*c]raylib.Vector2,
+    texcoords: [*c]raylib.Vector2,
     pointCount: i32,
     tint: [*c]raylib.Color,
 ) void {
@@ -7058,7 +6891,7 @@ pub fn Fade(
     var out: Color = undefined;
     mFade(
         @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         alpha,
     );
     return out;
@@ -7082,7 +6915,7 @@ pub fn ColorToInt(
     var out: i32 = undefined;
     mColorToInt(
         @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
     return out;
 }
@@ -7103,7 +6936,7 @@ pub fn ColorNormalize(
     var out: Vector4 = undefined;
     mColorNormalize(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
     return out;
 }
@@ -7124,7 +6957,7 @@ pub fn ColorFromNormalized(
     var out: Color = undefined;
     mColorFromNormalized(
         @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]raylib.Vector4, &normalized),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&normalized)),
     );
     return out;
 }
@@ -7145,7 +6978,7 @@ pub fn ColorToHSV(
     var out: Vector3 = undefined;
     mColorToHSV(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
     return out;
 }
@@ -7196,7 +7029,7 @@ pub fn ColorAlpha(
     var out: Color = undefined;
     mColorAlpha(
         @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         alpha,
     );
     return out;
@@ -7222,9 +7055,9 @@ pub fn ColorAlphaBlend(
     var out: Color = undefined;
     mColorAlphaBlend(
         @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]raylib.Color, &dst),
-        @ptrCast([*c]raylib.Color, &src),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&dst)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&src)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
     return out;
 }
@@ -7271,7 +7104,7 @@ pub fn GetPixelColor(
     var out: Color = undefined;
     mGetPixelColor(
         @ptrCast([*c]raylib.Color, &out),
-        srcPtr,
+        @ptrCast([*c]anyopaque, srcPtr),
         format,
     );
     return out;
@@ -7295,8 +7128,8 @@ pub fn SetPixelColor(
     format: i32,
 ) void {
     mSetPixelColor(
-        dstPtr,
-        @ptrCast([*c]raylib.Color, &color),
+        @ptrCast([*c]anyopaque, dstPtr),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         format,
     );
 }
@@ -7364,14 +7197,14 @@ pub fn LoadFont(
     var out: Font = undefined;
     mLoadFont(
         @ptrCast([*c]raylib.Font, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mLoadFont(
     out: [*c]raylib.Font,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadFont(
         fileName,
@@ -7388,9 +7221,9 @@ pub fn LoadFontEx(
     var out: Font = undefined;
     mLoadFontEx(
         @ptrCast([*c]raylib.Font, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
         fontSize,
-        fontChars,
+        @ptrCast([*c]i32, fontChars),
         glyphCount,
     );
     return out;
@@ -7398,9 +7231,9 @@ pub fn LoadFontEx(
 
 export fn mLoadFontEx(
     out: [*c]raylib.Font,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
     fontSize: i32,
-    fontChars: [*]i32,
+    fontChars: [*c]i32,
     glyphCount: i32,
 ) void {
     out.* = raylib.LoadFontEx(
@@ -7420,8 +7253,8 @@ pub fn LoadFontFromImage(
     var out: Font = undefined;
     mLoadFontFromImage(
         @ptrCast([*c]raylib.Font, &out),
-        @ptrCast([*c]raylib.Image, &image),
-        @ptrCast([*c]raylib.Color, &key),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&key)),
         firstChar,
     );
     return out;
@@ -7452,11 +7285,11 @@ pub fn LoadFontFromMemory(
     var out: Font = undefined;
     mLoadFontFromMemory(
         @ptrCast([*c]raylib.Font, &out),
-        fileType,
-        fileData,
+        @intToPtr([*c]const u8, @ptrToInt(fileType)),
+        @intToPtr([*c]const u8, @ptrToInt(fileData)),
         dataSize,
         fontSize,
-        fontChars,
+        @ptrCast([*c]i32, fontChars),
         glyphCount,
     );
     return out;
@@ -7464,11 +7297,11 @@ pub fn LoadFontFromMemory(
 
 export fn mLoadFontFromMemory(
     out: [*c]raylib.Font,
-    fileType: [*:0]const u8,
-    fileData: [*:0]const u8,
+    fileType: [*c]const u8,
+    fileData: [*c]const u8,
     dataSize: i32,
     fontSize: i32,
-    fontChars: [*]i32,
+    fontChars: [*c]i32,
     glyphCount: i32,
 ) void {
     out.* = raylib.LoadFontFromMemory(
@@ -7481,60 +7314,19 @@ export fn mLoadFontFromMemory(
     );
 }
 
-/// Generate image font atlas using chars info
-pub fn GenImageFontAtlas(
-    chars: [*]const GlyphInfo,
-    recs: [*]Rectangle,
-    glyphCount: i32,
-    fontSize: i32,
-    padding: i32,
-    packMethod: i32,
-) Image {
-    var out: Image = undefined;
-    mGenImageFontAtlas(
-        @ptrCast([*c]raylib.Image, &out),
-        chars,
-        recs,
-        glyphCount,
-        fontSize,
-        padding,
-        packMethod,
-    );
-    return out;
-}
-
-export fn mGenImageFontAtlas(
-    out: [*c]raylib.Image,
-    chars: [*]const GlyphInfo,
-    recs: [*]Rectangle,
-    glyphCount: i32,
-    fontSize: i32,
-    padding: i32,
-    packMethod: i32,
-) void {
-    out.* = raylib.GenImageFontAtlas(
-        chars,
-        recs,
-        glyphCount,
-        fontSize,
-        padding,
-        packMethod,
-    );
-}
-
 /// Unload font chars info data (RAM)
 pub fn UnloadFontData(
     chars: [*]GlyphInfo,
     glyphCount: i32,
 ) void {
     mUnloadFontData(
-        chars,
+        @intToPtr([*c]raylib.GlyphInfo, @ptrToInt(chars)),
         glyphCount,
     );
 }
 
 export fn mUnloadFontData(
-    chars: [*]GlyphInfo,
+    chars: [*c]raylib.GlyphInfo,
     glyphCount: i32,
 ) void {
     raylib.UnloadFontData(
@@ -7548,7 +7340,7 @@ pub fn UnloadFont(
     font: Font,
 ) void {
     mUnloadFont(
-        @ptrCast([*c]raylib.Font, &font),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
     );
 }
 
@@ -7568,8 +7360,8 @@ pub fn ExportFontAsCode(
     var out: bool = undefined;
     mExportFontAsCode(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Font, &font),
-        fileName,
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
@@ -7577,7 +7369,7 @@ pub fn ExportFontAsCode(
 export fn mExportFontAsCode(
     out: [*c]bool,
     font: [*c]raylib.Font,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.ExportFontAsCode(
         font.*,
@@ -7615,16 +7407,16 @@ pub fn DrawText(
     color: Color,
 ) void {
     mDrawText(
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
         posX,
         posY,
         fontSize,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mDrawText(
-    text: [*:0]const u8,
+    text: [*c]const u8,
     posX: i32,
     posY: i32,
     fontSize: i32,
@@ -7649,18 +7441,18 @@ pub fn DrawTextEx(
     tint: Color,
 ) void {
     mDrawTextEx(
-        @ptrCast([*c]raylib.Font, &font),
-        text,
-        @ptrCast([*c]raylib.Vector2, &position),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         fontSize,
         spacing,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
 export fn mDrawTextEx(
     font: [*c]raylib.Font,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     position: [*c]raylib.Vector2,
     fontSize: f32,
     spacing: f32,
@@ -7688,20 +7480,20 @@ pub fn DrawTextPro(
     tint: Color,
 ) void {
     mDrawTextPro(
-        @ptrCast([*c]raylib.Font, &font),
-        text,
-        @ptrCast([*c]raylib.Vector2, &position),
-        @ptrCast([*c]raylib.Vector2, &origin),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
         rotation,
         fontSize,
         spacing,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
 export fn mDrawTextPro(
     font: [*c]raylib.Font,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     position: [*c]raylib.Vector2,
     origin: [*c]raylib.Vector2,
     rotation: f32,
@@ -7730,11 +7522,11 @@ pub fn DrawTextCodepoint(
     tint: Color,
 ) void {
     mDrawTextCodepoint(
-        @ptrCast([*c]raylib.Font, &font),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
         codepoint,
-        @ptrCast([*c]raylib.Vector2, &position),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         fontSize,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -7765,19 +7557,19 @@ pub fn DrawTextCodepoints(
     tint: Color,
 ) void {
     mDrawTextCodepoints(
-        @ptrCast([*c]raylib.Font, &font),
-        codepoints,
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+        @intToPtr([*c]const i32, @ptrToInt(codepoints)),
         count,
-        @ptrCast([*c]raylib.Vector2, &position),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         fontSize,
         spacing,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
 export fn mDrawTextCodepoints(
     font: [*c]raylib.Font,
-    codepoints: [*]const i32,
+    codepoints: [*c]const i32,
     count: i32,
     position: [*c]raylib.Vector2,
     fontSize: f32,
@@ -7803,7 +7595,7 @@ pub fn MeasureText(
     var out: i32 = undefined;
     mMeasureText(
         @ptrCast([*c]i32, &out),
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
         fontSize,
     );
     return out;
@@ -7811,7 +7603,7 @@ pub fn MeasureText(
 
 export fn mMeasureText(
     out: [*c]i32,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     fontSize: i32,
 ) void {
     out.* = raylib.MeasureText(
@@ -7830,8 +7622,8 @@ pub fn MeasureTextEx(
     var out: Vector2 = undefined;
     mMeasureTextEx(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Font, &font),
-        text,
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
         fontSize,
         spacing,
     );
@@ -7841,7 +7633,7 @@ pub fn MeasureTextEx(
 export fn mMeasureTextEx(
     out: [*c]raylib.Vector2,
     font: [*c]raylib.Font,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     fontSize: f32,
     spacing: f32,
 ) void {
@@ -7861,7 +7653,7 @@ pub fn GetGlyphIndex(
     var out: i32 = undefined;
     mGetGlyphIndex(
         @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Font, &font),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
         codepoint,
     );
     return out;
@@ -7886,7 +7678,7 @@ pub fn GetGlyphInfo(
     var out: GlyphInfo = undefined;
     mGetGlyphInfo(
         @ptrCast([*c]raylib.GlyphInfo, &out),
-        @ptrCast([*c]raylib.Font, &font),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
         codepoint,
     );
     return out;
@@ -7911,7 +7703,7 @@ pub fn GetGlyphAtlasRec(
     var out: Rectangle = undefined;
     mGetGlyphAtlasRec(
         @ptrCast([*c]raylib.Rectangle, &out),
-        @ptrCast([*c]raylib.Font, &font),
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
         codepoint,
     );
     return out;
@@ -7932,22 +7724,21 @@ export fn mGetGlyphAtlasRec(
 pub fn LoadCodepoints(
     text: [*:0]const u8,
     count: [*]i32,
-) [*]i32 {
-    var out: [*]i32 = undefined;
-    mLoadCodepoints(
-        @ptrCast([*c][*]i32, &out),
-        text,
-        count,
+) [*]const i32 {
+    return @ptrCast(
+        [*]i32,
+        mLoadCodepoints(
+            @intToPtr([*c]const u8, @ptrToInt(text)),
+            @ptrCast([*c]i32, count),
+        ),
     );
-    return out;
 }
 
 export fn mLoadCodepoints(
-    out: [*c][*]i32,
-    text: [*:0]const u8,
-    count: [*]i32,
-) void {
-    out.* = raylib.LoadCodepoints(
+    text: [*c]const u8,
+    count: [*c]i32,
+) [*c]const i32 {
+    return raylib.LoadCodepoints(
         text,
         count,
     );
@@ -7958,12 +7749,12 @@ pub fn UnloadCodepoints(
     codepoints: [*]i32,
 ) void {
     mUnloadCodepoints(
-        codepoints,
+        @ptrCast([*c]i32, codepoints),
     );
 }
 
 export fn mUnloadCodepoints(
-    codepoints: [*]i32,
+    codepoints: [*c]i32,
 ) void {
     raylib.UnloadCodepoints(
         codepoints,
@@ -7977,14 +7768,14 @@ pub fn GetCodepointCount(
     var out: i32 = undefined;
     mGetCodepointCount(
         @ptrCast([*c]i32, &out),
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
     );
     return out;
 }
 
 export fn mGetCodepointCount(
     out: [*c]i32,
-    text: [*:0]const u8,
+    text: [*c]const u8,
 ) void {
     out.* = raylib.GetCodepointCount(
         text,
@@ -7999,16 +7790,16 @@ pub fn GetCodepoint(
     var out: i32 = undefined;
     mGetCodepoint(
         @ptrCast([*c]i32, &out),
-        text,
-        bytesProcessed,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        @ptrCast([*c]i32, bytesProcessed),
     );
     return out;
 }
 
 export fn mGetCodepoint(
     out: [*c]i32,
-    text: [*:0]const u8,
-    bytesProcessed: [*]i32,
+    text: [*c]const u8,
+    bytesProcessed: [*c]i32,
 ) void {
     out.* = raylib.GetCodepoint(
         text,
@@ -8020,22 +7811,21 @@ export fn mGetCodepoint(
 pub fn CodepointToUTF8(
     codepoint: i32,
     byteSize: [*]i32,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mCodepointToUTF8(
-        @ptrCast([*c][*:0]const u8, &out),
-        codepoint,
-        byteSize,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mCodepointToUTF8(
+            codepoint,
+            @ptrCast([*c]i32, byteSize),
+        ),
     );
-    return out;
 }
 
 export fn mCodepointToUTF8(
-    out: [*c][*:0]const u8,
     codepoint: i32,
-    byteSize: [*]i32,
-) void {
-    out.* = raylib.CodepointToUTF8(
+    byteSize: [*c]i32,
+) [*c]const u8 {
+    return raylib.CodepointToUTF8(
         codepoint,
         byteSize,
     );
@@ -8045,22 +7835,21 @@ export fn mCodepointToUTF8(
 pub fn TextCodepointsToUTF8(
     codepoints: [*]const i32,
     length: i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mTextCodepointsToUTF8(
-        @ptrCast([*c][*]u8, &out),
-        codepoints,
-        length,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mTextCodepointsToUTF8(
+            @intToPtr([*c]const i32, @ptrToInt(codepoints)),
+            length,
+        ),
     );
-    return out;
 }
 
 export fn mTextCodepointsToUTF8(
-    out: [*c][*]u8,
-    codepoints: [*]const i32,
+    codepoints: [*c]const i32,
     length: i32,
-) void {
-    out.* = raylib.TextCodepointsToUTF8(
+) [*c]const u8 {
+    return raylib.TextCodepointsToUTF8(
         codepoints,
         length,
     );
@@ -8074,16 +7863,16 @@ pub fn TextCopy(
     var out: i32 = undefined;
     mTextCopy(
         @ptrCast([*c]i32, &out),
-        dst,
-        src,
+        @ptrCast([*c]u8, dst),
+        @intToPtr([*c]const u8, @ptrToInt(src)),
     );
     return out;
 }
 
 export fn mTextCopy(
     out: [*c]i32,
-    dst: [*]u8,
-    src: [*:0]const u8,
+    dst: [*c]u8,
+    src: [*c]const u8,
 ) void {
     out.* = raylib.TextCopy(
         dst,
@@ -8099,16 +7888,16 @@ pub fn TextIsEqual(
     var out: bool = undefined;
     mTextIsEqual(
         @ptrCast([*c]bool, &out),
-        text1,
-        text2,
+        @intToPtr([*c]const u8, @ptrToInt(text1)),
+        @intToPtr([*c]const u8, @ptrToInt(text2)),
     );
     return out;
 }
 
 export fn mTextIsEqual(
     out: [*c]bool,
-    text1: [*:0]const u8,
-    text2: [*:0]const u8,
+    text1: [*c]const u8,
+    text2: [*c]const u8,
 ) void {
     out.* = raylib.TextIsEqual(
         text1,
@@ -8123,14 +7912,14 @@ pub fn TextLength(
     var out: u32 = undefined;
     mTextLength(
         @ptrCast([*c]u32, &out),
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
     );
     return out;
 }
 
 export fn mTextLength(
     out: [*c]u32,
-    text: [*:0]const u8,
+    text: [*c]const u8,
 ) void {
     out.* = raylib.TextLength(
         text,
@@ -8142,24 +7931,23 @@ pub fn TextSubtext(
     text: [*:0]const u8,
     position: i32,
     length: i32,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mTextSubtext(
-        @ptrCast([*c][*:0]const u8, &out),
-        text,
-        position,
-        length,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mTextSubtext(
+            @intToPtr([*c]const u8, @ptrToInt(text)),
+            position,
+            length,
+        ),
     );
-    return out;
 }
 
 export fn mTextSubtext(
-    out: [*c][*:0]const u8,
-    text: [*:0]const u8,
+    text: [*c]const u8,
     position: i32,
     length: i32,
-) void {
-    out.* = raylib.TextSubtext(
+) [*c]const u8 {
+    return raylib.TextSubtext(
         text,
         position,
         length,
@@ -8171,24 +7959,23 @@ pub fn TextReplace(
     text: [*]u8,
     replace: [*:0]const u8,
     by: [*:0]const u8,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mTextReplace(
-        @ptrCast([*c][*]u8, &out),
-        text,
-        replace,
-        by,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mTextReplace(
+            @ptrCast([*c]u8, text),
+            @intToPtr([*c]const u8, @ptrToInt(replace)),
+            @intToPtr([*c]const u8, @ptrToInt(by)),
+        ),
     );
-    return out;
 }
 
 export fn mTextReplace(
-    out: [*c][*]u8,
-    text: [*]u8,
-    replace: [*:0]const u8,
-    by: [*:0]const u8,
-) void {
-    out.* = raylib.TextReplace(
+    text: [*c]u8,
+    replace: [*c]const u8,
+    by: [*c]const u8,
+) [*c]const u8 {
+    return raylib.TextReplace(
         text,
         replace,
         by,
@@ -8200,109 +7987,25 @@ pub fn TextInsert(
     text: [*:0]const u8,
     insert: [*:0]const u8,
     position: i32,
-) [*]u8 {
-    var out: [*]u8 = undefined;
-    mTextInsert(
-        @ptrCast([*c][*]u8, &out),
-        text,
-        insert,
-        position,
+) [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mTextInsert(
+            @intToPtr([*c]const u8, @ptrToInt(text)),
+            @intToPtr([*c]const u8, @ptrToInt(insert)),
+            position,
+        ),
     );
-    return out;
 }
 
 export fn mTextInsert(
-    out: [*c][*]u8,
-    text: [*:0]const u8,
-    insert: [*:0]const u8,
+    text: [*c]const u8,
+    insert: [*c]const u8,
     position: i32,
-) void {
-    out.* = raylib.TextInsert(
+) [*c]const u8 {
+    return raylib.TextInsert(
         text,
         insert,
-        position,
-    );
-}
-
-/// Join text strings with delimiter
-pub fn TextJoin(
-    textList: [*]const [*:0]const u8,
-    count: i32,
-    delimiter: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mTextJoin(
-        @ptrCast([*c][*:0]const u8, &out),
-        textList,
-        count,
-        delimiter,
-    );
-    return out;
-}
-
-export fn mTextJoin(
-    out: [*c][*:0]const u8,
-    textList: [*]const [*:0]const u8,
-    count: i32,
-    delimiter: [*:0]const u8,
-) void {
-    out.* = raylib.TextJoin(
-        textList,
-        count,
-        delimiter,
-    );
-}
-
-/// Split text into multiple strings
-pub fn TextSplit(
-    text: [*:0]const u8,
-    delimiter: u8,
-    count: [*]i32,
-) [*]const [*:0]const u8 {
-    var out: [*]const [*:0]const u8 = undefined;
-    mTextSplit(
-        @ptrCast([*c][*]const [*:0]const u8, &out),
-        text,
-        delimiter,
-        count,
-    );
-    return out;
-}
-
-export fn mTextSplit(
-    out: [*c][*]const [*:0]const u8,
-    text: [*:0]const u8,
-    delimiter: u8,
-    count: [*]i32,
-) void {
-    out.* = raylib.TextSplit(
-        text,
-        delimiter,
-        count,
-    );
-}
-
-/// Append text at specific position and move cursor!
-pub fn TextAppend(
-    text: [*]u8,
-    append: [*:0]const u8,
-    position: [*]i32,
-) void {
-    mTextAppend(
-        text,
-        append,
-        position,
-    );
-}
-
-export fn mTextAppend(
-    text: [*]u8,
-    append: [*:0]const u8,
-    position: [*]i32,
-) void {
-    raylib.TextAppend(
-        text,
-        append,
         position,
     );
 }
@@ -8315,16 +8018,16 @@ pub fn TextFindIndex(
     var out: i32 = undefined;
     mTextFindIndex(
         @ptrCast([*c]i32, &out),
-        text,
-        find,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        @intToPtr([*c]const u8, @ptrToInt(find)),
     );
     return out;
 }
 
 export fn mTextFindIndex(
     out: [*c]i32,
-    text: [*:0]const u8,
-    find: [*:0]const u8,
+    text: [*c]const u8,
+    find: [*c]const u8,
 ) void {
     out.* = raylib.TextFindIndex(
         text,
@@ -8335,20 +8038,19 @@ export fn mTextFindIndex(
 /// Get upper case version of provided string
 pub fn TextToUpper(
     text: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mTextToUpper(
-        @ptrCast([*c][*:0]const u8, &out),
-        text,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mTextToUpper(
+            @intToPtr([*c]const u8, @ptrToInt(text)),
+        ),
     );
-    return out;
 }
 
 export fn mTextToUpper(
-    out: [*c][*:0]const u8,
-    text: [*:0]const u8,
-) void {
-    out.* = raylib.TextToUpper(
+    text: [*c]const u8,
+) [*c]const u8 {
+    return raylib.TextToUpper(
         text,
     );
 }
@@ -8356,20 +8058,19 @@ export fn mTextToUpper(
 /// Get lower case version of provided string
 pub fn TextToLower(
     text: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mTextToLower(
-        @ptrCast([*c][*:0]const u8, &out),
-        text,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mTextToLower(
+            @intToPtr([*c]const u8, @ptrToInt(text)),
+        ),
     );
-    return out;
 }
 
 export fn mTextToLower(
-    out: [*c][*:0]const u8,
-    text: [*:0]const u8,
-) void {
-    out.* = raylib.TextToLower(
+    text: [*c]const u8,
+) [*c]const u8 {
+    return raylib.TextToLower(
         text,
     );
 }
@@ -8377,20 +8078,19 @@ export fn mTextToLower(
 /// Get Pascal case notation version of provided string
 pub fn TextToPascal(
     text: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mTextToPascal(
-        @ptrCast([*c][*:0]const u8, &out),
-        text,
+) [*]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        mTextToPascal(
+            @intToPtr([*c]const u8, @ptrToInt(text)),
+        ),
     );
-    return out;
 }
 
 export fn mTextToPascal(
-    out: [*c][*:0]const u8,
-    text: [*:0]const u8,
-) void {
-    out.* = raylib.TextToPascal(
+    text: [*c]const u8,
+) [*c]const u8 {
+    return raylib.TextToPascal(
         text,
     );
 }
@@ -8402,14 +8102,14 @@ pub fn TextToInteger(
     var out: i32 = undefined;
     mTextToInteger(
         @ptrCast([*c]i32, &out),
-        text,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
     );
     return out;
 }
 
 export fn mTextToInteger(
     out: [*c]i32,
-    text: [*:0]const u8,
+    text: [*c]const u8,
 ) void {
     out.* = raylib.TextToInteger(
         text,
@@ -8423,9 +8123,9 @@ pub fn DrawLine3D(
     color: Color,
 ) void {
     mDrawLine3D(
-        @ptrCast([*c]raylib.Vector3, &startPos),
-        @ptrCast([*c]raylib.Vector3, &endPos),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&endPos)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8447,8 +8147,8 @@ pub fn DrawPoint3D(
     color: Color,
 ) void {
     mDrawPoint3D(
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8471,11 +8171,11 @@ pub fn DrawCircle3D(
     color: Color,
 ) void {
     mDrawCircle3D(
-        @ptrCast([*c]raylib.Vector3, &center),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&center)),
         radius,
-        @ptrCast([*c]raylib.Vector3, &rotationAxis),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&rotationAxis)),
         rotationAngle,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8503,10 +8203,10 @@ pub fn DrawTriangle3D(
     color: Color,
 ) void {
     mDrawTriangle3D(
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
-        @ptrCast([*c]raylib.Vector3, &v3),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v3)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8531,14 +8231,14 @@ pub fn DrawTriangleStrip3D(
     color: Color,
 ) void {
     mDrawTriangleStrip3D(
-        points,
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(points)),
         pointCount,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 export fn mDrawTriangleStrip3D(
-    points: [*]Vector3,
+    points: [*c]raylib.Vector3,
     pointCount: i32,
     color: [*c]raylib.Color,
 ) void {
@@ -8558,11 +8258,11 @@ pub fn DrawCube(
     color: Color,
 ) void {
     mDrawCube(
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         width,
         height,
         length,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8589,9 +8289,9 @@ pub fn DrawCubeV(
     color: Color,
 ) void {
     mDrawCubeV(
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Vector3, &size),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&size)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8616,11 +8316,11 @@ pub fn DrawCubeWires(
     color: Color,
 ) void {
     mDrawCubeWires(
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         width,
         height,
         length,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8647,9 +8347,9 @@ pub fn DrawCubeWiresV(
     color: Color,
 ) void {
     mDrawCubeWiresV(
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Vector3, &size),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&size)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8675,12 +8375,12 @@ pub fn DrawCubeTexture(
     color: Color,
 ) void {
     mDrawCubeTexture(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         width,
         height,
         length,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8713,13 +8413,13 @@ pub fn DrawCubeTextureRec(
     color: Color,
 ) void {
     mDrawCubeTextureRec(
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &source),
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         width,
         height,
         length,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8750,9 +8450,9 @@ pub fn DrawSphere(
     color: Color,
 ) void {
     mDrawSphere(
-        @ptrCast([*c]raylib.Vector3, &centerPos),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&centerPos)),
         radius,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8777,11 +8477,11 @@ pub fn DrawSphereEx(
     color: Color,
 ) void {
     mDrawSphereEx(
-        @ptrCast([*c]raylib.Vector3, &centerPos),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&centerPos)),
         radius,
         rings,
         slices,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8810,11 +8510,11 @@ pub fn DrawSphereWires(
     color: Color,
 ) void {
     mDrawSphereWires(
-        @ptrCast([*c]raylib.Vector3, &centerPos),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&centerPos)),
         radius,
         rings,
         slices,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8844,12 +8544,12 @@ pub fn DrawCylinder(
     color: Color,
 ) void {
     mDrawCylinder(
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         radiusTop,
         radiusBottom,
         height,
         slices,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8881,12 +8581,12 @@ pub fn DrawCylinderEx(
     color: Color,
 ) void {
     mDrawCylinderEx(
-        @ptrCast([*c]raylib.Vector3, &startPos),
-        @ptrCast([*c]raylib.Vector3, &endPos),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&endPos)),
         startRadius,
         endRadius,
         sides,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8918,12 +8618,12 @@ pub fn DrawCylinderWires(
     color: Color,
 ) void {
     mDrawCylinderWires(
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         radiusTop,
         radiusBottom,
         height,
         slices,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8955,12 +8655,12 @@ pub fn DrawCylinderWiresEx(
     color: Color,
 ) void {
     mDrawCylinderWiresEx(
-        @ptrCast([*c]raylib.Vector3, &startPos),
-        @ptrCast([*c]raylib.Vector3, &endPos),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&endPos)),
         startRadius,
         endRadius,
         sides,
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -8989,9 +8689,9 @@ pub fn DrawPlane(
     color: Color,
 ) void {
     mDrawPlane(
-        @ptrCast([*c]raylib.Vector3, &centerPos),
-        @ptrCast([*c]raylib.Vector2, &size),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&centerPos)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&size)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -9013,8 +8713,8 @@ pub fn DrawRay(
     color: Color,
 ) void {
     mDrawRay(
-        @ptrCast([*c]raylib.Ray, &ray),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.Ray, @ptrToInt(&ray)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -9056,14 +8756,14 @@ pub fn LoadModel(
     var out: Model = undefined;
     mLoadModel(
         @ptrCast([*c]raylib.Model, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mLoadModel(
     out: [*c]raylib.Model,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadModel(
         fileName,
@@ -9077,7 +8777,7 @@ pub fn LoadModelFromMesh(
     var out: Model = undefined;
     mLoadModelFromMesh(
         @ptrCast([*c]raylib.Model, &out),
-        @ptrCast([*c]raylib.Mesh, &mesh),
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
     );
     return out;
 }
@@ -9096,7 +8796,7 @@ pub fn UnloadModel(
     model: Model,
 ) void {
     mUnloadModel(
-        @ptrCast([*c]raylib.Model, &model),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
     );
 }
 
@@ -9113,7 +8813,7 @@ pub fn UnloadModelKeepMeshes(
     model: Model,
 ) void {
     mUnloadModelKeepMeshes(
-        @ptrCast([*c]raylib.Model, &model),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
     );
 }
 
@@ -9132,7 +8832,7 @@ pub fn GetModelBoundingBox(
     var out: BoundingBox = undefined;
     mGetModelBoundingBox(
         @ptrCast([*c]raylib.BoundingBox, &out),
-        @ptrCast([*c]raylib.Model, &model),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
     );
     return out;
 }
@@ -9154,10 +8854,10 @@ pub fn DrawModel(
     tint: Color,
 ) void {
     mDrawModel(
-        @ptrCast([*c]raylib.Model, &model),
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         scale,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -9185,12 +8885,12 @@ pub fn DrawModelEx(
     tint: Color,
 ) void {
     mDrawModelEx(
-        @ptrCast([*c]raylib.Model, &model),
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Vector3, &rotationAxis),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&rotationAxis)),
         rotationAngle,
-        @ptrCast([*c]raylib.Vector3, &scale),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&scale)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -9220,10 +8920,10 @@ pub fn DrawModelWires(
     tint: Color,
 ) void {
     mDrawModelWires(
-        @ptrCast([*c]raylib.Model, &model),
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         scale,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -9251,12 +8951,12 @@ pub fn DrawModelWiresEx(
     tint: Color,
 ) void {
     mDrawModelWiresEx(
-        @ptrCast([*c]raylib.Model, &model),
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Vector3, &rotationAxis),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&rotationAxis)),
         rotationAngle,
-        @ptrCast([*c]raylib.Vector3, &scale),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&scale)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -9284,8 +8984,8 @@ pub fn DrawBoundingBox(
     color: Color,
 ) void {
     mDrawBoundingBox(
-        @ptrCast([*c]raylib.BoundingBox, &box),
-        @ptrCast([*c]raylib.Color, &color),
+        @intToPtr([*c]raylib.BoundingBox, @ptrToInt(&box)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
@@ -9308,11 +9008,11 @@ pub fn DrawBillboard(
     tint: Color,
 ) void {
     mDrawBillboard(
-        @ptrCast([*c]raylib.Camera3D, &camera),
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Vector3, &position),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         size,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -9342,12 +9042,12 @@ pub fn DrawBillboardRec(
     tint: Color,
 ) void {
     mDrawBillboardRec(
-        @ptrCast([*c]raylib.Camera3D, &camera),
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &source),
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Vector2, &size),
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&size)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -9382,15 +9082,15 @@ pub fn DrawBillboardPro(
     tint: Color,
 ) void {
     mDrawBillboardPro(
-        @ptrCast([*c]raylib.Camera3D, &camera),
-        @ptrCast([*c]raylib.Texture2D, &texture),
-        @ptrCast([*c]raylib.Rectangle, &source),
-        @ptrCast([*c]raylib.Vector3, &position),
-        @ptrCast([*c]raylib.Vector3, &up),
-        @ptrCast([*c]raylib.Vector2, &size),
-        @ptrCast([*c]raylib.Vector2, &origin),
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&up)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&size)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
         rotation,
-        @ptrCast([*c]raylib.Color, &tint),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
 
@@ -9424,13 +9124,13 @@ pub fn UploadMesh(
     dynamic: bool,
 ) void {
     mUploadMesh(
-        mesh,
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(mesh)),
         dynamic,
     );
 }
 
 export fn mUploadMesh(
-    mesh: [*]Mesh,
+    mesh: [*c]raylib.Mesh,
     dynamic: bool,
 ) void {
     raylib.UploadMesh(
@@ -9448,9 +9148,9 @@ pub fn UpdateMeshBuffer(
     offset: i32,
 ) void {
     mUpdateMeshBuffer(
-        @ptrCast([*c]raylib.Mesh, &mesh),
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
         index,
-        data,
+        @ptrCast([*c]anyopaque, data),
         dataSize,
         offset,
     );
@@ -9477,7 +9177,7 @@ pub fn UnloadMesh(
     mesh: Mesh,
 ) void {
     mUnloadMesh(
-        @ptrCast([*c]raylib.Mesh, &mesh),
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
     );
 }
 
@@ -9496,9 +9196,9 @@ pub fn DrawMesh(
     transform: Matrix,
 ) void {
     mDrawMesh(
-        @ptrCast([*c]raylib.Mesh, &mesh),
-        @ptrCast([*c]raylib.Material, &material),
-        @ptrCast([*c]raylib.Matrix, &transform),
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
+        @intToPtr([*c]raylib.Material, @ptrToInt(&material)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&transform)),
     );
 }
 
@@ -9522,9 +9222,9 @@ pub fn DrawMeshInstanced(
     instances: i32,
 ) void {
     mDrawMeshInstanced(
-        @ptrCast([*c]raylib.Mesh, &mesh),
-        @ptrCast([*c]raylib.Material, &material),
-        transforms,
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
+        @intToPtr([*c]raylib.Material, @ptrToInt(&material)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(transforms)),
         instances,
     );
 }
@@ -9532,7 +9232,7 @@ pub fn DrawMeshInstanced(
 export fn mDrawMeshInstanced(
     mesh: [*c]raylib.Mesh,
     material: [*c]raylib.Material,
-    transforms: [*]const Matrix,
+    transforms: [*c]raylib.Matrix,
     instances: i32,
 ) void {
     raylib.DrawMeshInstanced(
@@ -9551,8 +9251,8 @@ pub fn ExportMesh(
     var out: bool = undefined;
     mExportMesh(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Mesh, &mesh),
-        fileName,
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
@@ -9560,7 +9260,7 @@ pub fn ExportMesh(
 export fn mExportMesh(
     out: [*c]bool,
     mesh: [*c]raylib.Mesh,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.ExportMesh(
         mesh.*,
@@ -9575,7 +9275,7 @@ pub fn GetMeshBoundingBox(
     var out: BoundingBox = undefined;
     mGetMeshBoundingBox(
         @ptrCast([*c]raylib.BoundingBox, &out),
-        @ptrCast([*c]raylib.Mesh, &mesh),
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
     );
     return out;
 }
@@ -9594,12 +9294,12 @@ pub fn GenMeshTangents(
     mesh: [*]Mesh,
 ) void {
     mGenMeshTangents(
-        mesh,
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(mesh)),
     );
 }
 
 export fn mGenMeshTangents(
-    mesh: [*]Mesh,
+    mesh: [*c]raylib.Mesh,
 ) void {
     raylib.GenMeshTangents(
         mesh,
@@ -9611,12 +9311,12 @@ pub fn GenMeshBinormals(
     mesh: [*]Mesh,
 ) void {
     mGenMeshBinormals(
-        mesh,
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(mesh)),
     );
 }
 
 export fn mGenMeshBinormals(
-    mesh: [*]Mesh,
+    mesh: [*c]raylib.Mesh,
 ) void {
     raylib.GenMeshBinormals(
         mesh,
@@ -9900,8 +9600,8 @@ pub fn GenMeshHeightmap(
     var out: Mesh = undefined;
     mGenMeshHeightmap(
         @ptrCast([*c]raylib.Mesh, &out),
-        @ptrCast([*c]raylib.Image, &heightmap),
-        @ptrCast([*c]raylib.Vector3, &size),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&heightmap)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&size)),
     );
     return out;
 }
@@ -9925,8 +9625,8 @@ pub fn GenMeshCubicmap(
     var out: Mesh = undefined;
     mGenMeshCubicmap(
         @ptrCast([*c]raylib.Mesh, &out),
-        @ptrCast([*c]raylib.Image, &cubicmap),
-        @ptrCast([*c]raylib.Vector3, &cubeSize),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&cubicmap)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&cubeSize)),
     );
     return out;
 }
@@ -9946,22 +9646,21 @@ export fn mGenMeshCubicmap(
 pub fn LoadMaterials(
     fileName: [*:0]const u8,
     materialCount: [*]i32,
-) [*]Material {
-    var out: [*]Material = undefined;
-    mLoadMaterials(
-        @ptrCast([*c][*]Material, &out),
-        fileName,
-        materialCount,
+) [*]const Material {
+    return @ptrCast(
+        [*]Material,
+        mLoadMaterials(
+            @intToPtr([*c]const u8, @ptrToInt(fileName)),
+            @ptrCast([*c]i32, materialCount),
+        ),
     );
-    return out;
 }
 
 export fn mLoadMaterials(
-    out: [*c][*]Material,
-    fileName: [*:0]const u8,
-    materialCount: [*]i32,
-) void {
-    out.* = raylib.LoadMaterials(
+    fileName: [*c]const u8,
+    materialCount: [*c]i32,
+) [*c]const raylib.Material {
+    return raylib.LoadMaterials(
         fileName,
         materialCount,
     );
@@ -9987,7 +9686,7 @@ pub fn UnloadMaterial(
     material: Material,
 ) void {
     mUnloadMaterial(
-        @ptrCast([*c]raylib.Material, &material),
+        @intToPtr([*c]raylib.Material, @ptrToInt(&material)),
     );
 }
 
@@ -10006,14 +9705,14 @@ pub fn SetMaterialTexture(
     texture: Texture2D,
 ) void {
     mSetMaterialTexture(
-        material,
+        @intToPtr([*c]raylib.Material, @ptrToInt(material)),
         mapType,
-        @ptrCast([*c]raylib.Texture2D, &texture),
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
     );
 }
 
 export fn mSetMaterialTexture(
-    material: [*]Material,
+    material: [*c]raylib.Material,
     mapType: i32,
     texture: [*c]raylib.Texture2D,
 ) void {
@@ -10031,14 +9730,14 @@ pub fn SetModelMeshMaterial(
     materialId: i32,
 ) void {
     mSetModelMeshMaterial(
-        model,
+        @intToPtr([*c]raylib.Model, @ptrToInt(model)),
         meshId,
         materialId,
     );
 }
 
 export fn mSetModelMeshMaterial(
-    model: [*]Model,
+    model: [*c]raylib.Model,
     meshId: i32,
     materialId: i32,
 ) void {
@@ -10053,22 +9752,21 @@ export fn mSetModelMeshMaterial(
 pub fn LoadModelAnimations(
     fileName: [*:0]const u8,
     animCount: [*]u32,
-) [*]ModelAnimation {
-    var out: [*]ModelAnimation = undefined;
-    mLoadModelAnimations(
-        @ptrCast([*c][*]ModelAnimation, &out),
-        fileName,
-        animCount,
+) [*]const ModelAnimation {
+    return @ptrCast(
+        [*]ModelAnimation,
+        mLoadModelAnimations(
+            @intToPtr([*c]const u8, @ptrToInt(fileName)),
+            @ptrCast([*c]u32, animCount),
+        ),
     );
-    return out;
 }
 
 export fn mLoadModelAnimations(
-    out: [*c][*]ModelAnimation,
-    fileName: [*:0]const u8,
-    animCount: [*]u32,
-) void {
-    out.* = raylib.LoadModelAnimations(
+    fileName: [*c]const u8,
+    animCount: [*c]u32,
+) [*c]const raylib.ModelAnimation {
+    return raylib.LoadModelAnimations(
         fileName,
         animCount,
     );
@@ -10081,8 +9779,8 @@ pub fn UpdateModelAnimation(
     frame: i32,
 ) void {
     mUpdateModelAnimation(
-        @ptrCast([*c]raylib.Model, &model),
-        @ptrCast([*c]raylib.ModelAnimation, &anim),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
+        @intToPtr([*c]raylib.ModelAnimation, @ptrToInt(&anim)),
         frame,
     );
 }
@@ -10104,7 +9802,7 @@ pub fn UnloadModelAnimation(
     anim: ModelAnimation,
 ) void {
     mUnloadModelAnimation(
-        @ptrCast([*c]raylib.ModelAnimation, &anim),
+        @intToPtr([*c]raylib.ModelAnimation, @ptrToInt(&anim)),
     );
 }
 
@@ -10122,13 +9820,13 @@ pub fn UnloadModelAnimations(
     count: u32,
 ) void {
     mUnloadModelAnimations(
-        animations,
+        @intToPtr([*c]raylib.ModelAnimation, @ptrToInt(animations)),
         count,
     );
 }
 
 export fn mUnloadModelAnimations(
-    animations: [*]ModelAnimation,
+    animations: [*c]raylib.ModelAnimation,
     count: u32,
 ) void {
     raylib.UnloadModelAnimations(
@@ -10145,8 +9843,8 @@ pub fn IsModelAnimationValid(
     var out: bool = undefined;
     mIsModelAnimationValid(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Model, &model),
-        @ptrCast([*c]raylib.ModelAnimation, &anim),
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
+        @intToPtr([*c]raylib.ModelAnimation, @ptrToInt(&anim)),
     );
     return out;
 }
@@ -10172,9 +9870,9 @@ pub fn CheckCollisionSpheres(
     var out: bool = undefined;
     mCheckCollisionSpheres(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Vector3, &center1),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&center1)),
         radius1,
-        @ptrCast([*c]raylib.Vector3, &center2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&center2)),
         radius2,
     );
     return out;
@@ -10203,8 +9901,8 @@ pub fn CheckCollisionBoxes(
     var out: bool = undefined;
     mCheckCollisionBoxes(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.BoundingBox, &box1),
-        @ptrCast([*c]raylib.BoundingBox, &box2),
+        @intToPtr([*c]raylib.BoundingBox, @ptrToInt(&box1)),
+        @intToPtr([*c]raylib.BoundingBox, @ptrToInt(&box2)),
     );
     return out;
 }
@@ -10229,8 +9927,8 @@ pub fn CheckCollisionBoxSphere(
     var out: bool = undefined;
     mCheckCollisionBoxSphere(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.BoundingBox, &box),
-        @ptrCast([*c]raylib.Vector3, &center),
+        @intToPtr([*c]raylib.BoundingBox, @ptrToInt(&box)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&center)),
         radius,
     );
     return out;
@@ -10258,8 +9956,8 @@ pub fn GetRayCollisionSphere(
     var out: RayCollision = undefined;
     mGetRayCollisionSphere(
         @ptrCast([*c]raylib.RayCollision, &out),
-        @ptrCast([*c]raylib.Ray, &ray),
-        @ptrCast([*c]raylib.Vector3, &center),
+        @intToPtr([*c]raylib.Ray, @ptrToInt(&ray)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&center)),
         radius,
     );
     return out;
@@ -10286,8 +9984,8 @@ pub fn GetRayCollisionBox(
     var out: RayCollision = undefined;
     mGetRayCollisionBox(
         @ptrCast([*c]raylib.RayCollision, &out),
-        @ptrCast([*c]raylib.Ray, &ray),
-        @ptrCast([*c]raylib.BoundingBox, &box),
+        @intToPtr([*c]raylib.Ray, @ptrToInt(&ray)),
+        @intToPtr([*c]raylib.BoundingBox, @ptrToInt(&box)),
     );
     return out;
 }
@@ -10312,9 +10010,9 @@ pub fn GetRayCollisionMesh(
     var out: RayCollision = undefined;
     mGetRayCollisionMesh(
         @ptrCast([*c]raylib.RayCollision, &out),
-        @ptrCast([*c]raylib.Ray, &ray),
-        @ptrCast([*c]raylib.Mesh, &mesh),
-        @ptrCast([*c]raylib.Matrix, &transform),
+        @intToPtr([*c]raylib.Ray, @ptrToInt(&ray)),
+        @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&transform)),
     );
     return out;
 }
@@ -10342,10 +10040,10 @@ pub fn GetRayCollisionTriangle(
     var out: RayCollision = undefined;
     mGetRayCollisionTriangle(
         @ptrCast([*c]raylib.RayCollision, &out),
-        @ptrCast([*c]raylib.Ray, &ray),
-        @ptrCast([*c]raylib.Vector3, &p1),
-        @ptrCast([*c]raylib.Vector3, &p2),
-        @ptrCast([*c]raylib.Vector3, &p3),
+        @intToPtr([*c]raylib.Ray, @ptrToInt(&ray)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p2)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p3)),
     );
     return out;
 }
@@ -10376,11 +10074,11 @@ pub fn GetRayCollisionQuad(
     var out: RayCollision = undefined;
     mGetRayCollisionQuad(
         @ptrCast([*c]raylib.RayCollision, &out),
-        @ptrCast([*c]raylib.Ray, &ray),
-        @ptrCast([*c]raylib.Vector3, &p1),
-        @ptrCast([*c]raylib.Vector3, &p2),
-        @ptrCast([*c]raylib.Vector3, &p3),
-        @ptrCast([*c]raylib.Vector3, &p4),
+        @intToPtr([*c]raylib.Ray, @ptrToInt(&ray)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p2)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p3)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p4)),
     );
     return out;
 }
@@ -10459,14 +10157,14 @@ pub fn LoadWave(
     var out: Wave = undefined;
     mLoadWave(
         @ptrCast([*c]raylib.Wave, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mLoadWave(
     out: [*c]raylib.Wave,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadWave(
         fileName,
@@ -10482,8 +10180,8 @@ pub fn LoadWaveFromMemory(
     var out: Wave = undefined;
     mLoadWaveFromMemory(
         @ptrCast([*c]raylib.Wave, &out),
-        fileType,
-        fileData,
+        @intToPtr([*c]const u8, @ptrToInt(fileType)),
+        @intToPtr([*c]const u8, @ptrToInt(fileData)),
         dataSize,
     );
     return out;
@@ -10491,8 +10189,8 @@ pub fn LoadWaveFromMemory(
 
 export fn mLoadWaveFromMemory(
     out: [*c]raylib.Wave,
-    fileType: [*:0]const u8,
-    fileData: [*:0]const u8,
+    fileType: [*c]const u8,
+    fileData: [*c]const u8,
     dataSize: i32,
 ) void {
     out.* = raylib.LoadWaveFromMemory(
@@ -10509,14 +10207,14 @@ pub fn LoadSound(
     var out: Sound = undefined;
     mLoadSound(
         @ptrCast([*c]raylib.Sound, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mLoadSound(
     out: [*c]raylib.Sound,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadSound(
         fileName,
@@ -10530,7 +10228,7 @@ pub fn LoadSoundFromWave(
     var out: Sound = undefined;
     mLoadSoundFromWave(
         @ptrCast([*c]raylib.Sound, &out),
-        @ptrCast([*c]raylib.Wave, &wave),
+        @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
     );
     return out;
 }
@@ -10551,8 +10249,8 @@ pub fn UpdateSound(
     sampleCount: i32,
 ) void {
     mUpdateSound(
-        @ptrCast([*c]raylib.Sound, &sound),
-        data,
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
+        @ptrCast([*c]anyopaque, data),
         sampleCount,
     );
 }
@@ -10574,7 +10272,7 @@ pub fn UnloadWave(
     wave: Wave,
 ) void {
     mUnloadWave(
-        @ptrCast([*c]raylib.Wave, &wave),
+        @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
     );
 }
 
@@ -10591,7 +10289,7 @@ pub fn UnloadSound(
     sound: Sound,
 ) void {
     mUnloadSound(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
 }
 
@@ -10611,8 +10309,8 @@ pub fn ExportWave(
     var out: bool = undefined;
     mExportWave(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Wave, &wave),
-        fileName,
+        @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
@@ -10620,7 +10318,7 @@ pub fn ExportWave(
 export fn mExportWave(
     out: [*c]bool,
     wave: [*c]raylib.Wave,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.ExportWave(
         wave.*,
@@ -10636,8 +10334,8 @@ pub fn ExportWaveAsCode(
     var out: bool = undefined;
     mExportWaveAsCode(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Wave, &wave),
-        fileName,
+        @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
@@ -10645,7 +10343,7 @@ pub fn ExportWaveAsCode(
 export fn mExportWaveAsCode(
     out: [*c]bool,
     wave: [*c]raylib.Wave,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.ExportWaveAsCode(
         wave.*,
@@ -10658,7 +10356,7 @@ pub fn PlaySound(
     sound: Sound,
 ) void {
     mPlaySound(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
 }
 
@@ -10675,7 +10373,7 @@ pub fn StopSound(
     sound: Sound,
 ) void {
     mStopSound(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
 }
 
@@ -10692,7 +10390,7 @@ pub fn PauseSound(
     sound: Sound,
 ) void {
     mPauseSound(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
 }
 
@@ -10709,7 +10407,7 @@ pub fn ResumeSound(
     sound: Sound,
 ) void {
     mResumeSound(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
 }
 
@@ -10726,7 +10424,7 @@ pub fn PlaySoundMulti(
     sound: Sound,
 ) void {
     mPlaySoundMulti(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
 }
 
@@ -10769,7 +10467,7 @@ pub fn IsSoundPlaying(
     var out: bool = undefined;
     mIsSoundPlaying(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
     return out;
 }
@@ -10789,7 +10487,7 @@ pub fn SetSoundVolume(
     volume: f32,
 ) void {
     mSetSoundVolume(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
         volume,
     );
 }
@@ -10810,7 +10508,7 @@ pub fn SetSoundPitch(
     pitch: f32,
 ) void {
     mSetSoundPitch(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
         pitch,
     );
 }
@@ -10831,7 +10529,7 @@ pub fn SetSoundPan(
     pan: f32,
 ) void {
     mSetSoundPan(
-        @ptrCast([*c]raylib.Sound, &sound),
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
         pan,
     );
 }
@@ -10853,7 +10551,7 @@ pub fn WaveCopy(
     var out: Wave = undefined;
     mWaveCopy(
         @ptrCast([*c]raylib.Wave, &out),
-        @ptrCast([*c]raylib.Wave, &wave),
+        @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
     );
     return out;
 }
@@ -10874,14 +10572,14 @@ pub fn WaveCrop(
     finalSample: i32,
 ) void {
     mWaveCrop(
-        wave,
+        @intToPtr([*c]raylib.Wave, @ptrToInt(wave)),
         initSample,
         finalSample,
     );
 }
 
 export fn mWaveCrop(
-    wave: [*]Wave,
+    wave: [*c]raylib.Wave,
     initSample: i32,
     finalSample: i32,
 ) void {
@@ -10900,7 +10598,7 @@ pub fn WaveFormat(
     channels: i32,
 ) void {
     mWaveFormat(
-        wave,
+        @intToPtr([*c]raylib.Wave, @ptrToInt(wave)),
         sampleRate,
         sampleSize,
         channels,
@@ -10908,7 +10606,7 @@ pub fn WaveFormat(
 }
 
 export fn mWaveFormat(
-    wave: [*]Wave,
+    wave: [*c]raylib.Wave,
     sampleRate: i32,
     sampleSize: i32,
     channels: i32,
@@ -10924,20 +10622,19 @@ export fn mWaveFormat(
 /// Load samples data from wave as a 32bit float data array
 pub fn LoadWaveSamples(
     wave: Wave,
-) [*]f32 {
-    var out: [*]f32 = undefined;
-    mLoadWaveSamples(
-        @ptrCast([*c][*]f32, &out),
-        @ptrCast([*c]raylib.Wave, &wave),
+) [*]const f32 {
+    return @ptrCast(
+        [*]f32,
+        mLoadWaveSamples(
+            @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
+        ),
     );
-    return out;
 }
 
 export fn mLoadWaveSamples(
-    out: [*c][*]f32,
     wave: [*c]raylib.Wave,
-) void {
-    out.* = raylib.LoadWaveSamples(
+) [*c]const f32 {
+    return raylib.LoadWaveSamples(
         wave.*,
     );
 }
@@ -10947,12 +10644,12 @@ pub fn UnloadWaveSamples(
     samples: [*]f32,
 ) void {
     mUnloadWaveSamples(
-        samples,
+        @ptrCast([*c]f32, samples),
     );
 }
 
 export fn mUnloadWaveSamples(
-    samples: [*]f32,
+    samples: [*c]f32,
 ) void {
     raylib.UnloadWaveSamples(
         samples,
@@ -10966,14 +10663,14 @@ pub fn LoadMusicStream(
     var out: Music = undefined;
     mLoadMusicStream(
         @ptrCast([*c]raylib.Music, &out),
-        fileName,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
     return out;
 }
 
 export fn mLoadMusicStream(
     out: [*c]raylib.Music,
-    fileName: [*:0]const u8,
+    fileName: [*c]const u8,
 ) void {
     out.* = raylib.LoadMusicStream(
         fileName,
@@ -10989,8 +10686,8 @@ pub fn LoadMusicStreamFromMemory(
     var out: Music = undefined;
     mLoadMusicStreamFromMemory(
         @ptrCast([*c]raylib.Music, &out),
-        fileType,
-        data,
+        @intToPtr([*c]const u8, @ptrToInt(fileType)),
+        @intToPtr([*c]const u8, @ptrToInt(data)),
         dataSize,
     );
     return out;
@@ -10998,8 +10695,8 @@ pub fn LoadMusicStreamFromMemory(
 
 export fn mLoadMusicStreamFromMemory(
     out: [*c]raylib.Music,
-    fileType: [*:0]const u8,
-    data: [*:0]const u8,
+    fileType: [*c]const u8,
+    data: [*c]const u8,
     dataSize: i32,
 ) void {
     out.* = raylib.LoadMusicStreamFromMemory(
@@ -11014,7 +10711,7 @@ pub fn UnloadMusicStream(
     music: Music,
 ) void {
     mUnloadMusicStream(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
 }
 
@@ -11031,7 +10728,7 @@ pub fn PlayMusicStream(
     music: Music,
 ) void {
     mPlayMusicStream(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
 }
 
@@ -11050,7 +10747,7 @@ pub fn IsMusicStreamPlaying(
     var out: bool = undefined;
     mIsMusicStreamPlaying(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
     return out;
 }
@@ -11069,7 +10766,7 @@ pub fn UpdateMusicStream(
     music: Music,
 ) void {
     mUpdateMusicStream(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
 }
 
@@ -11086,7 +10783,7 @@ pub fn StopMusicStream(
     music: Music,
 ) void {
     mStopMusicStream(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
 }
 
@@ -11103,7 +10800,7 @@ pub fn PauseMusicStream(
     music: Music,
 ) void {
     mPauseMusicStream(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
 }
 
@@ -11120,7 +10817,7 @@ pub fn ResumeMusicStream(
     music: Music,
 ) void {
     mResumeMusicStream(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
 }
 
@@ -11138,7 +10835,7 @@ pub fn SeekMusicStream(
     position: f32,
 ) void {
     mSeekMusicStream(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
         position,
     );
 }
@@ -11159,7 +10856,7 @@ pub fn SetMusicVolume(
     volume: f32,
 ) void {
     mSetMusicVolume(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
         volume,
     );
 }
@@ -11180,7 +10877,7 @@ pub fn SetMusicPitch(
     pitch: f32,
 ) void {
     mSetMusicPitch(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
         pitch,
     );
 }
@@ -11201,7 +10898,7 @@ pub fn SetMusicPan(
     pan: f32,
 ) void {
     mSetMusicPan(
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
         pan,
     );
 }
@@ -11223,7 +10920,7 @@ pub fn GetMusicTimeLength(
     var out: f32 = undefined;
     mGetMusicTimeLength(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
     return out;
 }
@@ -11244,7 +10941,7 @@ pub fn GetMusicTimePlayed(
     var out: f32 = undefined;
     mGetMusicTimePlayed(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Music, &music),
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
     );
     return out;
 }
@@ -11292,7 +10989,7 @@ pub fn UnloadAudioStream(
     stream: AudioStream,
 ) void {
     mUnloadAudioStream(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
     );
 }
 
@@ -11311,8 +11008,8 @@ pub fn UpdateAudioStream(
     frameCount: i32,
 ) void {
     mUpdateAudioStream(
-        @ptrCast([*c]raylib.AudioStream, &stream),
-        data,
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
+        @ptrCast([*c]anyopaque, data),
         frameCount,
     );
 }
@@ -11336,7 +11033,7 @@ pub fn IsAudioStreamProcessed(
     var out: bool = undefined;
     mIsAudioStreamProcessed(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
     );
     return out;
 }
@@ -11355,7 +11052,7 @@ pub fn PlayAudioStream(
     stream: AudioStream,
 ) void {
     mPlayAudioStream(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
     );
 }
 
@@ -11372,7 +11069,7 @@ pub fn PauseAudioStream(
     stream: AudioStream,
 ) void {
     mPauseAudioStream(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
     );
 }
 
@@ -11389,7 +11086,7 @@ pub fn ResumeAudioStream(
     stream: AudioStream,
 ) void {
     mResumeAudioStream(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
     );
 }
 
@@ -11408,7 +11105,7 @@ pub fn IsAudioStreamPlaying(
     var out: bool = undefined;
     mIsAudioStreamPlaying(
         @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
     );
     return out;
 }
@@ -11427,7 +11124,7 @@ pub fn StopAudioStream(
     stream: AudioStream,
 ) void {
     mStopAudioStream(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
     );
 }
 
@@ -11445,7 +11142,7 @@ pub fn SetAudioStreamVolume(
     volume: f32,
 ) void {
     mSetAudioStreamVolume(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
         volume,
     );
 }
@@ -11466,7 +11163,7 @@ pub fn SetAudioStreamPitch(
     pitch: f32,
 ) void {
     mSetAudioStreamPitch(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
         pitch,
     );
 }
@@ -11487,7 +11184,7 @@ pub fn SetAudioStreamPan(
     pan: f32,
 ) void {
     mSetAudioStreamPan(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
         pan,
     );
 }
@@ -11525,7 +11222,7 @@ pub fn SetAudioStreamCallback(
     callback: AudioCallback,
 ) void {
     mSetAudioStreamCallback(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
         callback,
     );
 }
@@ -11540,13 +11237,13 @@ export fn mSetAudioStreamCallback(
     );
 }
 
-///
+/// 
 pub fn AttachAudioStreamProcessor(
     stream: AudioStream,
     processor: AudioCallback,
 ) void {
     mAttachAudioStreamProcessor(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
         processor,
     );
 }
@@ -11561,13 +11258,13 @@ export fn mAttachAudioStreamProcessor(
     );
 }
 
-///
+/// 
 pub fn DetachAudioStreamProcessor(
     stream: AudioStream,
     processor: AudioCallback,
 ) void {
     mDetachAudioStreamProcessor(
-        @ptrCast([*c]raylib.AudioStream, &stream),
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
         processor,
     );
 }
@@ -11582,7 +11279,7 @@ export fn mDetachAudioStreamProcessor(
     );
 }
 
-///
+/// 
 pub fn Clamp(
     value: f32,
     min: f32,
@@ -11611,7 +11308,7 @@ export fn mClamp(
     );
 }
 
-///
+/// 
 pub fn Lerp(
     start: f32,
     end: f32,
@@ -11640,7 +11337,7 @@ export fn mLerp(
     );
 }
 
-///
+/// 
 pub fn Normalize(
     value: f32,
     start: f32,
@@ -11669,7 +11366,7 @@ export fn mNormalize(
     );
 }
 
-///
+/// 
 pub fn Remap(
     value: f32,
     inputStart: f32,
@@ -11706,7 +11403,7 @@ export fn mRemap(
     );
 }
 
-///
+/// 
 pub fn Vector2Zero() Vector2 {
     var out: Vector2 = undefined;
     mVector2Zero(
@@ -11721,7 +11418,7 @@ export fn mVector2Zero(
     out.* = raylib.Vector2Zero();
 }
 
-///
+/// 
 pub fn Vector2One() Vector2 {
     var out: Vector2 = undefined;
     mVector2One(
@@ -11736,7 +11433,7 @@ export fn mVector2One(
     out.* = raylib.Vector2One();
 }
 
-///
+/// 
 pub fn Vector2Add(
     v1: Vector2,
     v2: Vector2,
@@ -11744,8 +11441,8 @@ pub fn Vector2Add(
     var out: Vector2 = undefined;
     mVector2Add(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -11761,7 +11458,7 @@ export fn mVector2Add(
     );
 }
 
-///
+/// 
 pub fn Vector2AddValue(
     v: Vector2,
     add: f32,
@@ -11769,7 +11466,7 @@ pub fn Vector2AddValue(
     var out: Vector2 = undefined;
     mVector2AddValue(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
         add,
     );
     return out;
@@ -11786,7 +11483,7 @@ export fn mVector2AddValue(
     );
 }
 
-///
+/// 
 pub fn Vector2Subtract(
     v1: Vector2,
     v2: Vector2,
@@ -11794,8 +11491,8 @@ pub fn Vector2Subtract(
     var out: Vector2 = undefined;
     mVector2Subtract(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -11811,7 +11508,7 @@ export fn mVector2Subtract(
     );
 }
 
-///
+/// 
 pub fn Vector2SubtractValue(
     v: Vector2,
     sub: f32,
@@ -11819,7 +11516,7 @@ pub fn Vector2SubtractValue(
     var out: Vector2 = undefined;
     mVector2SubtractValue(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
         sub,
     );
     return out;
@@ -11836,14 +11533,14 @@ export fn mVector2SubtractValue(
     );
 }
 
-///
+/// 
 pub fn Vector2Length(
     v: Vector2,
 ) f32 {
     var out: f32 = undefined;
     mVector2Length(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
     );
     return out;
 }
@@ -11857,14 +11554,14 @@ export fn mVector2Length(
     );
 }
 
-///
+/// 
 pub fn Vector2LengthSqr(
     v: Vector2,
 ) f32 {
     var out: f32 = undefined;
     mVector2LengthSqr(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
     );
     return out;
 }
@@ -11878,7 +11575,7 @@ export fn mVector2LengthSqr(
     );
 }
 
-///
+/// 
 pub fn Vector2DotProduct(
     v1: Vector2,
     v2: Vector2,
@@ -11886,8 +11583,8 @@ pub fn Vector2DotProduct(
     var out: f32 = undefined;
     mVector2DotProduct(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -11903,7 +11600,7 @@ export fn mVector2DotProduct(
     );
 }
 
-///
+/// 
 pub fn Vector2Distance(
     v1: Vector2,
     v2: Vector2,
@@ -11911,8 +11608,8 @@ pub fn Vector2Distance(
     var out: f32 = undefined;
     mVector2Distance(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -11928,7 +11625,7 @@ export fn mVector2Distance(
     );
 }
 
-///
+/// 
 pub fn Vector2DistanceSqr(
     v1: Vector2,
     v2: Vector2,
@@ -11936,8 +11633,8 @@ pub fn Vector2DistanceSqr(
     var out: f32 = undefined;
     mVector2DistanceSqr(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -11953,7 +11650,7 @@ export fn mVector2DistanceSqr(
     );
 }
 
-///
+/// 
 pub fn Vector2Angle(
     v1: Vector2,
     v2: Vector2,
@@ -11961,8 +11658,8 @@ pub fn Vector2Angle(
     var out: f32 = undefined;
     mVector2Angle(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -11978,7 +11675,7 @@ export fn mVector2Angle(
     );
 }
 
-///
+/// 
 pub fn Vector2Scale(
     v: Vector2,
     scale: f32,
@@ -11986,7 +11683,7 @@ pub fn Vector2Scale(
     var out: Vector2 = undefined;
     mVector2Scale(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
         scale,
     );
     return out;
@@ -12003,7 +11700,7 @@ export fn mVector2Scale(
     );
 }
 
-///
+/// 
 pub fn Vector2Multiply(
     v1: Vector2,
     v2: Vector2,
@@ -12011,8 +11708,8 @@ pub fn Vector2Multiply(
     var out: Vector2 = undefined;
     mVector2Multiply(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12028,14 +11725,14 @@ export fn mVector2Multiply(
     );
 }
 
-///
+/// 
 pub fn Vector2Negate(
     v: Vector2,
 ) Vector2 {
     var out: Vector2 = undefined;
     mVector2Negate(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
     );
     return out;
 }
@@ -12049,7 +11746,7 @@ export fn mVector2Negate(
     );
 }
 
-///
+/// 
 pub fn Vector2Divide(
     v1: Vector2,
     v2: Vector2,
@@ -12057,8 +11754,8 @@ pub fn Vector2Divide(
     var out: Vector2 = undefined;
     mVector2Divide(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12074,14 +11771,14 @@ export fn mVector2Divide(
     );
 }
 
-///
+/// 
 pub fn Vector2Normalize(
     v: Vector2,
 ) Vector2 {
     var out: Vector2 = undefined;
     mVector2Normalize(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
     );
     return out;
 }
@@ -12095,7 +11792,7 @@ export fn mVector2Normalize(
     );
 }
 
-///
+/// 
 pub fn Vector2Transform(
     v: Vector2,
     mat: Matrix,
@@ -12103,8 +11800,8 @@ pub fn Vector2Transform(
     var out: Vector2 = undefined;
     mVector2Transform(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -12120,7 +11817,7 @@ export fn mVector2Transform(
     );
 }
 
-///
+/// 
 pub fn Vector2Lerp(
     v1: Vector2,
     v2: Vector2,
@@ -12129,8 +11826,8 @@ pub fn Vector2Lerp(
     var out: Vector2 = undefined;
     mVector2Lerp(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v1),
-        @ptrCast([*c]raylib.Vector2, &v2),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v2)),
         amount,
     );
     return out;
@@ -12149,7 +11846,7 @@ export fn mVector2Lerp(
     );
 }
 
-///
+/// 
 pub fn Vector2Reflect(
     v: Vector2,
     normal: Vector2,
@@ -12157,8 +11854,8 @@ pub fn Vector2Reflect(
     var out: Vector2 = undefined;
     mVector2Reflect(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
-        @ptrCast([*c]raylib.Vector2, &normal),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&normal)),
     );
     return out;
 }
@@ -12174,7 +11871,7 @@ export fn mVector2Reflect(
     );
 }
 
-///
+/// 
 pub fn Vector2Rotate(
     v: Vector2,
     angle: f32,
@@ -12182,7 +11879,7 @@ pub fn Vector2Rotate(
     var out: Vector2 = undefined;
     mVector2Rotate(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
         angle,
     );
     return out;
@@ -12199,7 +11896,7 @@ export fn mVector2Rotate(
     );
 }
 
-///
+/// 
 pub fn Vector2MoveTowards(
     v: Vector2,
     target: Vector2,
@@ -12208,8 +11905,8 @@ pub fn Vector2MoveTowards(
     var out: Vector2 = undefined;
     mVector2MoveTowards(
         @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Vector2, &v),
-        @ptrCast([*c]raylib.Vector2, &target),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&v)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&target)),
         maxDistance,
     );
     return out;
@@ -12228,7 +11925,7 @@ export fn mVector2MoveTowards(
     );
 }
 
-///
+/// 
 pub fn Vector3Zero() Vector3 {
     var out: Vector3 = undefined;
     mVector3Zero(
@@ -12243,7 +11940,7 @@ export fn mVector3Zero(
     out.* = raylib.Vector3Zero();
 }
 
-///
+/// 
 pub fn Vector3One() Vector3 {
     var out: Vector3 = undefined;
     mVector3One(
@@ -12258,7 +11955,7 @@ export fn mVector3One(
     out.* = raylib.Vector3One();
 }
 
-///
+/// 
 pub fn Vector3Add(
     v1: Vector3,
     v2: Vector3,
@@ -12266,8 +11963,8 @@ pub fn Vector3Add(
     var out: Vector3 = undefined;
     mVector3Add(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12283,7 +11980,7 @@ export fn mVector3Add(
     );
 }
 
-///
+/// 
 pub fn Vector3AddValue(
     v: Vector3,
     add: f32,
@@ -12291,7 +11988,7 @@ pub fn Vector3AddValue(
     var out: Vector3 = undefined;
     mVector3AddValue(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
         add,
     );
     return out;
@@ -12308,7 +12005,7 @@ export fn mVector3AddValue(
     );
 }
 
-///
+/// 
 pub fn Vector3Subtract(
     v1: Vector3,
     v2: Vector3,
@@ -12316,8 +12013,8 @@ pub fn Vector3Subtract(
     var out: Vector3 = undefined;
     mVector3Subtract(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12333,7 +12030,7 @@ export fn mVector3Subtract(
     );
 }
 
-///
+/// 
 pub fn Vector3SubtractValue(
     v: Vector3,
     sub: f32,
@@ -12341,7 +12038,7 @@ pub fn Vector3SubtractValue(
     var out: Vector3 = undefined;
     mVector3SubtractValue(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
         sub,
     );
     return out;
@@ -12358,7 +12055,7 @@ export fn mVector3SubtractValue(
     );
 }
 
-///
+/// 
 pub fn Vector3Scale(
     v: Vector3,
     scalar: f32,
@@ -12366,7 +12063,7 @@ pub fn Vector3Scale(
     var out: Vector3 = undefined;
     mVector3Scale(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
         scalar,
     );
     return out;
@@ -12383,7 +12080,7 @@ export fn mVector3Scale(
     );
 }
 
-///
+/// 
 pub fn Vector3Multiply(
     v1: Vector3,
     v2: Vector3,
@@ -12391,8 +12088,8 @@ pub fn Vector3Multiply(
     var out: Vector3 = undefined;
     mVector3Multiply(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12408,7 +12105,7 @@ export fn mVector3Multiply(
     );
 }
 
-///
+/// 
 pub fn Vector3CrossProduct(
     v1: Vector3,
     v2: Vector3,
@@ -12416,8 +12113,8 @@ pub fn Vector3CrossProduct(
     var out: Vector3 = undefined;
     mVector3CrossProduct(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12433,14 +12130,14 @@ export fn mVector3CrossProduct(
     );
 }
 
-///
+/// 
 pub fn Vector3Perpendicular(
     v: Vector3,
 ) Vector3 {
     var out: Vector3 = undefined;
     mVector3Perpendicular(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
     );
     return out;
 }
@@ -12454,7 +12151,7 @@ export fn mVector3Perpendicular(
     );
 }
 
-///
+/// 
 pub fn Vector3DotProduct(
     v1: Vector3,
     v2: Vector3,
@@ -12462,8 +12159,8 @@ pub fn Vector3DotProduct(
     var out: f32 = undefined;
     mVector3DotProduct(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12479,7 +12176,7 @@ export fn mVector3DotProduct(
     );
 }
 
-///
+/// 
 pub fn Vector3Distance(
     v1: Vector3,
     v2: Vector3,
@@ -12487,8 +12184,8 @@ pub fn Vector3Distance(
     var out: f32 = undefined;
     mVector3Distance(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12504,7 +12201,7 @@ export fn mVector3Distance(
     );
 }
 
-///
+/// 
 pub fn Vector3DistanceSqr(
     v1: Vector3,
     v2: Vector3,
@@ -12512,8 +12209,8 @@ pub fn Vector3DistanceSqr(
     var out: f32 = undefined;
     mVector3DistanceSqr(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12529,7 +12226,7 @@ export fn mVector3DistanceSqr(
     );
 }
 
-///
+/// 
 pub fn Vector3Angle(
     v1: Vector3,
     v2: Vector3,
@@ -12537,8 +12234,8 @@ pub fn Vector3Angle(
     var out: f32 = undefined;
     mVector3Angle(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12554,14 +12251,14 @@ export fn mVector3Angle(
     );
 }
 
-///
+/// 
 pub fn Vector3Negate(
     v: Vector3,
 ) Vector3 {
     var out: Vector3 = undefined;
     mVector3Negate(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
     );
     return out;
 }
@@ -12575,7 +12272,7 @@ export fn mVector3Negate(
     );
 }
 
-///
+/// 
 pub fn Vector3Divide(
     v1: Vector3,
     v2: Vector3,
@@ -12583,8 +12280,8 @@ pub fn Vector3Divide(
     var out: Vector3 = undefined;
     mVector3Divide(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12600,14 +12297,14 @@ export fn mVector3Divide(
     );
 }
 
-///
+/// 
 pub fn Vector3Normalize(
     v: Vector3,
 ) Vector3 {
     var out: Vector3 = undefined;
     mVector3Normalize(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
     );
     return out;
 }
@@ -12621,20 +12318,20 @@ export fn mVector3Normalize(
     );
 }
 
-///
+/// 
 pub fn Vector3OrthoNormalize(
     v1: [*]Vector3,
     v2: [*]Vector3,
 ) void {
     mVector3OrthoNormalize(
-        v1,
-        v2,
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(v2)),
     );
 }
 
 export fn mVector3OrthoNormalize(
-    v1: [*]Vector3,
-    v2: [*]Vector3,
+    v1: [*c]raylib.Vector3,
+    v2: [*c]raylib.Vector3,
 ) void {
     raylib.Vector3OrthoNormalize(
         v1,
@@ -12642,7 +12339,7 @@ export fn mVector3OrthoNormalize(
     );
 }
 
-///
+/// 
 pub fn Vector3Transform(
     v: Vector3,
     mat: Matrix,
@@ -12650,8 +12347,8 @@ pub fn Vector3Transform(
     var out: Vector3 = undefined;
     mVector3Transform(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -12667,7 +12364,7 @@ export fn mVector3Transform(
     );
 }
 
-///
+/// 
 pub fn Vector3RotateByQuaternion(
     v: Vector3,
     q: Vector4,
@@ -12675,8 +12372,8 @@ pub fn Vector3RotateByQuaternion(
     var out: Vector3 = undefined;
     mVector3RotateByQuaternion(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
     );
     return out;
 }
@@ -12692,7 +12389,7 @@ export fn mVector3RotateByQuaternion(
     );
 }
 
-///
+/// 
 pub fn Vector3Lerp(
     v1: Vector3,
     v2: Vector3,
@@ -12701,8 +12398,8 @@ pub fn Vector3Lerp(
     var out: Vector3 = undefined;
     mVector3Lerp(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
         amount,
     );
     return out;
@@ -12721,7 +12418,7 @@ export fn mVector3Lerp(
     );
 }
 
-///
+/// 
 pub fn Vector3Reflect(
     v: Vector3,
     normal: Vector3,
@@ -12729,8 +12426,8 @@ pub fn Vector3Reflect(
     var out: Vector3 = undefined;
     mVector3Reflect(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
-        @ptrCast([*c]raylib.Vector3, &normal),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&normal)),
     );
     return out;
 }
@@ -12746,7 +12443,7 @@ export fn mVector3Reflect(
     );
 }
 
-///
+/// 
 pub fn Vector3Min(
     v1: Vector3,
     v2: Vector3,
@@ -12754,8 +12451,8 @@ pub fn Vector3Min(
     var out: Vector3 = undefined;
     mVector3Min(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12771,7 +12468,7 @@ export fn mVector3Min(
     );
 }
 
-///
+/// 
 pub fn Vector3Max(
     v1: Vector3,
     v2: Vector3,
@@ -12779,8 +12476,8 @@ pub fn Vector3Max(
     var out: Vector3 = undefined;
     mVector3Max(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &v1),
-        @ptrCast([*c]raylib.Vector3, &v2),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v1)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v2)),
     );
     return out;
 }
@@ -12796,7 +12493,7 @@ export fn mVector3Max(
     );
 }
 
-///
+/// 
 pub fn Vector3Barycenter(
     p: Vector3,
     a: Vector3,
@@ -12806,10 +12503,10 @@ pub fn Vector3Barycenter(
     var out: Vector3 = undefined;
     mVector3Barycenter(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &p),
-        @ptrCast([*c]raylib.Vector3, &a),
-        @ptrCast([*c]raylib.Vector3, &b),
-        @ptrCast([*c]raylib.Vector3, &c),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&p)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&a)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&b)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&c)),
     );
     return out;
 }
@@ -12829,7 +12526,7 @@ export fn mVector3Barycenter(
     );
 }
 
-///
+/// 
 pub fn Vector3Unproject(
     source: Vector3,
     projection: Matrix,
@@ -12838,9 +12535,9 @@ pub fn Vector3Unproject(
     var out: Vector3 = undefined;
     mVector3Unproject(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector3, &source),
-        @ptrCast([*c]raylib.Matrix, &projection),
-        @ptrCast([*c]raylib.Matrix, &view),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&source)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&projection)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&view)),
     );
     return out;
 }
@@ -12858,14 +12555,14 @@ export fn mVector3Unproject(
     );
 }
 
-///
+/// 
 pub fn Vector3ToFloatV(
     v: Vector3,
 ) float3 {
     var out: float3 = undefined;
     mVector3ToFloatV(
         @ptrCast([*c]raylib.float3, &out),
-        @ptrCast([*c]raylib.Vector3, &v),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
     );
     return out;
 }
@@ -12879,14 +12576,14 @@ export fn mVector3ToFloatV(
     );
 }
 
-///
+/// 
 pub fn MatrixDeterminant(
     mat: Matrix,
 ) f32 {
     var out: f32 = undefined;
     mMatrixDeterminant(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -12900,14 +12597,14 @@ export fn mMatrixDeterminant(
     );
 }
 
-///
+/// 
 pub fn MatrixTrace(
     mat: Matrix,
 ) f32 {
     var out: f32 = undefined;
     mMatrixTrace(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -12921,14 +12618,14 @@ export fn mMatrixTrace(
     );
 }
 
-///
+/// 
 pub fn MatrixTranspose(
     mat: Matrix,
 ) Matrix {
     var out: Matrix = undefined;
     mMatrixTranspose(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -12942,14 +12639,14 @@ export fn mMatrixTranspose(
     );
 }
 
-///
+/// 
 pub fn MatrixInvert(
     mat: Matrix,
 ) Matrix {
     var out: Matrix = undefined;
     mMatrixInvert(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -12963,7 +12660,7 @@ export fn mMatrixInvert(
     );
 }
 
-///
+/// 
 pub fn MatrixIdentity() Matrix {
     var out: Matrix = undefined;
     mMatrixIdentity(
@@ -12978,7 +12675,7 @@ export fn mMatrixIdentity(
     out.* = raylib.MatrixIdentity();
 }
 
-///
+/// 
 pub fn MatrixAdd(
     left: Matrix,
     right: Matrix,
@@ -12986,8 +12683,8 @@ pub fn MatrixAdd(
     var out: Matrix = undefined;
     mMatrixAdd(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Matrix, &left),
-        @ptrCast([*c]raylib.Matrix, &right),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&left)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&right)),
     );
     return out;
 }
@@ -13003,7 +12700,7 @@ export fn mMatrixAdd(
     );
 }
 
-///
+/// 
 pub fn MatrixSubtract(
     left: Matrix,
     right: Matrix,
@@ -13011,8 +12708,8 @@ pub fn MatrixSubtract(
     var out: Matrix = undefined;
     mMatrixSubtract(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Matrix, &left),
-        @ptrCast([*c]raylib.Matrix, &right),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&left)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&right)),
     );
     return out;
 }
@@ -13028,7 +12725,7 @@ export fn mMatrixSubtract(
     );
 }
 
-///
+/// 
 pub fn MatrixMultiply(
     left: Matrix,
     right: Matrix,
@@ -13036,8 +12733,8 @@ pub fn MatrixMultiply(
     var out: Matrix = undefined;
     mMatrixMultiply(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Matrix, &left),
-        @ptrCast([*c]raylib.Matrix, &right),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&left)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&right)),
     );
     return out;
 }
@@ -13053,7 +12750,7 @@ export fn mMatrixMultiply(
     );
 }
 
-///
+/// 
 pub fn MatrixTranslate(
     x: f32,
     y: f32,
@@ -13082,7 +12779,7 @@ export fn mMatrixTranslate(
     );
 }
 
-///
+/// 
 pub fn MatrixRotate(
     axis: Vector3,
     angle: f32,
@@ -13090,7 +12787,7 @@ pub fn MatrixRotate(
     var out: Matrix = undefined;
     mMatrixRotate(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Vector3, &axis),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&axis)),
         angle,
     );
     return out;
@@ -13107,7 +12804,7 @@ export fn mMatrixRotate(
     );
 }
 
-///
+/// 
 pub fn MatrixRotateX(
     angle: f32,
 ) Matrix {
@@ -13128,7 +12825,7 @@ export fn mMatrixRotateX(
     );
 }
 
-///
+/// 
 pub fn MatrixRotateY(
     angle: f32,
 ) Matrix {
@@ -13149,7 +12846,7 @@ export fn mMatrixRotateY(
     );
 }
 
-///
+/// 
 pub fn MatrixRotateZ(
     angle: f32,
 ) Matrix {
@@ -13170,14 +12867,14 @@ export fn mMatrixRotateZ(
     );
 }
 
-///
+/// 
 pub fn MatrixRotateXYZ(
     ang: Vector3,
 ) Matrix {
     var out: Matrix = undefined;
     mMatrixRotateXYZ(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Vector3, &ang),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&ang)),
     );
     return out;
 }
@@ -13191,14 +12888,14 @@ export fn mMatrixRotateXYZ(
     );
 }
 
-///
+/// 
 pub fn MatrixRotateZYX(
     ang: Vector3,
 ) Matrix {
     var out: Matrix = undefined;
     mMatrixRotateZYX(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Vector3, &ang),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&ang)),
     );
     return out;
 }
@@ -13212,7 +12909,7 @@ export fn mMatrixRotateZYX(
     );
 }
 
-///
+/// 
 pub fn MatrixScale(
     x: f32,
     y: f32,
@@ -13241,7 +12938,7 @@ export fn mMatrixScale(
     );
 }
 
-///
+/// 
 pub fn MatrixFrustum(
     left: f64,
     right: f64,
@@ -13282,7 +12979,7 @@ export fn mMatrixFrustum(
     );
 }
 
-///
+/// 
 pub fn MatrixPerspective(
     fovy: f64,
     aspect: f64,
@@ -13315,7 +13012,7 @@ export fn mMatrixPerspective(
     );
 }
 
-///
+/// 
 pub fn MatrixOrtho(
     left: f64,
     right: f64,
@@ -13356,7 +13053,7 @@ export fn mMatrixOrtho(
     );
 }
 
-///
+/// 
 pub fn MatrixLookAt(
     eye: Vector3,
     target: Vector3,
@@ -13365,9 +13062,9 @@ pub fn MatrixLookAt(
     var out: Matrix = undefined;
     mMatrixLookAt(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Vector3, &eye),
-        @ptrCast([*c]raylib.Vector3, &target),
-        @ptrCast([*c]raylib.Vector3, &up),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&eye)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&target)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&up)),
     );
     return out;
 }
@@ -13385,14 +13082,14 @@ export fn mMatrixLookAt(
     );
 }
 
-///
+/// 
 pub fn MatrixToFloatV(
     mat: Matrix,
 ) float16 {
     var out: float16 = undefined;
     mMatrixToFloatV(
         @ptrCast([*c]raylib.float16, &out),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -13406,7 +13103,7 @@ export fn mMatrixToFloatV(
     );
 }
 
-///
+/// 
 pub fn QuaternionAdd(
     q1: Vector4,
     q2: Vector4,
@@ -13414,8 +13111,8 @@ pub fn QuaternionAdd(
     var out: Vector4 = undefined;
     mQuaternionAdd(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q1),
-        @ptrCast([*c]raylib.Vector4, &q2),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q1)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q2)),
     );
     return out;
 }
@@ -13431,7 +13128,7 @@ export fn mQuaternionAdd(
     );
 }
 
-///
+/// 
 pub fn QuaternionAddValue(
     q: Vector4,
     add: f32,
@@ -13439,7 +13136,7 @@ pub fn QuaternionAddValue(
     var out: Vector4 = undefined;
     mQuaternionAddValue(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
         add,
     );
     return out;
@@ -13456,7 +13153,7 @@ export fn mQuaternionAddValue(
     );
 }
 
-///
+/// 
 pub fn QuaternionSubtract(
     q1: Vector4,
     q2: Vector4,
@@ -13464,8 +13161,8 @@ pub fn QuaternionSubtract(
     var out: Vector4 = undefined;
     mQuaternionSubtract(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q1),
-        @ptrCast([*c]raylib.Vector4, &q2),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q1)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q2)),
     );
     return out;
 }
@@ -13481,7 +13178,7 @@ export fn mQuaternionSubtract(
     );
 }
 
-///
+/// 
 pub fn QuaternionSubtractValue(
     q: Vector4,
     sub: f32,
@@ -13489,7 +13186,7 @@ pub fn QuaternionSubtractValue(
     var out: Vector4 = undefined;
     mQuaternionSubtractValue(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
         sub,
     );
     return out;
@@ -13506,7 +13203,7 @@ export fn mQuaternionSubtractValue(
     );
 }
 
-///
+/// 
 pub fn QuaternionIdentity() Vector4 {
     var out: Vector4 = undefined;
     mQuaternionIdentity(
@@ -13521,14 +13218,14 @@ export fn mQuaternionIdentity(
     out.* = raylib.QuaternionIdentity();
 }
 
-///
+/// 
 pub fn QuaternionLength(
     q: Vector4,
 ) f32 {
     var out: f32 = undefined;
     mQuaternionLength(
         @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
     );
     return out;
 }
@@ -13542,14 +13239,14 @@ export fn mQuaternionLength(
     );
 }
 
-///
+/// 
 pub fn QuaternionNormalize(
     q: Vector4,
 ) Vector4 {
     var out: Vector4 = undefined;
     mQuaternionNormalize(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
     );
     return out;
 }
@@ -13563,14 +13260,14 @@ export fn mQuaternionNormalize(
     );
 }
 
-///
+/// 
 pub fn QuaternionInvert(
     q: Vector4,
 ) Vector4 {
     var out: Vector4 = undefined;
     mQuaternionInvert(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
     );
     return out;
 }
@@ -13584,7 +13281,7 @@ export fn mQuaternionInvert(
     );
 }
 
-///
+/// 
 pub fn QuaternionMultiply(
     q1: Vector4,
     q2: Vector4,
@@ -13592,8 +13289,8 @@ pub fn QuaternionMultiply(
     var out: Vector4 = undefined;
     mQuaternionMultiply(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q1),
-        @ptrCast([*c]raylib.Vector4, &q2),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q1)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q2)),
     );
     return out;
 }
@@ -13609,7 +13306,7 @@ export fn mQuaternionMultiply(
     );
 }
 
-///
+/// 
 pub fn QuaternionScale(
     q: Vector4,
     mul: f32,
@@ -13617,7 +13314,7 @@ pub fn QuaternionScale(
     var out: Vector4 = undefined;
     mQuaternionScale(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
         mul,
     );
     return out;
@@ -13634,7 +13331,7 @@ export fn mQuaternionScale(
     );
 }
 
-///
+/// 
 pub fn QuaternionDivide(
     q1: Vector4,
     q2: Vector4,
@@ -13642,8 +13339,8 @@ pub fn QuaternionDivide(
     var out: Vector4 = undefined;
     mQuaternionDivide(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q1),
-        @ptrCast([*c]raylib.Vector4, &q2),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q1)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q2)),
     );
     return out;
 }
@@ -13659,7 +13356,7 @@ export fn mQuaternionDivide(
     );
 }
 
-///
+/// 
 pub fn QuaternionLerp(
     q1: Vector4,
     q2: Vector4,
@@ -13668,8 +13365,8 @@ pub fn QuaternionLerp(
     var out: Vector4 = undefined;
     mQuaternionLerp(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q1),
-        @ptrCast([*c]raylib.Vector4, &q2),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q1)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q2)),
         amount,
     );
     return out;
@@ -13688,7 +13385,7 @@ export fn mQuaternionLerp(
     );
 }
 
-///
+/// 
 pub fn QuaternionNlerp(
     q1: Vector4,
     q2: Vector4,
@@ -13697,8 +13394,8 @@ pub fn QuaternionNlerp(
     var out: Vector4 = undefined;
     mQuaternionNlerp(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q1),
-        @ptrCast([*c]raylib.Vector4, &q2),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q1)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q2)),
         amount,
     );
     return out;
@@ -13717,7 +13414,7 @@ export fn mQuaternionNlerp(
     );
 }
 
-///
+/// 
 pub fn QuaternionSlerp(
     q1: Vector4,
     q2: Vector4,
@@ -13726,8 +13423,8 @@ pub fn QuaternionSlerp(
     var out: Vector4 = undefined;
     mQuaternionSlerp(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q1),
-        @ptrCast([*c]raylib.Vector4, &q2),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q1)),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q2)),
         amount,
     );
     return out;
@@ -13746,7 +13443,7 @@ export fn mQuaternionSlerp(
     );
 }
 
-///
+/// 
 pub fn QuaternionFromVector3ToVector3(
     from: Vector3,
     to: Vector3,
@@ -13754,8 +13451,8 @@ pub fn QuaternionFromVector3ToVector3(
     var out: Vector4 = undefined;
     mQuaternionFromVector3ToVector3(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector3, &from),
-        @ptrCast([*c]raylib.Vector3, &to),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&from)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&to)),
     );
     return out;
 }
@@ -13771,14 +13468,14 @@ export fn mQuaternionFromVector3ToVector3(
     );
 }
 
-///
+/// 
 pub fn QuaternionFromMatrix(
     mat: Matrix,
 ) Vector4 {
     var out: Vector4 = undefined;
     mQuaternionFromMatrix(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -13792,14 +13489,14 @@ export fn mQuaternionFromMatrix(
     );
 }
 
-///
+/// 
 pub fn QuaternionToMatrix(
     q: Vector4,
 ) Matrix {
     var out: Matrix = undefined;
     mQuaternionToMatrix(
         @ptrCast([*c]raylib.Matrix, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
     );
     return out;
 }
@@ -13813,7 +13510,7 @@ export fn mQuaternionToMatrix(
     );
 }
 
-///
+/// 
 pub fn QuaternionFromAxisAngle(
     axis: Vector3,
     angle: f32,
@@ -13821,7 +13518,7 @@ pub fn QuaternionFromAxisAngle(
     var out: Vector4 = undefined;
     mQuaternionFromAxisAngle(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector3, &axis),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&axis)),
         angle,
     );
     return out;
@@ -13838,23 +13535,23 @@ export fn mQuaternionFromAxisAngle(
     );
 }
 
-///
+/// 
 pub fn QuaternionToAxisAngle(
     q: Vector4,
     outAxis: [*]Vector3,
     outAngle: [*]f32,
 ) void {
     mQuaternionToAxisAngle(
-        @ptrCast([*c]raylib.Vector4, &q),
-        outAxis,
-        outAngle,
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(outAxis)),
+        @ptrCast([*c]f32, outAngle),
     );
 }
 
 export fn mQuaternionToAxisAngle(
     q: [*c]raylib.Vector4,
-    outAxis: [*]Vector3,
-    outAngle: [*]f32,
+    outAxis: [*c]raylib.Vector3,
+    outAngle: [*c]f32,
 ) void {
     raylib.QuaternionToAxisAngle(
         q.*,
@@ -13863,7 +13560,7 @@ export fn mQuaternionToAxisAngle(
     );
 }
 
-///
+/// 
 pub fn QuaternionFromEuler(
     pitch: f32,
     yaw: f32,
@@ -13892,14 +13589,14 @@ export fn mQuaternionFromEuler(
     );
 }
 
-///
+/// 
 pub fn QuaternionToEuler(
     q: Vector4,
 ) Vector3 {
     var out: Vector3 = undefined;
     mQuaternionToEuler(
         @ptrCast([*c]raylib.Vector3, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
     );
     return out;
 }
@@ -13913,7 +13610,7 @@ export fn mQuaternionToEuler(
     );
 }
 
-///
+/// 
 pub fn QuaternionTransform(
     q: Vector4,
     mat: Matrix,
@@ -13921,8 +13618,8 @@ pub fn QuaternionTransform(
     var out: Vector4 = undefined;
     mQuaternionTransform(
         @ptrCast([*c]raylib.Vector4, &out),
-        @ptrCast([*c]raylib.Vector4, &q),
-        @ptrCast([*c]raylib.Matrix, &mat),
+        @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
     );
     return out;
 }
@@ -13935,1398 +13632,6 @@ export fn mQuaternionTransform(
     out.* = raylib.QuaternionTransform(
         q.*,
         mat.*,
-    );
-}
-
-/// Enable gui controls (global state)
-pub fn GuiEnable() void {
-    mGuiEnable();
-}
-
-export fn mGuiEnable() void {
-    raylib.GuiEnable();
-}
-
-/// Disable gui controls (global state)
-pub fn GuiDisable() void {
-    mGuiDisable();
-}
-
-export fn mGuiDisable() void {
-    raylib.GuiDisable();
-}
-
-/// Lock gui controls (global state)
-pub fn GuiLock() void {
-    mGuiLock();
-}
-
-export fn mGuiLock() void {
-    raylib.GuiLock();
-}
-
-/// Unlock gui controls (global state)
-pub fn GuiUnlock() void {
-    mGuiUnlock();
-}
-
-export fn mGuiUnlock() void {
-    raylib.GuiUnlock();
-}
-
-/// Check if gui is locked (global state)
-pub fn GuiIsLocked() bool {
-    var out: bool = undefined;
-    mGuiIsLocked(
-        @ptrCast([*c]bool, &out),
-    );
-    return out;
-}
-
-export fn mGuiIsLocked(
-    out: [*c]bool,
-) void {
-    out.* = raylib.GuiIsLocked();
-}
-
-/// Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
-pub fn GuiFade(
-    alpha: f32,
-) void {
-    mGuiFade(
-        alpha,
-    );
-}
-
-export fn mGuiFade(
-    alpha: f32,
-) void {
-    raylib.GuiFade(
-        alpha,
-    );
-}
-
-/// Set gui state (global state)
-pub fn GuiSetState(
-    state: i32,
-) void {
-    mGuiSetState(
-        state,
-    );
-}
-
-export fn mGuiSetState(
-    state: i32,
-) void {
-    raylib.GuiSetState(
-        state,
-    );
-}
-
-/// Get gui state (global state)
-pub fn GuiGetState() i32 {
-    var out: i32 = undefined;
-    mGuiGetState(
-        @ptrCast([*c]i32, &out),
-    );
-    return out;
-}
-
-export fn mGuiGetState(
-    out: [*c]i32,
-) void {
-    out.* = raylib.GuiGetState();
-}
-
-/// Set gui custom font (global state)
-pub fn GuiSetFont(
-    font: Font,
-) void {
-    mGuiSetFont(
-        @ptrCast([*c]raylib.Font, &font),
-    );
-}
-
-export fn mGuiSetFont(
-    font: [*c]raylib.Font,
-) void {
-    raylib.GuiSetFont(
-        font.*,
-    );
-}
-
-/// Get gui custom font (global state)
-pub fn GuiGetFont() Font {
-    var out: Font = undefined;
-    mGuiGetFont(
-        @ptrCast([*c]raylib.Font, &out),
-    );
-    return out;
-}
-
-export fn mGuiGetFont(
-    out: [*c]raylib.Font,
-) void {
-    out.* = raylib.GuiGetFont();
-}
-
-/// Set one style property
-pub fn GuiSetStyle(
-    control: i32,
-    property: i32,
-    value: i32,
-) void {
-    mGuiSetStyle(
-        control,
-        property,
-        value,
-    );
-}
-
-export fn mGuiSetStyle(
-    control: i32,
-    property: i32,
-    value: i32,
-) void {
-    raylib.GuiSetStyle(
-        control,
-        property,
-        value,
-    );
-}
-
-/// Get one style property
-pub fn GuiGetStyle(
-    control: i32,
-    property: i32,
-) i32 {
-    var out: i32 = undefined;
-    mGuiGetStyle(
-        @ptrCast([*c]i32, &out),
-        control,
-        property,
-    );
-    return out;
-}
-
-export fn mGuiGetStyle(
-    out: [*c]i32,
-    control: i32,
-    property: i32,
-) void {
-    out.* = raylib.GuiGetStyle(
-        control,
-        property,
-    );
-}
-
-/// Window Box control, shows a window that can be closed
-pub fn GuiWindowBox(
-    bounds: Rectangle,
-    title: [*:0]const u8,
-) bool {
-    var out: bool = undefined;
-    mGuiWindowBox(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        title,
-    );
-    return out;
-}
-
-export fn mGuiWindowBox(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    title: [*:0]const u8,
-) void {
-    out.* = raylib.GuiWindowBox(
-        bounds.*,
-        title,
-    );
-}
-
-/// Group Box control with text name
-pub fn GuiGroupBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    mGuiGroupBox(
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-    );
-}
-
-export fn mGuiGroupBox(
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.GuiGroupBox(
-        bounds.*,
-        text,
-    );
-}
-
-/// Line separator control, could contain text
-pub fn GuiLine(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    mGuiLine(
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-    );
-}
-
-export fn mGuiLine(
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.GuiLine(
-        bounds.*,
-        text,
-    );
-}
-
-/// Panel control, useful to group controls
-pub fn GuiPanel(
-    bounds: Rectangle,
-) void {
-    mGuiPanel(
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-    );
-}
-
-export fn mGuiPanel(
-    bounds: [*c]raylib.Rectangle,
-) void {
-    raylib.GuiPanel(
-        bounds.*,
-    );
-}
-
-/// Scroll Panel control
-pub fn GuiScrollPanel(
-    bounds: Rectangle,
-    content: Rectangle,
-    scroll: [*]Vector2,
-) Rectangle {
-    var out: Rectangle = undefined;
-    mGuiScrollPanel(
-        @ptrCast([*c]raylib.Rectangle, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        @ptrCast([*c]raylib.Rectangle, &content),
-        scroll,
-    );
-    return out;
-}
-
-export fn mGuiScrollPanel(
-    out: [*c]raylib.Rectangle,
-    bounds: [*c]raylib.Rectangle,
-    content: [*c]raylib.Rectangle,
-    scroll: [*]Vector2,
-) void {
-    out.* = raylib.GuiScrollPanel(
-        bounds.*,
-        content.*,
-        scroll,
-    );
-}
-
-/// Label control, shows text
-pub fn GuiLabel(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    mGuiLabel(
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-    );
-}
-
-export fn mGuiLabel(
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.GuiLabel(
-        bounds.*,
-        text,
-    );
-}
-
-/// Button control, returns true when clicked
-pub fn GuiButton(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) bool {
-    var out: bool = undefined;
-    mGuiButton(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-    );
-    return out;
-}
-
-export fn mGuiButton(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-) void {
-    out.* = raylib.GuiButton(
-        bounds.*,
-        text,
-    );
-}
-
-/// Label button control, show true when clicked
-pub fn GuiLabelButton(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) bool {
-    var out: bool = undefined;
-    mGuiLabelButton(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-    );
-    return out;
-}
-
-export fn mGuiLabelButton(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-) void {
-    out.* = raylib.GuiLabelButton(
-        bounds.*,
-        text,
-    );
-}
-
-/// Toggle Button control, returns true when active
-pub fn GuiToggle(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: bool,
-) bool {
-    var out: bool = undefined;
-    mGuiToggle(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        active,
-    );
-    return out;
-}
-
-export fn mGuiToggle(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    active: bool,
-) void {
-    out.* = raylib.GuiToggle(
-        bounds.*,
-        text,
-        active,
-    );
-}
-
-/// Toggle Group control, returns active toggle index
-pub fn GuiToggleGroup(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: i32,
-) i32 {
-    var out: i32 = undefined;
-    mGuiToggleGroup(
-        @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        active,
-    );
-    return out;
-}
-
-export fn mGuiToggleGroup(
-    out: [*c]i32,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    active: i32,
-) void {
-    out.* = raylib.GuiToggleGroup(
-        bounds.*,
-        text,
-        active,
-    );
-}
-
-/// Check Box control, returns true when active
-pub fn GuiCheckBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    checked: bool,
-) bool {
-    var out: bool = undefined;
-    mGuiCheckBox(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        checked,
-    );
-    return out;
-}
-
-export fn mGuiCheckBox(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    checked: bool,
-) void {
-    out.* = raylib.GuiCheckBox(
-        bounds.*,
-        text,
-        checked,
-    );
-}
-
-/// Combo Box control, returns selected item index
-pub fn GuiComboBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: i32,
-) i32 {
-    var out: i32 = undefined;
-    mGuiComboBox(
-        @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        active,
-    );
-    return out;
-}
-
-export fn mGuiComboBox(
-    out: [*c]i32,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    active: i32,
-) void {
-    out.* = raylib.GuiComboBox(
-        bounds.*,
-        text,
-        active,
-    );
-}
-
-/// Dropdown Box control, returns selected item
-pub fn GuiDropdownBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: [*]i32,
-    editMode: bool,
-) bool {
-    var out: bool = undefined;
-    mGuiDropdownBox(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        active,
-        editMode,
-    );
-    return out;
-}
-
-export fn mGuiDropdownBox(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    active: [*]i32,
-    editMode: bool,
-) void {
-    out.* = raylib.GuiDropdownBox(
-        bounds.*,
-        text,
-        active,
-        editMode,
-    );
-}
-
-/// Spinner control, returns selected value
-pub fn GuiSpinner(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    value: [*]i32,
-    minValue: i32,
-    maxValue: i32,
-    editMode: bool,
-) bool {
-    var out: bool = undefined;
-    mGuiSpinner(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        value,
-        minValue,
-        maxValue,
-        editMode,
-    );
-    return out;
-}
-
-export fn mGuiSpinner(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    value: [*]i32,
-    minValue: i32,
-    maxValue: i32,
-    editMode: bool,
-) void {
-    out.* = raylib.GuiSpinner(
-        bounds.*,
-        text,
-        value,
-        minValue,
-        maxValue,
-        editMode,
-    );
-}
-
-/// Value Box control, updates input text with numbers
-pub fn GuiValueBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    value: [*]i32,
-    minValue: i32,
-    maxValue: i32,
-    editMode: bool,
-) bool {
-    var out: bool = undefined;
-    mGuiValueBox(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        value,
-        minValue,
-        maxValue,
-        editMode,
-    );
-    return out;
-}
-
-export fn mGuiValueBox(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    value: [*]i32,
-    minValue: i32,
-    maxValue: i32,
-    editMode: bool,
-) void {
-    out.* = raylib.GuiValueBox(
-        bounds.*,
-        text,
-        value,
-        minValue,
-        maxValue,
-        editMode,
-    );
-}
-
-/// Text Box control, updates input text
-pub fn GuiTextBox(
-    bounds: Rectangle,
-    text: [*]u8,
-    textSize: i32,
-    editMode: bool,
-) bool {
-    var out: bool = undefined;
-    mGuiTextBox(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        textSize,
-        editMode,
-    );
-    return out;
-}
-
-export fn mGuiTextBox(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*]u8,
-    textSize: i32,
-    editMode: bool,
-) void {
-    out.* = raylib.GuiTextBox(
-        bounds.*,
-        text,
-        textSize,
-        editMode,
-    );
-}
-
-/// Text Box control with multiple lines
-pub fn GuiTextBoxMulti(
-    bounds: Rectangle,
-    text: [*]u8,
-    textSize: i32,
-    editMode: bool,
-) bool {
-    var out: bool = undefined;
-    mGuiTextBoxMulti(
-        @ptrCast([*c]bool, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        textSize,
-        editMode,
-    );
-    return out;
-}
-
-export fn mGuiTextBoxMulti(
-    out: [*c]bool,
-    bounds: [*c]raylib.Rectangle,
-    text: [*]u8,
-    textSize: i32,
-    editMode: bool,
-) void {
-    out.* = raylib.GuiTextBoxMulti(
-        bounds.*,
-        text,
-        textSize,
-        editMode,
-    );
-}
-
-/// Slider control, returns selected value
-pub fn GuiSlider(
-    bounds: Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) f32 {
-    var out: f32 = undefined;
-    mGuiSlider(
-        @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        textLeft,
-        textRight,
-        value,
-        minValue,
-        maxValue,
-    );
-    return out;
-}
-
-export fn mGuiSlider(
-    out: [*c]f32,
-    bounds: [*c]raylib.Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) void {
-    out.* = raylib.GuiSlider(
-        bounds.*,
-        textLeft,
-        textRight,
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Slider Bar control, returns selected value
-pub fn GuiSliderBar(
-    bounds: Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) f32 {
-    var out: f32 = undefined;
-    mGuiSliderBar(
-        @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        textLeft,
-        textRight,
-        value,
-        minValue,
-        maxValue,
-    );
-    return out;
-}
-
-export fn mGuiSliderBar(
-    out: [*c]f32,
-    bounds: [*c]raylib.Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) void {
-    out.* = raylib.GuiSliderBar(
-        bounds.*,
-        textLeft,
-        textRight,
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Progress Bar control, shows current progress value
-pub fn GuiProgressBar(
-    bounds: Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) f32 {
-    var out: f32 = undefined;
-    mGuiProgressBar(
-        @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        textLeft,
-        textRight,
-        value,
-        minValue,
-        maxValue,
-    );
-    return out;
-}
-
-export fn mGuiProgressBar(
-    out: [*c]f32,
-    bounds: [*c]raylib.Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) void {
-    out.* = raylib.GuiProgressBar(
-        bounds.*,
-        textLeft,
-        textRight,
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Status Bar control, shows info text
-pub fn GuiStatusBar(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    mGuiStatusBar(
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-    );
-}
-
-export fn mGuiStatusBar(
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.GuiStatusBar(
-        bounds.*,
-        text,
-    );
-}
-
-/// Dummy control for placeholders
-pub fn GuiDummyRec(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    mGuiDummyRec(
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-    );
-}
-
-export fn mGuiDummyRec(
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.GuiDummyRec(
-        bounds.*,
-        text,
-    );
-}
-
-/// Scroll Bar control
-pub fn GuiScrollBar(
-    bounds: Rectangle,
-    value: i32,
-    minValue: i32,
-    maxValue: i32,
-) i32 {
-    var out: i32 = undefined;
-    mGuiScrollBar(
-        @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        value,
-        minValue,
-        maxValue,
-    );
-    return out;
-}
-
-export fn mGuiScrollBar(
-    out: [*c]i32,
-    bounds: [*c]raylib.Rectangle,
-    value: i32,
-    minValue: i32,
-    maxValue: i32,
-) void {
-    out.* = raylib.GuiScrollBar(
-        bounds.*,
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Grid control
-pub fn GuiGrid(
-    bounds: Rectangle,
-    spacing: f32,
-    subdivs: i32,
-) Vector2 {
-    var out: Vector2 = undefined;
-    mGuiGrid(
-        @ptrCast([*c]raylib.Vector2, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        spacing,
-        subdivs,
-    );
-    return out;
-}
-
-export fn mGuiGrid(
-    out: [*c]raylib.Vector2,
-    bounds: [*c]raylib.Rectangle,
-    spacing: f32,
-    subdivs: i32,
-) void {
-    out.* = raylib.GuiGrid(
-        bounds.*,
-        spacing,
-        subdivs,
-    );
-}
-
-/// List View control, returns selected list item index
-pub fn GuiListView(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    scrollIndex: [*]i32,
-    active: i32,
-) i32 {
-    var out: i32 = undefined;
-    mGuiListView(
-        @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        scrollIndex,
-        active,
-    );
-    return out;
-}
-
-export fn mGuiListView(
-    out: [*c]i32,
-    bounds: [*c]raylib.Rectangle,
-    text: [*:0]const u8,
-    scrollIndex: [*]i32,
-    active: i32,
-) void {
-    out.* = raylib.GuiListView(
-        bounds.*,
-        text,
-        scrollIndex,
-        active,
-    );
-}
-
-/// List View with extended parameters
-pub fn GuiListViewEx(
-    bounds: Rectangle,
-    text: [*]const [*:0]const u8,
-    count: i32,
-    focus: [*]i32,
-    scrollIndex: [*]i32,
-    active: i32,
-) i32 {
-    var out: i32 = undefined;
-    mGuiListViewEx(
-        @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        text,
-        count,
-        focus,
-        scrollIndex,
-        active,
-    );
-    return out;
-}
-
-export fn mGuiListViewEx(
-    out: [*c]i32,
-    bounds: [*c]raylib.Rectangle,
-    text: [*]const [*:0]const u8,
-    count: i32,
-    focus: [*]i32,
-    scrollIndex: [*]i32,
-    active: i32,
-) void {
-    out.* = raylib.GuiListViewEx(
-        bounds.*,
-        text,
-        count,
-        focus,
-        scrollIndex,
-        active,
-    );
-}
-
-/// Message Box control, displays a message
-pub fn GuiMessageBox(
-    bounds: Rectangle,
-    title: [*:0]const u8,
-    message: [*:0]const u8,
-    buttons: [*:0]const u8,
-) i32 {
-    var out: i32 = undefined;
-    mGuiMessageBox(
-        @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        title,
-        message,
-        buttons,
-    );
-    return out;
-}
-
-export fn mGuiMessageBox(
-    out: [*c]i32,
-    bounds: [*c]raylib.Rectangle,
-    title: [*:0]const u8,
-    message: [*:0]const u8,
-    buttons: [*:0]const u8,
-) void {
-    out.* = raylib.GuiMessageBox(
-        bounds.*,
-        title,
-        message,
-        buttons,
-    );
-}
-
-/// Text Input Box control, ask for text
-pub fn GuiTextInputBox(
-    bounds: Rectangle,
-    title: [*:0]const u8,
-    message: [*:0]const u8,
-    buttons: [*:0]const u8,
-    text: [*]u8,
-) i32 {
-    var out: i32 = undefined;
-    mGuiTextInputBox(
-        @ptrCast([*c]i32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        title,
-        message,
-        buttons,
-        text,
-    );
-    return out;
-}
-
-export fn mGuiTextInputBox(
-    out: [*c]i32,
-    bounds: [*c]raylib.Rectangle,
-    title: [*:0]const u8,
-    message: [*:0]const u8,
-    buttons: [*:0]const u8,
-    text: [*]u8,
-) void {
-    out.* = raylib.GuiTextInputBox(
-        bounds.*,
-        title,
-        message,
-        buttons,
-        text,
-    );
-}
-
-/// Color Picker control (multiple color controls)
-pub fn GuiColorPicker(
-    bounds: Rectangle,
-    color: Color,
-) Color {
-    var out: Color = undefined;
-    mGuiColorPicker(
-        @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        @ptrCast([*c]raylib.Color, &color),
-    );
-    return out;
-}
-
-export fn mGuiColorPicker(
-    out: [*c]raylib.Color,
-    bounds: [*c]raylib.Rectangle,
-    color: [*c]raylib.Color,
-) void {
-    out.* = raylib.GuiColorPicker(
-        bounds.*,
-        color.*,
-    );
-}
-
-/// Color Panel control
-pub fn GuiColorPanel(
-    bounds: Rectangle,
-    color: Color,
-) Color {
-    var out: Color = undefined;
-    mGuiColorPanel(
-        @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        @ptrCast([*c]raylib.Color, &color),
-    );
-    return out;
-}
-
-export fn mGuiColorPanel(
-    out: [*c]raylib.Color,
-    bounds: [*c]raylib.Rectangle,
-    color: [*c]raylib.Color,
-) void {
-    out.* = raylib.GuiColorPanel(
-        bounds.*,
-        color.*,
-    );
-}
-
-/// Color Bar Alpha control
-pub fn GuiColorBarAlpha(
-    bounds: Rectangle,
-    alpha: f32,
-) f32 {
-    var out: f32 = undefined;
-    mGuiColorBarAlpha(
-        @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        alpha,
-    );
-    return out;
-}
-
-export fn mGuiColorBarAlpha(
-    out: [*c]f32,
-    bounds: [*c]raylib.Rectangle,
-    alpha: f32,
-) void {
-    out.* = raylib.GuiColorBarAlpha(
-        bounds.*,
-        alpha,
-    );
-}
-
-/// Color Bar Hue control
-pub fn GuiColorBarHue(
-    bounds: Rectangle,
-    value: f32,
-) f32 {
-    var out: f32 = undefined;
-    mGuiColorBarHue(
-        @ptrCast([*c]f32, &out),
-        @ptrCast([*c]raylib.Rectangle, &bounds),
-        value,
-    );
-    return out;
-}
-
-export fn mGuiColorBarHue(
-    out: [*c]f32,
-    bounds: [*c]raylib.Rectangle,
-    value: f32,
-) void {
-    out.* = raylib.GuiColorBarHue(
-        bounds.*,
-        value,
-    );
-}
-
-/// Load style file over global style variable (.rgs)
-pub fn GuiLoadStyle(
-    fileName: [*:0]const u8,
-) void {
-    mGuiLoadStyle(
-        fileName,
-    );
-}
-
-export fn mGuiLoadStyle(
-    fileName: [*:0]const u8,
-) void {
-    raylib.GuiLoadStyle(
-        fileName,
-    );
-}
-
-/// Load style default over global style
-pub fn GuiLoadStyleDefault() void {
-    mGuiLoadStyleDefault();
-}
-
-export fn mGuiLoadStyleDefault() void {
-    raylib.GuiLoadStyleDefault();
-}
-
-/// Load style from file (.rgs)
-pub fn LoadGuiStyle(
-    fileName: [*:0]const u8,
-) u32 {
-    var out: u32 = undefined;
-    mLoadGuiStyle(
-        @ptrCast([*c]u32, &out),
-        fileName,
-    );
-    return out;
-}
-
-export fn mLoadGuiStyle(
-    out: [*c]u32,
-    fileName: [*:0]const u8,
-) void {
-    out.* = raylib.LoadGuiStyle(
-        fileName,
-    );
-}
-
-/// Unload style
-pub fn UnloadGuiStyle(
-    style: u32,
-) void {
-    mUnloadGuiStyle(
-        style,
-    );
-}
-
-export fn mUnloadGuiStyle(
-    style: u32,
-) void {
-    raylib.UnloadGuiStyle(
-        style,
-    );
-}
-
-/// Get text with icon id prepended (if supported)
-pub fn GuiIconText(
-    iconId: i32,
-    text: [*:0]const u8,
-) [*:0]const u8 {
-    var out: [*:0]const u8 = undefined;
-    mGuiIconText(
-        @ptrCast([*c][*:0]const u8, &out),
-        iconId,
-        text,
-    );
-    return out;
-}
-
-export fn mGuiIconText(
-    out: [*c][*:0]const u8,
-    iconId: i32,
-    text: [*:0]const u8,
-) void {
-    out.* = raylib.GuiIconText(
-        iconId,
-        text,
-    );
-}
-
-///
-pub fn GuiDrawIcon(
-    iconId: i32,
-    posX: i32,
-    posY: i32,
-    pixelSize: i32,
-    color: Color,
-) void {
-    mGuiDrawIcon(
-        iconId,
-        posX,
-        posY,
-        pixelSize,
-        @ptrCast([*c]raylib.Color, &color),
-    );
-}
-
-export fn mGuiDrawIcon(
-    iconId: i32,
-    posX: i32,
-    posY: i32,
-    pixelSize: i32,
-    color: [*c]raylib.Color,
-) void {
-    raylib.GuiDrawIcon(
-        iconId,
-        posX,
-        posY,
-        pixelSize,
-        color.*,
-    );
-}
-
-/// Get full icons data pointer
-pub fn GuiGetIcons() [*]u32 {
-    var out: [*]u32 = undefined;
-    mGuiGetIcons(
-        @ptrCast([*c][*]u32, &out),
-    );
-    return out;
-}
-
-export fn mGuiGetIcons(
-    out: [*c][*]u32,
-) void {
-    out.* = raylib.GuiGetIcons();
-}
-
-/// Get icon bit data
-pub fn GuiGetIconData(
-    iconId: i32,
-) [*]u32 {
-    var out: [*]u32 = undefined;
-    mGuiGetIconData(
-        @ptrCast([*c][*]u32, &out),
-        iconId,
-    );
-    return out;
-}
-
-export fn mGuiGetIconData(
-    out: [*c][*]u32,
-    iconId: i32,
-) void {
-    out.* = raylib.GuiGetIconData(
-        iconId,
-    );
-}
-
-/// Set icon bit data
-pub fn GuiSetIconData(
-    iconId: i32,
-    data: [*]u32,
-) void {
-    mGuiSetIconData(
-        iconId,
-        data,
-    );
-}
-
-export fn mGuiSetIconData(
-    iconId: i32,
-    data: [*]u32,
-) void {
-    raylib.GuiSetIconData(
-        iconId,
-        data,
-    );
-}
-
-/// Set icon pixel value
-pub fn GuiSetIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) void {
-    mGuiSetIconPixel(
-        iconId,
-        x,
-        y,
-    );
-}
-
-export fn mGuiSetIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) void {
-    raylib.GuiSetIconPixel(
-        iconId,
-        x,
-        y,
-    );
-}
-
-/// Clear icon pixel value
-pub fn GuiClearIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) void {
-    mGuiClearIconPixel(
-        iconId,
-        x,
-        y,
-    );
-}
-
-export fn mGuiClearIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) void {
-    raylib.GuiClearIconPixel(
-        iconId,
-        x,
-        y,
-    );
-}
-
-/// Check icon pixel value
-pub fn GuiCheckIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) bool {
-    var out: bool = undefined;
-    mGuiCheckIconPixel(
-        @ptrCast([*c]bool, &out),
-        iconId,
-        x,
-        y,
-    );
-    return out;
-}
-
-export fn mGuiCheckIconPixel(
-    out: [*c]bool,
-    iconId: i32,
-    x: i32,
-    y: i32,
-) void {
-    out.* = raylib.GuiCheckIconPixel(
-        iconId,
-        x,
-        y,
     );
 }
 
@@ -15398,18 +13703,20 @@ pub const GlyphInfo = extern struct {
     image: Image,
 };
 
-/// It should be redesigned to be provided by user
+/// Font, font texture and GlyphInfo array data
 pub const Font = extern struct {
     /// Base size (default chars height)
     baseSize: i32,
-    /// Number of characters
+    /// Number of glyph characters
     glyphCount: i32,
-    /// Characters texture atlas
+    /// Padding around the glyph characters
+    glyphPadding: i32,
+    /// Texture atlas containing the glyphs
     texture: Texture2D,
-    /// Characters rectangles in texture
+    /// Rectangles in texture for the glyphs
     recs: [*]Rectangle,
-    /// Characters info data
-    chars: [*]GlyphInfo,
+    /// Glyphs info data
+    glyphs: [*]GlyphInfo,
 };
 
 /// Camera, defines position/orientation in 3d space
@@ -15654,24 +13961,14 @@ pub const VrStereoConfig = extern struct {
 
 /// NOTE: Helper types to be used instead of array return types for *ToFloat functions
 pub const float3 = extern struct {
-    ///
+    /// 
     v: [3]f32,
 };
 
-///
+/// 
 pub const float16 = extern struct {
-    ///
+    /// 
     v: [16]f32,
-};
-
-/// Style property
-pub const GuiStyleProp = extern struct {
-    ///
-    controlId: u16,
-    ///
-    propertyId: u16,
-    ///
-    propertyValue: i32,
 };
 
 /// System/Window config flags
@@ -16341,740 +14638,6 @@ pub const NPatchLayout = enum(i32) {
     /// Npatch layout: 3x1 tiles
     NPATCH_THREE_PATCH_HORIZONTAL = 2,
 };
-
-/// Gui control state
-pub const GuiControlState = enum(i32) {
-    ///
-    GUI_STATE_NORMAL = 0,
-    ///
-    GUI_STATE_FOCUSED = 1,
-    ///
-    GUI_STATE_PRESSED = 2,
-    ///
-    GUI_STATE_DISABLED = 3,
-};
-
-/// Gui control text alignment
-pub const GuiTextAlignment = enum(i32) {
-    ///
-    GUI_TEXT_ALIGN_LEFT = 0,
-    ///
-    GUI_TEXT_ALIGN_CENTER = 1,
-    ///
-    GUI_TEXT_ALIGN_RIGHT = 2,
-};
-
-/// Gui controls
-pub const GuiControl = enum(i32) {
-    /// Generic control -> populates to all controls when set
-    DEFAULT = 0,
-    /// Used also for: LABELBUTTON
-    LABEL = 1,
-    ///
-    BUTTON = 2,
-    /// Used also for: TOGGLEGROUP
-    TOGGLE = 3,
-    /// Used also for: SLIDERBAR
-    SLIDER = 4,
-    ///
-    PROGRESSBAR = 5,
-    ///
-    CHECKBOX = 6,
-    ///
-    COMBOBOX = 7,
-    ///
-    DROPDOWNBOX = 8,
-    /// Used also for: TEXTBOXMULTI
-    TEXTBOX = 9,
-    ///
-    VALUEBOX = 10,
-    ///
-    SPINNER = 11,
-    ///
-    LISTVIEW = 12,
-    ///
-    COLORPICKER = 13,
-    ///
-    SCROLLBAR = 14,
-    ///
-    STATUSBAR = 15,
-};
-
-/// Gui base properties for every control
-pub const GuiControlProperty = enum(i32) {
-    ///
-    BORDER_COLOR_NORMAL = 0,
-    ///
-    BASE_COLOR_NORMAL = 1,
-    ///
-    TEXT_COLOR_NORMAL = 2,
-    ///
-    BORDER_COLOR_FOCUSED = 3,
-    ///
-    BASE_COLOR_FOCUSED = 4,
-    ///
-    TEXT_COLOR_FOCUSED = 5,
-    ///
-    BORDER_COLOR_PRESSED = 6,
-    ///
-    BASE_COLOR_PRESSED = 7,
-    ///
-    TEXT_COLOR_PRESSED = 8,
-    ///
-    BORDER_COLOR_DISABLED = 9,
-    ///
-    BASE_COLOR_DISABLED = 10,
-    ///
-    TEXT_COLOR_DISABLED = 11,
-    ///
-    BORDER_WIDTH = 12,
-    ///
-    TEXT_PADDING = 13,
-    ///
-    TEXT_ALIGNMENT = 14,
-    ///
-    RESERVED = 15,
-};
-
-/// DEFAULT extended properties
-pub const GuiDefaultProperty = enum(i32) {
-    ///
-    TEXT_SIZE = 16,
-    ///
-    TEXT_SPACING = 17,
-    ///
-    LINE_COLOR = 18,
-    ///
-    BACKGROUND_COLOR = 19,
-};
-
-/// Toggle/ToggleGroup
-pub const GuiToggleProperty = enum(i32) {
-    ///
-    GROUP_PADDING = 16,
-};
-
-/// Slider/SliderBar
-pub const GuiSliderProperty = enum(i32) {
-    ///
-    SLIDER_WIDTH = 16,
-    ///
-    SLIDER_PADDING = 17,
-};
-
-/// ProgressBar
-pub const GuiProgressBarProperty = enum(i32) {
-    ///
-    PROGRESS_PADDING = 16,
-};
-
-/// CheckBox
-pub const GuiCheckBoxProperty = enum(i32) {
-    ///
-    CHECK_PADDING = 16,
-};
-
-/// ComboBox
-pub const GuiComboBoxProperty = enum(i32) {
-    ///
-    COMBO_BUTTON_WIDTH = 16,
-    ///
-    COMBO_BUTTON_PADDING = 17,
-};
-
-/// DropdownBox
-pub const GuiDropdownBoxProperty = enum(i32) {
-    ///
-    ARROW_PADDING = 16,
-    ///
-    DROPDOWN_ITEMS_PADDING = 17,
-};
-
-/// TextBox/TextBoxMulti/ValueBox/Spinner
-pub const GuiTextBoxProperty = enum(i32) {
-    ///
-    TEXT_INNER_PADDING = 16,
-    ///
-    TEXT_LINES_PADDING = 17,
-    ///
-    COLOR_SELECTED_FG = 18,
-    ///
-    COLOR_SELECTED_BG = 19,
-};
-
-/// Spinner
-pub const GuiSpinnerProperty = enum(i32) {
-    ///
-    SPIN_BUTTON_WIDTH = 16,
-    ///
-    SPIN_BUTTON_PADDING = 17,
-};
-
-/// ScrollBar
-pub const GuiScrollBarProperty = enum(i32) {
-    ///
-    ARROWS_SIZE = 16,
-    ///
-    ARROWS_VISIBLE = 17,
-    ///
-    SCROLL_SLIDER_PADDING = 18,
-    ///
-    SCROLL_SLIDER_SIZE = 19,
-    ///
-    SCROLL_PADDING = 20,
-    ///
-    SCROLL_SPEED = 21,
-};
-
-/// ScrollBar side
-pub const GuiScrollBarSide = enum(i32) {
-    ///
-    SCROLLBAR_LEFT_SIDE = 0,
-    ///
-    SCROLLBAR_RIGHT_SIDE = 1,
-};
-
-/// ListView
-pub const GuiListViewProperty = enum(i32) {
-    ///
-    LIST_ITEMS_HEIGHT = 16,
-    ///
-    LIST_ITEMS_PADDING = 17,
-    ///
-    SCROLLBAR_WIDTH = 18,
-    ///
-    SCROLLBAR_SIDE = 19,
-};
-
-/// ColorPicker
-pub const GuiColorPickerProperty = enum(i32) {
-    ///
-    COLOR_SELECTOR_SIZE = 16,
-    /// Right hue bar width
-    HUEBAR_WIDTH = 17,
-    /// Right hue bar separation from panel
-    HUEBAR_PADDING = 18,
-    /// Right hue bar selector height
-    HUEBAR_SELECTOR_HEIGHT = 19,
-    /// Right hue bar selector overflow
-    HUEBAR_SELECTOR_OVERFLOW = 20,
-};
-
-/// edef enum {
-pub const guiIconName = enum(i32) {
-    ///
-    RICON_NONE = 0,
-    ///
-    RICON_FOLDER_FILE_OPEN = 1,
-    ///
-    RICON_FILE_SAVE_CLASSIC = 2,
-    ///
-    RICON_FOLDER_OPEN = 3,
-    ///
-    RICON_FOLDER_SAVE = 4,
-    ///
-    RICON_FILE_OPEN = 5,
-    ///
-    RICON_FILE_SAVE = 6,
-    ///
-    RICON_FILE_EXPORT = 7,
-    ///
-    RICON_FILE_NEW = 8,
-    ///
-    RICON_FILE_DELETE = 9,
-    ///
-    RICON_FILETYPE_TEXT = 10,
-    ///
-    RICON_FILETYPE_AUDIO = 11,
-    ///
-    RICON_FILETYPE_IMAGE = 12,
-    ///
-    RICON_FILETYPE_PLAY = 13,
-    ///
-    RICON_FILETYPE_VIDEO = 14,
-    ///
-    RICON_FILETYPE_INFO = 15,
-    ///
-    RICON_FILE_COPY = 16,
-    ///
-    RICON_FILE_CUT = 17,
-    ///
-    RICON_FILE_PASTE = 18,
-    ///
-    RICON_CURSOR_HAND = 19,
-    ///
-    RICON_CURSOR_POINTER = 20,
-    ///
-    RICON_CURSOR_CLASSIC = 21,
-    ///
-    RICON_PENCIL = 22,
-    ///
-    RICON_PENCIL_BIG = 23,
-    ///
-    RICON_BRUSH_CLASSIC = 24,
-    ///
-    RICON_BRUSH_PAINTER = 25,
-    ///
-    RICON_WATER_DROP = 26,
-    ///
-    RICON_COLOR_PICKER = 27,
-    ///
-    RICON_RUBBER = 28,
-    ///
-    RICON_COLOR_BUCKET = 29,
-    ///
-    RICON_TEXT_T = 30,
-    ///
-    RICON_TEXT_A = 31,
-    ///
-    RICON_SCALE = 32,
-    ///
-    RICON_RESIZE = 33,
-    ///
-    RICON_FILTER_POINT = 34,
-    ///
-    RICON_FILTER_BILINEAR = 35,
-    ///
-    RICON_CROP = 36,
-    ///
-    RICON_CROP_ALPHA = 37,
-    ///
-    RICON_SQUARE_TOGGLE = 38,
-    ///
-    RICON_SYMMETRY = 39,
-    ///
-    RICON_SYMMETRY_HORIZONTAL = 40,
-    ///
-    RICON_SYMMETRY_VERTICAL = 41,
-    ///
-    RICON_LENS = 42,
-    ///
-    RICON_LENS_BIG = 43,
-    ///
-    RICON_EYE_ON = 44,
-    ///
-    RICON_EYE_OFF = 45,
-    ///
-    RICON_FILTER_TOP = 46,
-    ///
-    RICON_FILTER = 47,
-    ///
-    RICON_TARGET_POINT = 48,
-    ///
-    RICON_TARGET_SMALL = 49,
-    ///
-    RICON_TARGET_BIG = 50,
-    ///
-    RICON_TARGET_MOVE = 51,
-    ///
-    RICON_CURSOR_MOVE = 52,
-    ///
-    RICON_CURSOR_SCALE = 53,
-    ///
-    RICON_CURSOR_SCALE_RIGHT = 54,
-    ///
-    RICON_CURSOR_SCALE_LEFT = 55,
-    ///
-    RICON_UNDO = 56,
-    ///
-    RICON_REDO = 57,
-    ///
-    RICON_REREDO = 58,
-    ///
-    RICON_MUTATE = 59,
-    ///
-    RICON_ROTATE = 60,
-    ///
-    RICON_REPEAT = 61,
-    ///
-    RICON_SHUFFLE = 62,
-    ///
-    RICON_EMPTYBOX = 63,
-    ///
-    RICON_TARGET = 64,
-    ///
-    RICON_TARGET_SMALL_FILL = 65,
-    ///
-    RICON_TARGET_BIG_FILL = 66,
-    ///
-    RICON_TARGET_MOVE_FILL = 67,
-    ///
-    RICON_CURSOR_MOVE_FILL = 68,
-    ///
-    RICON_CURSOR_SCALE_FILL = 69,
-    ///
-    RICON_CURSOR_SCALE_RIGHT_FILL = 70,
-    ///
-    RICON_CURSOR_SCALE_LEFT_FILL = 71,
-    ///
-    RICON_UNDO_FILL = 72,
-    ///
-    RICON_REDO_FILL = 73,
-    ///
-    RICON_REREDO_FILL = 74,
-    ///
-    RICON_MUTATE_FILL = 75,
-    ///
-    RICON_ROTATE_FILL = 76,
-    ///
-    RICON_REPEAT_FILL = 77,
-    ///
-    RICON_SHUFFLE_FILL = 78,
-    ///
-    RICON_EMPTYBOX_SMALL = 79,
-    ///
-    RICON_BOX = 80,
-    ///
-    RICON_BOX_TOP = 81,
-    ///
-    RICON_BOX_TOP_RIGHT = 82,
-    ///
-    RICON_BOX_RIGHT = 83,
-    ///
-    RICON_BOX_BOTTOM_RIGHT = 84,
-    ///
-    RICON_BOX_BOTTOM = 85,
-    ///
-    RICON_BOX_BOTTOM_LEFT = 86,
-    ///
-    RICON_BOX_LEFT = 87,
-    ///
-    RICON_BOX_TOP_LEFT = 88,
-    ///
-    RICON_BOX_CENTER = 89,
-    ///
-    RICON_BOX_CIRCLE_MASK = 90,
-    ///
-    RICON_POT = 91,
-    ///
-    RICON_ALPHA_MULTIPLY = 92,
-    ///
-    RICON_ALPHA_CLEAR = 93,
-    ///
-    RICON_DITHERING = 94,
-    ///
-    RICON_MIPMAPS = 95,
-    ///
-    RICON_BOX_GRID = 96,
-    ///
-    RICON_GRID = 97,
-    ///
-    RICON_BOX_CORNERS_SMALL = 98,
-    ///
-    RICON_BOX_CORNERS_BIG = 99,
-    ///
-    RICON_FOUR_BOXES = 100,
-    ///
-    RICON_GRID_FILL = 101,
-    ///
-    RICON_BOX_MULTISIZE = 102,
-    ///
-    RICON_ZOOM_SMALL = 103,
-    ///
-    RICON_ZOOM_MEDIUM = 104,
-    ///
-    RICON_ZOOM_BIG = 105,
-    ///
-    RICON_ZOOM_ALL = 106,
-    ///
-    RICON_ZOOM_CENTER = 107,
-    ///
-    RICON_BOX_DOTS_SMALL = 108,
-    ///
-    RICON_BOX_DOTS_BIG = 109,
-    ///
-    RICON_BOX_CONCENTRIC = 110,
-    ///
-    RICON_BOX_GRID_BIG = 111,
-    ///
-    RICON_OK_TICK = 112,
-    ///
-    RICON_CROSS = 113,
-    ///
-    RICON_ARROW_LEFT = 114,
-    ///
-    RICON_ARROW_RIGHT = 115,
-    ///
-    RICON_ARROW_DOWN = 116,
-    ///
-    RICON_ARROW_UP = 117,
-    ///
-    RICON_ARROW_LEFT_FILL = 118,
-    ///
-    RICON_ARROW_RIGHT_FILL = 119,
-    ///
-    RICON_ARROW_DOWN_FILL = 120,
-    ///
-    RICON_ARROW_UP_FILL = 121,
-    ///
-    RICON_AUDIO = 122,
-    ///
-    RICON_FX = 123,
-    ///
-    RICON_WAVE = 124,
-    ///
-    RICON_WAVE_SINUS = 125,
-    ///
-    RICON_WAVE_SQUARE = 126,
-    ///
-    RICON_WAVE_TRIANGULAR = 127,
-    ///
-    RICON_CROSS_SMALL = 128,
-    ///
-    RICON_PLAYER_PREVIOUS = 129,
-    ///
-    RICON_PLAYER_PLAY_BACK = 130,
-    ///
-    RICON_PLAYER_PLAY = 131,
-    ///
-    RICON_PLAYER_PAUSE = 132,
-    ///
-    RICON_PLAYER_STOP = 133,
-    ///
-    RICON_PLAYER_NEXT = 134,
-    ///
-    RICON_PLAYER_RECORD = 135,
-    ///
-    RICON_MAGNET = 136,
-    ///
-    RICON_LOCK_CLOSE = 137,
-    ///
-    RICON_LOCK_OPEN = 138,
-    ///
-    RICON_CLOCK = 139,
-    ///
-    RICON_TOOLS = 140,
-    ///
-    RICON_GEAR = 141,
-    ///
-    RICON_GEAR_BIG = 142,
-    ///
-    RICON_BIN = 143,
-    ///
-    RICON_HAND_POINTER = 144,
-    ///
-    RICON_LASER = 145,
-    ///
-    RICON_COIN = 146,
-    ///
-    RICON_EXPLOSION = 147,
-    ///
-    RICON_1UP = 148,
-    ///
-    RICON_PLAYER = 149,
-    ///
-    RICON_PLAYER_JUMP = 150,
-    ///
-    RICON_KEY = 151,
-    ///
-    RICON_DEMON = 152,
-    ///
-    RICON_TEXT_POPUP = 153,
-    ///
-    RICON_GEAR_EX = 154,
-    ///
-    RICON_CRACK = 155,
-    ///
-    RICON_CRACK_POINTS = 156,
-    ///
-    RICON_STAR = 157,
-    ///
-    RICON_DOOR = 158,
-    ///
-    RICON_EXIT = 159,
-    ///
-    RICON_MODE_2D = 160,
-    ///
-    RICON_MODE_3D = 161,
-    ///
-    RICON_CUBE = 162,
-    ///
-    RICON_CUBE_FACE_TOP = 163,
-    ///
-    RICON_CUBE_FACE_LEFT = 164,
-    ///
-    RICON_CUBE_FACE_FRONT = 165,
-    ///
-    RICON_CUBE_FACE_BOTTOM = 166,
-    ///
-    RICON_CUBE_FACE_RIGHT = 167,
-    ///
-    RICON_CUBE_FACE_BACK = 168,
-    ///
-    RICON_CAMERA = 169,
-    ///
-    RICON_SPECIAL = 170,
-    ///
-    RICON_LINK_NET = 171,
-    ///
-    RICON_LINK_BOXES = 172,
-    ///
-    RICON_LINK_MULTI = 173,
-    ///
-    RICON_LINK = 174,
-    ///
-    RICON_LINK_BROKE = 175,
-    ///
-    RICON_TEXT_NOTES = 176,
-    ///
-    RICON_NOTEBOOK = 177,
-    ///
-    RICON_SUITCASE = 178,
-    ///
-    RICON_SUITCASE_ZIP = 179,
-    ///
-    RICON_MAILBOX = 180,
-    ///
-    RICON_MONITOR = 181,
-    ///
-    RICON_PRINTER = 182,
-    ///
-    RICON_PHOTO_CAMERA = 183,
-    ///
-    RICON_PHOTO_CAMERA_FLASH = 184,
-    ///
-    RICON_HOUSE = 185,
-    ///
-    RICON_HEART = 186,
-    ///
-    RICON_CORNER = 187,
-    ///
-    RICON_VERTICAL_BARS = 188,
-    ///
-    RICON_VERTICAL_BARS_FILL = 189,
-    ///
-    RICON_LIFE_BARS = 190,
-    ///
-    RICON_INFO = 191,
-    ///
-    RICON_CROSSLINE = 192,
-    ///
-    RICON_HELP = 193,
-    ///
-    RICON_FILETYPE_ALPHA = 194,
-    ///
-    RICON_FILETYPE_HOME = 195,
-    ///
-    RICON_LAYERS_VISIBLE = 196,
-    ///
-    RICON_LAYERS = 197,
-    ///
-    RICON_WINDOW = 198,
-    ///
-    RICON_HIDPI = 199,
-    ///
-    RICON_200 = 200,
-    ///
-    RICON_201 = 201,
-    ///
-    RICON_202 = 202,
-    ///
-    RICON_203 = 203,
-    ///
-    RICON_204 = 204,
-    ///
-    RICON_205 = 205,
-    ///
-    RICON_206 = 206,
-    ///
-    RICON_207 = 207,
-    ///
-    RICON_208 = 208,
-    ///
-    RICON_209 = 209,
-    ///
-    RICON_210 = 210,
-    ///
-    RICON_211 = 211,
-    ///
-    RICON_212 = 212,
-    ///
-    RICON_213 = 213,
-    ///
-    RICON_214 = 214,
-    ///
-    RICON_215 = 215,
-    ///
-    RICON_216 = 216,
-    ///
-    RICON_217 = 217,
-    ///
-    RICON_218 = 218,
-    ///
-    RICON_219 = 219,
-    ///
-    RICON_220 = 220,
-    ///
-    RICON_221 = 221,
-    ///
-    RICON_222 = 222,
-    ///
-    RICON_223 = 223,
-    ///
-    RICON_224 = 224,
-    ///
-    RICON_225 = 225,
-    ///
-    RICON_226 = 226,
-    ///
-    RICON_227 = 227,
-    ///
-    RICON_228 = 228,
-    ///
-    RICON_229 = 229,
-    ///
-    RICON_230 = 230,
-    ///
-    RICON_231 = 231,
-    ///
-    RICON_232 = 232,
-    ///
-    RICON_233 = 233,
-    ///
-    RICON_234 = 234,
-    ///
-    RICON_235 = 235,
-    ///
-    RICON_236 = 236,
-    ///
-    RICON_237 = 237,
-    ///
-    RICON_238 = 238,
-    ///
-    RICON_239 = 239,
-    ///
-    RICON_240 = 240,
-    ///
-    RICON_241 = 241,
-    ///
-    RICON_242 = 242,
-    ///
-    RICON_243 = 243,
-    ///
-    RICON_244 = 244,
-    ///
-    RICON_245 = 245,
-    ///
-    RICON_246 = 246,
-    ///
-    RICON_247 = 247,
-    ///
-    RICON_248 = 248,
-    ///
-    RICON_249 = 249,
-    ///
-    RICON_250 = 250,
-    ///
-    RICON_251 = 251,
-    ///
-    RICON_252 = 252,
-    ///
-    RICON_253 = 253,
-    ///
-    RICON_254 = 254,
-    ///
-    RICON_255 = 255,
-};
 //--- colors --------------------------------------------------------------------------------------
 
 pub const LIGHTGRAY = Color{ .r = 200, .g = 200, .b = 200, .a = 255 };
@@ -17503,25 +15066,182 @@ pub const Camera2D = extern struct {
 //--- callbacks -----------------------------------------------------------------------------------
 
 /// Logging: Redirect trace log messages
-pub const TraceLogCallback = fn (logLevel: i32, text: [:0]const u8) void;
+pub const TraceLogCallback = fn (logLevel: c_int, text: [*c]const u8, args: ?*anyopaque) callconv(.C) void;
 
 /// FileIO: Load binary data
-pub const LoadFileDataCallback = fn (fileName: [:0]const u8, bytesRead: *u32) [:0]const u8;
+pub const LoadFileDataCallback = fn (fileName: [*c]const u8, bytesRead: [*c]c_uint) callconv(.C) [*c]u8;
 
 /// FileIO: Save binary data
-pub const SaveFileDataCallback = fn (fileName: [:0]const u8, data: *anyopaque, bytesToWrite: u32) bool;
+pub const SaveFileDataCallback = fn (fileName: [*c]const u8, data: ?*anyopaque, bytesToWrite: c_uint) callconv(.C) bool;
 
 /// FileIO: Load text data
-pub const LoadFileTextCallback = fn (fileName: [:0]const u8) [:0]u8;
+pub const LoadFileTextCallback = fn (fileName: [*c]const u8) callconv(.C) [*c]u8;
 
 /// FileIO: Save text data
-pub const SaveFileTextCallback = fn (fileName: [:0]const u8, text: [:0]const u8) bool;
+pub const SaveFileTextCallback = fn (fileName: [*c]const u8, text: [*c]const u8) callconv(.C) bool;
 
 /// Audio Loading and Playing Functions (Module: audio)
-pub const AudioCallback = fn (bufferData: *anyopaque, frames: u32) void;
+pub const AudioCallback = fn (bufferData: ?*anyopaque, frames: u32) callconv(.C) void;
 
 //--- utils ---------------------------------------------------------------------------------------
 
 pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
     return rng.float(f32) * (max - min) + min;
+}
+
+//--- functions -----------------------------------------------------------------------------------
+
+/// Load style from file (.rgs)
+pub fn LoadGuiStyle(_: [*:0]const u8) u32 {
+    @panic("LoadGuiStyle is not implemented");
+    //return raylib.LoadGuiStyle(fileName);
+}
+
+/// Unload style
+pub fn UnloadGuiStyle(_: u32) void {
+    @panic("UnloadGuiStyle is not implemented");
+    // raylib.UnloadGuiStyle(style);
+}
+
+pub fn TextSplit() void {
+    @panic("use std lib for that");
+}
+pub fn TextJoin() void {
+    @panic("use std lib for that");
+}
+pub fn TextAppend() void {
+    @panic("use std lib for that");
+}
+
+/// Set custom trace log
+pub fn SetTraceLogCallback(
+    _: TraceLogCallback,
+) void {
+    @panic("use log.zig for that");
+}
+
+/// Text Box control with multiple lines
+pub fn GuiTextBoxMulti(_: Rectangle, _: [*]u8, _: i32, _: bool) bool {
+    @panic("this gets translated wrong with cImport");
+}
+
+/// List View with extended parameters
+pub fn GuiListViewEx(
+    _: Rectangle,
+    _: [*]const [*:0]const u8,
+    _: i32,
+    _: [*]i32,
+    _: [*]i32,
+    _: i32,
+) i32 {
+    @panic("TODO: link with raygui somehow");
+}
+
+/// Generate image font atlas using chars info
+pub fn GenImageFontAtlas(
+    chars: [*]const GlyphInfo,
+    recs: [*]const [*]const Rectangle,
+    glyphCount: i32,
+    fontSize: i32,
+    padding: i32,
+    packMethod: i32,
+) Image {
+    var out: Image = undefined;
+    mGenImageFontAtlas(
+        @ptrCast([*c]raylib.Image, &out),
+        @ptrCast([*c]raylib.GlyphInfo, chars),
+        @ptrCast([*c][*c]raylib.Rectangle, recs),
+        glyphCount,
+        fontSize,
+        padding,
+        packMethod,
+    );
+    return out;
+}
+export fn mGenImageFontAtlas(
+    out: [*c]raylib.Image,
+    chars: [*c]raylib.GlyphInfo,
+    recs: [*c][*c]raylib.Rectangle,
+    glyphCount: i32,
+    fontSize: i32,
+    padding: i32,
+    packMethod: i32,
+) void {
+    out.* = raylib.GenImageFontAtlas(
+        chars,
+        recs,
+        glyphCount,
+        fontSize,
+        padding,
+        packMethod,
+    );
+}
+
+/// Get dropped files names (memory should be freed)
+pub fn GetDroppedFiles(
+    count: [*]i32,
+) [*]const [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mGetDroppedFiles(
+            @ptrCast([*c]i32, count),
+        ),
+    );
+}
+export fn mGetDroppedFiles(
+    count: [*c]i32,
+) [*c]const [*c]const u8 {
+    return raylib.GetDroppedFiles(
+        count,
+    );
+}
+
+/// Get filenames in a directory path (memory should be freed)
+pub fn GetDirectoryFiles(
+    dirPath: [*:0]const u8,
+    count: [*]i32,
+) [*]const [*]const u8 {
+    return @ptrCast(
+        [*]u8,
+        mGetDirectoryFiles(
+            @ptrCast([*c]u8, dirPath),
+            @ptrCast([*c]i32, count),
+        ),
+    );
+}
+export fn mGetDirectoryFiles(
+    dirPath: [*c]u8,
+    count: [*c]i32,
+) [*c]const [*c]const u8 {
+    return raylib.GetDirectoryFiles(
+        dirPath,
+        count,
+    );
+}
+
+/// Get native window handle
+pub fn GetWindowHandle() ?*anyopaque {
+    return raylib.GetWindowHandle();
+}
+
+/// Internal memory allocator
+pub fn MemAlloc(
+    size: i32,
+) ?*anyopaque {
+    return raylib.MemAlloc(size);
+}
+
+/// Internal memory reallocator
+pub fn MemRealloc(
+    ptr: ?*anyopaque,
+    size: i32,
+) ?*anyopaque {
+    return raylib.MemRealloc(ptr, size);
+}
+
+/// Internal memory free
+pub fn MemFree(
+    ptr: ?*anyopaque,
+) void {
+    raylib.MemFree(ptr);
 }
