@@ -42,11 +42,18 @@ pub fn main() !void {
     try file.writeAll("\n\n");
 
     const inject = try Injections.load(arena.allocator());
-    try writeImports(arena.allocator(), &file, bindings);
+    try writeInjections(arena.allocator(), &file, inject);
+
     try writeFunctions(arena.allocator(), &file, bindings, inject);
+    var h = try fs.cwd().createFile("marshal.h", .{});
+    defer h.close();
+    var c = try fs.cwd().createFile("marshal.c", .{});
+    defer c.close();
+    const raylib: mapping.CombinedRaylib = try mapping.CombinedRaylib.load(arena.allocator(), intermediate.jsonFiles);
+    try writeCFunctions(arena.allocator(), &h, &c, inject, raylib);
+
     try writeStructs(arena.allocator(), &file, bindings, inject);
     try writeEnums(arena.allocator(), &file, bindings, inject);
-    try writeInjections(arena.allocator(), &file, inject);
 
     std.log.info("... done", .{});
 }
@@ -116,9 +123,15 @@ fn writeFunctions(
         );
 
         for (func.params) |param| {
+            if (param.description) |description| {
+                try file.writeAll(try allocPrint(
+                    allocator,
+                    "/// {s}\n",
+                    .{description},
+                ));
+            }
             try file.writeAll(try allocPrint(
                 allocator,
-                //TODO: add description
                 "{s}: {s},\n",
                 .{ param.name, param.typ },
             ));
@@ -146,15 +159,17 @@ fn writeFunctions(
         //--- body ------------------------------
         if (isPointer(func.returnType)) {
             try file.writeAll(try allocPrint(allocator, "return @ptrCast({s},\n", .{func.returnType}));
+        } else if (isPrimitiveOrPointer(func.returnType)) {
+            try file.writeAll("return ");
         } else if (!returnTypeIsVoid) {
             try file.writeAll(try allocPrint(allocator, "var out: {s} = undefined;\n", .{func.returnType}));
         }
-        try file.writeAll(try allocPrint(allocator, "m{s}(\n", .{func.name}));
+        try file.writeAll(try allocPrint(allocator, "raylib.m{s}(\n", .{func.name}));
 
-        if (!returnTypeIsVoid and !isPointer(func.returnType)) {
+        if (!isPrimitiveOrPointer(func.returnType)) {
             if (bindings.containsStruct(stripType(func.returnType))) {
                 try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]raylib.{s}, &out),\n", .{func.returnType}));
-            } else {
+            } else if(!returnTypeIsVoid) {
                 try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]{s}, &out),\n", .{func.returnType}));
             }
         }
@@ -181,118 +196,125 @@ fn writeFunctions(
             try file.writeAll(");\n");
         }
 
-        if (!returnTypeIsVoid and !isPointer(func.returnType)) {
+        if (!isPrimitiveOrPointer(func.returnType) and !returnTypeIsVoid) {
             try file.writeAll("return out;\n");
         }
 
         try file.writeAll("}\n");
-
-        //--- C-ABI -----------------------------
-
-        try file.writeAll(
-            try allocPrint(
-                allocator,
-                "\nexport fn m{s} (\n",
-                .{func.name},
-            ),
-        );
-
-        if (!returnTypeIsVoid and !isPointer(func.returnType)) {
-            if (bindings.containsStruct(stripType(func.returnType))) {
-                try file.writeAll(try allocPrint(allocator, "out: [*c]raylib.{s},\n", .{func.returnType}));
-            } else {
-                try file.writeAll(try allocPrint(allocator, "out: [*c]{s},\n", .{func.returnType}));
-            }
-        }
-
-        for (func.params) |param| {
-            var typ = if (isPointer(param.typ) and !eql(param.typ, "*anyopaque"))
-                if(isConst(param.typ)) try allocPrint(allocator, "[*c]const {s}", .{stripType(param.typ)})
-                else try allocPrint(allocator, "[*c]{s}", .{stripType(param.typ)})
-            else
-                param.typ;
-
-            if (bindings.containsStruct(stripType(param.typ))) {
-                typ = try allocPrint(allocator, "[*c]raylib.{s}", .{stripType(param.typ)});
-            }
-
-            try file.writeAll(try allocPrint(
-                allocator,
-                "{s}: {s},\n",
-                .{ param.name, typ },
-            ));
-        }
-
-        if (isPointer(func.returnType)) {
-            if (bindings.containsStruct(stripType(func.returnType))) {
-                try file.writeAll(
-                    try allocPrint(
-                        allocator,
-                        ") [*c]const raylib.{s} {{\n",
-                        .{stripType(func.returnType)},
-                    ),
-                );
-            } else {
-                try file.writeAll(
-                    try allocPrint(
-                        allocator,
-                        ") [*c]const {s} {{\n",
-                        .{stripType(func.returnType)},
-                    ),
-                );
-            }
-        } else {
-            try file.writeAll(
-                try allocPrint(
-                    allocator,
-                    ") void {{\n",
-                    .{},
-                ),
-            );
-        }
-
-        if (!returnTypeIsVoid) {
-            if (isPointer(func.returnType)) {
-                try file.writeAll("return ");
-            } else {
-                try file.writeAll("out.* = ");
-            }
-        }
-
-        try file.writeAll(
-            try allocPrint(
-                allocator,
-                "raylib.{s}(\n",
-                .{func.name},
-            ),
-        );
-
-        for (func.params) |param| {
-            if (isPointer(param.typ)) {
-                try file.writeAll(try allocPrint(
-                    allocator,
-                    "{s},\n",
-                    .{param.name},
-                ));
-            } else if (bindings.containsStruct(stripType(param.typ))) {
-                try file.writeAll(try allocPrint(
-                    allocator,
-                    "{s}.*,\n",
-                    .{param.name},
-                ));
-            } else {
-                try file.writeAll(try allocPrint(
-                    allocator,
-                    "{s},\n",
-                    .{param.name},
-                ));
-            }
-        }
-
-        try file.writeAll(");\n}\n");
     }
 
     std.log.info("generated functions", .{});
+}
+
+/// write: RETURN NAME(PARAMS...)
+/// or: void NAME(RETURN*, PARAMS...)
+fn writeCSignature(
+    allocator: std.mem.Allocator,
+    file: *fs.File,
+    func: mapping.RaylibFunction,
+) !void {
+    //return directly
+    if (mapping.isPrimitiveOrPointer(func.returnType)) {
+        try file.writeAll(try allocPrint(allocator, "{s} m{s}(", .{ func.returnType, func.name }));
+        if(func.params == null or func.params.?.len == 0) {
+            try file.writeAll("void");
+        }
+    }
+    //wrap return type and put as first function parameter
+    else {
+        try file.writeAll(try allocPrint(allocator, "void m{s}({s} *out", .{ func.name, func.returnType }));
+        if (func.params != null and func.params.?.len > 0) {
+            try file.writeAll(", ");
+        }
+    }
+
+    if (func.params) |params| {
+        for (params) |param, i| {
+            if (mapping.isPrimitiveOrPointer(param.@"type")) {
+                try file.writeAll(try allocPrint(allocator, "{s} {s}", .{ param.@"type", param.name }));
+            } else {
+                try file.writeAll(try allocPrint(allocator, "{s} *{s}", .{ param.@"type", param.name }));
+            }
+
+            if (i < params.len - 1) {
+                try file.writeAll(", ");
+            }
+        }
+    }
+
+    try file.writeAll(")");
+}
+
+fn writeCFunctions(
+    allocator: std.mem.Allocator,
+    h: *fs.File,
+    c: *fs.File,
+    inject: Injections,
+    rl: mapping.CombinedRaylib,
+) !void {
+    var hInject = try fs.cwd().openFile("inject.h", .{});
+    defer hInject.close();
+    try h.writeFileAll(hInject, .{});
+    var cInject = try fs.cwd().openFile("inject.c", .{});
+    defer cInject.close();
+    try c.writeFileAll(cInject, .{});
+
+    for (rl.functions.values()) |func| {
+        if (inject.containsSymbol(func.name)) continue;
+
+        //--- C-HEADER -----------------------------
+
+        try h.writeAll(try allocPrint(allocator, "// {s}\n", .{func.description}));
+        try writeCSignature(allocator, h, func);
+        try h.writeAll(";\n\n");
+
+        try writeCSignature(allocator, c, func);
+        try c.writeAll("\n{\n");
+
+        //--- C-IMPLEMENT -----------------------------
+
+        if (mapping.isPrimitiveOrPointer(func.returnType)) {
+            try c.writeAll("\treturn ");
+        } else {
+            try c.writeAll("\t*out = ");
+        }
+
+        try c.writeAll(
+            try allocPrint(
+                allocator,
+                "{s}(",
+                .{func.name},
+            ),
+        );
+
+        if (func.params) |params| {
+            for (params) |param, i| {
+                if (mapping.isPrimitiveOrPointer(param.@"type")) {
+                    try c.writeAll(
+                        try allocPrint(
+                            allocator,
+                            "{s}",
+                            .{param.name},
+                        ),
+                    );
+                } else {
+                    try c.writeAll(
+                        try allocPrint(
+                            allocator,
+                            "*{s}",
+                            .{param.name},
+                        ),
+                    );
+                }
+
+                if (i < params.len - 1) {
+                    try c.writeAll(", ");
+                }
+            }
+        }
+
+        try c.writeAll(");\n}\n\n");
+    }
 }
 
 fn writeStructs(
@@ -365,25 +387,6 @@ fn writeEnums(
     std.log.info("generated enums", .{});
 }
 
-fn writeImports(
-    _: std.mem.Allocator,
-    file: *fs.File,
-    bindings: mapping.Intermediate,
-) !void {
-    var buf: [51200]u8 = undefined;
-    var fba = std.heap.FixedBufferAllocator.init(&buf);
-
-    for (bindings.imports) |import| {
-        defer fba.reset();
-
-        try file.writeAll(try allocPrint(fba.allocator(), "{s}\n", .{import}));
-    }
-
-    try file.writeAll("\n");
-
-    std.log.info("written imports", .{});
-}
-
 fn writeInjections(
     _: std.mem.Allocator,
     file: *fs.File,
@@ -398,7 +401,7 @@ fn writeInjections(
         try file.writeAll(try allocPrint(fba.allocator(), "{s}\n", .{line}));
     }
 
-    std.log.info("appended inject.zig", .{});
+    std.log.info("written inject.zig", .{});
 }
 
 fn eql(a: []const u8, b: []const u8) bool {
@@ -442,4 +445,24 @@ fn stripType(z: []const u8) []const u8 {
     name = if (startsWith(name, "const ")) name["const ".len..] else name;
 
     return std.mem.trim(u8, name, " \t\n");
+}
+
+/// true if Zig type is primitive or a pointer to anything
+/// this means we don't need to wrap it in a pointer
+pub fn isPrimitiveOrPointer(z: []const u8) bool {
+    const primitiveTypes = std.ComptimeStringMap(void, .{
+        // .{ "void", {} }, // zig void is zero sized while C void is >= 1 byte
+        .{ "bool", {} },
+        .{ "u8", {} },
+        .{ "i8", {} },
+        .{ "i16", {} },
+        .{ "u16", {} },
+        .{ "i32", {} },
+        .{ "u32", {} },
+        .{ "i64", {} },
+        .{ "u64", {} },
+        .{ "f32", {} },
+        .{ "f64", {} },
+    });
+    return primitiveTypes.has(stripType(z)) or pointerOffset(z) > 0;
 }

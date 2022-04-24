@@ -19,7 +19,6 @@ const expectEqualStrings = std.testing.expectEqualStrings;
 //--- Intermediate Format -------------------------------------------------------------------------
 
 pub const Intermediate = struct {
-    imports: []const []const u8,
     functions: []Function,
     enums: []Enum,
     structs: []Struct,
@@ -57,7 +56,6 @@ pub const Intermediate = struct {
         }
 
         return @This(){
-            .imports = bindingJson.imports,
             .enums = enums.toOwnedSlice(),
             .structs = structs.toOwnedSlice(),
             .functions = functions.toOwnedSlice(),
@@ -111,8 +109,8 @@ pub const Intermediate = struct {
     }
 
     pub fn containsStruct(self: @This(), name: []const u8) bool {
-        for(self.structs) |s| {
-            if(eql(s.name, name)) return true;
+        for (self.structs) |s| {
+            if (eql(s.name, name)) return true;
         }
         return false;
     }
@@ -491,44 +489,44 @@ const RaylibJson = struct {
     functions: []RaylibFunction,
 };
 
-const RaylibStruct = struct {
+pub const RaylibStruct = struct {
     name: []const u8,
     description: []const u8,
     fields: []RaylibField,
 };
 
-const RaylibField = struct {
+pub const RaylibField = struct {
     name: []const u8,
     description: []const u8,
     @"type": []const u8,
 };
 
-const RaylibEnum = struct {
+pub const RaylibEnum = struct {
     name: []const u8,
     description: []const u8,
     values: []const RaylibEnumValue,
 };
 
-const RaylibEnumValue = struct {
+pub const RaylibEnumValue = struct {
     name: []const u8,
     description: []const u8,
     value: c_int,
 };
 
-const RaylibFunction = struct {
+pub const RaylibFunction = struct {
     name: []const u8,
     description: []const u8,
     returnType: []const u8,
     params: ?[]const RaylibFunctionParam = null,
 };
 
-const RaylibFunctionParam = struct {
+pub const RaylibFunctionParam = struct {
     name: []const u8,
     @"type": []const u8,
     description: ?[]const u8 = null,
 };
 
-const RaylibDefine = struct {
+pub const RaylibDefine = struct {
     name: []const u8,
     @"type": []const u8,
     value: union(enum) { string: []const u8, number: f32 },
@@ -536,6 +534,26 @@ const RaylibDefine = struct {
 };
 
 //--- Helpers -------------------------------------------------------------------------------------
+
+/// true if C type is primitive or a pointer to anything
+/// this means we don't need to wrap it in a pointer
+pub fn isPrimitiveOrPointer(c: []const u8) bool {
+    const primitiveTypes = std.ComptimeStringMap(void, .{
+        .{ "void", {} },
+        .{ "bool", {} },
+        .{ "char", {} },
+        .{ "unsigned char", {} },
+        .{ "short", {} },
+        .{ "unsigned short", {} },
+        .{ "int", {} },
+        .{ "unsigned int", {} },
+        .{ "long", {} },
+        .{ "unsigned long", {} },
+        .{ "float", {} },
+        .{ "double", {} },
+    });
+    return primitiveTypes.has(stripType(c)) or endsWith(c, "*");
+}
 
 fn eql(a: []const u8, b: []const u8) bool {
     return std.mem.eql(u8, a, b);

@@ -1,3 +1,11 @@
+const std = @import("std");
+const raylib = @cImport({
+    @cDefine("RAYMATH_IMPLEMENTATION", {});
+    @cInclude("raylib.h");
+    @cInclude("raymath.h");
+    @cInclude("marshal.h");
+});
+
 //--- colors --------------------------------------------------------------------------------------
 
 pub const LIGHTGRAY = Color{ .r = 200, .g = 200, .b = 200, .a = 255 };
@@ -604,4 +612,18 @@ pub fn MemFree(
     ptr: ?*anyopaque,
 ) void {
     raylib.MemFree(ptr);
+}
+
+/// Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
+pub fn TraceLog(
+    logLevel: i32,
+    text: [*:0]const u8,
+) void {
+    raylib.TraceLog(logLevel, text);
+}
+
+/// Text formatting with variables (sprintf() style)
+/// caller owns memory
+pub fn TextFormat(text: [*:0]const u8) [*:0]const u8 {
+    return raylib.TextFormat(text);
 }

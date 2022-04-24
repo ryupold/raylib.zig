@@ -1,13 +1,13 @@
 # raylib.zig
-Idomatic [raylib](https://www.raylib.com/) (4.0) bindings for [Zig](https://ziglang.org/) (0.9.1)
+Idiomatic [raylib](https://www.raylib.com/) (4.0) bindings for [Zig](https://ziglang.org/) (0.9.1)
 
 ## supported APIs
-- [ ] RLAPI (raylib.h)
-- [ ] RMAPI (raymath.h)
+- [x] RLAPI (raylib.h)
+- [x] RMAPI (raymath.h)
 - [ ] RAYGUIAPI (extras/raygui.h)
 - [ ] PHYSACDEF (extras/physac.h)
 - [ ] Constants
-  - [ ] Colors
+  - [x] Colors
   - [ ] Versions
   - [ ] GUI dimensions
 

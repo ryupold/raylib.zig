@@ -1,8 +1,4 @@
 {
-    "imports": [
-        "const std = @import(\"std\");",
-        "const raylib = @cImport({@cDefine(\"RAYMATH_IMPLEMENTATION\", {});\n@cInclude(\"raylib.h\");\n@cInclude(\"raymath.h\");\n});"
-    ],
     "functions": [
         {
             "name": "TraceLog",
