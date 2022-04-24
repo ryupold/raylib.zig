@@ -1,6 +1,14 @@
 # raylib.zig
 Idiomatic [raylib](https://www.raylib.com/) (4.0) bindings for [Zig](https://ziglang.org/) (0.9.1)
 
+For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig)
+
+## supported platforms
+- Windows
+- macOS
+- Linux
+- HTML5/WebGL (emscripten)
+
 ## supported APIs
 - [x] RLAPI (raylib.h)
 - [x] RMAPI (raymath.h)
@@ -21,13 +29,16 @@ cd $YOUR_SRC_FOLDER
 git submodule add --recursive https://github.com/ryupold/raylib.zig raylib
 ```
 
+The bindings have been prebuilt so you just need to
 Then @import raylib.zig
 ```zig
 const raylib = @import("raylib/raylib.zig");
 ```
+> Note: you only need the files `raylib.zig`, `marshal.h` and `marshal.c` for this to work
 
 ## custom definitions
-An easy way to fix binding mistakes is to edit them in `bindings.json` and setting the custom flag to true. This way the binding will not be overriden when calling `zig build intermediate`. imports are always kept in the bindings.json.
+An easy way to fix binding mistakes is to edit them in `bindings.json` and setting the custom flag to true. This way the binding will not be overriden when calling `zig build intermediate`. 
+Additionally you can add custom definitions into `inject.zig, inject.h, inject.c` these files will be prepended accordingly.
 
 ## disclaimer
 I haven't tested nearly all generated functions, so there might be bugs. Especially when it comes to pointers as it is not decidable (for the generator) what a pointer to C means. Could be single item, array, sentinel terminated and/or nullable. If you run into crashes using one of the functions or types in `raylib.zig` feel free to [create an issue](https://github.com/ryupold/raylib.zig/issues) and I will look into it.
