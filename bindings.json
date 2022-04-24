@@ -10418,11 +10418,6 @@
                     "description": "Key: Android back button"
                 },
                 {
-                    "name": "KEY_MENU",
-                    "value": 82,
-                    "description": "Key: Android menu button"
-                },
-                {
                     "name": "KEY_VOLUME_UP",
                     "value": 24,
                     "description": "Key: Android volume up button"
@@ -10434,7 +10429,7 @@
                 }
             ],
             "description": "Keyboard keys (US keyboard layout)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "MouseButton",

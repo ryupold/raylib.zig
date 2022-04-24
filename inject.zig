@@ -459,6 +459,31 @@ pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
 
 //--- functions -----------------------------------------------------------------------------------
 
+/// Load file data as byte array (read)
+pub fn LoadFileData(
+    fileName: [*:0]const u8
+) ![]const u8 {
+    var bytesRead: u32 = undefined;
+    const data = raylib.LoadFileData(
+            @intToPtr([*c]const u8, @ptrToInt(fileName)),
+            @ptrCast([*c]u32, &bytesRead),
+        );
+
+    if(data == null) return error.FileNotFound;
+
+    return data[0..bytesRead];
+}
+
+/// Unload file data allocated by LoadFileData()
+pub fn UnloadFileData(
+    data: []const u8,
+) void {
+    raylib.UnloadFileData(
+        @intToPtr([*c]u8, @ptrToInt(data.ptr)),
+    );
+}
+
+
 /// Load style from file (.rgs)
 pub fn LoadGuiStyle(_: [*:0]const u8) u32 {
     @panic("LoadGuiStyle is not implemented");
