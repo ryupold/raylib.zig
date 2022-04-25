@@ -296,12 +296,6 @@ void mSetLoadFileTextCallback(LoadFileTextCallback *callback);
 // Set custom file text data saver
 void mSetSaveFileTextCallback(SaveFileTextCallback *callback);
 
-// Load file data as byte array (read)
-unsigned char * mLoadFileData(const char * fileName, unsigned int * bytesRead);
-
-// Unload file data allocated by LoadFileData()
-void mUnloadFileData(unsigned char * data);
-
 // Save data to file from byte array (write), returns true on success
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite);
 

@@ -492,16 +492,6 @@ void mSetSaveFileTextCallback(SaveFileTextCallback *callback)
 	return SetSaveFileTextCallback(*callback);
 }
 
-unsigned char * mLoadFileData(const char * fileName, unsigned int * bytesRead)
-{
-	return LoadFileData(fileName, bytesRead);
-}
-
-void mUnloadFileData(unsigned char * data)
-{
-	return UnloadFileData(data);
-}
-
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite)
 {
 	return SaveFileData(fileName, data, bytesToWrite);
