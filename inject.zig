@@ -460,16 +460,14 @@ pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
 //--- functions -----------------------------------------------------------------------------------
 
 /// Load file data as byte array (read)
-pub fn LoadFileData(
-    fileName: [*:0]const u8
-) ![]const u8 {
+pub fn LoadFileData(fileName: [*:0]const u8) ![]const u8 {
     var bytesRead: u32 = undefined;
     const data = raylib.LoadFileData(
-            @intToPtr([*c]const u8, @ptrToInt(fileName)),
-            @ptrCast([*c]u32, &bytesRead),
-        );
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        @ptrCast([*c]u32, &bytesRead),
+    );
 
-    if(data == null) return error.FileNotFound;
+    if (data == null) return error.FileNotFound;
 
     return data[0..bytesRead];
 }
@@ -483,7 +481,6 @@ pub fn UnloadFileData(
     );
 }
 
-
 /// Load style from file (.rgs)
 pub fn LoadGuiStyle(_: [*:0]const u8) u32 {
     @panic("LoadGuiStyle is not implemented");
@@ -494,16 +491,6 @@ pub fn LoadGuiStyle(_: [*:0]const u8) u32 {
 pub fn UnloadGuiStyle(_: u32) void {
     @panic("UnloadGuiStyle is not implemented");
     // raylib.UnloadGuiStyle(style);
-}
-
-pub fn TextSplit() void {
-    @panic("use std lib for that");
-}
-pub fn TextJoin() void {
-    @panic("use std lib for that");
-}
-pub fn TextAppend() void {
-    @panic("use std lib for that");
 }
 
 /// Set custom trace log
@@ -649,6 +636,40 @@ pub fn TraceLog(
 
 /// Text formatting with variables (sprintf() style)
 /// caller owns memory
-pub fn TextFormat(text: [*:0]const u8) [*:0]const u8 {
-    return raylib.TextFormat(text);
+pub fn TextFormat(allocator: std.mem.Allocator, comptime fmt: []const u8, args: anytype) std.fmt.AllocPrintError![*:0]const u8 {
+    return (try std.fmt.allocPrintZ(allocator, fmt, args)).ptr;
+}
+
+/// Split text into multiple strings
+pub fn TextSplit(allocator: std.mem.Allocator, text: []const u8, delimiter: []const u8, count: i32) ![]const []const u8 {
+    var list = std.ArrayList([]const u8).init(allocator);
+    var it = std.mem.split(u8, text, delimiter);
+    var i = 0;
+    var n = 0;
+    while (it.next()) |slice| : (i += 1) {
+        if (i >= count) {
+            break;
+        }
+
+        try list.append(slice);
+        n += slice.len;
+    }
+    if (n < text.len) {
+        try list.append(text[n..]);
+    }
+    return list.toOwnedSlice();
+}
+
+/// Join text strings with delimiter
+pub fn TextJoin(allocator: std.mem.Allocator, textList: []const []const u8, delimiter: []const u8) ![:0]const u8 {
+    return (try std.mem.joinZ(allocator, delimiter, textList)).ptr;
+}
+
+/// Append text at specific position and move cursor!
+pub fn TextAppend(allocator: std.mem.Allocator, text: []const u8, append: []const u8, position: i32) std.fmt.AllocPrintError![:0]u8 {
+    return (try std.fmt.allocPrintZ(allocator, "{s}{s}{s}", .{
+        text[0..position],
+        append,
+        text[position..],
+    })).ptr;
 }
