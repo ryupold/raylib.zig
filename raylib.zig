@@ -690,6 +690,15 @@ pub fn LoadFontData(
     );
 }
 
+/// Update camera position for selected mode
+pub fn UpdateCamera(
+    camera: *Camera3D,
+) void {
+    raylib.mUpdateCamera(
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
+    );
+}
+
 /// Initialize window and OpenGL context
 pub fn InitWindow(
     width: i32,
@@ -2161,15 +2170,6 @@ pub fn SetCameraMode(
     raylib.mSetCameraMode(
         @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
         mode,
-    );
-}
-
-/// Update camera position for selected mode
-pub fn UpdateCamera(
-    camera: [*]Camera3D,
-) void {
-    raylib.mUpdateCamera(
-        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
     );
 }
 
