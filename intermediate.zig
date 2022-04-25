@@ -27,7 +27,6 @@ pub fn main() !void {
     var bindings: mapping.Intermediate = mapping.Intermediate.loadCustoms(arena.allocator(), bindingsJSON) catch |err| Catch: {
         std.log.warn("could not open {s}: {?}\n", .{ bindingsJSON, err });
         break :Catch mapping.Intermediate{
-            .imports = &.{},
             .enums = &[_]mapping.Enum{},
             .structs = &[_]mapping.Struct{},
             .functions = &[_]mapping.Function{},

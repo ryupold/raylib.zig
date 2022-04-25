@@ -7975,58 +7975,6 @@ pub const float16 = extern struct {
     v: [16]f32,
 };
 
-/// System/Window config flags
-pub const ConfigFlags = enum(i32) {
-    /// Set to try enabling V-Sync on GPU
-    FLAG_VSYNC_HINT = 64,
-    /// Set to run program in fullscreen
-    FLAG_FULLSCREEN_MODE = 2,
-    /// Set to allow resizable window
-    FLAG_WINDOW_RESIZABLE = 4,
-    /// Set to disable window decoration (frame and buttons)
-    FLAG_WINDOW_UNDECORATED = 8,
-    /// Set to hide window
-    FLAG_WINDOW_HIDDEN = 128,
-    /// Set to minimize window (iconify)
-    FLAG_WINDOW_MINIMIZED = 512,
-    /// Set to maximize window (expanded to monitor)
-    FLAG_WINDOW_MAXIMIZED = 1024,
-    /// Set to window non focused
-    FLAG_WINDOW_UNFOCUSED = 2048,
-    /// Set to window always on top
-    FLAG_WINDOW_TOPMOST = 4096,
-    /// Set to allow windows running while minimized
-    FLAG_WINDOW_ALWAYS_RUN = 256,
-    /// Set to allow transparent framebuffer
-    FLAG_WINDOW_TRANSPARENT = 16,
-    /// Set to support HighDPI
-    FLAG_WINDOW_HIGHDPI = 8192,
-    /// Set to try enabling MSAA 4X
-    FLAG_MSAA_4X_HINT = 32,
-    /// Set to try enabling interlaced video format (for V3D)
-    FLAG_INTERLACED_HINT = 65536,
-};
-
-/// Trace log level
-pub const TraceLogLevel = enum(i32) {
-    /// Display all logs
-    LOG_ALL = 0,
-    /// Trace logging, intended for internal use only
-    LOG_TRACE = 1,
-    /// Debug logging, used for internal debugging, it should be disabled on release builds
-    LOG_DEBUG = 2,
-    /// Info logging, used for program execution info
-    LOG_INFO = 3,
-    /// Warning logging, used on recoverable failures
-    LOG_WARNING = 4,
-    /// Error logging, used on unrecoverable failures
-    LOG_ERROR = 5,
-    /// Fatal logging, used to abort program: exit(EXIT_FAILURE)
-    LOG_FATAL = 6,
-    /// Disable logging
-    LOG_NONE = 7,
-};
-
 /// Keyboard keys (US keyboard layout)
 pub const KeyboardKey = enum(i32) {
     /// Key: NULL, used for no key pressed
@@ -8243,12 +8191,62 @@ pub const KeyboardKey = enum(i32) {
     KEY_KP_EQUAL = 336,
     /// Key: Android back button
     KEY_BACK = 4,
-    /// Key: Android menu button
-    KEY_MENU = 82,
     /// Key: Android volume up button
     KEY_VOLUME_UP = 24,
     /// Key: Android volume down button
     KEY_VOLUME_DOWN = 25,
+};
+
+/// System/Window config flags
+pub const ConfigFlags = enum(i32) {
+    /// Set to try enabling V-Sync on GPU
+    FLAG_VSYNC_HINT = 64,
+    /// Set to run program in fullscreen
+    FLAG_FULLSCREEN_MODE = 2,
+    /// Set to allow resizable window
+    FLAG_WINDOW_RESIZABLE = 4,
+    /// Set to disable window decoration (frame and buttons)
+    FLAG_WINDOW_UNDECORATED = 8,
+    /// Set to hide window
+    FLAG_WINDOW_HIDDEN = 128,
+    /// Set to minimize window (iconify)
+    FLAG_WINDOW_MINIMIZED = 512,
+    /// Set to maximize window (expanded to monitor)
+    FLAG_WINDOW_MAXIMIZED = 1024,
+    /// Set to window non focused
+    FLAG_WINDOW_UNFOCUSED = 2048,
+    /// Set to window always on top
+    FLAG_WINDOW_TOPMOST = 4096,
+    /// Set to allow windows running while minimized
+    FLAG_WINDOW_ALWAYS_RUN = 256,
+    /// Set to allow transparent framebuffer
+    FLAG_WINDOW_TRANSPARENT = 16,
+    /// Set to support HighDPI
+    FLAG_WINDOW_HIGHDPI = 8192,
+    /// Set to try enabling MSAA 4X
+    FLAG_MSAA_4X_HINT = 32,
+    /// Set to try enabling interlaced video format (for V3D)
+    FLAG_INTERLACED_HINT = 65536,
+};
+
+/// Trace log level
+pub const TraceLogLevel = enum(i32) {
+    /// Display all logs
+    LOG_ALL = 0,
+    /// Trace logging, intended for internal use only
+    LOG_TRACE = 1,
+    /// Debug logging, used for internal debugging, it should be disabled on release builds
+    LOG_DEBUG = 2,
+    /// Info logging, used for program execution info
+    LOG_INFO = 3,
+    /// Warning logging, used on recoverable failures
+    LOG_WARNING = 4,
+    /// Error logging, used on unrecoverable failures
+    LOG_ERROR = 5,
+    /// Fatal logging, used to abort program: exit(EXIT_FAILURE)
+    LOG_FATAL = 6,
+    /// Disable logging
+    LOG_NONE = 7,
 };
 
 /// Mouse buttons
