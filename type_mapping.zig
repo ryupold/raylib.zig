@@ -70,7 +70,7 @@ pub const Intermediate = struct {
         var functions = std.ArrayList(Function).init(allocator);
         try functions.appendSlice(self.functions);
 
-        outer: for (rlJson.enums.values()) |e| {
+        outer: for (rlJson.enums.values()) |e, i| {
             const name = if (alias.get(e.name)) |n| n else e.name;
             for (enums.items) |added| {
                 if (eql(added.name, name)) {
@@ -79,9 +79,13 @@ pub const Intermediate = struct {
                 }
             }
 
-            try enums.append(try parseRaylibEnum(allocator, e));
+            if (i < enums.items.len) {
+                try enums.insert(i, try parseRaylibEnum(allocator, e));
+            } else {
+                try enums.append(try parseRaylibEnum(allocator, e));
+            }
         }
-        outer: for (rlJson.structs.values()) |s| {
+        outer: for (rlJson.structs.values()) |s, i| {
             const name = if (alias.get(s.name)) |n| n else s.name;
             for (structs.items) |added| {
                 if (eql(added.name, name)) {
@@ -89,18 +93,26 @@ pub const Intermediate = struct {
                     continue :outer;
                 }
             }
-            try structs.append(try parseRaylibStruct(allocator, s));
+            if (i < structs.items.len) {
+                try structs.insert(i, try parseRaylibStruct(allocator, s));
+            } else {
+                try structs.append(try parseRaylibStruct(allocator, s));
+            }
         }
         for (rlJson.defines.values()) |_| {}
 
-        outer: for (rlJson.functions.values()) |f| {
+        outer: for (rlJson.functions.values()) |f, i| {
             for (functions.items) |added| {
                 if (eql(added.name, f.name)) {
                     std.log.debug("{s} is customized", .{f.name});
                     continue :outer;
                 }
             }
-            try functions.append(try parseRaylibFunction(allocator, f));
+            if (i < functions.items.len) {
+                try functions.insert(i, try parseRaylibFunction(allocator, f));
+            } else {
+                try functions.append(try parseRaylibFunction(allocator, f));
+            }
         }
 
         self.enums = enums.toOwnedSlice();
@@ -111,6 +123,13 @@ pub const Intermediate = struct {
     pub fn containsStruct(self: @This(), name: []const u8) bool {
         for (self.structs) |s| {
             if (eql(s.name, name)) return true;
+        }
+        return false;
+    }
+
+    pub fn containsEnum(self: @This(), name: []const u8) bool {
+        for (self.enums) |e| {
+            if (eql(e.name, name)) return true;
         }
         return false;
     }
