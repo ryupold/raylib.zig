@@ -459,6 +459,15 @@ pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
 
 //--- functions -----------------------------------------------------------------------------------
 
+/// Setup init configuration flags (view FLAGS)
+pub fn SetConfigFlags(
+    flags: ConfigFlags,
+) void {
+    raylib.SetConfigFlags(
+        @intCast(u32, @enumToInt(flags)),
+    );
+}
+
 /// Load file data as byte array (read)
 pub fn LoadFileData(fileName: [*:0]const u8) ![]const u8 {
     var bytesRead: u32 = undefined;

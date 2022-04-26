@@ -1,162 +1,6 @@
 {
     "functions": [
         {
-            "name": "TraceLog",
-            "params": [
-                {
-                    "name": "logLevel",
-                    "typ": "i32"
-                },
-                {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                }
-            ],
-            "returnType": "void",
-            "description": "Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)",
-            "custom": true
-        },
-        {
-            "name": "TextFormat",
-            "params": [
-                {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                }
-            ],
-            "returnType": "[*:0]const u8",
-            "description": "rewritten in inject.zig",
-            "custom": true
-        },
-        {
-            "name": "Vector3Length",
-            "params": [
-                {
-                    "name": "v",
-                    "typ": "Vector3"
-                }
-            ],
-            "returnType": "f32",
-            "description": "",
-            "custom": true
-        },
-        {
-            "name": "Vector3LengthSqr",
-            "params": [
-                {
-                    "name": "v",
-                    "typ": "Vector3"
-                }
-            ],
-            "returnType": "f32",
-            "description": "",
-            "custom": true
-        },
-        {
-            "name": "LoadFontData",
-            "params": [
-                {
-                    "name": "fileData",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "dataSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontChars",
-                    "typ": "[*]i32"
-                },
-                {
-                    "name": "glyphCount",
-                    "typ": "i32"
-                },
-                {
-                    "name": "typ",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "[*]GlyphInfo",
-            "description": "Load font data for further use",
-            "custom": true
-        },
-        {
-            "name": "UpdateCamera",
-            "params": [
-                {
-                    "name": "camera",
-                    "typ": "*Camera3D"
-                }
-            ],
-            "returnType": "void",
-            "description": "Update camera position for selected mode",
-            "custom": true
-        },
-        {
-            "name": "TextJoin",
-            "params": [
-                {
-                    "name": "textList",
-                    "typ": "[*]const [*:0]const u8"
-                },
-                {
-                    "name": "count",
-                    "typ": "i32"
-                },
-                {
-                    "name": "delimiter",
-                    "typ": "[*:0]const u8"
-                }
-            ],
-            "returnType": "[*:0]const u8",
-            "description": "overriden in inject.zig",
-            "custom": true
-        },
-        {
-            "name": "TextSplit",
-            "params": [
-                {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "delimiter",
-                    "typ": "u8"
-                },
-                {
-                    "name": "count",
-                    "typ": "[*]i32"
-                }
-            ],
-            "returnType": "[*]const [*:0]const u8",
-            "description": "overriden in inject.zig",
-            "custom": true
-        },
-        {
-            "name": "TextAppend",
-            "params": [
-                {
-                    "name": "text",
-                    "typ": "[*]u8"
-                },
-                {
-                    "name": "append",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "position",
-                    "typ": "[*]i32"
-                }
-            ],
-            "returnType": "void",
-            "description": "overriden in inject.zig",
-            "custom": true
-        },
-        {
             "name": "InitWindow",
             "params": [
                 {
@@ -1186,12 +1030,28 @@
             "params": [
                 {
                     "name": "flags",
-                    "typ": "u32"
+                    "typ": "ConfigFlags"
                 }
             ],
             "returnType": "void",
             "description": "Setup init configuration flags (view FLAGS)",
-            "custom": false
+            "custom": true
+        },
+        {
+            "name": "TraceLog",
+            "params": [
+                {
+                    "name": "logLevel",
+                    "typ": "i32"
+                },
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "void",
+            "description": "Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)",
+            "custom": true
         },
         {
             "name": "SetTraceLogLevel",
@@ -1713,60 +1573,60 @@
             "params": [
                 {
                     "name": "key",
-                    "typ": "i32"
+                    "typ": "KeyboardKey"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a key has been pressed once",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsKeyDown",
             "params": [
                 {
                     "name": "key",
-                    "typ": "i32"
+                    "typ": "KeyboardKey"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a key is being pressed",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsKeyReleased",
             "params": [
                 {
                     "name": "key",
-                    "typ": "i32"
+                    "typ": "KeyboardKey"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a key has been released once",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsKeyUp",
             "params": [
                 {
                     "name": "key",
-                    "typ": "i32"
+                    "typ": "KeyboardKey"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a key is NOT being pressed",
-            "custom": false
+            "custom": true
         },
         {
             "name": "SetExitKey",
             "params": [
                 {
                     "name": "key",
-                    "typ": "i32"
+                    "typ": "KeyboardKey"
                 }
             ],
             "returnType": "void",
             "description": "Set a custom key to exit program (default is ESC)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "GetKeyPressed",
@@ -1922,48 +1782,48 @@
             "params": [
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "MouseButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a mouse button has been pressed once",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsMouseButtonDown",
             "params": [
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "MouseButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a mouse button is being pressed",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsMouseButtonReleased",
             "params": [
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "MouseButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a mouse button has been released once",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsMouseButtonUp",
             "params": [
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "MouseButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a mouse button is NOT being pressed",
-            "custom": false
+            "custom": true
         },
         {
             "name": "GetMouseX",
@@ -2186,6 +2046,18 @@
             "returnType": "void",
             "description": "Set camera mode (multiple camera modes available)",
             "custom": false
+        },
+        {
+            "name": "TextFormat",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "[*:0]const u8",
+            "description": "rewritten in inject.zig",
+            "custom": true
         },
         {
             "name": "SetCameraPanControl",
@@ -5318,6 +5190,18 @@
             "custom": false
         },
         {
+            "name": "Vector3Length",
+            "params": [
+                {
+                    "name": "v",
+                    "typ": "Vector3"
+                }
+            ],
+            "returnType": "f32",
+            "description": "",
+            "custom": true
+        },
+        {
             "name": "GenImageFontAtlas",
             "params": [
                 {
@@ -5794,6 +5678,18 @@
             "custom": false
         },
         {
+            "name": "Vector3LengthSqr",
+            "params": [
+                {
+                    "name": "v",
+                    "typ": "Vector3"
+                }
+            ],
+            "returnType": "f32",
+            "description": "",
+            "custom": true
+        },
+        {
             "name": "TextSubtext",
             "params": [
                 {
@@ -5852,6 +5748,70 @@
             "returnType": "[*]u8",
             "description": "Insert text in a position (WARNING: memory must be freed!)",
             "custom": false
+        },
+        {
+            "name": "LoadFontData",
+            "params": [
+                {
+                    "name": "fileData",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "dataSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontChars",
+                    "typ": "[*]i32"
+                },
+                {
+                    "name": "glyphCount",
+                    "typ": "i32"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "[*]GlyphInfo",
+            "description": "Load font data for further use",
+            "custom": true
+        },
+        {
+            "name": "UpdateCamera",
+            "params": [
+                {
+                    "name": "camera",
+                    "typ": "*Camera3D"
+                }
+            ],
+            "returnType": "void",
+            "description": "Update camera position for selected mode",
+            "custom": true
+        },
+        {
+            "name": "TextJoin",
+            "params": [
+                {
+                    "name": "textList",
+                    "typ": "[*]const [*:0]const u8"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                },
+                {
+                    "name": "delimiter",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "[*:0]const u8",
+            "description": "overriden in inject.zig",
+            "custom": true
         },
         {
             "name": "TextFindIndex",
@@ -8800,6 +8760,46 @@
             "custom": false
         },
         {
+            "name": "TextSplit",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "delimiter",
+                    "typ": "u8"
+                },
+                {
+                    "name": "count",
+                    "typ": "[*]i32"
+                }
+            ],
+            "returnType": "[*]const [*:0]const u8",
+            "description": "overriden in inject.zig",
+            "custom": true
+        },
+        {
+            "name": "TextAppend",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*]u8"
+                },
+                {
+                    "name": "append",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "position",
+                    "typ": "[*]i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "overriden in inject.zig",
+            "custom": true
+        },
+        {
             "name": "Vector3DotProduct",
             "params": [
                 {
@@ -9756,6 +9756,130 @@
     ],
     "enums": [
         {
+            "name": "ConfigFlags",
+            "values": [
+                {
+                    "name": "FLAG_VSYNC_HINT",
+                    "value": 64,
+                    "description": "Set to try enabling V-Sync on GPU"
+                },
+                {
+                    "name": "FLAG_FULLSCREEN_MODE",
+                    "value": 2,
+                    "description": "Set to run program in fullscreen"
+                },
+                {
+                    "name": "FLAG_WINDOW_RESIZABLE",
+                    "value": 4,
+                    "description": "Set to allow resizable window"
+                },
+                {
+                    "name": "FLAG_WINDOW_UNDECORATED",
+                    "value": 8,
+                    "description": "Set to disable window decoration (frame and buttons)"
+                },
+                {
+                    "name": "FLAG_WINDOW_HIDDEN",
+                    "value": 128,
+                    "description": "Set to hide window"
+                },
+                {
+                    "name": "FLAG_WINDOW_MINIMIZED",
+                    "value": 512,
+                    "description": "Set to minimize window (iconify)"
+                },
+                {
+                    "name": "FLAG_WINDOW_MAXIMIZED",
+                    "value": 1024,
+                    "description": "Set to maximize window (expanded to monitor)"
+                },
+                {
+                    "name": "FLAG_WINDOW_UNFOCUSED",
+                    "value": 2048,
+                    "description": "Set to window non focused"
+                },
+                {
+                    "name": "FLAG_WINDOW_TOPMOST",
+                    "value": 4096,
+                    "description": "Set to window always on top"
+                },
+                {
+                    "name": "FLAG_WINDOW_ALWAYS_RUN",
+                    "value": 256,
+                    "description": "Set to allow windows running while minimized"
+                },
+                {
+                    "name": "FLAG_WINDOW_TRANSPARENT",
+                    "value": 16,
+                    "description": "Set to allow transparent framebuffer"
+                },
+                {
+                    "name": "FLAG_WINDOW_HIGHDPI",
+                    "value": 8192,
+                    "description": "Set to support HighDPI"
+                },
+                {
+                    "name": "FLAG_MSAA_4X_HINT",
+                    "value": 32,
+                    "description": "Set to try enabling MSAA 4X"
+                },
+                {
+                    "name": "FLAG_INTERLACED_HINT",
+                    "value": 65536,
+                    "description": "Set to try enabling interlaced video format (for V3D)"
+                }
+            ],
+            "description": "System/Window config flags",
+            "custom": false
+        },
+        {
+            "name": "TraceLogLevel",
+            "values": [
+                {
+                    "name": "LOG_ALL",
+                    "value": 0,
+                    "description": "Display all logs"
+                },
+                {
+                    "name": "LOG_TRACE",
+                    "value": 1,
+                    "description": "Trace logging, intended for internal use only"
+                },
+                {
+                    "name": "LOG_DEBUG",
+                    "value": 2,
+                    "description": "Debug logging, used for internal debugging, it should be disabled on release builds"
+                },
+                {
+                    "name": "LOG_INFO",
+                    "value": 3,
+                    "description": "Info logging, used for program execution info"
+                },
+                {
+                    "name": "LOG_WARNING",
+                    "value": 4,
+                    "description": "Warning logging, used on recoverable failures"
+                },
+                {
+                    "name": "LOG_ERROR",
+                    "value": 5,
+                    "description": "Error logging, used on unrecoverable failures"
+                },
+                {
+                    "name": "LOG_FATAL",
+                    "value": 6,
+                    "description": "Fatal logging, used to abort program: exit(EXIT_FAILURE)"
+                },
+                {
+                    "name": "LOG_NONE",
+                    "value": 7,
+                    "description": "Disable logging"
+                }
+            ],
+            "description": "Trace log level",
+            "custom": false
+        },
+        {
             "name": "KeyboardKey",
             "values": [
                 {
@@ -10306,130 +10430,6 @@
             ],
             "description": "Keyboard keys (US keyboard layout)",
             "custom": true
-        },
-        {
-            "name": "ConfigFlags",
-            "values": [
-                {
-                    "name": "FLAG_VSYNC_HINT",
-                    "value": 64,
-                    "description": "Set to try enabling V-Sync on GPU"
-                },
-                {
-                    "name": "FLAG_FULLSCREEN_MODE",
-                    "value": 2,
-                    "description": "Set to run program in fullscreen"
-                },
-                {
-                    "name": "FLAG_WINDOW_RESIZABLE",
-                    "value": 4,
-                    "description": "Set to allow resizable window"
-                },
-                {
-                    "name": "FLAG_WINDOW_UNDECORATED",
-                    "value": 8,
-                    "description": "Set to disable window decoration (frame and buttons)"
-                },
-                {
-                    "name": "FLAG_WINDOW_HIDDEN",
-                    "value": 128,
-                    "description": "Set to hide window"
-                },
-                {
-                    "name": "FLAG_WINDOW_MINIMIZED",
-                    "value": 512,
-                    "description": "Set to minimize window (iconify)"
-                },
-                {
-                    "name": "FLAG_WINDOW_MAXIMIZED",
-                    "value": 1024,
-                    "description": "Set to maximize window (expanded to monitor)"
-                },
-                {
-                    "name": "FLAG_WINDOW_UNFOCUSED",
-                    "value": 2048,
-                    "description": "Set to window non focused"
-                },
-                {
-                    "name": "FLAG_WINDOW_TOPMOST",
-                    "value": 4096,
-                    "description": "Set to window always on top"
-                },
-                {
-                    "name": "FLAG_WINDOW_ALWAYS_RUN",
-                    "value": 256,
-                    "description": "Set to allow windows running while minimized"
-                },
-                {
-                    "name": "FLAG_WINDOW_TRANSPARENT",
-                    "value": 16,
-                    "description": "Set to allow transparent framebuffer"
-                },
-                {
-                    "name": "FLAG_WINDOW_HIGHDPI",
-                    "value": 8192,
-                    "description": "Set to support HighDPI"
-                },
-                {
-                    "name": "FLAG_MSAA_4X_HINT",
-                    "value": 32,
-                    "description": "Set to try enabling MSAA 4X"
-                },
-                {
-                    "name": "FLAG_INTERLACED_HINT",
-                    "value": 65536,
-                    "description": "Set to try enabling interlaced video format (for V3D)"
-                }
-            ],
-            "description": "System/Window config flags",
-            "custom": false
-        },
-        {
-            "name": "TraceLogLevel",
-            "values": [
-                {
-                    "name": "LOG_ALL",
-                    "value": 0,
-                    "description": "Display all logs"
-                },
-                {
-                    "name": "LOG_TRACE",
-                    "value": 1,
-                    "description": "Trace logging, intended for internal use only"
-                },
-                {
-                    "name": "LOG_DEBUG",
-                    "value": 2,
-                    "description": "Debug logging, used for internal debugging, it should be disabled on release builds"
-                },
-                {
-                    "name": "LOG_INFO",
-                    "value": 3,
-                    "description": "Info logging, used for program execution info"
-                },
-                {
-                    "name": "LOG_WARNING",
-                    "value": 4,
-                    "description": "Warning logging, used on recoverable failures"
-                },
-                {
-                    "name": "LOG_ERROR",
-                    "value": 5,
-                    "description": "Error logging, used on unrecoverable failures"
-                },
-                {
-                    "name": "LOG_FATAL",
-                    "value": 6,
-                    "description": "Fatal logging, used to abort program: exit(EXIT_FAILURE)"
-                },
-                {
-                    "name": "LOG_NONE",
-                    "value": 7,
-                    "description": "Disable logging"
-                }
-            ],
-            "description": "Trace log level",
-            "custom": false
         },
         {
             "name": "MouseButton",

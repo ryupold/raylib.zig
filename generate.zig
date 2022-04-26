@@ -169,7 +169,7 @@ fn writeFunctions(
         if (!isPrimitiveOrPointer(func.returnType)) {
             if (bindings.containsStruct(stripType(func.returnType))) {
                 try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]raylib.{s}, &out),\n", .{func.returnType}));
-            } else if(!returnTypeIsVoid) {
+            } else if (!returnTypeIsVoid) {
                 try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]{s}, &out),\n", .{func.returnType}));
             }
         }
@@ -177,6 +177,8 @@ fn writeFunctions(
         for (func.params) |param| {
             if (bindings.containsStruct(stripType(param.typ)) and isPointer(param.typ)) {
                 try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]raylib.{s}, @ptrToInt({s})),\n", .{ stripType(param.typ), param.name }));
+            } else if (bindings.containsEnum(param.typ)) {
+                try file.writeAll(try allocPrint(allocator, "@enumToInt({s}),\n", .{param.name}));
             } else if (bindings.containsStruct(stripType(param.typ))) {
                 try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]raylib.{s}, @ptrToInt(&{s})),\n", .{ stripType(param.typ), param.name }));
             } else if (isPointer(param.typ)) {
@@ -216,7 +218,7 @@ fn writeCSignature(
     //return directly
     if (mapping.isPrimitiveOrPointer(func.returnType)) {
         try file.writeAll(try allocPrint(allocator, "{s} m{s}(", .{ func.returnType, func.name }));
-        if(func.params == null or func.params.?.len == 0) {
+        if (func.params == null or func.params.?.len == 0) {
             try file.writeAll("void");
         }
     }

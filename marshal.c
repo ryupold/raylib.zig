@@ -462,11 +462,6 @@ void mTakeScreenshot(const char * fileName)
 	return TakeScreenshot(fileName);
 }
 
-void mSetConfigFlags(unsigned int flags)
-{
-	return SetConfigFlags(flags);
-}
-
 void mSetTraceLogLevel(int logLevel)
 {
 	return SetTraceLogLevel(logLevel);

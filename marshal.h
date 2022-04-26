@@ -278,9 +278,6 @@ void mSetRandomSeed(unsigned int seed);
 // Takes a screenshot of current screen (filename extension defines format)
 void mTakeScreenshot(const char * fileName);
 
-// Setup init configuration flags (view FLAGS)
-void mSetConfigFlags(unsigned int flags);
-
 // Set the current threshold (minimum) log level
 void mSetTraceLogLevel(int logLevel);
 

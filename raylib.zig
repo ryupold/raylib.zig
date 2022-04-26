@@ -459,6 +459,15 @@ pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
 
 //--- functions -----------------------------------------------------------------------------------
 
+/// Setup init configuration flags (view FLAGS)
+pub fn SetConfigFlags(
+    flags: ConfigFlags,
+) void {
+    raylib.SetConfigFlags(
+        @intCast(u32, @enumToInt(flags)),
+    );
+}
+
 /// Load file data as byte array (read)
 pub fn LoadFileData(fileName: [*:0]const u8) ![]const u8 {
     var bytesRead: u32 = undefined;
@@ -672,55 +681,6 @@ pub fn TextAppend(allocator: std.mem.Allocator, text: []const u8, append: []cons
         append,
         text[position..],
     })).ptr;
-}
-
-/// 
-pub fn Vector3Length(
-    v: Vector3,
-) f32 {
-    return raylib.mVector3Length(
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
-    );
-}
-
-/// 
-pub fn Vector3LengthSqr(
-    v: Vector3,
-) f32 {
-    return raylib.mVector3LengthSqr(
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
-    );
-}
-
-/// Load font data for further use
-pub fn LoadFontData(
-    fileData: [*:0]const u8,
-    dataSize: i32,
-    fontSize: i32,
-    fontChars: [*]i32,
-    glyphCount: i32,
-    typ: i32,
-) [*]const GlyphInfo {
-    return @ptrCast(
-        [*]GlyphInfo,
-        raylib.mLoadFontData(
-            @intToPtr([*c]const u8, @ptrToInt(fileData)),
-            dataSize,
-            fontSize,
-            @ptrCast([*c]i32, fontChars),
-            glyphCount,
-            typ,
-        ),
-    );
-}
-
-/// Update camera position for selected mode
-pub fn UpdateCamera(
-    camera: *Camera3D,
-) void {
-    raylib.mUpdateCamera(
-        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
-    );
 }
 
 /// Initialize window and OpenGL context
@@ -1492,15 +1452,6 @@ pub fn TakeScreenshot(
     );
 }
 
-/// Setup init configuration flags (view FLAGS)
-pub fn SetConfigFlags(
-    flags: u32,
-) void {
-    raylib.mSetConfigFlags(
-        flags,
-    );
-}
-
 /// Set the current threshold (minimum) log level
 pub fn SetTraceLogLevel(
     logLevel: i32,
@@ -1831,46 +1782,46 @@ pub fn OpenURL(
 
 /// Check if a key has been pressed once
 pub fn IsKeyPressed(
-    key: i32,
+    key: KeyboardKey,
 ) bool {
     return raylib.mIsKeyPressed(
-        key,
+        @enumToInt(key),
     );
 }
 
 /// Check if a key is being pressed
 pub fn IsKeyDown(
-    key: i32,
+    key: KeyboardKey,
 ) bool {
     return raylib.mIsKeyDown(
-        key,
+        @enumToInt(key),
     );
 }
 
 /// Check if a key has been released once
 pub fn IsKeyReleased(
-    key: i32,
+    key: KeyboardKey,
 ) bool {
     return raylib.mIsKeyReleased(
-        key,
+        @enumToInt(key),
     );
 }
 
 /// Check if a key is NOT being pressed
 pub fn IsKeyUp(
-    key: i32,
+    key: KeyboardKey,
 ) bool {
     return raylib.mIsKeyUp(
-        key,
+        @enumToInt(key),
     );
 }
 
 /// Set a custom key to exit program (default is ESC)
 pub fn SetExitKey(
-    key: i32,
+    key: KeyboardKey,
 ) void {
     raylib.mSetExitKey(
-        key,
+        @enumToInt(key),
     );
 }
 
@@ -1985,37 +1936,37 @@ pub fn SetGamepadMappings(
 
 /// Check if a mouse button has been pressed once
 pub fn IsMouseButtonPressed(
-    button: i32,
+    button: MouseButton,
 ) bool {
     return raylib.mIsMouseButtonPressed(
-        button,
+        @enumToInt(button),
     );
 }
 
 /// Check if a mouse button is being pressed
 pub fn IsMouseButtonDown(
-    button: i32,
+    button: MouseButton,
 ) bool {
     return raylib.mIsMouseButtonDown(
-        button,
+        @enumToInt(button),
     );
 }
 
 /// Check if a mouse button has been released once
 pub fn IsMouseButtonReleased(
-    button: i32,
+    button: MouseButton,
 ) bool {
     return raylib.mIsMouseButtonReleased(
-        button,
+        @enumToInt(button),
     );
 }
 
 /// Check if a mouse button is NOT being pressed
 pub fn IsMouseButtonUp(
-    button: i32,
+    button: MouseButton,
 ) bool {
     return raylib.mIsMouseButtonUp(
-        button,
+        @enumToInt(button),
     );
 }
 
@@ -4331,6 +4282,15 @@ pub fn LoadFontFromMemory(
     return out;
 }
 
+/// 
+pub fn Vector3Length(
+    v: Vector3,
+) f32 {
+    return raylib.mVector3Length(
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+    );
+}
+
 /// Unload font chars info data (RAM)
 pub fn UnloadFontData(
     chars: [*]GlyphInfo,
@@ -4640,6 +4600,15 @@ pub fn TextLength(
     );
 }
 
+/// 
+pub fn Vector3LengthSqr(
+    v: Vector3,
+) f32 {
+    return raylib.mVector3LengthSqr(
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+    );
+}
+
 /// Get a piece of a text string
 pub fn TextSubtext(
     text: [*:0]const u8,
@@ -4685,6 +4654,37 @@ pub fn TextInsert(
             @intToPtr([*c]const u8, @ptrToInt(insert)),
             position,
         ),
+    );
+}
+
+/// Load font data for further use
+pub fn LoadFontData(
+    fileData: [*:0]const u8,
+    dataSize: i32,
+    fontSize: i32,
+    fontChars: [*]i32,
+    glyphCount: i32,
+    typ: i32,
+) [*]const GlyphInfo {
+    return @ptrCast(
+        [*]GlyphInfo,
+        raylib.mLoadFontData(
+            @intToPtr([*c]const u8, @ptrToInt(fileData)),
+            dataSize,
+            fontSize,
+            @ptrCast([*c]i32, fontChars),
+            glyphCount,
+            typ,
+        ),
+    );
+}
+
+/// Update camera position for selected mode
+pub fn UpdateCamera(
+    camera: *Camera3D,
+) void {
+    raylib.mUpdateCamera(
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
     );
 }
 
@@ -7998,6 +7998,58 @@ pub const float16 = extern struct {
     v: [16]f32,
 };
 
+/// System/Window config flags
+pub const ConfigFlags = enum(i32) {
+    /// Set to try enabling V-Sync on GPU
+    FLAG_VSYNC_HINT = 64,
+    /// Set to run program in fullscreen
+    FLAG_FULLSCREEN_MODE = 2,
+    /// Set to allow resizable window
+    FLAG_WINDOW_RESIZABLE = 4,
+    /// Set to disable window decoration (frame and buttons)
+    FLAG_WINDOW_UNDECORATED = 8,
+    /// Set to hide window
+    FLAG_WINDOW_HIDDEN = 128,
+    /// Set to minimize window (iconify)
+    FLAG_WINDOW_MINIMIZED = 512,
+    /// Set to maximize window (expanded to monitor)
+    FLAG_WINDOW_MAXIMIZED = 1024,
+    /// Set to window non focused
+    FLAG_WINDOW_UNFOCUSED = 2048,
+    /// Set to window always on top
+    FLAG_WINDOW_TOPMOST = 4096,
+    /// Set to allow windows running while minimized
+    FLAG_WINDOW_ALWAYS_RUN = 256,
+    /// Set to allow transparent framebuffer
+    FLAG_WINDOW_TRANSPARENT = 16,
+    /// Set to support HighDPI
+    FLAG_WINDOW_HIGHDPI = 8192,
+    /// Set to try enabling MSAA 4X
+    FLAG_MSAA_4X_HINT = 32,
+    /// Set to try enabling interlaced video format (for V3D)
+    FLAG_INTERLACED_HINT = 65536,
+};
+
+/// Trace log level
+pub const TraceLogLevel = enum(i32) {
+    /// Display all logs
+    LOG_ALL = 0,
+    /// Trace logging, intended for internal use only
+    LOG_TRACE = 1,
+    /// Debug logging, used for internal debugging, it should be disabled on release builds
+    LOG_DEBUG = 2,
+    /// Info logging, used for program execution info
+    LOG_INFO = 3,
+    /// Warning logging, used on recoverable failures
+    LOG_WARNING = 4,
+    /// Error logging, used on unrecoverable failures
+    LOG_ERROR = 5,
+    /// Fatal logging, used to abort program: exit(EXIT_FAILURE)
+    LOG_FATAL = 6,
+    /// Disable logging
+    LOG_NONE = 7,
+};
+
 /// Keyboard keys (US keyboard layout)
 pub const KeyboardKey = enum(i32) {
     /// Key: NULL, used for no key pressed
@@ -8218,58 +8270,6 @@ pub const KeyboardKey = enum(i32) {
     KEY_VOLUME_UP = 24,
     /// Key: Android volume down button
     KEY_VOLUME_DOWN = 25,
-};
-
-/// System/Window config flags
-pub const ConfigFlags = enum(i32) {
-    /// Set to try enabling V-Sync on GPU
-    FLAG_VSYNC_HINT = 64,
-    /// Set to run program in fullscreen
-    FLAG_FULLSCREEN_MODE = 2,
-    /// Set to allow resizable window
-    FLAG_WINDOW_RESIZABLE = 4,
-    /// Set to disable window decoration (frame and buttons)
-    FLAG_WINDOW_UNDECORATED = 8,
-    /// Set to hide window
-    FLAG_WINDOW_HIDDEN = 128,
-    /// Set to minimize window (iconify)
-    FLAG_WINDOW_MINIMIZED = 512,
-    /// Set to maximize window (expanded to monitor)
-    FLAG_WINDOW_MAXIMIZED = 1024,
-    /// Set to window non focused
-    FLAG_WINDOW_UNFOCUSED = 2048,
-    /// Set to window always on top
-    FLAG_WINDOW_TOPMOST = 4096,
-    /// Set to allow windows running while minimized
-    FLAG_WINDOW_ALWAYS_RUN = 256,
-    /// Set to allow transparent framebuffer
-    FLAG_WINDOW_TRANSPARENT = 16,
-    /// Set to support HighDPI
-    FLAG_WINDOW_HIGHDPI = 8192,
-    /// Set to try enabling MSAA 4X
-    FLAG_MSAA_4X_HINT = 32,
-    /// Set to try enabling interlaced video format (for V3D)
-    FLAG_INTERLACED_HINT = 65536,
-};
-
-/// Trace log level
-pub const TraceLogLevel = enum(i32) {
-    /// Display all logs
-    LOG_ALL = 0,
-    /// Trace logging, intended for internal use only
-    LOG_TRACE = 1,
-    /// Debug logging, used for internal debugging, it should be disabled on release builds
-    LOG_DEBUG = 2,
-    /// Info logging, used for program execution info
-    LOG_INFO = 3,
-    /// Warning logging, used on recoverable failures
-    LOG_WARNING = 4,
-    /// Error logging, used on unrecoverable failures
-    LOG_ERROR = 5,
-    /// Fatal logging, used to abort program: exit(EXIT_FAILURE)
-    LOG_FATAL = 6,
-    /// Disable logging
-    LOG_NONE = 7,
 };
 
 /// Mouse buttons
