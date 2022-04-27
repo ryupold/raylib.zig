@@ -14,7 +14,8 @@ For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples
 - [x] RMAPI (raymath.h)
 - [x] RAYGUIAPI (extras/raygui.h)
 - [x] PHYSACDEF (extras/physac.h)
-- [-] Constants
+- [ ] Constants
+  - [x] int, float, string
   - [x] Colors
   - [x] Versions
   - [ ] GUI dimensions
