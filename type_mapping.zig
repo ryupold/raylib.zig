@@ -22,11 +22,13 @@ pub const Intermediate = struct {
     functions: []Function,
     enums: []Enum,
     structs: []Struct,
+    defines: []Define,
 
     pub fn loadCustoms(allocator: Allocator, jsonFile: []const u8) !@This() {
         var enums = std.ArrayList(Enum).init(allocator);
         var structs = std.ArrayList(Struct).init(allocator);
         var functions = std.ArrayList(Function).init(allocator);
+        var defines = std.ArrayList(Define).init(allocator);
 
         const jsonData = try std.fs.cwd().readFileAlloc(allocator, jsonFile, memoryConstrain);
         defer allocator.free(jsonData);
@@ -55,10 +57,17 @@ pub const Intermediate = struct {
             }
         }
 
+        for (bindingJson.defines) |f| {
+            if (f.custom) {
+                try defines.append(f);
+            }
+        }
+
         return @This(){
             .enums = enums.toOwnedSlice(),
             .structs = structs.toOwnedSlice(),
             .functions = functions.toOwnedSlice(),
+            .defines = defines.toOwnedSlice(),
         };
     }
 
@@ -69,7 +78,24 @@ pub const Intermediate = struct {
         try structs.appendSlice(self.structs);
         var functions = std.ArrayList(Function).init(allocator);
         try functions.appendSlice(self.functions);
+        var defines = std.ArrayList(Define).init(allocator);
+        try defines.appendSlice(self.defines);
 
+        outer: for (rlJson.defines.values()) |d, i| {
+            for (defines.items) |added| {
+                if (eql(added.name, d.name)) {
+                    std.log.debug("{s} is customized", .{d.name});
+                    continue :outer;
+                }
+            }
+            const define = parseRaylibDefine(allocator, d) orelse continue :outer;
+
+            if (i < defines.items.len) {
+                try defines.insert(i, define);
+            } else {
+                try defines.append(define);
+            }
+        }
         outer: for (rlJson.enums.values()) |e, i| {
             const name = if (alias.get(e.name)) |n| n else e.name;
             for (enums.items) |added| {
@@ -118,6 +144,7 @@ pub const Intermediate = struct {
         self.enums = enums.toOwnedSlice();
         self.structs = structs.toOwnedSlice();
         self.functions = functions.toOwnedSlice();
+        self.defines = defines.toOwnedSlice();
     }
 
     pub fn containsStruct(self: @This(), name: []const u8) bool {
@@ -130,6 +157,13 @@ pub const Intermediate = struct {
     pub fn containsEnum(self: @This(), name: []const u8) bool {
         for (self.enums) |e| {
             if (eql(e.name, name)) return true;
+        }
+        return false;
+    }
+
+    pub fn containsDefine(self: @This(), name: []const u8) bool {
+        for (self.defines) |d| {
+            if (eql(d.name, name)) return true;
         }
         return false;
     }
@@ -205,6 +239,58 @@ pub fn parseRaylibStruct(allocator: Allocator, s: RaylibStruct) !Struct {
     return Struct{
         .name = if (alias.get(s.name)) |a| a else s.name,
         .fields = fields.toOwnedSlice(),
+        .description = s.description,
+    };
+}
+
+pub const Define = struct {
+    name: []const u8,
+    typ: []const u8,
+    value: []const u8,
+    description: ?[]const u8 = null,
+    custom: bool = false,
+};
+
+pub fn parseRaylibDefine(allocator: Allocator, s: RaylibDefine) ?Define {
+    var typ: []const u8 = undefined;
+    var value: []const u8 = undefined;
+
+    if (eql("INT", s.@"type")) {
+        typ = "i32";
+        value = std.fmt.allocPrint(allocator, "{d}", .{s.value.int}) catch return null;
+    } else if (eql("LONG", s.@"type")) {
+        typ = "i64";
+        value = std.fmt.allocPrint(allocator, "{d}", .{s.value.int}) catch return null;
+    } else if (eql("FLOAT", s.@"type")) {
+        typ = "f32";
+        value = std.fmt.allocPrint(allocator, "{d}", .{s.value.float}) catch return null;
+    } else if (eql("STRING", s.@"type")) {
+        typ = "[]const u8";
+        value = std.fmt.allocPrint(allocator, "\"{s}\"", .{s.value.string}) catch return null;
+    } else if (eql("COLOR", s.@"type")) {
+        typ = "Color";
+        std.debug.assert(startsWith(s.value.string, "CLITERAL(Color){"));
+        std.debug.assert(endsWith(s.value.string, "}"));
+
+        const componentString = s.value.string["CLITERAL(Color){".len .. s.value.string.len - 1];
+        var spliterator = std.mem.split(u8, componentString, ",");
+        var r = spliterator.next() orelse return null;
+        r = std.mem.trim(u8, r, " \t\r\n");
+        var g = spliterator.next() orelse return null;
+        g = std.mem.trim(u8, g, " \t\r\n");
+        var b = spliterator.next() orelse return null;
+        b = std.mem.trim(u8, b, " \t\r\n");
+        var a = spliterator.next() orelse return null;
+        a = std.mem.trim(u8, a, " \t\r\n");
+        value = std.fmt.allocPrint(allocator, ".{{.r={s}, .g={s}, .b={s}, .a={s}}}", .{ r, g, b, a }) catch return null;
+    } else {
+        return null;
+    }
+
+    return Define{
+        .name = s.name,
+        .typ = typ,
+        .value = value,
         .description = s.description,
     };
 }
@@ -399,6 +485,16 @@ const alias = std.ComptimeStringMap([]const u8, .{
     .{ "RenderTexture", "RenderTexture2D" },
     .{ "GuiStyle", "u32" },
     .{ "Quaternion", "Vector4" },
+    .{ "PhysicsBody", "*PhysicsBodyData" },
+});
+
+const cAlias = std.ComptimeStringMap([]const u8, .{
+    .{ "Camera", "Camera3D" },
+    .{ "Texture", "Texture2D" },
+    .{ "TextureCubemap", "Texture2D" },
+    .{ "RenderTexture", "RenderTexture2D" },
+    .{ "Quaternion", "Vector4" },
+    .{ "PhysicsBody", "PhysicsBodyData *" },
 });
 
 pub const CombinedRaylib = struct {
@@ -423,8 +519,11 @@ pub const CombinedRaylib = struct {
                 .ignore_unknown_fields = true,
             });
 
-            for (bindingJson.structs) |s| {
-                try structs.put(s.name, s);
+            for (bindingJson.structs) |*s| {
+                for (s.fields) |*f| {
+                    f.@"type" = cAlias.get(f.@"type") orelse f.@"type";
+                }
+                try structs.put(s.name, s.*);
             }
 
             for (bindingJson.enums) |e| {
@@ -435,8 +534,14 @@ pub const CombinedRaylib = struct {
                 try defines.put(d.name, d);
             }
 
-            for (bindingJson.functions) |f| {
-                try functions.put(f.name, f);
+            for (bindingJson.functions) |*f| {
+                f.returnType = cAlias.get(f.returnType) orelse f.returnType;
+                if (f.params) |params| {
+                    for (params) |*p| {
+                        p.@"type" = cAlias.get(p.@"type") orelse p.@"type";
+                    }
+                }
+                try functions.put(f.name, f.*);
             }
         }
 
@@ -523,7 +628,7 @@ pub const RaylibField = struct {
 pub const RaylibEnum = struct {
     name: []const u8,
     description: []const u8,
-    values: []const RaylibEnumValue,
+    values: []RaylibEnumValue,
 };
 
 pub const RaylibEnumValue = struct {
@@ -536,7 +641,7 @@ pub const RaylibFunction = struct {
     name: []const u8,
     description: []const u8,
     returnType: []const u8,
-    params: ?[]const RaylibFunctionParam = null,
+    params: ?[]RaylibFunctionParam = null,
 };
 
 pub const RaylibFunctionParam = struct {
@@ -548,8 +653,8 @@ pub const RaylibFunctionParam = struct {
 pub const RaylibDefine = struct {
     name: []const u8,
     @"type": []const u8,
-    value: union(enum) { string: []const u8, number: f32 },
-    description: []const u8,
+    value: union(enum) { string: []const u8, int: i64, float: f32 },
+    description: ?[]const u8 = null,
 };
 
 //--- Helpers -------------------------------------------------------------------------------------

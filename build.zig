@@ -39,6 +39,14 @@ pub fn build(b: *std.build.Builder) !void {
         "-d", "RAYGUIAPI",
     });
     jsons.dependOn(&raygui_H.step);
+    const physac = raylib_parser_build.run();
+    physac.addArgs(&.{
+        "-i", raylibSrc ++ "extras/physac.h",
+        "-o", "physac.json",
+        "-f", "JSON",
+        "-d", "PHYSACDEF",
+    });
+    jsons.dependOn(&physac.step);
 
     //--- Generate intermediate -------------------------------------------------------------------
     const intermediate = b.step("intermediate", "generate intermediate representation of the results from 'zig build parse' (keep custom=true)");

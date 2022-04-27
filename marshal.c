@@ -2,6 +2,9 @@
 #include "raymath.h"
 #define RAYGUI_IMPLEMENTATION
 #include "extras/raygui.h"
+#define PHYSAC_IMPLEMENTATION
+#define PHYSAC_AVOID_TIMMING_SYSTEM
+#include "extras/physac.h"
 
 void mInitWindow(int width, int height, const char * title)
 {
@@ -393,12 +396,12 @@ void mUnloadShader(Shader *shader)
 	return UnloadShader(*shader);
 }
 
-void mGetMouseRay(Ray *out, Vector2 *mousePosition, Camera *camera)
+void mGetMouseRay(Ray *out, Vector2 *mousePosition, Camera3D *camera)
 {
 	*out = GetMouseRay(*mousePosition, *camera);
 }
 
-void mGetCameraMatrix(Matrix *out, Camera *camera)
+void mGetCameraMatrix(Matrix *out, Camera3D *camera)
 {
 	*out = GetCameraMatrix(*camera);
 }
@@ -408,12 +411,12 @@ void mGetCameraMatrix2D(Matrix *out, Camera2D *camera)
 	*out = GetCameraMatrix2D(*camera);
 }
 
-void mGetWorldToScreen(Vector2 *out, Vector3 *position, Camera *camera)
+void mGetWorldToScreen(Vector2 *out, Vector3 *position, Camera3D *camera)
 {
 	*out = GetWorldToScreen(*position, *camera);
 }
 
-void mGetWorldToScreenEx(Vector2 *out, Vector3 *position, Camera *camera, int width, int height)
+void mGetWorldToScreenEx(Vector2 *out, Vector3 *position, Camera3D *camera, int width, int height)
 {
 	*out = GetWorldToScreenEx(*position, *camera, width, height);
 }
@@ -838,7 +841,7 @@ float mGetGesturePinchAngle(void)
 	return GetGesturePinchAngle();
 }
 
-void mSetCameraMode(Camera *camera, int mode)
+void mSetCameraMode(Camera3D *camera, int mode)
 {
 	return SetCameraMode(*camera, mode);
 }
@@ -1423,7 +1426,7 @@ void mLoadTextureFromImage(Texture2D *out, Image *image)
 	*out = LoadTextureFromImage(*image);
 }
 
-void mLoadTextureCubemap(TextureCubemap *out, Image *image, int layout)
+void mLoadTextureCubemap(Texture2D *out, Image *image, int layout)
 {
 	*out = LoadTextureCubemap(*image, layout);
 }
@@ -1913,17 +1916,17 @@ void mDrawBoundingBox(BoundingBox *box, Color *color)
 	return DrawBoundingBox(*box, *color);
 }
 
-void mDrawBillboard(Camera *camera, Texture2D *texture, Vector3 *position, float size, Color *tint)
+void mDrawBillboard(Camera3D *camera, Texture2D *texture, Vector3 *position, float size, Color *tint)
 {
 	return DrawBillboard(*camera, *texture, *position, size, *tint);
 }
 
-void mDrawBillboardRec(Camera *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector2 *size, Color *tint)
+void mDrawBillboardRec(Camera3D *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector2 *size, Color *tint)
 {
 	return DrawBillboardRec(*camera, *texture, *source, *position, *size, *tint);
 }
 
-void mDrawBillboardPro(Camera *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector3 *up, Vector2 *size, Vector2 *origin, float rotation, Color *tint)
+void mDrawBillboardPro(Camera3D *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector3 *up, Vector2 *size, Vector2 *origin, float rotation, Color *tint)
 {
 	return DrawBillboardPro(*camera, *texture, *source, *position, *up, *size, *origin, rotation, *tint);
 }
@@ -2678,7 +2681,7 @@ void mVector3Transform(Vector3 *out, Vector3 *v, Matrix *mat)
 	*out = Vector3Transform(*v, *mat);
 }
 
-void mVector3RotateByQuaternion(Vector3 *out, Vector3 *v, Quaternion *q)
+void mVector3RotateByQuaternion(Vector3 *out, Vector3 *v, Vector4 *q)
 {
 	*out = Vector3RotateByQuaternion(*v, *q);
 }
@@ -2848,117 +2851,117 @@ void mMatrixToFloatV(float16 *out, Matrix *mat)
 	*out = MatrixToFloatV(*mat);
 }
 
-void mQuaternionAdd(Quaternion *out, Quaternion *q1, Quaternion *q2)
+void mQuaternionAdd(Vector4 *out, Vector4 *q1, Vector4 *q2)
 {
 	*out = QuaternionAdd(*q1, *q2);
 }
 
-void mQuaternionAddValue(Quaternion *out, Quaternion *q, float add)
+void mQuaternionAddValue(Vector4 *out, Vector4 *q, float add)
 {
 	*out = QuaternionAddValue(*q, add);
 }
 
-void mQuaternionSubtract(Quaternion *out, Quaternion *q1, Quaternion *q2)
+void mQuaternionSubtract(Vector4 *out, Vector4 *q1, Vector4 *q2)
 {
 	*out = QuaternionSubtract(*q1, *q2);
 }
 
-void mQuaternionSubtractValue(Quaternion *out, Quaternion *q, float sub)
+void mQuaternionSubtractValue(Vector4 *out, Vector4 *q, float sub)
 {
 	*out = QuaternionSubtractValue(*q, sub);
 }
 
-void mQuaternionIdentity(Quaternion *out)
+void mQuaternionIdentity(Vector4 *out)
 {
 	*out = QuaternionIdentity();
 }
 
-float mQuaternionLength(Quaternion *q)
+float mQuaternionLength(Vector4 *q)
 {
 	return QuaternionLength(*q);
 }
 
-void mQuaternionNormalize(Quaternion *out, Quaternion *q)
+void mQuaternionNormalize(Vector4 *out, Vector4 *q)
 {
 	*out = QuaternionNormalize(*q);
 }
 
-void mQuaternionInvert(Quaternion *out, Quaternion *q)
+void mQuaternionInvert(Vector4 *out, Vector4 *q)
 {
 	*out = QuaternionInvert(*q);
 }
 
-void mQuaternionMultiply(Quaternion *out, Quaternion *q1, Quaternion *q2)
+void mQuaternionMultiply(Vector4 *out, Vector4 *q1, Vector4 *q2)
 {
 	*out = QuaternionMultiply(*q1, *q2);
 }
 
-void mQuaternionScale(Quaternion *out, Quaternion *q, float mul)
+void mQuaternionScale(Vector4 *out, Vector4 *q, float mul)
 {
 	*out = QuaternionScale(*q, mul);
 }
 
-void mQuaternionDivide(Quaternion *out, Quaternion *q1, Quaternion *q2)
+void mQuaternionDivide(Vector4 *out, Vector4 *q1, Vector4 *q2)
 {
 	*out = QuaternionDivide(*q1, *q2);
 }
 
-void mQuaternionLerp(Quaternion *out, Quaternion *q1, Quaternion *q2, float amount)
+void mQuaternionLerp(Vector4 *out, Vector4 *q1, Vector4 *q2, float amount)
 {
 	*out = QuaternionLerp(*q1, *q2, amount);
 }
 
-void mQuaternionNlerp(Quaternion *out, Quaternion *q1, Quaternion *q2, float amount)
+void mQuaternionNlerp(Vector4 *out, Vector4 *q1, Vector4 *q2, float amount)
 {
 	*out = QuaternionNlerp(*q1, *q2, amount);
 }
 
-void mQuaternionSlerp(Quaternion *out, Quaternion *q1, Quaternion *q2, float amount)
+void mQuaternionSlerp(Vector4 *out, Vector4 *q1, Vector4 *q2, float amount)
 {
 	*out = QuaternionSlerp(*q1, *q2, amount);
 }
 
-void mQuaternionFromVector3ToVector3(Quaternion *out, Vector3 *from, Vector3 *to)
+void mQuaternionFromVector3ToVector3(Vector4 *out, Vector3 *from, Vector3 *to)
 {
 	*out = QuaternionFromVector3ToVector3(*from, *to);
 }
 
-void mQuaternionFromMatrix(Quaternion *out, Matrix *mat)
+void mQuaternionFromMatrix(Vector4 *out, Matrix *mat)
 {
 	*out = QuaternionFromMatrix(*mat);
 }
 
-void mQuaternionToMatrix(Matrix *out, Quaternion *q)
+void mQuaternionToMatrix(Matrix *out, Vector4 *q)
 {
 	*out = QuaternionToMatrix(*q);
 }
 
-void mQuaternionFromAxisAngle(Quaternion *out, Vector3 *axis, float angle)
+void mQuaternionFromAxisAngle(Vector4 *out, Vector3 *axis, float angle)
 {
 	*out = QuaternionFromAxisAngle(*axis, angle);
 }
 
-void mQuaternionToAxisAngle(Quaternion *q, Vector3 * outAxis, float * outAngle)
+void mQuaternionToAxisAngle(Vector4 *q, Vector3 * outAxis, float * outAngle)
 {
 	return QuaternionToAxisAngle(*q, outAxis, outAngle);
 }
 
-void mQuaternionFromEuler(Quaternion *out, float pitch, float yaw, float roll)
+void mQuaternionFromEuler(Vector4 *out, float pitch, float yaw, float roll)
 {
 	*out = QuaternionFromEuler(pitch, yaw, roll);
 }
 
-void mQuaternionToEuler(Vector3 *out, Quaternion *q)
+void mQuaternionToEuler(Vector3 *out, Vector4 *q)
 {
 	*out = QuaternionToEuler(*q);
 }
 
-void mQuaternionTransform(Quaternion *out, Quaternion *q, Matrix *mat)
+void mQuaternionTransform(Vector4 *out, Vector4 *q, Matrix *mat)
 {
 	*out = QuaternionTransform(*q, *mat);
 }
 
-int mQuaternionEquals(Quaternion *p, Quaternion *q)
+int mQuaternionEquals(Vector4 *p, Vector4 *q)
 {
 	return QuaternionEquals(*p, *q);
 }
@@ -3216,5 +3219,95 @@ void mGuiClearIconPixel(int iconId, int x, int y)
 bool mGuiCheckIconPixel(int iconId, int x, int y)
 {
 	return GuiCheckIconPixel(iconId, x, y);
+}
+
+void mInitPhysics(void)
+{
+	return InitPhysics();
+}
+
+void mUpdatePhysics(void)
+{
+	return UpdatePhysics();
+}
+
+void mResetPhysics(void)
+{
+	return ResetPhysics();
+}
+
+void mClosePhysics(void)
+{
+	return ClosePhysics();
+}
+
+void mSetPhysicsTimeStep(double delta)
+{
+	return SetPhysicsTimeStep(delta);
+}
+
+void mSetPhysicsGravity(float x, float y)
+{
+	return SetPhysicsGravity(x, y);
+}
+
+PhysicsBodyData * mCreatePhysicsBodyCircle(Vector2 *pos, float radius, float density)
+{
+	return CreatePhysicsBodyCircle(*pos, radius, density);
+}
+
+PhysicsBodyData * mCreatePhysicsBodyRectangle(Vector2 *pos, float width, float height, float density)
+{
+	return CreatePhysicsBodyRectangle(*pos, width, height, density);
+}
+
+PhysicsBodyData * mCreatePhysicsBodyPolygon(Vector2 *pos, float radius, int sides, float density)
+{
+	return CreatePhysicsBodyPolygon(*pos, radius, sides, density);
+}
+
+void mDestroyPhysicsBody(PhysicsBodyData * body)
+{
+	return DestroyPhysicsBody(body);
+}
+
+void mPhysicsAddForce(PhysicsBodyData * body, Vector2 *force)
+{
+	return PhysicsAddForce(body, *force);
+}
+
+void mPhysicsAddTorque(PhysicsBodyData * body, float amount)
+{
+	return PhysicsAddTorque(body, amount);
+}
+
+void mPhysicsShatter(PhysicsBodyData * body, Vector2 *position, float force)
+{
+	return PhysicsShatter(body, *position, force);
+}
+
+void mSetPhysicsBodyRotation(PhysicsBodyData * body, float radians)
+{
+	return SetPhysicsBodyRotation(body, radians);
+}
+
+int mGetPhysicsBodiesCount(void)
+{
+	return GetPhysicsBodiesCount();
+}
+
+int mGetPhysicsShapeType(int index)
+{
+	return GetPhysicsShapeType(index);
+}
+
+int mGetPhysicsShapeVerticesCount(int index)
+{
+	return GetPhysicsShapeVerticesCount(index);
+}
+
+void mGetPhysicsShapeVertex(Vector2 *out, PhysicsBodyData * body, int vertex)
+{
+	*out = GetPhysicsShapeVertex(body, vertex);
 }
 

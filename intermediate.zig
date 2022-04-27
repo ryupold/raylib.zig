@@ -7,6 +7,7 @@ pub const jsonFiles: []const []const u8 = &.{
     "raylib.json",
     "raymath.json",
     "raygui.json",
+    "physac.json",
 };
 pub const bindingsJSON = "bindings.json";
 
@@ -30,6 +31,7 @@ pub fn main() !void {
             .enums = &[_]mapping.Enum{},
             .structs = &[_]mapping.Struct{},
             .functions = &[_]mapping.Function{},
+            .defines = &[_]mapping.Define{},
         };
     };
 

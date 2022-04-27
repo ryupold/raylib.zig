@@ -6,35 +6,6 @@ const raylib = @cImport({
     @cInclude("marshal.h");
 });
 
-//--- colors --------------------------------------------------------------------------------------
-
-pub const LIGHTGRAY = Color{ .r = 200, .g = 200, .b = 200, .a = 255 };
-pub const GRAY = Color{ .r = 130, .g = 130, .b = 130, .a = 255 };
-pub const DARKGRAY = Color{ .r = 80, .g = 80, .b = 80, .a = 255 };
-pub const YELLOW = Color{ .r = 253, .g = 249, .b = 0, .a = 255 };
-pub const GOLD = Color{ .r = 255, .g = 203, .b = 0, .a = 255 };
-pub const ORANGE = Color{ .r = 255, .g = 161, .b = 0, .a = 255 };
-pub const PINK = Color{ .r = 255, .g = 109, .b = 194, .a = 255 };
-pub const RED = Color{ .r = 230, .g = 41, .b = 55, .a = 255 };
-pub const MAROON = Color{ .r = 190, .g = 33, .b = 55, .a = 255 };
-pub const GREEN = Color{ .r = 0, .g = 228, .b = 48, .a = 255 };
-pub const LIME = Color{ .r = 0, .g = 158, .b = 47, .a = 255 };
-pub const DARKGREEN = Color{ .r = 0, .g = 117, .b = 44, .a = 255 };
-pub const SKYBLUE = Color{ .r = 102, .g = 191, .b = 255, .a = 255 };
-pub const BLUE = Color{ .r = 0, .g = 121, .b = 241, .a = 255 };
-pub const DARKBLUE = Color{ .r = 0, .g = 82, .b = 172, .a = 255 };
-pub const PURPLE = Color{ .r = 200, .g = 122, .b = 255, .a = 255 };
-pub const VIOLET = Color{ .r = 135, .g = 60, .b = 190, .a = 255 };
-pub const DARKPURPLE = Color{ .r = 112, .g = 31, .b = 126, .a = 255 };
-pub const BEIGE = Color{ .r = 211, .g = 176, .b = 131, .a = 255 };
-pub const BROWN = Color{ .r = 127, .g = 106, .b = 79, .a = 255 };
-pub const DARKBROWN = Color{ .r = 76, .g = 63, .b = 47, .a = 255 };
-pub const WHITE = Color{ .r = 255, .g = 255, .b = 255, .a = 255 };
-pub const BLACK = Color{ .r = 0, .g = 0, .b = 0, .a = 255 };
-pub const BLANK = Color{ .r = 0, .g = 0, .b = 0, .a = 0 };
-pub const MAGENTA = Color{ .r = 255, .g = 0, .b = 255, .a = 255 };
-pub const RAYWHITE = Color{ .r = 245, .g = 245, .b = 245, .a = 255 };
-
 //--- structs -------------------------------------------------------------------------------------
 
 /// Transform, vectex transformation data
@@ -695,12 +666,6 @@ fn bitCheck(a: u32, b: u32) bool {
     return (a & (r)) != 0;
 }
 
-fn bitCheck(a: u32, b: u32) bool {
-    var r: u32 = undefined;
-    _ = @shlWithOverflow(u32, 1, @truncate(u5, b), &r);
-    return (a & (r)) != 0;
-}
-
 /// Draw selected icon using rectangles pixel-by-pixel
 pub fn GuiDrawIcon(
     icon: guiIconName,
@@ -713,12 +678,12 @@ pub fn GuiDrawIcon(
 
     var i: i32 = 0;
     var y: i32 = 0;
-    while (i < raylib.RICON_SIZE * raylib.RICON_SIZE / 32) : (i += 1) {
+    while (i < RICON_SIZE * RICON_SIZE / 32) : (i += 1) {
         var k: u32 = 0;
         while (k < 32) : (k += 1) {
-            if (bitCheck(raylib.guiIcons[@intCast(usize, iconId * raylib.RICON_DATA_ELEMENTS + i)], k)) {
+            if (bitCheck(raylib.guiIcons[@intCast(usize, iconId * RICON_DATA_ELEMENTS + i)], k)) {
                 _ = DrawRectangle(
-                    posX + @intCast(i32, k % raylib.RICON_SIZE) * pixelSize,
+                    posX + @intCast(i32, k % RICON_SIZE) * pixelSize,
                     posY + y * pixelSize,
                     pixelSize,
                     pixelSize,
@@ -738,10 +703,21 @@ pub fn GuiDrawIconButton(bounds: Rectangle, icon: guiIconName, iconTint: Color) 
     const pressed = GuiButton(bounds, "");
     GuiDrawIcon(
         icon,
-        @floatToInt(i32, bounds.x + bounds.width / 2 - @intToFloat(f32, raylib.RICON_SIZE)/2),
-        @floatToInt(i32, bounds.y + (bounds.height / 2) - @intToFloat(f32, raylib.RICON_SIZE)/2),
+        @floatToInt(i32, bounds.x + bounds.width / 2 - @intToFloat(f32, RICON_SIZE) / 2),
+        @floatToInt(i32, bounds.y + (bounds.height / 2) - @intToFloat(f32, RICON_SIZE) / 2),
         1,
         iconTint,
     );
     return pressed;
+}
+
+//--- PHYSAC --------------------------------------------------------------------------------------
+
+/// Returns a physics body of the bodies pool at a specific index
+pub fn GetPhysicsBody(
+    index: i32,
+) ?*PhysicsBodyData {
+    return @ptrCast(?*PhysicsBodyData, raylib.GetPhysicsBody(
+        index,
+    ));
 }

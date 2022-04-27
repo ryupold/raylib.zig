@@ -54,6 +54,7 @@ pub fn main() !void {
 
     try writeStructs(arena.allocator(), &file, bindings, inject);
     try writeEnums(arena.allocator(), &file, bindings, inject);
+    try writeDefines(arena.allocator(), &file, bindings, inject);
 
     std.log.info("... done", .{});
 }
@@ -233,16 +234,18 @@ fn writeCSignature(
     file: *fs.File,
     func: mapping.RaylibFunction,
 ) !void {
+    const returnType = func.returnType;
+
     //return directly
-    if (mapping.isPrimitiveOrPointer(func.returnType)) {
-        try file.writeAll(try allocPrint(allocator, "{s} m{s}(", .{ func.returnType, func.name }));
+    if (mapping.isPrimitiveOrPointer(returnType)) {
+        try file.writeAll(try allocPrint(allocator, "{s} m{s}(", .{ returnType, func.name }));
         if (func.params == null or func.params.?.len == 0) {
             try file.writeAll("void");
         }
     }
     //wrap return type and put as first function parameter
     else {
-        try file.writeAll(try allocPrint(allocator, "void m{s}({s} *out", .{ func.name, func.returnType }));
+        try file.writeAll(try allocPrint(allocator, "void m{s}({s} *out", .{ func.name, returnType }));
         if (func.params != null and func.params.?.len > 0) {
             try file.writeAll(", ");
         }
@@ -250,10 +253,11 @@ fn writeCSignature(
 
     if (func.params) |params| {
         for (params) |param, i| {
-            if (mapping.isPrimitiveOrPointer(param.@"type")) {
-                try file.writeAll(try allocPrint(allocator, "{s} {s}", .{ param.@"type", param.name }));
+            const paramType = param.@"type";
+            if (mapping.isPrimitiveOrPointer(paramType)) {
+                try file.writeAll(try allocPrint(allocator, "{s} {s}", .{ paramType, param.name }));
             } else {
-                try file.writeAll(try allocPrint(allocator, "{s} *{s}", .{ param.@"type", param.name }));
+                try file.writeAll(try allocPrint(allocator, "{s} *{s}", .{ paramType, param.name }));
             }
 
             if (i < params.len - 1) {
@@ -405,6 +409,31 @@ fn writeEnums(
     }
 
     std.log.info("generated enums", .{});
+}
+
+fn writeDefines(
+    allocator: std.mem.Allocator,
+    file: *fs.File,
+    bindings: mapping.Intermediate,
+    inject: Injections,
+) !void {
+    var buf: [51200]u8 = undefined;
+    var fba = std.heap.FixedBufferAllocator.init(&buf);
+
+    for (bindings.defines) |d| {
+        if (inject.containsSymbol(d.name)) continue;
+        defer fba.reset();
+
+        try file.writeAll(
+            try allocPrint(
+                allocator,
+                "\n/// {s}\npub const {s}: {s} = {s};\n",
+                .{ d.description, d.name, d.typ, d.value },
+            ),
+        );
+    }
+
+    std.log.info("generated defines", .{});
 }
 
 fn writeInjections(

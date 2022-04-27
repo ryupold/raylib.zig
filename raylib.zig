@@ -6,35 +6,6 @@ const raylib = @cImport({
     @cInclude("marshal.h");
 });
 
-//--- colors --------------------------------------------------------------------------------------
-
-pub const LIGHTGRAY = Color{ .r = 200, .g = 200, .b = 200, .a = 255 };
-pub const GRAY = Color{ .r = 130, .g = 130, .b = 130, .a = 255 };
-pub const DARKGRAY = Color{ .r = 80, .g = 80, .b = 80, .a = 255 };
-pub const YELLOW = Color{ .r = 253, .g = 249, .b = 0, .a = 255 };
-pub const GOLD = Color{ .r = 255, .g = 203, .b = 0, .a = 255 };
-pub const ORANGE = Color{ .r = 255, .g = 161, .b = 0, .a = 255 };
-pub const PINK = Color{ .r = 255, .g = 109, .b = 194, .a = 255 };
-pub const RED = Color{ .r = 230, .g = 41, .b = 55, .a = 255 };
-pub const MAROON = Color{ .r = 190, .g = 33, .b = 55, .a = 255 };
-pub const GREEN = Color{ .r = 0, .g = 228, .b = 48, .a = 255 };
-pub const LIME = Color{ .r = 0, .g = 158, .b = 47, .a = 255 };
-pub const DARKGREEN = Color{ .r = 0, .g = 117, .b = 44, .a = 255 };
-pub const SKYBLUE = Color{ .r = 102, .g = 191, .b = 255, .a = 255 };
-pub const BLUE = Color{ .r = 0, .g = 121, .b = 241, .a = 255 };
-pub const DARKBLUE = Color{ .r = 0, .g = 82, .b = 172, .a = 255 };
-pub const PURPLE = Color{ .r = 200, .g = 122, .b = 255, .a = 255 };
-pub const VIOLET = Color{ .r = 135, .g = 60, .b = 190, .a = 255 };
-pub const DARKPURPLE = Color{ .r = 112, .g = 31, .b = 126, .a = 255 };
-pub const BEIGE = Color{ .r = 211, .g = 176, .b = 131, .a = 255 };
-pub const BROWN = Color{ .r = 127, .g = 106, .b = 79, .a = 255 };
-pub const DARKBROWN = Color{ .r = 76, .g = 63, .b = 47, .a = 255 };
-pub const WHITE = Color{ .r = 255, .g = 255, .b = 255, .a = 255 };
-pub const BLACK = Color{ .r = 0, .g = 0, .b = 0, .a = 255 };
-pub const BLANK = Color{ .r = 0, .g = 0, .b = 0, .a = 0 };
-pub const MAGENTA = Color{ .r = 255, .g = 0, .b = 255, .a = 255 };
-pub const RAYWHITE = Color{ .r = 245, .g = 245, .b = 245, .a = 255 };
-
 //--- structs -------------------------------------------------------------------------------------
 
 /// Transform, vectex transformation data
@@ -695,12 +666,6 @@ fn bitCheck(a: u32, b: u32) bool {
     return (a & (r)) != 0;
 }
 
-fn bitCheck(a: u32, b: u32) bool {
-    var r: u32 = undefined;
-    _ = @shlWithOverflow(u32, 1, @truncate(u5, b), &r);
-    return (a & (r)) != 0;
-}
-
 /// Draw selected icon using rectangles pixel-by-pixel
 pub fn GuiDrawIcon(
     icon: guiIconName,
@@ -713,12 +678,12 @@ pub fn GuiDrawIcon(
 
     var i: i32 = 0;
     var y: i32 = 0;
-    while (i < raylib.RICON_SIZE * raylib.RICON_SIZE / 32) : (i += 1) {
+    while (i < RICON_SIZE * RICON_SIZE / 32) : (i += 1) {
         var k: u32 = 0;
         while (k < 32) : (k += 1) {
-            if (bitCheck(raylib.guiIcons[@intCast(usize, iconId * raylib.RICON_DATA_ELEMENTS + i)], k)) {
+            if (bitCheck(raylib.guiIcons[@intCast(usize, iconId * RICON_DATA_ELEMENTS + i)], k)) {
                 _ = DrawRectangle(
-                    posX + @intCast(i32, k % raylib.RICON_SIZE) * pixelSize,
+                    posX + @intCast(i32, k % RICON_SIZE) * pixelSize,
                     posY + y * pixelSize,
                     pixelSize,
                     pixelSize,
@@ -738,12 +703,23 @@ pub fn GuiDrawIconButton(bounds: Rectangle, icon: guiIconName, iconTint: Color) 
     const pressed = GuiButton(bounds, "");
     GuiDrawIcon(
         icon,
-        @floatToInt(i32, bounds.x + bounds.width / 2 - @intToFloat(f32, raylib.RICON_SIZE) / 2),
-        @floatToInt(i32, bounds.y + (bounds.height / 2) - @intToFloat(f32, raylib.RICON_SIZE) / 2),
+        @floatToInt(i32, bounds.x + bounds.width / 2 - @intToFloat(f32, RICON_SIZE) / 2),
+        @floatToInt(i32, bounds.y + (bounds.height / 2) - @intToFloat(f32, RICON_SIZE) / 2),
         1,
         iconTint,
     );
     return pressed;
+}
+
+//--- PHYSAC --------------------------------------------------------------------------------------
+
+/// Returns a physics body of the bodies pool at a specific index
+pub fn GetPhysicsBody(
+    index: i32,
+) ?*PhysicsBodyData {
+    return @ptrCast(?*PhysicsBodyData, raylib.GetPhysicsBody(
+        index,
+    ));
 }
 
 /// Initialize window and OpenGL context
@@ -8479,6 +8455,190 @@ pub fn GuiCheckIconPixel(
     );
 }
 
+/// Initializes physics system
+pub fn InitPhysics() void {
+    raylib.mInitPhysics();
+}
+
+/// Update physics system
+pub fn UpdatePhysics() void {
+    raylib.mUpdatePhysics();
+}
+
+/// Reset physics system (global variables)
+pub fn ResetPhysics() void {
+    raylib.mResetPhysics();
+}
+
+/// Close physics system and unload used memory
+pub fn ClosePhysics() void {
+    raylib.mClosePhysics();
+}
+
+/// Sets physics fixed time step in milliseconds. 1.666666 by default
+pub fn SetPhysicsTimeStep(
+    delta: f64,
+) void {
+    raylib.mSetPhysicsTimeStep(
+        delta,
+    );
+}
+
+/// Sets physics global gravity force
+pub fn SetPhysicsGravity(
+    x: f32,
+    y: f32,
+) void {
+    raylib.mSetPhysicsGravity(
+        x,
+        y,
+    );
+}
+
+/// Creates a new circle physics body with generic parameters
+pub fn CreatePhysicsBodyCircle(
+    pos: Vector2,
+    radius: f32,
+    density: f32,
+) *PhysicsBodyData {
+    return @ptrCast(
+        *PhysicsBodyData,
+        raylib.mCreatePhysicsBodyCircle(
+            @intToPtr([*c]raylib.Vector2, @ptrToInt(&pos)),
+            radius,
+            density,
+        ),
+    );
+}
+
+/// Creates a new rectangle physics body with generic parameters
+pub fn CreatePhysicsBodyRectangle(
+    pos: Vector2,
+    width: f32,
+    height: f32,
+    density: f32,
+) *PhysicsBodyData {
+    return @ptrCast(
+        *PhysicsBodyData,
+        raylib.mCreatePhysicsBodyRectangle(
+            @intToPtr([*c]raylib.Vector2, @ptrToInt(&pos)),
+            width,
+            height,
+            density,
+        ),
+    );
+}
+
+/// Creates a new polygon physics body with generic parameters
+pub fn CreatePhysicsBodyPolygon(
+    pos: Vector2,
+    radius: f32,
+    sides: i32,
+    density: f32,
+) *PhysicsBodyData {
+    return @ptrCast(
+        *PhysicsBodyData,
+        raylib.mCreatePhysicsBodyPolygon(
+            @intToPtr([*c]raylib.Vector2, @ptrToInt(&pos)),
+            radius,
+            sides,
+            density,
+        ),
+    );
+}
+
+/// Destroy a physics body
+pub fn DestroyPhysicsBody(
+    body: *PhysicsBodyData,
+) void {
+    raylib.mDestroyPhysicsBody(
+        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
+    );
+}
+
+/// Adds a force to a physics body
+pub fn PhysicsAddForce(
+    body: *PhysicsBodyData,
+    force: Vector2,
+) void {
+    raylib.mPhysicsAddForce(
+        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&force)),
+    );
+}
+
+/// Adds an angular force to a physics body
+pub fn PhysicsAddTorque(
+    body: *PhysicsBodyData,
+    amount: f32,
+) void {
+    raylib.mPhysicsAddTorque(
+        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
+        amount,
+    );
+}
+
+/// Shatters a polygon shape physics body to little physics bodies with explosion force
+pub fn PhysicsShatter(
+    body: *PhysicsBodyData,
+    position: Vector2,
+    force: f32,
+) void {
+    raylib.mPhysicsShatter(
+        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        force,
+    );
+}
+
+/// Sets physics body shape transform based on radians parameter
+pub fn SetPhysicsBodyRotation(
+    body: *PhysicsBodyData,
+    radians: f32,
+) void {
+    raylib.mSetPhysicsBodyRotation(
+        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
+        radians,
+    );
+}
+
+/// Returns the current amount of created physics bodies
+pub fn GetPhysicsBodiesCount() i32 {
+    return raylib.mGetPhysicsBodiesCount();
+}
+
+/// Returns the physics body shape type (PHYSICS_CIRCLE or PHYSICS_POLYGON)
+pub fn GetPhysicsShapeType(
+    index: i32,
+) i32 {
+    return raylib.mGetPhysicsShapeType(
+        index,
+    );
+}
+
+/// Returns the amount of vertices of a physics body shape
+pub fn GetPhysicsShapeVerticesCount(
+    index: i32,
+) i32 {
+    return raylib.mGetPhysicsShapeVerticesCount(
+        index,
+    );
+}
+
+/// Returns transformed position of a body shape (body position + vertex transformed position)
+pub fn GetPhysicsShapeVertex(
+    body: *PhysicsBodyData,
+    vertex: i32,
+) Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetPhysicsShapeVertex(
+        @ptrCast([*c]raylib.Vector2, &out),
+        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
+        vertex,
+    );
+    return out;
+}
+
 /// Image, pixel data stored in CPU memory (RAM)
 pub const Image = extern struct {
     /// Image raw data
@@ -8821,6 +8981,108 @@ pub const GuiStyleProp = extern struct {
     propertyId: u16,
     /// 
     propertyValue: i32,
+};
+
+/// Matrix2x2 type (used for polygon shape rotation matrix)
+pub const Matrix2x2 = extern struct {
+    /// 
+    m00: f32,
+    /// 
+    m01: f32,
+    /// 
+    m10: f32,
+    /// 
+    m11: f32,
+};
+
+/// 
+pub const PhysicsVertexData = extern struct {
+    /// Vertex count (positions and normals)
+    vertexCount: u32,
+    /// Vertex positions vectors
+    positions: Vector2,
+    /// Vertex normals vectors
+    normals: Vector2,
+};
+
+/// 
+pub const PhysicsShape = extern struct {
+    /// Shape type (circle or polygon)
+    type: PhysicsShapeType,
+    /// Shape physics body data pointer
+    body: [*]PhysicsBodyData,
+    /// Shape vertices data (used for polygon shapes)
+    vertexData: PhysicsVertexData,
+    /// Shape radius (used for circle shapes)
+    radius: f32,
+    /// Vertices transform matrix 2x2
+    transform: Matrix2x2,
+};
+
+/// 
+pub const PhysicsBodyData = extern struct {
+    /// Unique identifier
+    id: u32,
+    /// Enabled dynamics state (collisions are calculated anyway)
+    enabled: bool,
+    /// Physics body shape pivot
+    position: Vector2,
+    /// Current linear velocity applied to position
+    velocity: Vector2,
+    /// Current linear force (reset to 0 every step)
+    force: Vector2,
+    /// Current angular velocity applied to orient
+    angularVelocity: f32,
+    /// Current angular force (reset to 0 every step)
+    torque: f32,
+    /// Rotation in radians
+    orient: f32,
+    /// Moment of inertia
+    inertia: f32,
+    /// Inverse value of inertia
+    inverseInertia: f32,
+    /// Physics body mass
+    mass: f32,
+    /// Inverse value of mass
+    inverseMass: f32,
+    /// Friction when the body has not movement (0 to 1)
+    staticFriction: f32,
+    /// Friction when the body has movement (0 to 1)
+    dynamicFriction: f32,
+    /// Restitution coefficient of the body (0 to 1)
+    restitution: f32,
+    /// Apply gravity force to dynamics
+    useGravity: bool,
+    /// Physics grounded on other body state
+    isGrounded: bool,
+    /// Physics rotation constraint
+    freezeOrient: bool,
+    /// Physics body shape information (type, radius, vertices, transform)
+    shape: PhysicsShape,
+};
+
+/// 
+pub const PhysicsManifoldData = extern struct {
+    /// Unique identifier
+    id: u32,
+    /// Manifold first physics body reference
+    bodyA: [*]PhysicsBodyData,
+    /// Manifold second physics body reference
+    bodyB: [*]PhysicsBodyData,
+    /// Depth of penetration from collision
+    penetration: f32,
+    /// Normal direction vector from 'a' to 'b'
+    normal: Vector2,
+    /// Points of contact during collision
+    contacts: [2]Vector2,
+    /// Current collision number of contacts
+    contactsCount: u32,
+    /// Mixed restitution during collision
+    restitution: f32,
+    /// Mixed dynamic friction during collision
+    dynamicFriction: f32,
+    /// Mixed static friction during collision
+    staticFriction: f32,
 };
 
 /// System/Window config flags
@@ -10222,3 +10484,239 @@ pub const guiIconName = enum(i32) {
     /// 
     RICON_255 = 255,
 };
+
+/// circle or polygon
+pub const PhysicsShapeType = enum(i32) {
+    /// physics shape is a circle
+    PHYSICS_CIRCLE = 0,
+    /// physics shape is a polygon
+    PHYSICS_POLYGON = 1,
+};
+
+/// Icons data is defined by bit array (every bit represents one pixel). Those arrays are stored as unsigned int data arrays, so every array element defines 32 pixels (bits) of information. Number of elemens depend on RICON_SIZE (by default 16x16 pixels)
+pub const RICON_DATA_ELEMENTS: i32 = RICON_SIZE * RICON_SIZE / 32;
+
+/// 
+pub const RAYLIB_VERSION: []const u8 = "4.1-dev";
+
+/// 
+pub const PI: f32 = 3.1415927410125732;
+
+/// Light Gray
+pub const LIGHTGRAY: Color = .{ .r = 200, .g = 200, .b = 200, .a = 255 };
+
+/// Gray
+pub const GRAY: Color = .{ .r = 130, .g = 130, .b = 130, .a = 255 };
+
+/// Dark Gray
+pub const DARKGRAY: Color = .{ .r = 80, .g = 80, .b = 80, .a = 255 };
+
+/// Yellow
+pub const YELLOW: Color = .{ .r = 253, .g = 249, .b = 0, .a = 255 };
+
+/// Gold
+pub const GOLD: Color = .{ .r = 255, .g = 203, .b = 0, .a = 255 };
+
+/// Orange
+pub const ORANGE: Color = .{ .r = 255, .g = 161, .b = 0, .a = 255 };
+
+/// Pink
+pub const PINK: Color = .{ .r = 255, .g = 109, .b = 194, .a = 255 };
+
+/// Red
+pub const RED: Color = .{ .r = 230, .g = 41, .b = 55, .a = 255 };
+
+/// Maroon
+pub const MAROON: Color = .{ .r = 190, .g = 33, .b = 55, .a = 255 };
+
+/// Green
+pub const GREEN: Color = .{ .r = 0, .g = 228, .b = 48, .a = 255 };
+
+/// Lime
+pub const LIME: Color = .{ .r = 0, .g = 158, .b = 47, .a = 255 };
+
+/// Dark Green
+pub const DARKGREEN: Color = .{ .r = 0, .g = 117, .b = 44, .a = 255 };
+
+/// Sky Blue
+pub const SKYBLUE: Color = .{ .r = 102, .g = 191, .b = 255, .a = 255 };
+
+/// Blue
+pub const BLUE: Color = .{ .r = 0, .g = 121, .b = 241, .a = 255 };
+
+/// Dark Blue
+pub const DARKBLUE: Color = .{ .r = 0, .g = 82, .b = 172, .a = 255 };
+
+/// Purple
+pub const PURPLE: Color = .{ .r = 200, .g = 122, .b = 255, .a = 255 };
+
+/// Violet
+pub const VIOLET: Color = .{ .r = 135, .g = 60, .b = 190, .a = 255 };
+
+/// Dark Purple
+pub const DARKPURPLE: Color = .{ .r = 112, .g = 31, .b = 126, .a = 255 };
+
+/// Beige
+pub const BEIGE: Color = .{ .r = 211, .g = 176, .b = 131, .a = 255 };
+
+/// Brown
+pub const BROWN: Color = .{ .r = 127, .g = 106, .b = 79, .a = 255 };
+
+/// Dark Brown
+pub const DARKBROWN: Color = .{ .r = 76, .g = 63, .b = 47, .a = 255 };
+
+/// White
+pub const WHITE: Color = .{ .r = 255, .g = 255, .b = 255, .a = 255 };
+
+/// Black
+pub const BLACK: Color = .{ .r = 0, .g = 0, .b = 0, .a = 255 };
+
+/// Blank (Transparent)
+pub const BLANK: Color = .{ .r = 0, .g = 0, .b = 0, .a = 0 };
+
+/// Magenta
+pub const MAGENTA: Color = .{ .r = 255, .g = 0, .b = 255, .a = 255 };
+
+/// My own White (raylib logo)
+pub const RAYWHITE: Color = .{ .r = 245, .g = 245, .b = 245, .a = 255 };
+
+/// 
+pub const MOUSE_LEFT_BUTTON: i32 = 0;
+
+/// 
+pub const EPSILON: f32 = 0.0000009999999974752427;
+
+/// 
+pub const RAYGUI_VERSION: []const u8 = "3.0";
+
+/// Size of icons (squared)
+pub const RICON_SIZE: i32 = 16;
+
+/// Maximum number of icons
+pub const RICON_MAX_ICONS: i32 = 256;
+
+/// Maximum length of icon name id
+pub const RICON_MAX_NAME_LENGTH: i32 = 32;
+
+/// Maximum number of standard controls
+pub const RAYGUI_MAX_CONTROLS: i32 = 16;
+
+/// Maximum number of standard properties
+pub const RAYGUI_MAX_PROPS_BASE: i32 = 16;
+
+/// Maximum number of extended properties
+pub const RAYGUI_MAX_PROPS_EXTENDED: i32 = 8;
+
+/// 
+pub const KEY_RIGHT: i32 = 262;
+
+/// 
+pub const KEY_LEFT: i32 = 263;
+
+/// 
+pub const KEY_DOWN: i32 = 264;
+
+/// 
+pub const KEY_UP: i32 = 265;
+
+/// 
+pub const KEY_BACKSPACE: i32 = 259;
+
+/// 
+pub const KEY_ENTER: i32 = 257;
+
+/// 
+pub const WINDOW_STATUSBAR_HEIGHT: i32 = 22;
+
+/// 
+pub const GROUPBOX_LINE_THICK: i32 = 1;
+
+/// 
+pub const GROUPBOX_TEXT_PADDING: i32 = 10;
+
+/// 
+pub const LINE_TEXT_PADDING: i32 = 10;
+
+/// 
+pub const PANEL_BORDER_WIDTH: i32 = 1;
+
+/// 
+pub const TOGGLEGROUP_MAX_ELEMENTS: i32 = 32;
+
+/// 
+pub const VALUEBOX_MAX_CHARS: i32 = 32;
+
+/// 
+pub const COLORBARALPHA_CHECKED_SIZE: i32 = 10;
+
+/// 
+pub const MESSAGEBOX_BUTTON_HEIGHT: i32 = 24;
+
+/// 
+pub const MESSAGEBOX_BUTTON_PADDING: i32 = 10;
+
+/// 
+pub const TEXTINPUTBOX_BUTTON_HEIGHT: i32 = 24;
+
+/// 
+pub const TEXTINPUTBOX_BUTTON_PADDING: i32 = 10;
+
+/// 
+pub const TEXTINPUTBOX_HEIGHT: i32 = 30;
+
+/// 
+pub const TEXTINPUTBOX_MAX_TEXT_LENGTH: i32 = 256;
+
+/// Grid lines alpha amount
+pub const GRID_COLOR_ALPHA: f32 = 0.15000000596046448;
+
+/// 
+pub const RICON_TEXT_PADDING: i32 = 4;
+
+/// 
+pub const TEXTSPLIT_MAX_TEXT_LENGTH: i32 = 1024;
+
+/// 
+pub const TEXTSPLIT_MAX_TEXT_ELEMENTS: i32 = 128;
+
+/// 
+pub const MAX_FORMATTEXT_LENGTH: i32 = 64;
+
+/// Size of static buffer: TextSplit()
+pub const TEXTSPLIT_MAX_TEXT_BUFFER_LENGTH: i32 = 1024;
+
+/// Size of static pointers array: TextSplit()
+pub const TEXTSPLIT_MAX_SUBSTRINGS_COUNT: i32 = 128;
+
+/// Maximum number of physic bodies supported
+pub const PHYSAC_MAX_BODIES: i32 = 64;
+
+/// Maximum number of physic bodies interactions (64x64)
+pub const PHYSAC_MAX_MANIFOLDS: i32 = 4096;
+
+/// Maximum number of vertex for polygons shapes
+pub const PHYSAC_MAX_VERTICES: i32 = 24;
+
+/// Default number of vertices for circle shapes
+pub const PHYSAC_DEFAULT_CIRCLE_VERTICES: i32 = 24;
+
+/// 
+pub const PHYSAC_COLLISION_ITERATIONS: i32 = 100;
+
+/// 
+pub const PHYSAC_PENETRATION_ALLOWANCE: f32 = 0.05000000074505806;
+
+/// 
+pub const PHYSAC_PENETRATION_CORRECTION: f32 = 0.4000000059604645;
+
+/// 
+pub const PHYSAC_PI: f32 = 3.1415927410125732;
+
+/// Required for CLOCK_MONOTONIC if compiled with c99 without gnu ext.
+pub const _POSIX_C_SOURCE: i64 = 199309;
+
+/// 
+pub const PHYSAC_FLT_MAX: f32 = 340282346638528860000000000000000000000;
+
+/// 
+pub const PHYSAC_EPSILON: f32 = 0.0000009999999974752427;

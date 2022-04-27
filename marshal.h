@@ -7,16 +7,9 @@
 #include "gui_icons.h"         // Custom icons set provided, generated with rGuiIcons tool
 #include "extras/raygui.h"
 
-const int TEXT_SIZE                = 16;       // Default text size for controls
-const int RICON_SIZE               = 16;       // Size of icons (squared)
-const int RICON_MAX_ICONS         = 256;       // Maximum number of icons
-const int RICON_MAX_NAME_LENGTH    = 32;       // Maximum length of icon name id
-
-// Icons data is defined by bit array (every bit represents one pixel)
-// Those arrays are stored as unsigned int data arrays, so every array
-// element defines 32 pixels (bits) of information
-// Number of elemens depend on RICON_SIZE (by default 16x16 pixels)
-const int RICON_DATA_ELEMENTS = (RICON_SIZE*RICON_SIZE/32);// Initialize window and OpenGL context
+//--- PHYSACDEF -----------------------------------------------------------------------------------
+#include "extras/physac.h"
+// Initialize window and OpenGL context
 void mInitWindow(int width, int height, const char * title);
 
 // Check if KEY_ESCAPE pressed or Close icon pressed
@@ -251,19 +244,19 @@ void mSetShaderValueTexture(Shader *shader, int locIndex, Texture2D *texture);
 void mUnloadShader(Shader *shader);
 
 // Get a ray trace from mouse position
-void mGetMouseRay(Ray *out, Vector2 *mousePosition, Camera *camera);
+void mGetMouseRay(Ray *out, Vector2 *mousePosition, Camera3D *camera);
 
 // Get camera transform matrix (view matrix)
-void mGetCameraMatrix(Matrix *out, Camera *camera);
+void mGetCameraMatrix(Matrix *out, Camera3D *camera);
 
 // Get camera 2d transform matrix
 void mGetCameraMatrix2D(Matrix *out, Camera2D *camera);
 
 // Get the screen space position for a 3d world space position
-void mGetWorldToScreen(Vector2 *out, Vector3 *position, Camera *camera);
+void mGetWorldToScreen(Vector2 *out, Vector3 *position, Camera3D *camera);
 
 // Get size position for a 3d world space position
-void mGetWorldToScreenEx(Vector2 *out, Vector3 *position, Camera *camera, int width, int height);
+void mGetWorldToScreenEx(Vector2 *out, Vector3 *position, Camera3D *camera, int width, int height);
 
 // Get the screen space position for a 2d camera world space position
 void mGetWorldToScreen2D(Vector2 *out, Vector2 *position, Camera2D *camera);
@@ -518,7 +511,7 @@ void mGetGesturePinchVector(Vector2 *out);
 float mGetGesturePinchAngle(void);
 
 // Set camera mode (multiple camera modes available)
-void mSetCameraMode(Camera *camera, int mode);
+void mSetCameraMode(Camera3D *camera, int mode);
 
 // Update camera position for selected mode
 void mUpdateCamera(Camera * camera);
@@ -869,7 +862,7 @@ void mLoadTexture(Texture2D *out, const char * fileName);
 void mLoadTextureFromImage(Texture2D *out, Image *image);
 
 // Load cubemap from image, multiple image cubemap layouts supported
-void mLoadTextureCubemap(TextureCubemap *out, Image *image, int layout);
+void mLoadTextureCubemap(Texture2D *out, Image *image, int layout);
 
 // Load texture for rendering (framebuffer)
 void mLoadRenderTexture(RenderTexture2D *out, int width, int height);
@@ -1163,13 +1156,13 @@ void mDrawModelWiresEx(Model *model, Vector3 *position, Vector3 *rotationAxis, f
 void mDrawBoundingBox(BoundingBox *box, Color *color);
 
 // Draw a billboard texture
-void mDrawBillboard(Camera *camera, Texture2D *texture, Vector3 *position, float size, Color *tint);
+void mDrawBillboard(Camera3D *camera, Texture2D *texture, Vector3 *position, float size, Color *tint);
 
 // Draw a billboard texture defined by source
-void mDrawBillboardRec(Camera *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector2 *size, Color *tint);
+void mDrawBillboardRec(Camera3D *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector2 *size, Color *tint);
 
 // Draw a billboard texture defined by source and rotation
-void mDrawBillboardPro(Camera *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector3 *up, Vector2 *size, Vector2 *origin, float rotation, Color *tint);
+void mDrawBillboardPro(Camera3D *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector3 *up, Vector2 *size, Vector2 *origin, float rotation, Color *tint);
 
 // Upload mesh vertex data in GPU and provide VAO/VBO ids
 void mUploadMesh(Mesh * mesh, bool dynamic);
@@ -1622,7 +1615,7 @@ void mVector3OrthoNormalize(Vector3 * v1, Vector3 * v2);
 void mVector3Transform(Vector3 *out, Vector3 *v, Matrix *mat);
 
 // 
-void mVector3RotateByQuaternion(Vector3 *out, Vector3 *v, Quaternion *q);
+void mVector3RotateByQuaternion(Vector3 *out, Vector3 *v, Vector4 *q);
 
 // 
 void mVector3Lerp(Vector3 *out, Vector3 *v1, Vector3 *v2, float amount);
@@ -1724,73 +1717,73 @@ void mMatrixLookAt(Matrix *out, Vector3 *eye, Vector3 *target, Vector3 *up);
 void mMatrixToFloatV(float16 *out, Matrix *mat);
 
 // 
-void mQuaternionAdd(Quaternion *out, Quaternion *q1, Quaternion *q2);
+void mQuaternionAdd(Vector4 *out, Vector4 *q1, Vector4 *q2);
 
 // 
-void mQuaternionAddValue(Quaternion *out, Quaternion *q, float add);
+void mQuaternionAddValue(Vector4 *out, Vector4 *q, float add);
 
 // 
-void mQuaternionSubtract(Quaternion *out, Quaternion *q1, Quaternion *q2);
+void mQuaternionSubtract(Vector4 *out, Vector4 *q1, Vector4 *q2);
 
 // 
-void mQuaternionSubtractValue(Quaternion *out, Quaternion *q, float sub);
+void mQuaternionSubtractValue(Vector4 *out, Vector4 *q, float sub);
 
 // 
-void mQuaternionIdentity(Quaternion *out);
+void mQuaternionIdentity(Vector4 *out);
 
 // 
-float mQuaternionLength(Quaternion *q);
+float mQuaternionLength(Vector4 *q);
 
 // 
-void mQuaternionNormalize(Quaternion *out, Quaternion *q);
+void mQuaternionNormalize(Vector4 *out, Vector4 *q);
 
 // 
-void mQuaternionInvert(Quaternion *out, Quaternion *q);
+void mQuaternionInvert(Vector4 *out, Vector4 *q);
 
 // 
-void mQuaternionMultiply(Quaternion *out, Quaternion *q1, Quaternion *q2);
+void mQuaternionMultiply(Vector4 *out, Vector4 *q1, Vector4 *q2);
 
 // 
-void mQuaternionScale(Quaternion *out, Quaternion *q, float mul);
+void mQuaternionScale(Vector4 *out, Vector4 *q, float mul);
 
 // 
-void mQuaternionDivide(Quaternion *out, Quaternion *q1, Quaternion *q2);
+void mQuaternionDivide(Vector4 *out, Vector4 *q1, Vector4 *q2);
 
 // 
-void mQuaternionLerp(Quaternion *out, Quaternion *q1, Quaternion *q2, float amount);
+void mQuaternionLerp(Vector4 *out, Vector4 *q1, Vector4 *q2, float amount);
 
 // 
-void mQuaternionNlerp(Quaternion *out, Quaternion *q1, Quaternion *q2, float amount);
+void mQuaternionNlerp(Vector4 *out, Vector4 *q1, Vector4 *q2, float amount);
 
 // 
-void mQuaternionSlerp(Quaternion *out, Quaternion *q1, Quaternion *q2, float amount);
+void mQuaternionSlerp(Vector4 *out, Vector4 *q1, Vector4 *q2, float amount);
 
 // 
-void mQuaternionFromVector3ToVector3(Quaternion *out, Vector3 *from, Vector3 *to);
+void mQuaternionFromVector3ToVector3(Vector4 *out, Vector3 *from, Vector3 *to);
 
 // 
-void mQuaternionFromMatrix(Quaternion *out, Matrix *mat);
+void mQuaternionFromMatrix(Vector4 *out, Matrix *mat);
 
 // 
-void mQuaternionToMatrix(Matrix *out, Quaternion *q);
+void mQuaternionToMatrix(Matrix *out, Vector4 *q);
 
 // 
-void mQuaternionFromAxisAngle(Quaternion *out, Vector3 *axis, float angle);
+void mQuaternionFromAxisAngle(Vector4 *out, Vector3 *axis, float angle);
 
 // 
-void mQuaternionToAxisAngle(Quaternion *q, Vector3 * outAxis, float * outAngle);
+void mQuaternionToAxisAngle(Vector4 *q, Vector3 * outAxis, float * outAngle);
 
 // 
-void mQuaternionFromEuler(Quaternion *out, float pitch, float yaw, float roll);
+void mQuaternionFromEuler(Vector4 *out, float pitch, float yaw, float roll);
 
 // 
-void mQuaternionToEuler(Vector3 *out, Quaternion *q);
+void mQuaternionToEuler(Vector3 *out, Vector4 *q);
 
 // 
-void mQuaternionTransform(Quaternion *out, Quaternion *q, Matrix *mat);
+void mQuaternionTransform(Vector4 *out, Vector4 *q, Matrix *mat);
 
 // 
-int mQuaternionEquals(Quaternion *p, Quaternion *q);
+int mQuaternionEquals(Vector4 *p, Vector4 *q);
 
 // Enable gui controls (global state)
 void mGuiEnable(void);
@@ -1944,4 +1937,58 @@ void mGuiClearIconPixel(int iconId, int x, int y);
 
 // Check icon pixel value
 bool mGuiCheckIconPixel(int iconId, int x, int y);
+
+// Initializes physics system
+void mInitPhysics(void);
+
+// Update physics system
+void mUpdatePhysics(void);
+
+// Reset physics system (global variables)
+void mResetPhysics(void);
+
+// Close physics system and unload used memory
+void mClosePhysics(void);
+
+// Sets physics fixed time step in milliseconds. 1.666666 by default
+void mSetPhysicsTimeStep(double delta);
+
+// Sets physics global gravity force
+void mSetPhysicsGravity(float x, float y);
+
+// Creates a new circle physics body with generic parameters
+PhysicsBodyData * mCreatePhysicsBodyCircle(Vector2 *pos, float radius, float density);
+
+// Creates a new rectangle physics body with generic parameters
+PhysicsBodyData * mCreatePhysicsBodyRectangle(Vector2 *pos, float width, float height, float density);
+
+// Creates a new polygon physics body with generic parameters
+PhysicsBodyData * mCreatePhysicsBodyPolygon(Vector2 *pos, float radius, int sides, float density);
+
+// Destroy a physics body
+void mDestroyPhysicsBody(PhysicsBodyData * body);
+
+// Adds a force to a physics body
+void mPhysicsAddForce(PhysicsBodyData * body, Vector2 *force);
+
+// Adds an angular force to a physics body
+void mPhysicsAddTorque(PhysicsBodyData * body, float amount);
+
+// Shatters a polygon shape physics body to little physics bodies with explosion force
+void mPhysicsShatter(PhysicsBodyData * body, Vector2 *position, float force);
+
+// Sets physics body shape transform based on radians parameter
+void mSetPhysicsBodyRotation(PhysicsBodyData * body, float radians);
+
+// Returns the current amount of created physics bodies
+int mGetPhysicsBodiesCount(void);
+
+// Returns the physics body shape type (PHYSICS_CIRCLE or PHYSICS_POLYGON)
+int mGetPhysicsShapeType(int index);
+
+// Returns the amount of vertices of a physics body shape
+int mGetPhysicsShapeVerticesCount(int index);
+
+// Returns transformed position of a body shape (body position + vertex transformed position)
+void mGetPhysicsShapeVertex(Vector2 *out, PhysicsBodyData * body, int vertex);
 

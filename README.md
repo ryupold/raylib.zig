@@ -1,5 +1,5 @@
 # raylib.zig
-Idiomatic [raylib](https://www.raylib.com/) (4.0) bindings for [Zig](https://ziglang.org/) (0.9.1)
+Idiomatic [raylib](https://www.raylib.com/) (4.1) bindings for [Zig](https://ziglang.org/) (0.9.1)
 
 For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig)
 
@@ -13,11 +13,11 @@ For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples
 - [x] RLAPI (raylib.h)
 - [x] RMAPI (raymath.h)
 - [x] RAYGUIAPI (extras/raygui.h)
-- [ ] PHYSACDEF (extras/physac.h)
+- [x] PHYSACDEF (extras/physac.h)
 - [-] Constants
   - [x] Colors
-  - [ ] Versions
-  - [-] GUI dimensions
+  - [x] Versions
+  - [ ] GUI dimensions
 
 ## usage
 
