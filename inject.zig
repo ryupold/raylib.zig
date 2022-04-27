@@ -682,3 +682,66 @@ pub fn TextAppend(allocator: std.mem.Allocator, text: []const u8, append: []cons
         text[position..],
     })).ptr;
 }
+
+//--- RAYGUI --------------------------------------------------------------------------------------
+
+pub fn textAlignPixelOffset(h: i32) i32 {
+    return h % 2;
+}
+
+fn bitCheck(a: u32, b: u32) bool {
+    var r: u32 = undefined;
+    _ = @shlWithOverflow(u32, 1, @truncate(u5, b), &r);
+    return (a & (r)) != 0;
+}
+
+fn bitCheck(a: u32, b: u32) bool {
+    var r: u32 = undefined;
+    _ = @shlWithOverflow(u32, 1, @truncate(u5, b), &r);
+    return (a & (r)) != 0;
+}
+
+/// Draw selected icon using rectangles pixel-by-pixel
+pub fn GuiDrawIcon(
+    icon: guiIconName,
+    posX: i32,
+    posY: i32,
+    pixelSize: i32,
+    color: Color,
+) void {
+    const iconId = @enumToInt(icon);
+
+    var i: i32 = 0;
+    var y: i32 = 0;
+    while (i < raylib.RICON_SIZE * raylib.RICON_SIZE / 32) : (i += 1) {
+        var k: u32 = 0;
+        while (k < 32) : (k += 1) {
+            if (bitCheck(raylib.guiIcons[@intCast(usize, iconId * raylib.RICON_DATA_ELEMENTS + i)], k)) {
+                _ = DrawRectangle(
+                    posX + @intCast(i32, k % raylib.RICON_SIZE) * pixelSize,
+                    posY + y * pixelSize,
+                    pixelSize,
+                    pixelSize,
+                    color,
+                );
+            }
+
+            if ((k == 15) or (k == 31)) {
+                y += 1;
+            }
+        }
+    }
+}
+
+/// Draw button with icon centered
+pub fn GuiDrawIconButton(bounds: Rectangle, icon: guiIconName, iconTint: Color) bool {
+    const pressed = GuiButton(bounds, "");
+    GuiDrawIcon(
+        icon,
+        @floatToInt(i32, bounds.x + bounds.width / 2 - @intToFloat(f32, raylib.RICON_SIZE)/2),
+        @floatToInt(i32, bounds.y + (bounds.height / 2) - @intToFloat(f32, raylib.RICON_SIZE)/2),
+        1,
+        iconTint,
+    );
+    return pressed;
+}

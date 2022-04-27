@@ -137,14 +137,32 @@ fn writeFunctions(
             ));
         }
 
-        if (isPointer(func.returnType)) {
+        if (func.custom) {
             try file.writeAll(
                 try allocPrint(
                     allocator,
-                    ") [*]const {s} {{\n",
-                    .{stripType(func.returnType)},
+                    ") {s} {{\n",
+                    .{func.returnType},
                 ),
             );
+        } else if (isPointer(func.returnType)) {
+            if (eql("u8", (stripType(func.returnType)))) {
+                try file.writeAll(
+                    try allocPrint(
+                        allocator,
+                        ") [*:0]const {s} {{\n",
+                        .{stripType(func.returnType)},
+                    ),
+                );
+            } else {
+                try file.writeAll(
+                    try allocPrint(
+                        allocator,
+                        ") [*]const {s} {{\n",
+                        .{stripType(func.returnType)},
+                    ),
+                );
+            }
         } else {
             try file.writeAll(
                 try allocPrint(

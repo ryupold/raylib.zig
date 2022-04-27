@@ -134,6 +134,12 @@
       "description": ""
     },
     {
+      "name": "EPSILON",
+      "type": "FLOAT",
+      "value": 0.000001,
+      "description": ""
+    },
+    {
       "name": "DEG2RAD",
       "type": "UNKNOWN",
       "value": "(PI/180.0f)",
@@ -270,6 +276,21 @@
         {
           "type": "float",
           "name": "outputEnd"
+        }
+      ]
+    },
+    {
+      "name": "FloatEquals",
+      "description": "",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "float",
+          "name": "x"
+        },
+        {
+          "type": "float",
+          "name": "y"
         }
       ]
     },
@@ -572,6 +593,70 @@
         {
           "type": "float",
           "name": "maxDistance"
+        }
+      ]
+    },
+    {
+      "name": "Vector2Invert",
+      "description": "",
+      "returnType": "Vector2",
+      "params": [
+        {
+          "type": "Vector2",
+          "name": "v"
+        }
+      ]
+    },
+    {
+      "name": "Vector2Clamp",
+      "description": "",
+      "returnType": "Vector2",
+      "params": [
+        {
+          "type": "Vector2",
+          "name": "v"
+        },
+        {
+          "type": "Vector2",
+          "name": "min"
+        },
+        {
+          "type": "Vector2",
+          "name": "max"
+        }
+      ]
+    },
+    {
+      "name": "Vector2ClampValue",
+      "description": "",
+      "returnType": "Vector2",
+      "params": [
+        {
+          "type": "Vector2",
+          "name": "v"
+        },
+        {
+          "type": "float",
+          "name": "min"
+        },
+        {
+          "type": "float",
+          "name": "max"
+        }
+      ]
+    },
+    {
+      "name": "Vector2Equals",
+      "description": "",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Vector2",
+          "name": "p"
+        },
+        {
+          "type": "Vector2",
+          "name": "q"
         }
       ]
     },
@@ -979,6 +1064,89 @@
         {
           "type": "Vector3",
           "name": "v"
+        }
+      ]
+    },
+    {
+      "name": "Vector3Invert",
+      "description": "",
+      "returnType": "Vector3",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "v"
+        }
+      ]
+    },
+    {
+      "name": "Vector3Clamp",
+      "description": "",
+      "returnType": "Vector3",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "v"
+        },
+        {
+          "type": "Vector3",
+          "name": "min"
+        },
+        {
+          "type": "Vector3",
+          "name": "max"
+        }
+      ]
+    },
+    {
+      "name": "Vector3ClampValue",
+      "description": "",
+      "returnType": "Vector3",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "v"
+        },
+        {
+          "type": "float",
+          "name": "min"
+        },
+        {
+          "type": "float",
+          "name": "max"
+        }
+      ]
+    },
+    {
+      "name": "Vector3Equals",
+      "description": "",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "p"
+        },
+        {
+          "type": "Vector3",
+          "name": "q"
+        }
+      ]
+    },
+    {
+      "name": "Vector3Refract",
+      "description": "",
+      "returnType": "Vector3",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "v"
+        },
+        {
+          "type": "Vector3",
+          "name": "n"
+        },
+        {
+          "type": "float",
+          "name": "r"
         }
       ]
     },
@@ -1612,6 +1780,21 @@
         {
           "type": "Matrix",
           "name": "mat"
+        }
+      ]
+    },
+    {
+      "name": "QuaternionEquals",
+      "description": "",
+      "returnType": "int",
+      "params": [
+        {
+          "type": "Quaternion",
+          "name": "p"
+        },
+        {
+          "type": "Quaternion",
+          "name": "q"
         }
       ]
     }

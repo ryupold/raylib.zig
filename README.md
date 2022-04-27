@@ -12,12 +12,12 @@ For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples
 ## supported APIs
 - [x] RLAPI (raylib.h)
 - [x] RMAPI (raymath.h)
-- [ ] RAYGUIAPI (extras/raygui.h)
+- [x] RAYGUIAPI (extras/raygui.h)
 - [ ] PHYSACDEF (extras/physac.h)
-- [ ] Constants
+- [-] Constants
   - [x] Colors
   - [ ] Versions
-  - [ ] GUI dimensions
+  - [-] GUI dimensions
 
 ## usage
 
@@ -35,13 +35,14 @@ Then @import raylib.zig
 const raylib = @import("raylib/raylib.zig");
 ```
 > Note: you only need the files `raylib.zig`, `marshal.h` and `marshal.c` for this to work
+> See `build.zig` in [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig) for how to build
 
 ## custom definitions
 An easy way to fix binding mistakes is to edit them in `bindings.json` and setting the custom flag to true. This way the binding will not be overriden when calling `zig build intermediate`. 
 Additionally you can add custom definitions into `inject.zig, inject.h, inject.c` these files will be prepended accordingly.
 
 ## disclaimer
-I haven't tested nearly all generated functions, so there might be bugs. Especially when it comes to pointers as it is not decidable (for the generator) what a pointer to C means. Could be single item, array, sentinel terminated and/or nullable. If you run into crashes using one of the functions or types in `raylib.zig` feel free to [create an issue](https://github.com/ryupold/raylib.zig/issues) and I will look into it.
+I have NOT tested most of the generated functions, so there might be bugs. Especially when it comes to pointers as it is not decidable (for the generator) what a pointer to C means. Could be single item, array, sentinel terminated and/or nullable. If you run into crashes using one of the functions or types in `raylib.zig` feel free to [create an issue](https://github.com/ryupold/raylib.zig/issues) and I will look into it.
 
 ## memory
 Some of the functions may return pointers to memory allocated within raylib.

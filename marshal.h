@@ -1,8 +1,22 @@
+//--- CORE ----------------------------------------------------------------------------------------
 #include "raylib.h"
 #include "raymath.h"
+
+//--- RAYGUI --------------------------------------------------------------------------------------
+#define RAYGUI_CUSTOM_ICONS    // Custom icons set required
+#include "gui_icons.h"         // Custom icons set provided, generated with rGuiIcons tool
 #include "extras/raygui.h"
 
-// Initialize window and OpenGL context
+const int TEXT_SIZE                = 16;       // Default text size for controls
+const int RICON_SIZE               = 16;       // Size of icons (squared)
+const int RICON_MAX_ICONS         = 256;       // Maximum number of icons
+const int RICON_MAX_NAME_LENGTH    = 32;       // Maximum length of icon name id
+
+// Icons data is defined by bit array (every bit represents one pixel)
+// Those arrays are stored as unsigned int data arrays, so every array
+// element defines 32 pixels (bits) of information
+// Number of elemens depend on RICON_SIZE (by default 16x16 pixels)
+const int RICON_DATA_ELEMENTS = (RICON_SIZE*RICON_SIZE/32);// Initialize window and OpenGL context
 void mInitWindow(int width, int height, const char * title);
 
 // Check if KEY_ESCAPE pressed or Close icon pressed
@@ -1464,6 +1478,9 @@ float mNormalize(float value, float start, float end);
 float mRemap(float value, float inputStart, float inputEnd, float outputStart, float outputEnd);
 
 // 
+int mFloatEquals(float x, float y);
+
+// 
 void mVector2Zero(Vector2 *out);
 
 // 
@@ -1528,6 +1545,18 @@ void mVector2Rotate(Vector2 *out, Vector2 *v, float angle);
 
 // 
 void mVector2MoveTowards(Vector2 *out, Vector2 *v, Vector2 *target, float maxDistance);
+
+// 
+void mVector2Invert(Vector2 *out, Vector2 *v);
+
+// 
+void mVector2Clamp(Vector2 *out, Vector2 *v, Vector2 *min, Vector2 *max);
+
+// 
+void mVector2ClampValue(Vector2 *out, Vector2 *v, float min, float max);
+
+// 
+int mVector2Equals(Vector2 *p, Vector2 *q);
 
 // 
 void mVector3Zero(Vector3 *out);
@@ -1615,6 +1644,21 @@ void mVector3Unproject(Vector3 *out, Vector3 *source, Matrix *projection, Matrix
 
 // 
 void mVector3ToFloatV(float3 *out, Vector3 *v);
+
+// 
+void mVector3Invert(Vector3 *out, Vector3 *v);
+
+// 
+void mVector3Clamp(Vector3 *out, Vector3 *v, Vector3 *min, Vector3 *max);
+
+// 
+void mVector3ClampValue(Vector3 *out, Vector3 *v, float min, float max);
+
+// 
+int mVector3Equals(Vector3 *p, Vector3 *q);
+
+// 
+void mVector3Refract(Vector3 *out, Vector3 *v, Vector3 *n, float r);
 
 // 
 float mMatrixDeterminant(Matrix *mat);
@@ -1744,4 +1788,160 @@ void mQuaternionToEuler(Vector3 *out, Quaternion *q);
 
 // 
 void mQuaternionTransform(Quaternion *out, Quaternion *q, Matrix *mat);
+
+// 
+int mQuaternionEquals(Quaternion *p, Quaternion *q);
+
+// Enable gui controls (global state)
+void mGuiEnable(void);
+
+// Disable gui controls (global state)
+void mGuiDisable(void);
+
+// Lock gui controls (global state)
+void mGuiLock(void);
+
+// Unlock gui controls (global state)
+void mGuiUnlock(void);
+
+// Check if gui is locked (global state)
+bool mGuiIsLocked(void);
+
+// Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
+void mGuiFade(float alpha);
+
+// Set gui state (global state)
+void mGuiSetState(int state);
+
+// Get gui state (global state)
+int mGuiGetState(void);
+
+// Set gui custom font (global state)
+void mGuiSetFont(Font *font);
+
+// Get gui custom font (global state)
+void mGuiGetFont(Font *out);
+
+// Set one style property
+void mGuiSetStyle(int control, int property, int value);
+
+// Get one style property
+int mGuiGetStyle(int control, int property);
+
+// Window Box control, shows a window that can be closed
+bool mGuiWindowBox(Rectangle *bounds, const char * title);
+
+// Group Box control with text name
+void mGuiGroupBox(Rectangle *bounds, const char * text);
+
+// Line separator control, could contain text
+void mGuiLine(Rectangle *bounds, const char * text);
+
+// Panel control, useful to group controls
+void mGuiPanel(Rectangle *bounds);
+
+// Scroll Panel control
+void mGuiScrollPanel(Rectangle *out, Rectangle *bounds, Rectangle *content, Vector2 * scroll);
+
+// Label control, shows text
+void mGuiLabel(Rectangle *bounds, const char * text);
+
+// Button control, returns true when clicked
+bool mGuiButton(Rectangle *bounds, const char * text);
+
+// Label button control, show true when clicked
+bool mGuiLabelButton(Rectangle *bounds, const char * text);
+
+// Toggle Button control, returns true when active
+bool mGuiToggle(Rectangle *bounds, const char * text, bool active);
+
+// Toggle Group control, returns active toggle index
+int mGuiToggleGroup(Rectangle *bounds, const char * text, int active);
+
+// Check Box control, returns true when active
+bool mGuiCheckBox(Rectangle *bounds, const char * text, bool checked);
+
+// Combo Box control, returns selected item index
+int mGuiComboBox(Rectangle *bounds, const char * text, int active);
+
+// Dropdown Box control, returns selected item
+bool mGuiDropdownBox(Rectangle *bounds, const char * text, int * active, bool editMode);
+
+// Spinner control, returns selected value
+bool mGuiSpinner(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode);
+
+// Value Box control, updates input text with numbers
+bool mGuiValueBox(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode);
+
+// Text Box control, updates input text
+bool mGuiTextBox(Rectangle *bounds, char * text, int textSize, bool editMode);
+
+// Slider control, returns selected value
+float mGuiSlider(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue);
+
+// Slider Bar control, returns selected value
+float mGuiSliderBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue);
+
+// Progress Bar control, shows current progress value
+float mGuiProgressBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue);
+
+// Status Bar control, shows info text
+void mGuiStatusBar(Rectangle *bounds, const char * text);
+
+// Dummy control for placeholders
+void mGuiDummyRec(Rectangle *bounds, const char * text);
+
+// Scroll Bar control
+int mGuiScrollBar(Rectangle *bounds, int value, int minValue, int maxValue);
+
+// Grid control
+void mGuiGrid(Vector2 *out, Rectangle *bounds, float spacing, int subdivs);
+
+// List View control, returns selected list item index
+int mGuiListView(Rectangle *bounds, const char * text, int * scrollIndex, int active);
+
+// Message Box control, displays a message
+int mGuiMessageBox(Rectangle *bounds, const char * title, const char * message, const char * buttons);
+
+// Text Input Box control, ask for text
+int mGuiTextInputBox(Rectangle *bounds, const char * title, const char * message, const char * buttons, char * text);
+
+// Color Picker control (multiple color controls)
+void mGuiColorPicker(Color *out, Rectangle *bounds, Color *color);
+
+// Color Panel control
+void mGuiColorPanel(Color *out, Rectangle *bounds, Color *color);
+
+// Color Bar Alpha control
+float mGuiColorBarAlpha(Rectangle *bounds, float alpha);
+
+// Color Bar Hue control
+float mGuiColorBarHue(Rectangle *bounds, float value);
+
+// Load style file over global style variable (.rgs)
+void mGuiLoadStyle(const char * fileName);
+
+// Load style default over global style
+void mGuiLoadStyleDefault(void);
+
+// Get text with icon id prepended (if supported)
+const char * mGuiIconText(int iconId, const char * text);
+
+// Get full icons data pointer
+unsigned int * mGuiGetIcons(void);
+
+// Get icon bit data
+unsigned int * mGuiGetIconData(int iconId);
+
+// Set icon bit data
+void mGuiSetIconData(int iconId, unsigned int * data);
+
+// Set icon pixel value
+void mGuiSetIconPixel(int iconId, int x, int y);
+
+// Clear icon pixel value
+void mGuiClearIconPixel(int iconId, int x, int y);
+
+// Check icon pixel value
+bool mGuiCheckIconPixel(int iconId, int x, int y);
 

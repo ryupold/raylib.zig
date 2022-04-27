@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "raymath.h"
+#define RAYGUI_IMPLEMENTATION
 #include "extras/raygui.h"
 
 void mInitWindow(int width, int height, const char * title)
@@ -2437,6 +2438,11 @@ float mRemap(float value, float inputStart, float inputEnd, float outputStart, f
 	return Remap(value, inputStart, inputEnd, outputStart, outputEnd);
 }
 
+int mFloatEquals(float x, float y)
+{
+	return FloatEquals(x, y);
+}
+
 void mVector2Zero(Vector2 *out)
 {
 	*out = Vector2Zero();
@@ -2545,6 +2551,26 @@ void mVector2Rotate(Vector2 *out, Vector2 *v, float angle)
 void mVector2MoveTowards(Vector2 *out, Vector2 *v, Vector2 *target, float maxDistance)
 {
 	*out = Vector2MoveTowards(*v, *target, maxDistance);
+}
+
+void mVector2Invert(Vector2 *out, Vector2 *v)
+{
+	*out = Vector2Invert(*v);
+}
+
+void mVector2Clamp(Vector2 *out, Vector2 *v, Vector2 *min, Vector2 *max)
+{
+	*out = Vector2Clamp(*v, *min, *max);
+}
+
+void mVector2ClampValue(Vector2 *out, Vector2 *v, float min, float max)
+{
+	*out = Vector2ClampValue(*v, min, max);
+}
+
+int mVector2Equals(Vector2 *p, Vector2 *q)
+{
+	return Vector2Equals(*p, *q);
 }
 
 void mVector3Zero(Vector3 *out)
@@ -2690,6 +2716,31 @@ void mVector3Unproject(Vector3 *out, Vector3 *source, Matrix *projection, Matrix
 void mVector3ToFloatV(float3 *out, Vector3 *v)
 {
 	*out = Vector3ToFloatV(*v);
+}
+
+void mVector3Invert(Vector3 *out, Vector3 *v)
+{
+	*out = Vector3Invert(*v);
+}
+
+void mVector3Clamp(Vector3 *out, Vector3 *v, Vector3 *min, Vector3 *max)
+{
+	*out = Vector3Clamp(*v, *min, *max);
+}
+
+void mVector3ClampValue(Vector3 *out, Vector3 *v, float min, float max)
+{
+	*out = Vector3ClampValue(*v, min, max);
+}
+
+int mVector3Equals(Vector3 *p, Vector3 *q)
+{
+	return Vector3Equals(*p, *q);
+}
+
+void mVector3Refract(Vector3 *out, Vector3 *v, Vector3 *n, float r)
+{
+	*out = Vector3Refract(*v, *n, r);
 }
 
 float mMatrixDeterminant(Matrix *mat)
@@ -2905,5 +2956,265 @@ void mQuaternionToEuler(Vector3 *out, Quaternion *q)
 void mQuaternionTransform(Quaternion *out, Quaternion *q, Matrix *mat)
 {
 	*out = QuaternionTransform(*q, *mat);
+}
+
+int mQuaternionEquals(Quaternion *p, Quaternion *q)
+{
+	return QuaternionEquals(*p, *q);
+}
+
+void mGuiEnable(void)
+{
+	return GuiEnable();
+}
+
+void mGuiDisable(void)
+{
+	return GuiDisable();
+}
+
+void mGuiLock(void)
+{
+	return GuiLock();
+}
+
+void mGuiUnlock(void)
+{
+	return GuiUnlock();
+}
+
+bool mGuiIsLocked(void)
+{
+	return GuiIsLocked();
+}
+
+void mGuiFade(float alpha)
+{
+	return GuiFade(alpha);
+}
+
+void mGuiSetState(int state)
+{
+	return GuiSetState(state);
+}
+
+int mGuiGetState(void)
+{
+	return GuiGetState();
+}
+
+void mGuiSetFont(Font *font)
+{
+	return GuiSetFont(*font);
+}
+
+void mGuiGetFont(Font *out)
+{
+	*out = GuiGetFont();
+}
+
+void mGuiSetStyle(int control, int property, int value)
+{
+	return GuiSetStyle(control, property, value);
+}
+
+int mGuiGetStyle(int control, int property)
+{
+	return GuiGetStyle(control, property);
+}
+
+bool mGuiWindowBox(Rectangle *bounds, const char * title)
+{
+	return GuiWindowBox(*bounds, title);
+}
+
+void mGuiGroupBox(Rectangle *bounds, const char * text)
+{
+	return GuiGroupBox(*bounds, text);
+}
+
+void mGuiLine(Rectangle *bounds, const char * text)
+{
+	return GuiLine(*bounds, text);
+}
+
+void mGuiPanel(Rectangle *bounds)
+{
+	return GuiPanel(*bounds);
+}
+
+void mGuiScrollPanel(Rectangle *out, Rectangle *bounds, Rectangle *content, Vector2 * scroll)
+{
+	*out = GuiScrollPanel(*bounds, *content, scroll);
+}
+
+void mGuiLabel(Rectangle *bounds, const char * text)
+{
+	return GuiLabel(*bounds, text);
+}
+
+bool mGuiButton(Rectangle *bounds, const char * text)
+{
+	return GuiButton(*bounds, text);
+}
+
+bool mGuiLabelButton(Rectangle *bounds, const char * text)
+{
+	return GuiLabelButton(*bounds, text);
+}
+
+bool mGuiToggle(Rectangle *bounds, const char * text, bool active)
+{
+	return GuiToggle(*bounds, text, active);
+}
+
+int mGuiToggleGroup(Rectangle *bounds, const char * text, int active)
+{
+	return GuiToggleGroup(*bounds, text, active);
+}
+
+bool mGuiCheckBox(Rectangle *bounds, const char * text, bool checked)
+{
+	return GuiCheckBox(*bounds, text, checked);
+}
+
+int mGuiComboBox(Rectangle *bounds, const char * text, int active)
+{
+	return GuiComboBox(*bounds, text, active);
+}
+
+bool mGuiDropdownBox(Rectangle *bounds, const char * text, int * active, bool editMode)
+{
+	return GuiDropdownBox(*bounds, text, active, editMode);
+}
+
+bool mGuiSpinner(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode)
+{
+	return GuiSpinner(*bounds, text, value, minValue, maxValue, editMode);
+}
+
+bool mGuiValueBox(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode)
+{
+	return GuiValueBox(*bounds, text, value, minValue, maxValue, editMode);
+}
+
+bool mGuiTextBox(Rectangle *bounds, char * text, int textSize, bool editMode)
+{
+	return GuiTextBox(*bounds, text, textSize, editMode);
+}
+
+float mGuiSlider(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue)
+{
+	return GuiSlider(*bounds, textLeft, textRight, value, minValue, maxValue);
+}
+
+float mGuiSliderBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue)
+{
+	return GuiSliderBar(*bounds, textLeft, textRight, value, minValue, maxValue);
+}
+
+float mGuiProgressBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue)
+{
+	return GuiProgressBar(*bounds, textLeft, textRight, value, minValue, maxValue);
+}
+
+void mGuiStatusBar(Rectangle *bounds, const char * text)
+{
+	return GuiStatusBar(*bounds, text);
+}
+
+void mGuiDummyRec(Rectangle *bounds, const char * text)
+{
+	return GuiDummyRec(*bounds, text);
+}
+
+int mGuiScrollBar(Rectangle *bounds, int value, int minValue, int maxValue)
+{
+	return GuiScrollBar(*bounds, value, minValue, maxValue);
+}
+
+void mGuiGrid(Vector2 *out, Rectangle *bounds, float spacing, int subdivs)
+{
+	*out = GuiGrid(*bounds, spacing, subdivs);
+}
+
+int mGuiListView(Rectangle *bounds, const char * text, int * scrollIndex, int active)
+{
+	return GuiListView(*bounds, text, scrollIndex, active);
+}
+
+int mGuiMessageBox(Rectangle *bounds, const char * title, const char * message, const char * buttons)
+{
+	return GuiMessageBox(*bounds, title, message, buttons);
+}
+
+int mGuiTextInputBox(Rectangle *bounds, const char * title, const char * message, const char * buttons, char * text)
+{
+	return GuiTextInputBox(*bounds, title, message, buttons, text);
+}
+
+void mGuiColorPicker(Color *out, Rectangle *bounds, Color *color)
+{
+	*out = GuiColorPicker(*bounds, *color);
+}
+
+void mGuiColorPanel(Color *out, Rectangle *bounds, Color *color)
+{
+	*out = GuiColorPanel(*bounds, *color);
+}
+
+float mGuiColorBarAlpha(Rectangle *bounds, float alpha)
+{
+	return GuiColorBarAlpha(*bounds, alpha);
+}
+
+float mGuiColorBarHue(Rectangle *bounds, float value)
+{
+	return GuiColorBarHue(*bounds, value);
+}
+
+void mGuiLoadStyle(const char * fileName)
+{
+	return GuiLoadStyle(fileName);
+}
+
+void mGuiLoadStyleDefault(void)
+{
+	return GuiLoadStyleDefault();
+}
+
+const char * mGuiIconText(int iconId, const char * text)
+{
+	return GuiIconText(iconId, text);
+}
+
+unsigned int * mGuiGetIcons(void)
+{
+	return GuiGetIcons();
+}
+
+unsigned int * mGuiGetIconData(int iconId)
+{
+	return GuiGetIconData(iconId);
+}
+
+void mGuiSetIconData(int iconId, unsigned int * data)
+{
+	return GuiSetIconData(iconId, data);
+}
+
+void mGuiSetIconPixel(int iconId, int x, int y)
+{
+	return GuiSetIconPixel(iconId, x, y);
+}
+
+void mGuiClearIconPixel(int iconId, int x, int y)
+{
+	return GuiClearIconPixel(iconId, x, y);
+}
+
+bool mGuiCheckIconPixel(int iconId, int x, int y)
+{
+	return GuiCheckIconPixel(iconId, x, y);
 }
 
