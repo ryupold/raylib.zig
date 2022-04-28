@@ -1,3 +1,5 @@
+![logo](logo.png)
+
 # raylib.zig
 Idiomatic [raylib](https://www.raylib.com/) (4.1) bindings for [Zig](https://ziglang.org/) (0.9.1)
 
@@ -30,10 +32,27 @@ cd $YOUR_SRC_FOLDER
 git submodule add --recursive https://github.com/ryupold/raylib.zig raylib
 ```
 
-The bindings have been prebuilt so you just need to
-Then @import raylib.zig
+The bindings have been prebuilt so you just need to import raylib.zig
 ```zig
 const raylib = @import("raylib/raylib.zig");
+
+pub fn main() void {
+    raylib.InitWindow(800, 800, "hello world!");
+    raylib.SetConfigFlags(.FLAG_WINDOW_RESIZABLE);
+    raylib.SetTargetFPS(60);
+
+    defer raylib.CloseWindow();
+
+    while (!raylib.WindowShouldClose()) {
+        raylib.BeginDrawing();
+        defer raylib.EndDrawing();
+        
+        raylib.ClearBackground(raylib.BLACK);
+        raylib.DrawFPS(10, 10);
+
+        raylib.DrawText("hello world!", 100, 100, 20, raylib.YELLOW);
+    }
+}
 ```
 > Note: you only need the files `raylib.zig`, `marshal.h` and `marshal.c` for this to work
 > See `build.zig` in [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig) for how to build
