@@ -1,9 +1,11 @@
 ![logo](logo.png)
 
 # raylib.zig
-Idiomatic [raylib](https://www.raylib.com/) (4.1) bindings for [Zig](https://ziglang.org/) (0.9.1)
+Idiomatic [raylib](https://www.raylib.com/) (4.1) bindings for [Zig](https://ziglang.org/) (0.9.1).
 
-For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig)
+For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig).
+
+Additional infos and WebGL examples [here](https://ryupold.de/pages/raylib.zig/raylib.zig.html).
 
 ## supported platforms
 - Windows
@@ -55,7 +57,17 @@ pub fn main() void {
 }
 ```
 > Note: you only need the files `raylib.zig`, `marshal.h` and `marshal.c` for this to work
-> See `build.zig` in [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig) for how to build
+> See `build.zig` in [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig) for how to build.
+
+## building
+
+Builds for Windows, Linux and macOS can just include the C files during normal compilation.
+```zig
+exe.addIncludeDir("raylib/");
+exe.addCSourceFile("raylib/marshal.c", &.{});
+```
+
+This weird workaround with `marshal.h/marshal.c` I actually had to make for Webassembly builds to work, because passing structs as function parameters or returning them cannot be done on the Zig side somehow. If I try it, I get a runtime error "index out of bounds". This happens only in WebAssembly builds. So `marshal.c` must be compiled with `emcc`. See [build.zig](https://github.com/ryupold/examples-raylib.zig/blob/main/build.zig) in the examples.
 
 ## custom definitions
 An easy way to fix binding mistakes is to edit them in `bindings.json` and setting the custom flag to true. This way the binding will not be overriden when calling `zig build intermediate`. 
