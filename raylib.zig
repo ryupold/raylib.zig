@@ -122,6 +122,11 @@ pub const Vector2 = extern struct {
         return .{ .x = 0, .y = 0 };
     }
 
+    pub fn setZero(self: *@This()) void {
+        self.x = 0;
+        self.y = 0;
+    }
+
     pub fn one() @This() {
         return @This(){ .x = 1, .y = 1 };
     }
@@ -167,6 +172,12 @@ pub const Vector2 = extern struct {
             .y = self.y + other.y,
         };
     }
+
+    pub fn addSet(self: *@This(), other: @This()) void {
+        self.x += other.x;
+        self.y += other.y;
+    }
+
     pub fn sub(self: @This(), other: @This()) @This() {
         return @This(){
             .x = self.x - other.x,
@@ -201,6 +212,10 @@ pub const Vector2 = extern struct {
 
     pub fn int(self: @This()) Vector2i {
         return .{ .x = @floatToInt(i32, self.x), .y = @floatToInt(i32, self.y) };
+    }
+
+    pub fn rotate(self: @This(), angle: f32) @This() {
+        return Vector2Rotate(self, angle);
     }
 };
 
