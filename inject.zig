@@ -115,8 +115,8 @@ pub const RectangleI = extern struct {
 };
 
 pub const Vector2 = extern struct {
-    x: f32,
-    y: f32,
+    x: f32 = 0,
+    y: f32 = 0,
 
     pub fn zero() @This() {
         return .{ .x = 0, .y = 0 };
