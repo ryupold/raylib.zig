@@ -417,6 +417,9 @@ pub const Camera2D = extern struct {
     zoom: f32 = 1,
 };
 
+pub const MATERIAL_MAP_DIFFUSE = @intCast(usize, @enumToInt(MaterialMapIndex.MATERIAL_MAP_ALBEDO));
+pub const MATERIAL_MAP_SPECULAR = @intCast(usize, @enumToInt(MaterialMapIndex.MATERIAL_MAP_METALNESS));
+
 //--- callbacks -----------------------------------------------------------------------------------
 
 /// Logging: Redirect trace log messages

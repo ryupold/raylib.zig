@@ -2040,12 +2040,12 @@
                 },
                 {
                     "name": "mode",
-                    "typ": "i32"
+                    "typ": "CameraMode"
                 }
             ],
             "returnType": "void",
             "description": "Set camera mode (multiple camera modes available)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "TextFormat",
@@ -14958,12 +14958,12 @@
                 },
                 {
                     "name": "projection",
-                    "typ": "i32",
+                    "typ": "CameraProjection",
                     "description": "Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC"
                 }
             ],
             "description": "Camera, defines position/orientation in 3d space",
-            "custom": false
+            "custom": true
         },
         {
             "name": "Camera2D",

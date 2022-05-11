@@ -417,6 +417,9 @@ pub const Camera2D = extern struct {
     zoom: f32 = 1,
 };
 
+pub const MATERIAL_MAP_DIFFUSE = @intCast(usize, @enumToInt(MaterialMapIndex.MATERIAL_MAP_ALBEDO));
+pub const MATERIAL_MAP_SPECULAR = @intCast(usize, @enumToInt(MaterialMapIndex.MATERIAL_MAP_METALNESS));
+
 //--- callbacks -----------------------------------------------------------------------------------
 
 /// Logging: Redirect trace log messages
@@ -2194,11 +2197,11 @@ pub fn GetGesturePinchAngle() f32 {
 /// Set camera mode (multiple camera modes available)
 pub fn SetCameraMode(
     camera: Camera3D,
-    mode: i32,
+    mode: CameraMode,
 ) void {
     raylib.mSetCameraMode(
         @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
-        mode,
+        @enumToInt(mode),
     );
 }
 
@@ -8747,7 +8750,7 @@ pub const Camera3D = extern struct {
     /// Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic
     fovy: f32,
     /// Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
-    projection: i32,
+    projection: CameraProjection,
 };
 
 /// Mesh, vertex data and vao/vbo
