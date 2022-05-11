@@ -220,8 +220,8 @@ pub const Vector2 = extern struct {
 };
 
 pub const Vector2i = extern struct {
-    x: i32,
-    y: i32,
+    x: i32 = 0,
+    y: i32 = 0,
 
     pub fn float(self: @This()) Vector2 {
         return .{ .x = @intToFloat(f32, self.x), .y = @intToFloat(f32, self.y) };
@@ -229,9 +229,9 @@ pub const Vector2i = extern struct {
 };
 
 pub const Vector3 = extern struct {
-    x: f32,
-    y: f32,
-    z: f32,
+    x: f32 = 0,
+    y: f32 = 0,
+    z: f32 = 0,
 
     pub fn new(x: f32, y: f32, z: f32) @This() {
         return @This(){ .x = x, .y = y, .z = z };
@@ -295,10 +295,10 @@ pub const Vector3 = extern struct {
 };
 
 pub const Vector4 = extern struct {
-    x: f32,
-    y: f32,
-    z: f32,
-    w: f32,
+    x: f32 = 0,
+    y: f32 = 0,
+    z: f32 = 0,
+    w: f32 = 0,
 
     pub fn zero() @This() {
         return @This(){ .x = 0, .y = 0, .z = 0 };
@@ -372,10 +372,10 @@ pub const Vector4 = extern struct {
 
 /// Color type, RGBA (32bit)
 pub const Color = extern struct {
-    r: u8,
-    g: u8,
-    b: u8,
-    a: u8,
+    r: u8 = 0,
+    g: u8 = 0,
+    b: u8 = 0,
+    a: u8 = 255,
 
     pub fn set(self: @This(), c: struct {
         r: ?u8 = null,
