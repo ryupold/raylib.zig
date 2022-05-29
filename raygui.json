@@ -1,4 +1,294 @@
 {
+  "defines": [
+    {
+      "name": "RAYGUI_H",
+      "type": "GUARD",
+      "value": "",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_VERSION",
+      "type": "STRING",
+      "value": "3.0",
+      "description": ""
+    },
+    {
+      "name": "RAYGUIAPI",
+      "type": "UNKNOWN",
+      "value": "__declspec(dllexport)",
+      "description": "We are building the library as a Win32 shared library (.dll)"
+    },
+    {
+      "name": "RAYGUI_MALLOC(sz)",
+      "type": "MACRO",
+      "value": "malloc(sz)",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_CALLOC(n,sz)",
+      "type": "MACRO",
+      "value": "calloc(n,sz)",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_FREE(p)",
+      "type": "MACRO",
+      "value": "free(p)",
+      "description": ""
+    },
+    {
+      "name": "TRACELOG(level, ...)",
+      "type": "MACRO",
+      "value": "(void)0",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_CLITERAL(name)",
+      "type": "MACRO",
+      "value": "name",
+      "description": ""
+    },
+    {
+      "name": "RICONS_IMPLEMENTATION",
+      "type": "GUARD",
+      "value": "",
+      "description": ""
+    },
+    {
+      "name": "RICON_SIZE",
+      "type": "INT",
+      "value": 16,
+      "description": "Size of icons (squared)"
+    },
+    {
+      "name": "RICON_MAX_ICONS",
+      "type": "INT",
+      "value": 256,
+      "description": "Maximum number of icons"
+    },
+    {
+      "name": "RICON_MAX_NAME_LENGTH",
+      "type": "INT",
+      "value": 32,
+      "description": "Maximum length of icon name id"
+    },
+    {
+      "name": "RICON_DATA_ELEMENTS",
+      "type": "INT_MATH",
+      "value": "(RICON_SIZE*RICON_SIZE/32)",
+      "description": ""
+    },
+    {
+      "name": "RAYGUI_MAX_CONTROLS",
+      "type": "INT",
+      "value": 16,
+      "description": "Maximum number of standard controls"
+    },
+    {
+      "name": "RAYGUI_MAX_PROPS_BASE",
+      "type": "INT",
+      "value": 16,
+      "description": "Maximum number of standard properties"
+    },
+    {
+      "name": "RAYGUI_MAX_PROPS_EXTENDED",
+      "type": "INT",
+      "value": 8,
+      "description": "Maximum number of extended properties"
+    },
+    {
+      "name": "KEY_RIGHT",
+      "type": "INT",
+      "value": 262,
+      "description": ""
+    },
+    {
+      "name": "KEY_LEFT",
+      "type": "INT",
+      "value": 263,
+      "description": ""
+    },
+    {
+      "name": "KEY_DOWN",
+      "type": "INT",
+      "value": 264,
+      "description": ""
+    },
+    {
+      "name": "KEY_UP",
+      "type": "INT",
+      "value": 265,
+      "description": ""
+    },
+    {
+      "name": "KEY_BACKSPACE",
+      "type": "INT",
+      "value": 259,
+      "description": ""
+    },
+    {
+      "name": "KEY_ENTER",
+      "type": "INT",
+      "value": 257,
+      "description": ""
+    },
+    {
+      "name": "MOUSE_LEFT_BUTTON",
+      "type": "INT",
+      "value": 0,
+      "description": ""
+    },
+    {
+      "name": "WINDOW_STATUSBAR_HEIGHT",
+      "type": "INT",
+      "value": 22,
+      "description": ""
+    },
+    {
+      "name": "GROUPBOX_LINE_THICK",
+      "type": "INT",
+      "value": 1,
+      "description": ""
+    },
+    {
+      "name": "GROUPBOX_TEXT_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "LINE_TEXT_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "PANEL_BORDER_WIDTH",
+      "type": "INT",
+      "value": 1,
+      "description": ""
+    },
+    {
+      "name": "TOGGLEGROUP_MAX_ELEMENTS",
+      "type": "INT",
+      "value": 32,
+      "description": ""
+    },
+    {
+      "name": "VALUEBOX_MAX_CHARS",
+      "type": "INT",
+      "value": 32,
+      "description": ""
+    },
+    {
+      "name": "COLORBARALPHA_CHECKED_SIZE",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "MESSAGEBOX_BUTTON_HEIGHT",
+      "type": "INT",
+      "value": 24,
+      "description": ""
+    },
+    {
+      "name": "MESSAGEBOX_BUTTON_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_BUTTON_HEIGHT",
+      "type": "INT",
+      "value": 24,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_BUTTON_PADDING",
+      "type": "INT",
+      "value": 10,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_HEIGHT",
+      "type": "INT",
+      "value": 30,
+      "description": ""
+    },
+    {
+      "name": "TEXTINPUTBOX_MAX_TEXT_LENGTH",
+      "type": "INT",
+      "value": 256,
+      "description": ""
+    },
+    {
+      "name": "GRID_COLOR_ALPHA",
+      "type": "FLOAT",
+      "value": 0.15,
+      "description": "Grid lines alpha amount"
+    },
+    {
+      "name": "BIT_CHECK(a,b)",
+      "type": "MACRO",
+      "value": "((a) & (1<<(b)))",
+      "description": ""
+    },
+    {
+      "name": "BIT_SET(a,b)",
+      "type": "MACRO",
+      "value": "((a) |= (1<<(b)))",
+      "description": ""
+    },
+    {
+      "name": "BIT_CLEAR(a,b)",
+      "type": "MACRO",
+      "value": "((a) &= ~((1)<<(b)))",
+      "description": ""
+    },
+    {
+      "name": "TEXT_VALIGN_PIXEL_OFFSET(h)",
+      "type": "MACRO",
+      "value": "((int)h%2)",
+      "description": "Vertical alignment for pixel perfect"
+    },
+    {
+      "name": "RICON_TEXT_PADDING",
+      "type": "INT",
+      "value": 4,
+      "description": ""
+    },
+    {
+      "name": "TEXTSPLIT_MAX_TEXT_LENGTH",
+      "type": "INT",
+      "value": 1024,
+      "description": ""
+    },
+    {
+      "name": "TEXTSPLIT_MAX_TEXT_ELEMENTS",
+      "type": "INT",
+      "value": 128,
+      "description": ""
+    },
+    {
+      "name": "MAX_FORMATTEXT_LENGTH",
+      "type": "INT",
+      "value": 64,
+      "description": ""
+    },
+    {
+      "name": "TEXTSPLIT_MAX_TEXT_BUFFER_LENGTH",
+      "type": "INT",
+      "value": 1024,
+      "description": "Size of static buffer: TextSplit()"
+    },
+    {
+      "name": "TEXTSPLIT_MAX_SUBSTRINGS_COUNT",
+      "type": "INT",
+      "value": 128,
+      "description": "Size of static pointers array: TextSplit()"
+    }
+  ],
   "structs": [
     {
       "name": "Vector2",
@@ -203,6 +493,8 @@
         }
       ]
     }
+  ],
+  "aliases": [
   ],
   "enums": [
     {
@@ -684,7 +976,7 @@
     },
     {
       "name": "guiIconName",
-      "description": "edef enum {",
+      "description": "",
       "values": [
         {
           "name": "RICON_NONE",
@@ -1969,295 +2261,7 @@
       ]
     }
   ],
-  "defines": [
-    {
-      "name": "RAYGUI_H",
-      "type": "GUARD",
-      "value": "",
-      "description": ""
-    },
-    {
-      "name": "RAYGUI_VERSION",
-      "type": "STRING",
-      "value": "3.0",
-      "description": ""
-    },
-    {
-      "name": "RAYGUIAPI",
-      "type": "UNKNOWN",
-      "value": "__declspec(dllexport)",
-      "description": "We are building the library as a Win32 shared library (.dll)"
-    },
-    {
-      "name": "RAYGUI_MALLOC(sz)",
-      "type": "MACRO",
-      "value": "malloc(sz)",
-      "description": ""
-    },
-    {
-      "name": "RAYGUI_CALLOC(n,sz)",
-      "type": "MACRO",
-      "value": "calloc(n,sz)",
-      "description": ""
-    },
-    {
-      "name": "RAYGUI_FREE(p)",
-      "type": "MACRO",
-      "value": "free(p)",
-      "description": ""
-    },
-    {
-      "name": "TRACELOG(level,",
-      "type": "UNKNOWN",
-      "value": "...) (void)0",
-      "description": ""
-    },
-    {
-      "name": "RAYGUI_CLITERAL(name)",
-      "type": "MACRO",
-      "value": "name",
-      "description": ""
-    },
-    {
-      "name": "RICONS_IMPLEMENTATION",
-      "type": "GUARD",
-      "value": "",
-      "description": ""
-    },
-    {
-      "name": "RICON_SIZE",
-      "type": "INT",
-      "value": 16,
-      "description": "Size of icons (squared)"
-    },
-    {
-      "name": "RICON_MAX_ICONS",
-      "type": "INT",
-      "value": 256,
-      "description": "Maximum number of icons"
-    },
-    {
-      "name": "RICON_MAX_NAME_LENGTH",
-      "type": "INT",
-      "value": 32,
-      "description": "Maximum length of icon name id"
-    },
-    {
-      "name": "RICON_DATA_ELEMENTS",
-      "type": "UNKNOWN",
-      "value": "(RICON_SIZE*RICON_SIZE/32)",
-      "description": ""
-    },
-    {
-      "name": "RAYGUI_MAX_CONTROLS",
-      "type": "INT",
-      "value": 16,
-      "description": "Maximum number of standard controls"
-    },
-    {
-      "name": "RAYGUI_MAX_PROPS_BASE",
-      "type": "INT",
-      "value": 16,
-      "description": "Maximum number of standard properties"
-    },
-    {
-      "name": "RAYGUI_MAX_PROPS_EXTENDED",
-      "type": "INT",
-      "value": 8,
-      "description": "Maximum number of extended properties"
-    },
-    {
-      "name": "KEY_RIGHT",
-      "type": "INT",
-      "value": 262,
-      "description": ""
-    },
-    {
-      "name": "KEY_LEFT",
-      "type": "INT",
-      "value": 263,
-      "description": ""
-    },
-    {
-      "name": "KEY_DOWN",
-      "type": "INT",
-      "value": 264,
-      "description": ""
-    },
-    {
-      "name": "KEY_UP",
-      "type": "INT",
-      "value": 265,
-      "description": ""
-    },
-    {
-      "name": "KEY_BACKSPACE",
-      "type": "INT",
-      "value": 259,
-      "description": ""
-    },
-    {
-      "name": "KEY_ENTER",
-      "type": "INT",
-      "value": 257,
-      "description": ""
-    },
-    {
-      "name": "MOUSE_LEFT_BUTTON",
-      "type": "INT",
-      "value": 0,
-      "description": ""
-    },
-    {
-      "name": "WINDOW_STATUSBAR_HEIGHT",
-      "type": "INT",
-      "value": 22,
-      "description": ""
-    },
-    {
-      "name": "GROUPBOX_LINE_THICK",
-      "type": "INT",
-      "value": 1,
-      "description": ""
-    },
-    {
-      "name": "GROUPBOX_TEXT_PADDING",
-      "type": "INT",
-      "value": 10,
-      "description": ""
-    },
-    {
-      "name": "LINE_TEXT_PADDING",
-      "type": "INT",
-      "value": 10,
-      "description": ""
-    },
-    {
-      "name": "PANEL_BORDER_WIDTH",
-      "type": "INT",
-      "value": 1,
-      "description": ""
-    },
-    {
-      "name": "TOGGLEGROUP_MAX_ELEMENTS",
-      "type": "INT",
-      "value": 32,
-      "description": ""
-    },
-    {
-      "name": "VALUEBOX_MAX_CHARS",
-      "type": "INT",
-      "value": 32,
-      "description": ""
-    },
-    {
-      "name": "COLORBARALPHA_CHECKED_SIZE",
-      "type": "INT",
-      "value": 10,
-      "description": ""
-    },
-    {
-      "name": "MESSAGEBOX_BUTTON_HEIGHT",
-      "type": "INT",
-      "value": 24,
-      "description": ""
-    },
-    {
-      "name": "MESSAGEBOX_BUTTON_PADDING",
-      "type": "INT",
-      "value": 10,
-      "description": ""
-    },
-    {
-      "name": "TEXTINPUTBOX_BUTTON_HEIGHT",
-      "type": "INT",
-      "value": 24,
-      "description": ""
-    },
-    {
-      "name": "TEXTINPUTBOX_BUTTON_PADDING",
-      "type": "INT",
-      "value": 10,
-      "description": ""
-    },
-    {
-      "name": "TEXTINPUTBOX_HEIGHT",
-      "type": "INT",
-      "value": 30,
-      "description": ""
-    },
-    {
-      "name": "TEXTINPUTBOX_MAX_TEXT_LENGTH",
-      "type": "INT",
-      "value": 256,
-      "description": ""
-    },
-    {
-      "name": "GRID_COLOR_ALPHA",
-      "type": "FLOAT",
-      "value": 0.15,
-      "description": "Grid lines alpha amount"
-    },
-    {
-      "name": "BIT_CHECK(a,b)",
-      "type": "MACRO",
-      "value": "((a) & (1<<(b)))",
-      "description": ""
-    },
-    {
-      "name": "BIT_SET(a,b)",
-      "type": "MACRO",
-      "value": "((a) |= (1<<(b)))",
-      "description": ""
-    },
-    {
-      "name": "BIT_CLEAR(a,b)",
-      "type": "MACRO",
-      "value": "((a) &= ~((1)<<(b)))",
-      "description": ""
-    },
-    {
-      "name": "TEXT_VALIGN_PIXEL_OFFSET(h)",
-      "type": "MACRO",
-      "value": "((int)h%2)",
-      "description": "Vertical alignment for pixel perfect"
-    },
-    {
-      "name": "RICON_TEXT_PADDING",
-      "type": "INT",
-      "value": 4,
-      "description": ""
-    },
-    {
-      "name": "TEXTSPLIT_MAX_TEXT_LENGTH",
-      "type": "INT",
-      "value": 1024,
-      "description": ""
-    },
-    {
-      "name": "TEXTSPLIT_MAX_TEXT_ELEMENTS",
-      "type": "INT",
-      "value": 128,
-      "description": ""
-    },
-    {
-      "name": "MAX_FORMATTEXT_LENGTH",
-      "type": "INT",
-      "value": 64,
-      "description": ""
-    },
-    {
-      "name": "TEXTSPLIT_MAX_TEXT_BUFFER_LENGTH",
-      "type": "INT",
-      "value": 1024,
-      "description": "Size of static buffer: TextSplit()"
-    },
-    {
-      "name": "TEXTSPLIT_MAX_SUBSTRINGS_COUNT",
-      "type": "INT",
-      "value": 128,
-      "description": "Size of static pointers array: TextSplit()"
-    }
+  "callbacks": [
   ],
   "functions": [
     {

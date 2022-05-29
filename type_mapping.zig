@@ -222,15 +222,14 @@ pub const StructField = struct {
 pub fn parseRaylibStruct(allocator: Allocator, s: RaylibStruct) !Struct {
     var fields = std.ArrayList(StructField).init(allocator);
     for (s.fields) |field| {
-        var typ = try toZig(allocator, field.@"type");
-        if (getArraySize(field.name)) |size| {
+        var typ = try toZig(allocator, getTypeWithoutArrayNotation(field.@"type"));
+
+        if (getArraySize(field.@"type")) |size| {
             typ = try std.fmt.allocPrint(allocator, "[{d}]{s}", .{ size, typ });
         }
 
-        const name = getNameWithoutArrayNotation(field.name);
-
         try fields.append(.{
-            .name = name,
+            .name = field.name,
             .typ = typ,
             .description = field.description,
         });
@@ -399,10 +398,10 @@ test "stripType" {
     try expectEqualStrings("Vector2", stripType("const Vector2 *"));
 }
 
-pub fn getArraySize(name: []const u8) ?usize {
-    if (std.mem.indexOf(u8, name, "[")) |open| {
-        if (std.mem.indexOf(u8, name, "]")) |close| {
-            return std.fmt.parseInt(usize, name[open + 1 .. close], 10) catch null;
+pub fn getArraySize(typ: []const u8) ?usize {
+    if (std.mem.indexOf(u8, typ, "[")) |open| {
+        if (std.mem.indexOf(u8, typ, "]")) |close| {
+            return std.fmt.parseInt(usize, typ[open + 1 .. close], 10) catch null;
         }
     }
     return null;
@@ -410,8 +409,8 @@ pub fn getArraySize(name: []const u8) ?usize {
 test "getArraySize" {
     const expectEqual = std.testing.expectEqual;
 
-    try expectEqual(@as(?usize, 4), getArraySize("this[4]"));
-    try expectEqual(@as(?usize, 44), getArraySize("is[44]"));
+    try expectEqual(@as(?usize, 4), getArraySize("float[4]"));
+    try expectEqual(@as(?usize, 44), getArraySize("int[44]"));
     try expectEqual(@as(?usize, 123456), getArraySize("a[123456]"));
     try expectEqual(@as(?usize, 1), getArraySize("test[1] "));
     try expectEqual(@as(?usize, null), getArraySize("foo[]"));
@@ -421,11 +420,11 @@ test "getArraySize" {
     try expectEqual(@as(?usize, 42), getArraySize(" lol this is ok[42] "));
 }
 
-pub fn getNameWithoutArrayNotation(name: []const u8) []const u8 {
-    if (std.mem.indexOf(u8, name, "[")) |open| {
-        return name[0..open];
+pub fn getTypeWithoutArrayNotation(typ: []const u8) []const u8 {
+    if (std.mem.indexOf(u8, typ, "[")) |open| {
+        return typ[0..open];
     }
-    return name;
+    return typ;
 }
 
 fn toZig(allocator: Allocator, c: []const u8) ![]const u8 {

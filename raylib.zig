@@ -1232,6 +1232,16 @@ pub fn GetClipboardText() [*:0]const u8 {
     );
 }
 
+/// Enable waiting for events on EndDrawing(), no automatic event polling
+pub fn EnableEventWaiting() void {
+    raylib.mEnableEventWaiting();
+}
+
+/// Disable waiting for events on EndDrawing(), automatic events polling
+pub fn DisableEventWaiting() void {
+    raylib.mDisableEventWaiting();
+}
+
 /// Swap back buffer with front buffer (screen drawing)
 pub fn SwapScreenBuffer() void {
     raylib.mSwapScreenBuffer();
@@ -1751,6 +1761,19 @@ pub fn SaveFileData(
     );
 }
 
+/// Export data to code (.h), returns true on success
+pub fn ExportDataAsCode(
+    data: [*:0]const u8,
+    size: u32,
+    fileName: [*:0]const u8,
+) bool {
+    return raylib.mExportDataAsCode(
+        @intToPtr([*c]const u8, @ptrToInt(data)),
+        size,
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+    );
+}
+
 /// Load text data from file (read), returns a '\0' terminated string
 pub fn LoadFileText(
     fileName: [*:0]const u8,
@@ -1930,7 +1953,7 @@ pub fn GetFileModTime(
     );
 }
 
-/// Compress data (DEFLATE algorithm)
+/// Compress data (DEFLATE algorithm), memory must be MemFree()
 pub fn CompressData(
     data: [*:0]const u8,
     dataSize: i32,
@@ -1946,7 +1969,7 @@ pub fn CompressData(
     );
 }
 
-/// Decompress data (DEFLATE algorithm)
+/// Decompress data (DEFLATE algorithm), memory must be MemFree()
 pub fn DecompressData(
     compData: [*:0]const u8,
     compDataSize: i32,
@@ -1962,7 +1985,7 @@ pub fn DecompressData(
     );
 }
 
-/// Encode data to Base64 string
+/// Encode data to Base64 string, memory must be MemFree()
 pub fn EncodeDataBase64(
     data: [*:0]const u8,
     dataSize: i32,
@@ -1978,7 +2001,7 @@ pub fn EncodeDataBase64(
     );
 }
 
-/// Decode Base64 string data
+/// Decode Base64 string data, memory must be MemFree()
 pub fn DecodeDataBase64(
     data: [*:0]const u8,
     outputSize: [*]i32,
@@ -10348,7 +10371,7 @@ pub const Mesh = extern struct {
     vertices: [*]f32,
     /// Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1)
     texcoords: [*]f32,
-    /// Vertex second texture coordinates (useful for lightmaps) (shader-location = 5)
+    /// Vertex texture second coordinates (UV - 2 components per vertex) (shader-location = 5)
     texcoords2: [*]f32,
     /// Vertex normals (XYZ - 3 components per vertex) (shader-location = 2)
     normals: [*]f32,
@@ -11400,7 +11423,7 @@ pub const NPatchLayout = enum(i32) {
     NPATCH_THREE_PATCH_HORIZONTAL = 2,
 };
 
-/// edef enum {
+/// 
 pub const rlGlVersion = enum(i32) {
     /// 
     OPENGL_11 = 1,
@@ -11414,7 +11437,7 @@ pub const rlGlVersion = enum(i32) {
     OPENGL_ES_20 = 5,
 };
 
-/// edef enum {
+/// 
 pub const rlFramebufferAttachType = enum(i32) {
     /// 
     RL_ATTACHMENT_COLOR_CHANNEL0 = 0,
@@ -11438,7 +11461,7 @@ pub const rlFramebufferAttachType = enum(i32) {
     RL_ATTACHMENT_STENCIL = 200,
 };
 
-/// edef enum {
+/// 
 pub const rlFramebufferAttachTextureType = enum(i32) {
     /// 
     RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0,
@@ -11866,7 +11889,7 @@ pub const GuiColorPickerProperty = enum(i32) {
     HUEBAR_SELECTOR_OVERFLOW = 20,
 };
 
-/// edef enum {
+/// 
 pub const guiIconName = enum(i32) {
     /// 
     RICON_NONE = 0,

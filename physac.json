@@ -1,4 +1,144 @@
 {
+  "defines": [
+    {
+      "name": "PHYSAC_H",
+      "type": "GUARD",
+      "value": "",
+      "description": ""
+    },
+    {
+      "name": "PHYSACDEF",
+      "type": "UNKNOWN",
+      "value": "__declspec(dllexport)",
+      "description": "We are building the library as a Win32 shared library (.dll)"
+    },
+    {
+      "name": "PHYSAC_MALLOC(size)",
+      "type": "MACRO",
+      "value": "malloc(size)",
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_CALLOC(size, n)",
+      "type": "MACRO",
+      "value": "calloc(size, n)",
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_FREE(ptr)",
+      "type": "MACRO",
+      "value": "free(ptr)",
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_MAX_BODIES",
+      "type": "INT",
+      "value": 64,
+      "description": "Maximum number of physic bodies supported"
+    },
+    {
+      "name": "PHYSAC_MAX_MANIFOLDS",
+      "type": "INT",
+      "value": 4096,
+      "description": "Maximum number of physic bodies interactions (64x64)"
+    },
+    {
+      "name": "PHYSAC_MAX_VERTICES",
+      "type": "INT",
+      "value": 24,
+      "description": "Maximum number of vertex for polygons shapes"
+    },
+    {
+      "name": "PHYSAC_DEFAULT_CIRCLE_VERTICES",
+      "type": "INT",
+      "value": 24,
+      "description": "Default number of vertices for circle shapes"
+    },
+    {
+      "name": "PHYSAC_COLLISION_ITERATIONS",
+      "type": "INT",
+      "value": 100,
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_PENETRATION_ALLOWANCE",
+      "type": "FLOAT",
+      "value": 0.05,
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_PENETRATION_CORRECTION",
+      "type": "FLOAT",
+      "value": 0.4,
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_PI",
+      "type": "FLOAT",
+      "value": 3.14159265358979323846,
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_DEG2RAD",
+      "type": "FLOAT_MATH",
+      "value": "(PHYSAC_PI/180.0f)",
+      "description": ""
+    },
+    {
+      "name": "TRACELOG(...)",
+      "type": "MACRO",
+      "value": "printf(__VA_ARGS__)",
+      "description": ""
+    },
+    {
+      "name": "_POSIX_C_SOURCE",
+      "type": "LONG",
+      "value": 199309,
+      "description": "Required for CLOCK_MONOTONIC if compiled with c99 without gnu ext."
+    },
+    {
+      "name": "CLITERAL(type)",
+      "type": "MACRO",
+      "value": "type",
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_MIN(a,b)",
+      "type": "MACRO",
+      "value": "(((a)<(b))?(a):(b))",
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_MAX(a,b)",
+      "type": "MACRO",
+      "value": "(((a)>(b))?(a):(b))",
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_FLT_MAX",
+      "type": "FLOAT",
+      "value": 3.402823466e+38,
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_EPSILON",
+      "type": "FLOAT",
+      "value": 0.000001,
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_K",
+      "type": "FLOAT_MATH",
+      "value": "1.0f/3.0f",
+      "description": ""
+    },
+    {
+      "name": "PHYSAC_VECTOR_ZERO",
+      "type": "UNKNOWN",
+      "value": "CLITERAL(Vector2){ 0.0f, 0.0f }",
+      "description": ""
+    }
+  ],
   "structs": [
     {
       "name": "Vector2",
@@ -52,13 +192,13 @@
           "description": "Vertex count (positions and normals)"
         },
         {
-          "type": "Vector2",
-          "name": "positions[PHYSAC_MAX_VERTICES]",
+          "type": "Vector2[PHYSAC_MAX_VERTICES]",
+          "name": "positions",
           "description": "Vertex positions vectors"
         },
         {
-          "type": "Vector2",
-          "name": "normals[PHYSAC_MAX_VERTICES]",
+          "type": "Vector2[PHYSAC_MAX_VERTICES]",
+          "name": "normals",
           "description": "Vertex normals vectors"
         }
       ]
@@ -225,8 +365,8 @@
           "description": "Normal direction vector from 'a' to 'b'"
         },
         {
-          "type": "Vector2",
-          "name": "contacts[2]",
+          "type": "Vector2[2]",
+          "name": "contacts",
           "description": "Points of contact during collision"
         },
         {
@@ -252,147 +392,11 @@
       ]
     }
   ],
+  "aliases": [
+  ],
   "enums": [
   ],
-  "defines": [
-    {
-      "name": "PHYSAC_H",
-      "type": "GUARD",
-      "value": "",
-      "description": ""
-    },
-    {
-      "name": "PHYSACDEF",
-      "type": "UNKNOWN",
-      "value": "__declspec(dllexport)",
-      "description": "We are building the library as a Win32 shared library (.dll)"
-    },
-    {
-      "name": "PHYSAC_MALLOC(size)",
-      "type": "MACRO",
-      "value": "malloc(size)",
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_CALLOC(size,",
-      "type": "UNKNOWN",
-      "value": "n)      calloc(size, n)",
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_FREE(ptr)",
-      "type": "MACRO",
-      "value": "free(ptr)",
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_MAX_BODIES",
-      "type": "INT",
-      "value": 64,
-      "description": "Maximum number of physic bodies supported"
-    },
-    {
-      "name": "PHYSAC_MAX_MANIFOLDS",
-      "type": "INT",
-      "value": 4096,
-      "description": "Maximum number of physic bodies interactions (64x64)"
-    },
-    {
-      "name": "PHYSAC_MAX_VERTICES",
-      "type": "INT",
-      "value": 24,
-      "description": "Maximum number of vertex for polygons shapes"
-    },
-    {
-      "name": "PHYSAC_DEFAULT_CIRCLE_VERTICES",
-      "type": "INT",
-      "value": 24,
-      "description": "Default number of vertices for circle shapes"
-    },
-    {
-      "name": "PHYSAC_COLLISION_ITERATIONS",
-      "type": "INT",
-      "value": 100,
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_PENETRATION_ALLOWANCE",
-      "type": "FLOAT",
-      "value": 0.05,
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_PENETRATION_CORRECTION",
-      "type": "FLOAT",
-      "value": 0.4,
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_PI",
-      "type": "FLOAT",
-      "value": 3.14159265358979323846,
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_DEG2RAD",
-      "type": "UNKNOWN",
-      "value": "(PHYSAC_PI/180.0f)",
-      "description": ""
-    },
-    {
-      "name": "TRACELOG(...)",
-      "type": "MACRO",
-      "value": "printf(__VA_ARGS__)",
-      "description": ""
-    },
-    {
-      "name": "_POSIX_C_SOURCE",
-      "type": "LONG",
-      "value": 199309,
-      "description": "Required for CLOCK_MONOTONIC if compiled with c99 without gnu ext."
-    },
-    {
-      "name": "CLITERAL(type)",
-      "type": "MACRO",
-      "value": "type",
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_MIN(a,b)",
-      "type": "MACRO",
-      "value": "(((a)<(b))?(a):(b))",
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_MAX(a,b)",
-      "type": "MACRO",
-      "value": "(((a)>(b))?(a):(b))",
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_FLT_MAX",
-      "type": "FLOAT",
-      "value": 3.402823466e+38,
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_EPSILON",
-      "type": "FLOAT",
-      "value": 0.000001,
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_K",
-      "type": "UNKNOWN",
-      "value": "1.0f/3.0f",
-      "description": ""
-    },
-    {
-      "name": "PHYSAC_VECTOR_ZERO",
-      "type": "UNKNOWN",
-      "value": "CLITERAL(Vector2){ 0.0f, 0.0f }",
-      "description": ""
-    }
+  "callbacks": [
   ],
   "functions": [
     {

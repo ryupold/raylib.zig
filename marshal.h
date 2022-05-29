@@ -141,6 +141,12 @@ void mSetClipboardText(const char * text);
 // Get clipboard text content
 const char * mGetClipboardText(void);
 
+// Enable waiting for events on EndDrawing(), no automatic event polling
+void mEnableEventWaiting(void);
+
+// Disable waiting for events on EndDrawing(), automatic events polling
+void mDisableEventWaiting(void);
+
 // Swap back buffer with front buffer (screen drawing)
 void mSwapScreenBuffer(void);
 
@@ -312,6 +318,9 @@ void mSetSaveFileTextCallback(SaveFileTextCallback *callback);
 // Save data to file from byte array (write), returns true on success
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite);
 
+// Export data to code (.h), returns true on success
+bool mExportDataAsCode(const char * data, unsigned int size, const char * fileName);
+
 // Load text data from file (read), returns a '\0' terminated string
 char * mLoadFileText(const char * fileName);
 
@@ -369,16 +378,16 @@ void mClearDroppedFiles(void);
 // Get file modification time (last write time)
 long mGetFileModTime(const char * fileName);
 
-// Compress data (DEFLATE algorithm)
+// Compress data (DEFLATE algorithm), memory must be MemFree()
 unsigned char * mCompressData(const unsigned char * data, int dataSize, int * compDataSize);
 
-// Decompress data (DEFLATE algorithm)
+// Decompress data (DEFLATE algorithm), memory must be MemFree()
 unsigned char * mDecompressData(const unsigned char * compData, int compDataSize, int * dataSize);
 
-// Encode data to Base64 string
+// Encode data to Base64 string, memory must be MemFree()
 char * mEncodeDataBase64(const unsigned char * data, int dataSize, int * outputSize);
 
-// Decode Base64 string data
+// Decode Base64 string data, memory must be MemFree()
 unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize);
 
 // Save integer value to storage file (to defined position), returns true on success

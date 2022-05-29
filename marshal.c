@@ -213,6 +213,16 @@ const char * mGetClipboardText(void)
 	return GetClipboardText();
 }
 
+void mEnableEventWaiting(void)
+{
+	EnableEventWaiting();
+}
+
+void mDisableEventWaiting(void)
+{
+	DisableEventWaiting();
+}
+
 void mSwapScreenBuffer(void)
 {
 	SwapScreenBuffer();
@@ -496,6 +506,11 @@ void mSetSaveFileTextCallback(SaveFileTextCallback *callback)
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite)
 {
 	return SaveFileData(fileName, data, bytesToWrite);
+}
+
+bool mExportDataAsCode(const char * data, unsigned int size, const char * fileName)
+{
+	return ExportDataAsCode(data, size, fileName);
 }
 
 char * mLoadFileText(const char * fileName)
