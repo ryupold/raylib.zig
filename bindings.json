@@ -8208,6 +8208,2053 @@
             "custom": false
         },
         {
+            "name": "rlMatrixMode",
+            "params": [
+                {
+                    "name": "mode",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Choose the current matrix to be transformed",
+            "custom": false
+        },
+        {
+            "name": "rlPushMatrix",
+            "params": [],
+            "returnType": "void",
+            "description": "Push the current matrix to stack",
+            "custom": false
+        },
+        {
+            "name": "rlPopMatrix",
+            "params": [],
+            "returnType": "void",
+            "description": "Pop lattest inserted matrix from stack",
+            "custom": false
+        },
+        {
+            "name": "rlLoadIdentity",
+            "params": [],
+            "returnType": "void",
+            "description": "Reset current matrix to identity matrix",
+            "custom": false
+        },
+        {
+            "name": "rlTranslatef",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                },
+                {
+                    "name": "z",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Multiply the current matrix by a translation matrix",
+            "custom": false
+        },
+        {
+            "name": "rlRotatef",
+            "params": [
+                {
+                    "name": "angle",
+                    "typ": "f32"
+                },
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                },
+                {
+                    "name": "z",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Multiply the current matrix by a rotation matrix",
+            "custom": false
+        },
+        {
+            "name": "rlScalef",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                },
+                {
+                    "name": "z",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Multiply the current matrix by a scaling matrix",
+            "custom": false
+        },
+        {
+            "name": "rlMultMatrixf",
+            "params": [
+                {
+                    "name": "matf",
+                    "typ": "[*]f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Multiply the current matrix by another matrix",
+            "custom": false
+        },
+        {
+            "name": "rlFrustum",
+            "params": [
+                {
+                    "name": "left",
+                    "typ": "f64"
+                },
+                {
+                    "name": "right",
+                    "typ": "f64"
+                },
+                {
+                    "name": "bottom",
+                    "typ": "f64"
+                },
+                {
+                    "name": "top",
+                    "typ": "f64"
+                },
+                {
+                    "name": "znear",
+                    "typ": "f64"
+                },
+                {
+                    "name": "zfar",
+                    "typ": "f64"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlOrtho",
+            "params": [
+                {
+                    "name": "left",
+                    "typ": "f64"
+                },
+                {
+                    "name": "right",
+                    "typ": "f64"
+                },
+                {
+                    "name": "bottom",
+                    "typ": "f64"
+                },
+                {
+                    "name": "top",
+                    "typ": "f64"
+                },
+                {
+                    "name": "znear",
+                    "typ": "f64"
+                },
+                {
+                    "name": "zfar",
+                    "typ": "f64"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlViewport",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "i32"
+                },
+                {
+                    "name": "y",
+                    "typ": "i32"
+                },
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set the viewport area",
+            "custom": false
+        },
+        {
+            "name": "rlBegin",
+            "params": [
+                {
+                    "name": "mode",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Initialize drawing mode (how to organize vertex)",
+            "custom": false
+        },
+        {
+            "name": "rlEnd",
+            "params": [],
+            "returnType": "void",
+            "description": "Finish vertex providing",
+            "custom": false
+        },
+        {
+            "name": "rlVertex2i",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "i32"
+                },
+                {
+                    "name": "y",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (position) - 2 int",
+            "custom": false
+        },
+        {
+            "name": "rlVertex2f",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (position) - 2 float",
+            "custom": false
+        },
+        {
+            "name": "rlVertex3f",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                },
+                {
+                    "name": "z",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (position) - 3 float",
+            "custom": false
+        },
+        {
+            "name": "rlTexCoord2f",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (texture coordinate) - 2 float",
+            "custom": false
+        },
+        {
+            "name": "rlNormal3f",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                },
+                {
+                    "name": "z",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (normal) - 3 float",
+            "custom": false
+        },
+        {
+            "name": "rlColor4ub",
+            "params": [
+                {
+                    "name": "r",
+                    "typ": "u8"
+                },
+                {
+                    "name": "g",
+                    "typ": "u8"
+                },
+                {
+                    "name": "b",
+                    "typ": "u8"
+                },
+                {
+                    "name": "a",
+                    "typ": "u8"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (color) - 4 byte",
+            "custom": false
+        },
+        {
+            "name": "rlColor3f",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                },
+                {
+                    "name": "z",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (color) - 3 float",
+            "custom": false
+        },
+        {
+            "name": "rlColor4f",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "f32"
+                },
+                {
+                    "name": "y",
+                    "typ": "f32"
+                },
+                {
+                    "name": "z",
+                    "typ": "f32"
+                },
+                {
+                    "name": "w",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Define one vertex (color) - 4 float",
+            "custom": false
+        },
+        {
+            "name": "rlEnableVertexArray",
+            "params": [
+                {
+                    "name": "vaoId",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Enable vertex array (VAO, if supported)",
+            "custom": false
+        },
+        {
+            "name": "rlDisableVertexArray",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable vertex array (VAO, if supported)",
+            "custom": false
+        },
+        {
+            "name": "rlEnableVertexBuffer",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable vertex buffer (VBO)",
+            "custom": false
+        },
+        {
+            "name": "rlDisableVertexBuffer",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable vertex buffer (VBO)",
+            "custom": false
+        },
+        {
+            "name": "rlEnableVertexBufferElement",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable vertex buffer element (VBO element)",
+            "custom": false
+        },
+        {
+            "name": "rlDisableVertexBufferElement",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable vertex buffer element (VBO element)",
+            "custom": false
+        },
+        {
+            "name": "rlEnableVertexAttribute",
+            "params": [
+                {
+                    "name": "index",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable vertex attribute index",
+            "custom": false
+        },
+        {
+            "name": "rlDisableVertexAttribute",
+            "params": [
+                {
+                    "name": "index",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Disable vertex attribute index",
+            "custom": false
+        },
+        {
+            "name": "rlEnableStatePointer",
+            "params": [
+                {
+                    "name": "vertexAttribType",
+                    "typ": "i32"
+                },
+                {
+                    "name": "buffer",
+                    "typ": "*anyopaque"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable attribute state pointer",
+            "custom": false
+        },
+        {
+            "name": "rlDisableStatePointer",
+            "params": [
+                {
+                    "name": "vertexAttribType",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Disable attribute state pointer",
+            "custom": false
+        },
+        {
+            "name": "rlActiveTextureSlot",
+            "params": [
+                {
+                    "name": "slot",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Select and active a texture slot",
+            "custom": false
+        },
+        {
+            "name": "rlEnableTexture",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable texture",
+            "custom": false
+        },
+        {
+            "name": "rlDisableTexture",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable texture",
+            "custom": false
+        },
+        {
+            "name": "rlEnableTextureCubemap",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable texture cubemap",
+            "custom": false
+        },
+        {
+            "name": "rlDisableTextureCubemap",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable texture cubemap",
+            "custom": false
+        },
+        {
+            "name": "rlTextureParameters",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "param",
+                    "typ": "i32"
+                },
+                {
+                    "name": "value",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set texture parameters (filter, wrap)",
+            "custom": false
+        },
+        {
+            "name": "rlEnableShader",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable shader program",
+            "custom": false
+        },
+        {
+            "name": "rlDisableShader",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable shader program",
+            "custom": false
+        },
+        {
+            "name": "rlEnableFramebuffer",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Enable render texture (fbo)",
+            "custom": false
+        },
+        {
+            "name": "rlDisableFramebuffer",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable render texture (fbo), return to default framebuffer",
+            "custom": false
+        },
+        {
+            "name": "rlActiveDrawBuffers",
+            "params": [
+                {
+                    "name": "count",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Activate multiple draw color buffers",
+            "custom": false
+        },
+        {
+            "name": "rlEnableColorBlend",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable color blending",
+            "custom": false
+        },
+        {
+            "name": "rlDisableColorBlend",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable color blending",
+            "custom": false
+        },
+        {
+            "name": "rlEnableDepthTest",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable depth test",
+            "custom": false
+        },
+        {
+            "name": "rlDisableDepthTest",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable depth test",
+            "custom": false
+        },
+        {
+            "name": "rlEnableDepthMask",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable depth write",
+            "custom": false
+        },
+        {
+            "name": "rlDisableDepthMask",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable depth write",
+            "custom": false
+        },
+        {
+            "name": "rlEnableBackfaceCulling",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable backface culling",
+            "custom": false
+        },
+        {
+            "name": "rlDisableBackfaceCulling",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable backface culling",
+            "custom": false
+        },
+        {
+            "name": "rlEnableScissorTest",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable scissor test",
+            "custom": false
+        },
+        {
+            "name": "rlDisableScissorTest",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable scissor test",
+            "custom": false
+        },
+        {
+            "name": "rlScissor",
+            "params": [
+                {
+                    "name": "x",
+                    "typ": "i32"
+                },
+                {
+                    "name": "y",
+                    "typ": "i32"
+                },
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Scissor test",
+            "custom": false
+        },
+        {
+            "name": "rlEnableWireMode",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable wire mode",
+            "custom": false
+        },
+        {
+            "name": "rlDisableWireMode",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable wire mode",
+            "custom": false
+        },
+        {
+            "name": "rlSetLineWidth",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set the line drawing width",
+            "custom": false
+        },
+        {
+            "name": "rlGetLineWidth",
+            "params": [],
+            "returnType": "f32",
+            "description": "Get the line drawing width",
+            "custom": false
+        },
+        {
+            "name": "rlEnableSmoothLines",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable line aliasing",
+            "custom": false
+        },
+        {
+            "name": "rlDisableSmoothLines",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable line aliasing",
+            "custom": false
+        },
+        {
+            "name": "rlEnableStereoRender",
+            "params": [],
+            "returnType": "void",
+            "description": "Enable stereo rendering",
+            "custom": false
+        },
+        {
+            "name": "rlDisableStereoRender",
+            "params": [],
+            "returnType": "void",
+            "description": "Disable stereo rendering",
+            "custom": false
+        },
+        {
+            "name": "rlIsStereoRenderEnabled",
+            "params": [],
+            "returnType": "bool",
+            "description": "Check if stereo render is enabled",
+            "custom": false
+        },
+        {
+            "name": "rlClearColor",
+            "params": [
+                {
+                    "name": "r",
+                    "typ": "u8"
+                },
+                {
+                    "name": "g",
+                    "typ": "u8"
+                },
+                {
+                    "name": "b",
+                    "typ": "u8"
+                },
+                {
+                    "name": "a",
+                    "typ": "u8"
+                }
+            ],
+            "returnType": "void",
+            "description": "Clear color buffer with color",
+            "custom": false
+        },
+        {
+            "name": "rlClearScreenBuffers",
+            "params": [],
+            "returnType": "void",
+            "description": "Clear used screen buffers (color and depth)",
+            "custom": false
+        },
+        {
+            "name": "rlCheckErrors",
+            "params": [],
+            "returnType": "void",
+            "description": "Check and log OpenGL error codes",
+            "custom": false
+        },
+        {
+            "name": "rlSetBlendMode",
+            "params": [
+                {
+                    "name": "mode",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set blending mode",
+            "custom": false
+        },
+        {
+            "name": "rlSetBlendFactors",
+            "params": [
+                {
+                    "name": "glSrcFactor",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glDstFactor",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glEquation",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set blending mode factor and equation (using OpenGL factors)",
+            "custom": false
+        },
+        {
+            "name": "rlglInit",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Initialize rlgl (buffers, shaders, textures, states)",
+            "custom": false
+        },
+        {
+            "name": "rlglClose",
+            "params": [],
+            "returnType": "void",
+            "description": "De-inititialize rlgl (buffers, shaders, textures)",
+            "custom": false
+        },
+        {
+            "name": "rlLoadExtensions",
+            "params": [
+                {
+                    "name": "loader",
+                    "typ": "*anyopaque"
+                }
+            ],
+            "returnType": "void",
+            "description": "Load OpenGL extensions (loader function required)",
+            "custom": false
+        },
+        {
+            "name": "rlGetVersion",
+            "params": [],
+            "returnType": "i32",
+            "description": "Get current OpenGL version",
+            "custom": false
+        },
+        {
+            "name": "rlSetFramebufferWidth",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set current framebuffer width",
+            "custom": false
+        },
+        {
+            "name": "rlGetFramebufferWidth",
+            "params": [],
+            "returnType": "i32",
+            "description": "Get default framebuffer width",
+            "custom": false
+        },
+        {
+            "name": "rlSetFramebufferHeight",
+            "params": [
+                {
+                    "name": "height",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set current framebuffer height",
+            "custom": false
+        },
+        {
+            "name": "rlGetFramebufferHeight",
+            "params": [],
+            "returnType": "i32",
+            "description": "Get default framebuffer height",
+            "custom": false
+        },
+        {
+            "name": "rlGetTextureIdDefault",
+            "params": [],
+            "returnType": "u32",
+            "description": "Get default texture id",
+            "custom": false
+        },
+        {
+            "name": "rlGetShaderIdDefault",
+            "params": [],
+            "returnType": "u32",
+            "description": "Get default shader id",
+            "custom": false
+        },
+        {
+            "name": "rlGetShaderLocsDefault",
+            "params": [],
+            "returnType": "[*]i32",
+            "description": "Get default shader locations",
+            "custom": false
+        },
+        {
+            "name": "rlLoadRenderBatch",
+            "params": [
+                {
+                    "name": "numBuffers",
+                    "typ": "i32"
+                },
+                {
+                    "name": "bufferElements",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "rlRenderBatch",
+            "description": "Load a render batch system",
+            "custom": false
+        },
+        {
+            "name": "rlUnloadRenderBatch",
+            "params": [
+                {
+                    "name": "batch",
+                    "typ": "rlRenderBatch"
+                }
+            ],
+            "returnType": "void",
+            "description": "Unload render batch system",
+            "custom": false
+        },
+        {
+            "name": "rlDrawRenderBatch",
+            "params": [
+                {
+                    "name": "batch",
+                    "typ": "[*]rlRenderBatch"
+                }
+            ],
+            "returnType": "void",
+            "description": "Draw render batch data (Update->Draw->Reset)",
+            "custom": false
+        },
+        {
+            "name": "rlSetRenderBatchActive",
+            "params": [
+                {
+                    "name": "batch",
+                    "typ": "[*]rlRenderBatch"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set the active render batch for rlgl (NULL for default internal)",
+            "custom": false
+        },
+        {
+            "name": "rlDrawRenderBatchActive",
+            "params": [],
+            "returnType": "void",
+            "description": "Update and draw internal render batch",
+            "custom": false
+        },
+        {
+            "name": "rlCheckRenderBatchLimit",
+            "params": [
+                {
+                    "name": "vCount",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check internal buffer overflow for a given number of vertex",
+            "custom": false
+        },
+        {
+            "name": "rlSetTexture",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set current texture for render batch and check buffers limits",
+            "custom": false
+        },
+        {
+            "name": "rlLoadVertexArray",
+            "params": [],
+            "returnType": "u32",
+            "description": "Load vertex array (vao) if supported",
+            "custom": false
+        },
+        {
+            "name": "rlLoadVertexBuffer",
+            "params": [
+                {
+                    "name": "buffer",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "size",
+                    "typ": "i32"
+                },
+                {
+                    "name": "dynamic",
+                    "typ": "bool"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load a vertex buffer attribute",
+            "custom": false
+        },
+        {
+            "name": "rlLoadVertexBufferElement",
+            "params": [
+                {
+                    "name": "buffer",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "size",
+                    "typ": "i32"
+                },
+                {
+                    "name": "dynamic",
+                    "typ": "bool"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load a new attributes element buffer",
+            "custom": false
+        },
+        {
+            "name": "rlUpdateVertexBuffer",
+            "params": [
+                {
+                    "name": "bufferId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "data",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "dataSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "offset",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Update GPU buffer with new data",
+            "custom": false
+        },
+        {
+            "name": "rlUpdateVertexBufferElements",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "data",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "dataSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "offset",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Update vertex buffer elements with new data",
+            "custom": false
+        },
+        {
+            "name": "rlUnloadVertexArray",
+            "params": [
+                {
+                    "name": "vaoId",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlUnloadVertexBuffer",
+            "params": [
+                {
+                    "name": "vboId",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlSetVertexAttribute",
+            "params": [
+                {
+                    "name": "index",
+                    "typ": "u32"
+                },
+                {
+                    "name": "compSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
+                },
+                {
+                    "name": "normalized",
+                    "typ": "bool"
+                },
+                {
+                    "name": "stride",
+                    "typ": "i32"
+                },
+                {
+                    "name": "pointer",
+                    "typ": "*anyopaque"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": true
+        },
+        {
+            "name": "rlSetVertexAttributeDivisor",
+            "params": [
+                {
+                    "name": "index",
+                    "typ": "u32"
+                },
+                {
+                    "name": "divisor",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlSetVertexAttributeDefault",
+            "params": [
+                {
+                    "name": "locIndex",
+                    "typ": "i32"
+                },
+                {
+                    "name": "value",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "attribType",
+                    "typ": "i32"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set vertex attribute default value",
+            "custom": false
+        },
+        {
+            "name": "rlDrawVertexArray",
+            "params": [
+                {
+                    "name": "offset",
+                    "typ": "i32"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlDrawVertexArrayElements",
+            "params": [
+                {
+                    "name": "offset",
+                    "typ": "i32"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                },
+                {
+                    "name": "buffer",
+                    "typ": "*anyopaque"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlDrawVertexArrayInstanced",
+            "params": [
+                {
+                    "name": "offset",
+                    "typ": "i32"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                },
+                {
+                    "name": "instances",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlDrawVertexArrayElementsInstanced",
+            "params": [
+                {
+                    "name": "offset",
+                    "typ": "i32"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                },
+                {
+                    "name": "buffer",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "instances",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlLoadTexture",
+            "params": [
+                {
+                    "name": "data",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "format",
+                    "typ": "i32"
+                },
+                {
+                    "name": "mipmapCount",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load texture in GPU",
+            "custom": false
+        },
+        {
+            "name": "rlLoadTextureDepth",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "useRenderBuffer",
+                    "typ": "bool"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load depth texture/renderbuffer (to be attached to fbo)",
+            "custom": false
+        },
+        {
+            "name": "rlLoadTextureCubemap",
+            "params": [
+                {
+                    "name": "data",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "size",
+                    "typ": "i32"
+                },
+                {
+                    "name": "format",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load texture cubemap",
+            "custom": false
+        },
+        {
+            "name": "rlUpdateTexture",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "offsetX",
+                    "typ": "i32"
+                },
+                {
+                    "name": "offsetY",
+                    "typ": "i32"
+                },
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "format",
+                    "typ": "i32"
+                },
+                {
+                    "name": "data",
+                    "typ": "*anyopaque"
+                }
+            ],
+            "returnType": "void",
+            "description": "Update GPU texture with new data",
+            "custom": false
+        },
+        {
+            "name": "rlGetGlTextureFormats",
+            "params": [
+                {
+                    "name": "format",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glInternalFormat",
+                    "typ": "[*]i32"
+                },
+                {
+                    "name": "glFormat",
+                    "typ": "[*]i32"
+                },
+                {
+                    "name": "glType",
+                    "typ": "[*]i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Get OpenGL internal formats",
+            "custom": false
+        },
+        {
+            "name": "rlGetPixelFormatName",
+            "params": [
+                {
+                    "name": "format",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "[*:0]const u8",
+            "description": "Get name string for pixel format",
+            "custom": false
+        },
+        {
+            "name": "rlUnloadTexture",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Unload texture from GPU memory",
+            "custom": false
+        },
+        {
+            "name": "rlGenTextureMipmaps",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "format",
+                    "typ": "i32"
+                },
+                {
+                    "name": "mipmaps",
+                    "typ": "[*]i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Generate mipmap data for selected texture",
+            "custom": false
+        },
+        {
+            "name": "rlReadTexturePixels",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "format",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "*anyopaque",
+            "description": "Read texture pixel data",
+            "custom": false
+        },
+        {
+            "name": "rlReadScreenPixels",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "[*]u8",
+            "description": "Read screen pixel data (color buffer)",
+            "custom": false
+        },
+        {
+            "name": "rlLoadFramebuffer",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load an empty framebuffer",
+            "custom": false
+        },
+        {
+            "name": "rlFramebufferAttach",
+            "params": [
+                {
+                    "name": "fboId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "texId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "attachType",
+                    "typ": "i32"
+                },
+                {
+                    "name": "texType",
+                    "typ": "i32"
+                },
+                {
+                    "name": "mipLevel",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Attach texture/renderbuffer to a framebuffer",
+            "custom": false
+        },
+        {
+            "name": "rlFramebufferComplete",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Verify framebuffer is complete",
+            "custom": false
+        },
+        {
+            "name": "rlUnloadFramebuffer",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Delete framebuffer from GPU",
+            "custom": false
+        },
+        {
+            "name": "rlLoadShaderCode",
+            "params": [
+                {
+                    "name": "vsCode",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "fsCode",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load shader from code strings",
+            "custom": false
+        },
+        {
+            "name": "rlCompileShader",
+            "params": [
+                {
+                    "name": "shaderCode",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)",
+            "custom": true
+        },
+        {
+            "name": "rlLoadShaderProgram",
+            "params": [
+                {
+                    "name": "vShaderId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "fShaderId",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load custom shader program",
+            "custom": false
+        },
+        {
+            "name": "rlUnloadShaderProgram",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Unload shader program",
+            "custom": false
+        },
+        {
+            "name": "rlGetLocationUniform",
+            "params": [
+                {
+                    "name": "shaderId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "uniformName",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "i32",
+            "description": "Get shader location uniform",
+            "custom": false
+        },
+        {
+            "name": "rlGetLocationAttrib",
+            "params": [
+                {
+                    "name": "shaderId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "attribName",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "i32",
+            "description": "Get shader location attribute",
+            "custom": false
+        },
+        {
+            "name": "rlSetUniform",
+            "params": [
+                {
+                    "name": "locIndex",
+                    "typ": "i32"
+                },
+                {
+                    "name": "value",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "uniformType",
+                    "typ": "i32"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set shader value uniform",
+            "custom": false
+        },
+        {
+            "name": "rlSetUniformMatrix",
+            "params": [
+                {
+                    "name": "locIndex",
+                    "typ": "i32"
+                },
+                {
+                    "name": "mat",
+                    "typ": "Matrix"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set shader value matrix",
+            "custom": false
+        },
+        {
+            "name": "rlSetUniformSampler",
+            "params": [
+                {
+                    "name": "locIndex",
+                    "typ": "i32"
+                },
+                {
+                    "name": "textureId",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set shader value sampler",
+            "custom": false
+        },
+        {
+            "name": "rlSetShader",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "locs",
+                    "typ": "[*]i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set shader currently active (id and locations)",
+            "custom": false
+        },
+        {
+            "name": "rlLoadComputeShaderProgram",
+            "params": [
+                {
+                    "name": "shaderId",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load compute shader program",
+            "custom": false
+        },
+        {
+            "name": "rlComputeShaderDispatch",
+            "params": [
+                {
+                    "name": "groupX",
+                    "typ": "u32"
+                },
+                {
+                    "name": "groupY",
+                    "typ": "u32"
+                },
+                {
+                    "name": "groupZ",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Dispatch compute shader (equivalent to *draw* for graphics pilepine)",
+            "custom": false
+        },
+        {
+            "name": "rlLoadShaderBuffer",
+            "params": [
+                {
+                    "name": "size",
+                    "typ": "u64"
+                },
+                {
+                    "name": "data",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "usageHint",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Load shader storage buffer object (SSBO)",
+            "custom": false
+        },
+        {
+            "name": "rlUnloadShaderBuffer",
+            "params": [
+                {
+                    "name": "ssboId",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Unload shader storage buffer object (SSBO)",
+            "custom": false
+        },
+        {
+            "name": "rlUpdateShaderBufferElements",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "data",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "dataSize",
+                    "typ": "u64"
+                },
+                {
+                    "name": "offset",
+                    "typ": "u64"
+                }
+            ],
+            "returnType": "void",
+            "description": "Update SSBO buffer data",
+            "custom": false
+        },
+        {
+            "name": "rlGetShaderBufferSize",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "u64",
+            "description": "Get SSBO buffer size",
+            "custom": false
+        },
+        {
+            "name": "rlReadShaderBufferElements",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "dest",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "count",
+                    "typ": "u64"
+                },
+                {
+                    "name": "offset",
+                    "typ": "u64"
+                }
+            ],
+            "returnType": "void",
+            "description": "Bind SSBO buffer",
+            "custom": false
+        },
+        {
+            "name": "rlBindShaderBuffer",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "index",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Copy SSBO buffer data",
+            "custom": false
+        },
+        {
+            "name": "rlCopyBuffersElements",
+            "params": [
+                {
+                    "name": "destId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "srcId",
+                    "typ": "u32"
+                },
+                {
+                    "name": "destOffset",
+                    "typ": "u64"
+                },
+                {
+                    "name": "srcOffset",
+                    "typ": "u64"
+                },
+                {
+                    "name": "count",
+                    "typ": "u64"
+                }
+            ],
+            "returnType": "void",
+            "description": "Copy SSBO buffer data",
+            "custom": false
+        },
+        {
+            "name": "rlBindImageTexture",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "index",
+                    "typ": "u32"
+                },
+                {
+                    "name": "format",
+                    "typ": "u32"
+                },
+                {
+                    "name": "readonly",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Bind image texture",
+            "custom": false
+        },
+        {
+            "name": "rlGetMatrixModelview",
+            "params": [],
+            "returnType": "Matrix",
+            "description": "Get internal modelview matrix",
+            "custom": false
+        },
+        {
+            "name": "rlGetMatrixProjection",
+            "params": [],
+            "returnType": "Matrix",
+            "description": "Get internal projection matrix",
+            "custom": false
+        },
+        {
+            "name": "rlGetMatrixTransform",
+            "params": [],
+            "returnType": "Matrix",
+            "description": "Get internal accumulated transform matrix",
+            "custom": false
+        },
+        {
+            "name": "rlGetMatrixProjectionStereo",
+            "params": [
+                {
+                    "name": "eye",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "Matrix",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlGetMatrixViewOffsetStereo",
+            "params": [
+                {
+                    "name": "eye",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "Matrix",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "rlSetMatrixProjection",
+            "params": [
+                {
+                    "name": "proj",
+                    "typ": "Matrix"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set a custom projection matrix (replaces internal projection matrix)",
+            "custom": false
+        },
+        {
+            "name": "rlSetMatrixModelview",
+            "params": [
+                {
+                    "name": "view",
+                    "typ": "Matrix"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set a custom modelview matrix (replaces internal modelview matrix)",
+            "custom": false
+        },
+        {
+            "name": "rlSetMatrixProjectionStereo",
+            "params": [
+                {
+                    "name": "right",
+                    "typ": "Matrix"
+                },
+                {
+                    "name": "left",
+                    "typ": "Matrix"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set eyes projection matrices for stereo rendering",
+            "custom": false
+        },
+        {
+            "name": "rlSetMatrixViewOffsetStereo",
+            "params": [
+                {
+                    "name": "right",
+                    "typ": "Matrix"
+                },
+                {
+                    "name": "left",
+                    "typ": "Matrix"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set eyes view offsets matrices for stereo rendering",
+            "custom": false
+        },
+        {
+            "name": "rlLoadDrawCube",
+            "params": [],
+            "returnType": "void",
+            "description": "Load and draw a cube",
+            "custom": false
+        },
+        {
+            "name": "rlLoadDrawQuad",
+            "params": [],
+            "returnType": "void",
+            "description": "Load and draw a quad",
+            "custom": false
+        },
+        {
             "name": "Clamp",
             "params": [
                 {
@@ -12800,6 +14847,596 @@
             "custom": false
         },
         {
+            "name": "rlGlVersion",
+            "values": [
+                {
+                    "name": "OPENGL_11",
+                    "value": 1,
+                    "description": ""
+                },
+                {
+                    "name": "OPENGL_21",
+                    "value": 2,
+                    "description": ""
+                },
+                {
+                    "name": "OPENGL_33",
+                    "value": 3,
+                    "description": ""
+                },
+                {
+                    "name": "OPENGL_43",
+                    "value": 4,
+                    "description": ""
+                },
+                {
+                    "name": "OPENGL_ES_20",
+                    "value": 5,
+                    "description": ""
+                }
+            ],
+            "description": "edef enum {",
+            "custom": false
+        },
+        {
+            "name": "rlFramebufferAttachType",
+            "values": [
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL0",
+                    "value": 0,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL1",
+                    "value": 1,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL2",
+                    "value": 2,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL3",
+                    "value": 3,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL4",
+                    "value": 4,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL5",
+                    "value": 5,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL6",
+                    "value": 6,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL7",
+                    "value": 7,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_DEPTH",
+                    "value": 100,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_STENCIL",
+                    "value": 200,
+                    "description": ""
+                }
+            ],
+            "description": "edef enum {",
+            "custom": false
+        },
+        {
+            "name": "rlFramebufferAttachTextureType",
+            "values": [
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_X",
+                    "value": 0,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_X",
+                    "value": 1,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Y",
+                    "value": 2,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y",
+                    "value": 3,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Z",
+                    "value": 4,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z",
+                    "value": 5,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_TEXTURE2D",
+                    "value": 100,
+                    "description": ""
+                },
+                {
+                    "name": "RL_ATTACHMENT_RENDERBUFFER",
+                    "value": 200,
+                    "description": ""
+                }
+            ],
+            "description": "edef enum {",
+            "custom": false
+        },
+        {
+            "name": "rlTraceLogLevel",
+            "values": [
+                {
+                    "name": "RL_LOG_ALL",
+                    "value": 0,
+                    "description": "Display all logs"
+                },
+                {
+                    "name": "RL_LOG_TRACE",
+                    "value": 1,
+                    "description": "Trace logging, intended for internal use only"
+                },
+                {
+                    "name": "RL_LOG_DEBUG",
+                    "value": 2,
+                    "description": "Debug logging, used for internal debugging, it should be disabled on release builds"
+                },
+                {
+                    "name": "RL_LOG_INFO",
+                    "value": 3,
+                    "description": "Info logging, used for program execution info"
+                },
+                {
+                    "name": "RL_LOG_WARNING",
+                    "value": 4,
+                    "description": "Warning logging, used on recoverable failures"
+                },
+                {
+                    "name": "RL_LOG_ERROR",
+                    "value": 5,
+                    "description": "Error logging, used on unrecoverable failures"
+                },
+                {
+                    "name": "RL_LOG_FATAL",
+                    "value": 6,
+                    "description": "Fatal logging, used to abort program: exit(EXIT_FAILURE)"
+                },
+                {
+                    "name": "RL_LOG_NONE",
+                    "value": 7,
+                    "description": "Disable logging"
+                }
+            ],
+            "description": "Trace log level",
+            "custom": false
+        },
+        {
+            "name": "rlPixelFormat",
+            "values": [
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE",
+                    "value": 1,
+                    "description": "8 bit per pixel (no alpha)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA",
+                    "value": 2,
+                    "description": "8*2 bpp (2 channels)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5",
+                    "value": 3,
+                    "description": "16 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8",
+                    "value": 4,
+                    "description": "24 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1",
+                    "value": 5,
+                    "description": "16 bpp (1 bit alpha)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4",
+                    "value": 6,
+                    "description": "16 bpp (4 bit alpha)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8",
+                    "value": 7,
+                    "description": "32 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R32",
+                    "value": 8,
+                    "description": "32 bpp (1 channel - float)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32",
+                    "value": 9,
+                    "description": "32*3 bpp (3 channels - float)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32A32",
+                    "value": 10,
+                    "description": "32*4 bpp (4 channels - float)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_DXT1_RGB",
+                    "value": 11,
+                    "description": "4 bpp (no alpha)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA",
+                    "value": 12,
+                    "description": "4 bpp (1 bit alpha)"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA",
+                    "value": 13,
+                    "description": "8 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA",
+                    "value": 14,
+                    "description": "8 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_ETC1_RGB",
+                    "value": 15,
+                    "description": "4 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_ETC2_RGB",
+                    "value": 16,
+                    "description": "4 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA",
+                    "value": 17,
+                    "description": "8 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_PVRT_RGB",
+                    "value": 18,
+                    "description": "4 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA",
+                    "value": 19,
+                    "description": "4 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA",
+                    "value": 20,
+                    "description": "8 bpp"
+                },
+                {
+                    "name": "RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA",
+                    "value": 21,
+                    "description": "2 bpp"
+                }
+            ],
+            "description": "Texture formats (support depends on OpenGL version)",
+            "custom": false
+        },
+        {
+            "name": "rlTextureFilter",
+            "values": [
+                {
+                    "name": "RL_TEXTURE_FILTER_POINT",
+                    "value": 0,
+                    "description": "No filter, just pixel approximation"
+                },
+                {
+                    "name": "RL_TEXTURE_FILTER_BILINEAR",
+                    "value": 1,
+                    "description": "Linear filtering"
+                },
+                {
+                    "name": "RL_TEXTURE_FILTER_TRILINEAR",
+                    "value": 2,
+                    "description": "Trilinear filtering (linear with mipmaps)"
+                },
+                {
+                    "name": "RL_TEXTURE_FILTER_ANISOTROPIC_4X",
+                    "value": 3,
+                    "description": "Anisotropic filtering 4x"
+                },
+                {
+                    "name": "RL_TEXTURE_FILTER_ANISOTROPIC_8X",
+                    "value": 4,
+                    "description": "Anisotropic filtering 8x"
+                },
+                {
+                    "name": "RL_TEXTURE_FILTER_ANISOTROPIC_16X",
+                    "value": 5,
+                    "description": "Anisotropic filtering 16x"
+                }
+            ],
+            "description": "Texture parameters: filter mode",
+            "custom": false
+        },
+        {
+            "name": "rlBlendMode",
+            "values": [
+                {
+                    "name": "RL_BLEND_ALPHA",
+                    "value": 0,
+                    "description": "Blend textures considering alpha (default)"
+                },
+                {
+                    "name": "RL_BLEND_ADDITIVE",
+                    "value": 1,
+                    "description": "Blend textures adding colors"
+                },
+                {
+                    "name": "RL_BLEND_MULTIPLIED",
+                    "value": 2,
+                    "description": "Blend textures multiplying colors"
+                },
+                {
+                    "name": "RL_BLEND_ADD_COLORS",
+                    "value": 3,
+                    "description": "Blend textures adding colors (alternative)"
+                },
+                {
+                    "name": "RL_BLEND_SUBTRACT_COLORS",
+                    "value": 4,
+                    "description": "Blend textures subtracting colors (alternative)"
+                },
+                {
+                    "name": "RL_BLEND_ALPHA_PREMUL",
+                    "value": 5,
+                    "description": "Blend premultiplied textures considering alpha"
+                },
+                {
+                    "name": "RL_BLEND_CUSTOM",
+                    "value": 6,
+                    "description": "Blend textures using custom src/dst factors (use rlSetBlendFactors())"
+                }
+            ],
+            "description": "Color blending modes (pre-defined)",
+            "custom": false
+        },
+        {
+            "name": "rlShaderLocationIndex",
+            "values": [
+                {
+                    "name": "RL_SHADER_LOC_VERTEX_POSITION",
+                    "value": 0,
+                    "description": "Shader location: vertex attribute: position"
+                },
+                {
+                    "name": "RL_SHADER_LOC_VERTEX_TEXCOORD01",
+                    "value": 1,
+                    "description": "Shader location: vertex attribute: texcoord01"
+                },
+                {
+                    "name": "RL_SHADER_LOC_VERTEX_TEXCOORD02",
+                    "value": 2,
+                    "description": "Shader location: vertex attribute: texcoord02"
+                },
+                {
+                    "name": "RL_SHADER_LOC_VERTEX_NORMAL",
+                    "value": 3,
+                    "description": "Shader location: vertex attribute: normal"
+                },
+                {
+                    "name": "RL_SHADER_LOC_VERTEX_TANGENT",
+                    "value": 4,
+                    "description": "Shader location: vertex attribute: tangent"
+                },
+                {
+                    "name": "RL_SHADER_LOC_VERTEX_COLOR",
+                    "value": 5,
+                    "description": "Shader location: vertex attribute: color"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MATRIX_MVP",
+                    "value": 6,
+                    "description": "Shader location: matrix uniform: model-view-projection"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MATRIX_VIEW",
+                    "value": 7,
+                    "description": "Shader location: matrix uniform: view (camera transform)"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MATRIX_PROJECTION",
+                    "value": 8,
+                    "description": "Shader location: matrix uniform: projection"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MATRIX_MODEL",
+                    "value": 9,
+                    "description": "Shader location: matrix uniform: model (transform)"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MATRIX_NORMAL",
+                    "value": 10,
+                    "description": "Shader location: matrix uniform: normal"
+                },
+                {
+                    "name": "RL_SHADER_LOC_VECTOR_VIEW",
+                    "value": 11,
+                    "description": "Shader location: vector uniform: view"
+                },
+                {
+                    "name": "RL_SHADER_LOC_COLOR_DIFFUSE",
+                    "value": 12,
+                    "description": "Shader location: vector uniform: diffuse color"
+                },
+                {
+                    "name": "RL_SHADER_LOC_COLOR_SPECULAR",
+                    "value": 13,
+                    "description": "Shader location: vector uniform: specular color"
+                },
+                {
+                    "name": "RL_SHADER_LOC_COLOR_AMBIENT",
+                    "value": 14,
+                    "description": "Shader location: vector uniform: ambient color"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_ALBEDO",
+                    "value": 15,
+                    "description": "Shader location: sampler2d texture: albedo (same as: RL_SHADER_LOC_MAP_DIFFUSE)"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_METALNESS",
+                    "value": 16,
+                    "description": "Shader location: sampler2d texture: metalness (same as: RL_SHADER_LOC_MAP_SPECULAR)"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_NORMAL",
+                    "value": 17,
+                    "description": "Shader location: sampler2d texture: normal"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_ROUGHNESS",
+                    "value": 18,
+                    "description": "Shader location: sampler2d texture: roughness"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_OCCLUSION",
+                    "value": 19,
+                    "description": "Shader location: sampler2d texture: occlusion"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_EMISSION",
+                    "value": 20,
+                    "description": "Shader location: sampler2d texture: emission"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_HEIGHT",
+                    "value": 21,
+                    "description": "Shader location: sampler2d texture: height"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_CUBEMAP",
+                    "value": 22,
+                    "description": "Shader location: samplerCube texture: cubemap"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_IRRADIANCE",
+                    "value": 23,
+                    "description": "Shader location: samplerCube texture: irradiance"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_PREFILTER",
+                    "value": 24,
+                    "description": "Shader location: samplerCube texture: prefilter"
+                },
+                {
+                    "name": "RL_SHADER_LOC_MAP_BRDF",
+                    "value": 25,
+                    "description": "Shader location: sampler2d texture: brdf"
+                }
+            ],
+            "description": "Shader location point type",
+            "custom": false
+        },
+        {
+            "name": "rlShaderUniformDataType",
+            "values": [
+                {
+                    "name": "RL_SHADER_UNIFORM_FLOAT",
+                    "value": 0,
+                    "description": "Shader uniform type: float"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_VEC2",
+                    "value": 1,
+                    "description": "Shader uniform type: vec2 (2 float)"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_VEC3",
+                    "value": 2,
+                    "description": "Shader uniform type: vec3 (3 float)"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_VEC4",
+                    "value": 3,
+                    "description": "Shader uniform type: vec4 (4 float)"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_INT",
+                    "value": 4,
+                    "description": "Shader uniform type: int"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_IVEC2",
+                    "value": 5,
+                    "description": "Shader uniform type: ivec2 (2 int)"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_IVEC3",
+                    "value": 6,
+                    "description": "Shader uniform type: ivec3 (3 int)"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_IVEC4",
+                    "value": 7,
+                    "description": "Shader uniform type: ivec4 (4 int)"
+                },
+                {
+                    "name": "RL_SHADER_UNIFORM_SAMPLER2D",
+                    "value": 8,
+                    "description": "Shader uniform type: sampler2d"
+                }
+            ],
+            "description": "Shader uniform data type",
+            "custom": false
+        },
+        {
+            "name": "rlShaderAttributeDataType",
+            "values": [
+                {
+                    "name": "RL_SHADER_ATTRIB_FLOAT",
+                    "value": 0,
+                    "description": "Shader attribute type: float"
+                },
+                {
+                    "name": "RL_SHADER_ATTRIB_VEC2",
+                    "value": 1,
+                    "description": "Shader attribute type: vec2 (2 float)"
+                },
+                {
+                    "name": "RL_SHADER_ATTRIB_VEC3",
+                    "value": 2,
+                    "description": "Shader attribute type: vec3 (3 float)"
+                },
+                {
+                    "name": "RL_SHADER_ATTRIB_VEC4",
+                    "value": 3,
+                    "description": "Shader attribute type: vec4 (4 float)"
+                }
+            ],
+            "description": "Shader attribute data types",
+            "custom": false
+        },
+        {
             "name": "GuiControlState",
             "values": [
                 {
@@ -15532,6 +18169,274 @@
             "custom": false
         },
         {
+            "name": "rlVertexBuffer",
+            "fields": [
+                {
+                    "name": "elementCount",
+                    "typ": "i32",
+                    "description": "Number of elements in the buffer (QUADS)"
+                },
+                {
+                    "name": "vertices",
+                    "typ": "[*]f32",
+                    "description": "Vertex position (XYZ - 3 components per vertex) (shader-location = 0)"
+                },
+                {
+                    "name": "texcoords",
+                    "typ": "[*]f32",
+                    "description": "Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1)"
+                },
+                {
+                    "name": "colors",
+                    "typ": "[*]u8",
+                    "description": "Vertex colors (RGBA - 4 components per vertex) (shader-location = 3)"
+                },
+                {
+                    "name": "indices",
+                    "typ": "[*]u16",
+                    "description": "Vertex indices (in case vertex data comes indexed) (6 indices per quad)"
+                },
+                {
+                    "name": "vaoId",
+                    "typ": "u32",
+                    "description": "OpenGL Vertex Array Object id"
+                },
+                {
+                    "name": "vboId",
+                    "typ": "[4]u32",
+                    "description": "OpenGL Vertex Buffer Objects id (4 types of vertex data)"
+                }
+            ],
+            "description": "Dynamic vertex buffers (position + texcoords + colors + indices arrays)",
+            "custom": true
+        },
+        {
+            "name": "rlDrawCall",
+            "fields": [
+                {
+                    "name": "mode",
+                    "typ": "i32",
+                    "description": "Drawing mode: LINES, TRIANGLES, QUADS"
+                },
+                {
+                    "name": "vertexCount",
+                    "typ": "i32",
+                    "description": "Number of vertex of the draw"
+                },
+                {
+                    "name": "vertexAlignment",
+                    "typ": "i32",
+                    "description": "Number of vertex required for index alignment (LINES, TRIANGLES)"
+                },
+                {
+                    "name": "textureId",
+                    "typ": "u32",
+                    "description": "Texture id to be used on the draw -> Use to create new draw call if changes"
+                }
+            ],
+            "description": "of those state-change happens (this is done in core module)",
+            "custom": false
+        },
+        {
+            "name": "rlRenderBatch",
+            "fields": [
+                {
+                    "name": "bufferCount",
+                    "typ": "i32",
+                    "description": "Number of vertex buffers (multi-buffering support)"
+                },
+                {
+                    "name": "currentBuffer",
+                    "typ": "i32",
+                    "description": "Current buffer tracking in case of multi-buffering"
+                },
+                {
+                    "name": "vertexBuffer",
+                    "typ": "[*]rlVertexBuffer",
+                    "description": "Dynamic buffer(s) for vertex data"
+                },
+                {
+                    "name": "draws",
+                    "typ": "[*]rlDrawCall",
+                    "description": "Draw calls array, depends on textureId"
+                },
+                {
+                    "name": "drawCounter",
+                    "typ": "i32",
+                    "description": "Draw calls counter"
+                },
+                {
+                    "name": "currentDepth",
+                    "typ": "f32",
+                    "description": "Current depth value for next draw"
+                }
+            ],
+            "description": "rlRenderBatch type",
+            "custom": false
+        },
+        {
+            "name": "rlglData",
+            "fields": [
+                {
+                    "name": "currentBatch",
+                    "typ": "[*]rlRenderBatch",
+                    "description": "Current render batch"
+                },
+                {
+                    "name": "defaultBatch",
+                    "typ": "rlRenderBatch",
+                    "description": "Default internal render batch"
+                },
+                {
+                    "name": "vertexCounter",
+                    "typ": "i32",
+                    "description": "Current active render batch vertex counter (generic, used for all batches)"
+                },
+                {
+                    "name": "texcoordx, texcoordy",
+                    "typ": "f32",
+                    "description": "Current active texture coordinate (added on glVertex*())"
+                },
+                {
+                    "name": "normalx, normaly, normalz",
+                    "typ": "f32",
+                    "description": "Current active normal (added on glVertex*())"
+                },
+                {
+                    "name": "colorr, colorg, colorb, colora",
+                    "typ": "u8",
+                    "description": "Current active color (added on glVertex*())"
+                },
+                {
+                    "name": "currentMatrixMode",
+                    "typ": "i32",
+                    "description": "Current matrix mode"
+                },
+                {
+                    "name": "currentMatrix",
+                    "typ": "[*]Matrix",
+                    "description": "Current matrix pointer"
+                },
+                {
+                    "name": "modelview",
+                    "typ": "Matrix",
+                    "description": "Default modelview matrix"
+                },
+                {
+                    "name": "projection",
+                    "typ": "Matrix",
+                    "description": "Default projection matrix"
+                },
+                {
+                    "name": "transform",
+                    "typ": "Matrix",
+                    "description": "Transform matrix to be used with rlTranslate, rlRotate, rlScale"
+                },
+                {
+                    "name": "transformRequired",
+                    "typ": "bool",
+                    "description": "Require transform matrix application to current draw-call vertex (if required)"
+                },
+                {
+                    "name": "stack",
+                    "typ": "Matrix",
+                    "description": "Matrix stack for push/pop"
+                },
+                {
+                    "name": "stackCounter",
+                    "typ": "i32",
+                    "description": "Matrix stack counter"
+                },
+                {
+                    "name": "defaultTextureId",
+                    "typ": "u32",
+                    "description": "Default texture used on shapes/poly drawing (required by shader)"
+                },
+                {
+                    "name": "activeTextureId",
+                    "typ": "u32",
+                    "description": "Active texture ids to be enabled on batch drawing (0 active by default)"
+                },
+                {
+                    "name": "defaultVShaderId",
+                    "typ": "u32",
+                    "description": "Default vertex shader id (used by default shader program)"
+                },
+                {
+                    "name": "defaultFShaderId",
+                    "typ": "u32",
+                    "description": "Default fragment shader id (used by default shader program)"
+                },
+                {
+                    "name": "defaultShaderId",
+                    "typ": "u32",
+                    "description": "Default shader program id, supports vertex color and diffuse texture"
+                },
+                {
+                    "name": "defaultShaderLocs",
+                    "typ": "[*]i32",
+                    "description": "Default shader locations pointer to be used on rendering"
+                },
+                {
+                    "name": "currentShaderId",
+                    "typ": "u32",
+                    "description": "Current shader id to be used on rendering (by default, defaultShaderId)"
+                },
+                {
+                    "name": "currentShaderLocs",
+                    "typ": "[*]i32",
+                    "description": "Current shader locations pointer to be used on rendering (by default, defaultShaderLocs)"
+                },
+                {
+                    "name": "stereoRender",
+                    "typ": "bool",
+                    "description": "Stereo rendering flag"
+                },
+                {
+                    "name": "projectionStereo",
+                    "typ": "[2]Matrix",
+                    "description": "VR stereo rendering eyes projection matrices"
+                },
+                {
+                    "name": "viewOffsetStereo",
+                    "typ": "[2]Matrix",
+                    "description": "VR stereo rendering eyes view offset matrices"
+                },
+                {
+                    "name": "currentBlendMode",
+                    "typ": "i32",
+                    "description": "Blending mode active"
+                },
+                {
+                    "name": "glBlendSrcFactor",
+                    "typ": "i32",
+                    "description": "Blending source factor"
+                },
+                {
+                    "name": "glBlendDstFactor",
+                    "typ": "i32",
+                    "description": "Blending destination factor"
+                },
+                {
+                    "name": "glBlendEquation",
+                    "typ": "i32",
+                    "description": "Blending equation"
+                },
+                {
+                    "name": "framebufferWidth",
+                    "typ": "i32",
+                    "description": "Current framebuffer width"
+                },
+                {
+                    "name": "framebufferHeight",
+                    "typ": "i32",
+                    "description": "Current framebuffer height"
+                }
+            ],
+            "description": "injected",
+            "custom": true
+        },
+        {
             "name": "float3",
             "fields": [
                 {
@@ -16027,6 +18932,538 @@
             "typ": "i32",
             "value": "0",
             "description": "",
+            "custom": false
+        },
+        {
+            "name": "RLGL_VERSION",
+            "typ": "[]const u8",
+            "value": "\"4.0\"",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_BATCH_BUFFER_ELEMENTS",
+            "typ": "i32",
+            "value": "8192",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_BATCH_BUFFERS",
+            "typ": "i32",
+            "value": "1",
+            "description": "Default number of batch buffers (multi-buffering)",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_BATCH_DRAWCALLS",
+            "typ": "i32",
+            "value": "256",
+            "description": "Default number of batch draw calls (by state changes: mode, texture)",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_BATCH_MAX_TEXTURE_UNITS",
+            "typ": "i32",
+            "value": "4",
+            "description": "Maximum number of textures units that can be activated on batch drawing (SetShaderValueTexture())",
+            "custom": false
+        },
+        {
+            "name": "RL_MAX_MATRIX_STACK_SIZE",
+            "typ": "i32",
+            "value": "32",
+            "description": "Maximum size of Matrix stack",
+            "custom": false
+        },
+        {
+            "name": "RL_MAX_SHADER_LOCATIONS",
+            "typ": "i32",
+            "value": "32",
+            "description": "Maximum number of shader locations supported",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_WRAP_S",
+            "typ": "i32",
+            "value": "10242",
+            "description": "GL_TEXTURE_WRAP_S",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_WRAP_T",
+            "typ": "i32",
+            "value": "10243",
+            "description": "GL_TEXTURE_WRAP_T",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_MAG_FILTER",
+            "typ": "i32",
+            "value": "10240",
+            "description": "GL_TEXTURE_MAG_FILTER",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_MIN_FILTER",
+            "typ": "i32",
+            "value": "10241",
+            "description": "GL_TEXTURE_MIN_FILTER",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_FILTER_NEAREST",
+            "typ": "i32",
+            "value": "9728",
+            "description": "GL_NEAREST",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_FILTER_LINEAR",
+            "typ": "i32",
+            "value": "9729",
+            "description": "GL_LINEAR",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_FILTER_MIP_NEAREST",
+            "typ": "i32",
+            "value": "9984",
+            "description": "GL_NEAREST_MIPMAP_NEAREST",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_FILTER_NEAREST_MIP_LINEAR",
+            "typ": "i32",
+            "value": "9986",
+            "description": "GL_NEAREST_MIPMAP_LINEAR",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_FILTER_LINEAR_MIP_NEAREST",
+            "typ": "i32",
+            "value": "9985",
+            "description": "GL_LINEAR_MIPMAP_NEAREST",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_FILTER_MIP_LINEAR",
+            "typ": "i32",
+            "value": "9987",
+            "description": "GL_LINEAR_MIPMAP_LINEAR",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_FILTER_ANISOTROPIC",
+            "typ": "i32",
+            "value": "12288",
+            "description": "Anisotropic filter (custom identifier)",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_WRAP_REPEAT",
+            "typ": "i32",
+            "value": "10497",
+            "description": "GL_REPEAT",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_WRAP_CLAMP",
+            "typ": "i32",
+            "value": "33071",
+            "description": "GL_CLAMP_TO_EDGE",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_WRAP_MIRROR_REPEAT",
+            "typ": "i32",
+            "value": "33648",
+            "description": "GL_MIRRORED_REPEAT",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_WRAP_MIRROR_CLAMP",
+            "typ": "i32",
+            "value": "34626",
+            "description": "GL_MIRROR_CLAMP_EXT",
+            "custom": false
+        },
+        {
+            "name": "RL_MODELVIEW",
+            "typ": "i32",
+            "value": "5888",
+            "description": "GL_MODELVIEW",
+            "custom": false
+        },
+        {
+            "name": "RL_PROJECTION",
+            "typ": "i32",
+            "value": "5889",
+            "description": "GL_PROJECTION",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE",
+            "typ": "i32",
+            "value": "5890",
+            "description": "GL_TEXTURE",
+            "custom": false
+        },
+        {
+            "name": "RL_LINES",
+            "typ": "i32",
+            "value": "1",
+            "description": "GL_LINES",
+            "custom": false
+        },
+        {
+            "name": "RL_TRIANGLES",
+            "typ": "i32",
+            "value": "4",
+            "description": "GL_TRIANGLES",
+            "custom": false
+        },
+        {
+            "name": "RL_QUADS",
+            "typ": "i32",
+            "value": "7",
+            "description": "GL_QUADS",
+            "custom": false
+        },
+        {
+            "name": "RL_UNSIGNED_BYTE",
+            "typ": "i32",
+            "value": "5121",
+            "description": "GL_UNSIGNED_BYTE",
+            "custom": false
+        },
+        {
+            "name": "RL_FLOAT",
+            "typ": "i32",
+            "value": "5126",
+            "description": "GL_FLOAT",
+            "custom": false
+        },
+        {
+            "name": "RL_STREAM_DRAW",
+            "typ": "i32",
+            "value": "35040",
+            "description": "GL_STREAM_DRAW",
+            "custom": false
+        },
+        {
+            "name": "RL_STREAM_READ",
+            "typ": "i32",
+            "value": "35041",
+            "description": "GL_STREAM_READ",
+            "custom": false
+        },
+        {
+            "name": "RL_STREAM_COPY",
+            "typ": "i32",
+            "value": "35042",
+            "description": "GL_STREAM_COPY",
+            "custom": false
+        },
+        {
+            "name": "RL_STATIC_DRAW",
+            "typ": "i32",
+            "value": "35044",
+            "description": "GL_STATIC_DRAW",
+            "custom": false
+        },
+        {
+            "name": "RL_STATIC_READ",
+            "typ": "i32",
+            "value": "35045",
+            "description": "GL_STATIC_READ",
+            "custom": false
+        },
+        {
+            "name": "RL_STATIC_COPY",
+            "typ": "i32",
+            "value": "35046",
+            "description": "GL_STATIC_COPY",
+            "custom": false
+        },
+        {
+            "name": "RL_DYNAMIC_DRAW",
+            "typ": "i32",
+            "value": "35048",
+            "description": "GL_DYNAMIC_DRAW",
+            "custom": false
+        },
+        {
+            "name": "RL_DYNAMIC_READ",
+            "typ": "i32",
+            "value": "35049",
+            "description": "GL_DYNAMIC_READ",
+            "custom": false
+        },
+        {
+            "name": "RL_DYNAMIC_COPY",
+            "typ": "i32",
+            "value": "35050",
+            "description": "GL_DYNAMIC_COPY",
+            "custom": false
+        },
+        {
+            "name": "RL_FRAGMENT_SHADER",
+            "typ": "i32",
+            "value": "35632",
+            "description": "GL_FRAGMENT_SHADER",
+            "custom": false
+        },
+        {
+            "name": "RL_VERTEX_SHADER",
+            "typ": "i32",
+            "value": "35633",
+            "description": "GL_VERTEX_SHADER",
+            "custom": false
+        },
+        {
+            "name": "RL_COMPUTE_SHADER",
+            "typ": "i32",
+            "value": "37305",
+            "description": "GL_COMPUTE_SHADER",
+            "custom": false
+        },
+        {
+            "name": "GL_SHADING_LANGUAGE_VERSION",
+            "typ": "i32",
+            "value": "35724",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGB_S3TC_DXT1_EXT",
+            "typ": "i32",
+            "value": "33776",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGBA_S3TC_DXT1_EXT",
+            "typ": "i32",
+            "value": "33777",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGBA_S3TC_DXT3_EXT",
+            "typ": "i32",
+            "value": "33778",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGBA_S3TC_DXT5_EXT",
+            "typ": "i32",
+            "value": "33779",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_ETC1_RGB8_OES",
+            "typ": "i32",
+            "value": "36196",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGB8_ETC2",
+            "typ": "i32",
+            "value": "37492",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGBA8_ETC2_EAC",
+            "typ": "i32",
+            "value": "37496",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG",
+            "typ": "i32",
+            "value": "35840",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG",
+            "typ": "i32",
+            "value": "35842",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGBA_ASTC_4x4_KHR",
+            "typ": "i32",
+            "value": "37808",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_COMPRESSED_RGBA_ASTC_8x8_KHR",
+            "typ": "i32",
+            "value": "37815",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT",
+            "typ": "i32",
+            "value": "34047",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_TEXTURE_MAX_ANISOTROPY_EXT",
+            "typ": "i32",
+            "value": "34046",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_UNSIGNED_SHORT_5_6_5",
+            "typ": "i32",
+            "value": "33635",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_UNSIGNED_SHORT_5_5_5_1",
+            "typ": "i32",
+            "value": "32820",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_UNSIGNED_SHORT_4_4_4_4",
+            "typ": "i32",
+            "value": "32819",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_LUMINANCE",
+            "typ": "i32",
+            "value": "6409",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "GL_LUMINANCE_ALPHA",
+            "typ": "i32",
+            "value": "6410",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_POSITION",
+            "typ": "[]const u8",
+            "value": "\"vertexPosition\"",
+            "description": "Binded by default to shader location: 0",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD",
+            "typ": "[]const u8",
+            "value": "\"vertexTexCoord\"",
+            "description": "Binded by default to shader location: 1",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_NORMAL",
+            "typ": "[]const u8",
+            "value": "\"vertexNormal\"",
+            "description": "Binded by default to shader location: 2",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_COLOR",
+            "typ": "[]const u8",
+            "value": "\"vertexColor\"",
+            "description": "Binded by default to shader location: 3",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_TANGENT",
+            "typ": "[]const u8",
+            "value": "\"vertexTangent\"",
+            "description": "Binded by default to shader location: 4",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD2",
+            "typ": "[]const u8",
+            "value": "\"vertexTexCoord2\"",
+            "description": "Binded by default to shader location: 5",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_UNIFORM_NAME_MVP",
+            "typ": "[]const u8",
+            "value": "\"mvp\"",
+            "description": "model-view-projection matrix",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_UNIFORM_NAME_VIEW",
+            "typ": "[]const u8",
+            "value": "\"matView\"",
+            "description": "view matrix",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_UNIFORM_NAME_PROJECTION",
+            "typ": "[]const u8",
+            "value": "\"matProjection\"",
+            "description": "projection matrix",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_UNIFORM_NAME_MODEL",
+            "typ": "[]const u8",
+            "value": "\"matModel\"",
+            "description": "model matrix",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_UNIFORM_NAME_NORMAL",
+            "typ": "[]const u8",
+            "value": "\"matNormal\"",
+            "description": "normal matrix (transpose(inverse(matModelView))",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_UNIFORM_NAME_COLOR",
+            "typ": "[]const u8",
+            "value": "\"colDiffuse\"",
+            "description": "color diffuse (base tint color, multiplied by texture color)",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE0",
+            "typ": "[]const u8",
+            "value": "\"texture0\"",
+            "description": "texture0 (texture slot active 0)",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE1",
+            "typ": "[]const u8",
+            "value": "\"texture1\"",
+            "description": "texture1 (texture slot active 1)",
+            "custom": false
+        },
+        {
+            "name": "RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE2",
+            "typ": "[]const u8",
+            "value": "\"texture2\"",
+            "description": "texture2 (texture slot active 2)",
             "custom": false
         },
         {

@@ -23,6 +23,14 @@ pub fn build(b: *std.build.Builder) !void {
         "-d", "RLAPI",
     });
     jsons.dependOn(&raylib_H.step);
+    const rlgl_H = raylib_parser_build.run();
+    rlgl_H.addArgs(&.{
+        "-i", raylibSrc ++ "rlgl.h",
+        "-o", "rlgl.json",
+        "-f", "JSON",
+        "-d", "RLAPI",
+    });
+    jsons.dependOn(&rlgl_H.step);
     const raymath_H = raylib_parser_build.run();
     raymath_H.addArgs(&.{
         "-i", raylibSrc ++ "raymath.h",

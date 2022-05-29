@@ -1,5 +1,8 @@
 //--- CORE ----------------------------------------------------------------------------------------
+#define GRAPHICS_API_OPENGL_11
+// #define RLGL_IMPLEMENTATION
 #include "raylib.h"
+#include "rlgl.h"
 #include "raymath.h"
 
 //--- RAYGUI --------------------------------------------------------------------------------------
@@ -9,7 +12,13 @@
 
 //--- PHYSACDEF -----------------------------------------------------------------------------------
 #include "extras/physac.h"
-// Initialize window and OpenGL context
+
+
+// Enable vertex state pointer
+void rlEnableStatePointer(int vertexAttribType, void *buffer);
+
+// Disable vertex state pointer
+void rlDisableStatePointer(int vertexAttribType);// Initialize window and OpenGL context
 void mInitWindow(int width, int height, const char * title);
 
 // Check if KEY_ESCAPE pressed or Close icon pressed
@@ -1457,6 +1466,432 @@ void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
 
 // 
 void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
+
+// Choose the current matrix to be transformed
+void mrlMatrixMode(int mode);
+
+// Push the current matrix to stack
+void mrlPushMatrix(void);
+
+// Pop lattest inserted matrix from stack
+void mrlPopMatrix(void);
+
+// Reset current matrix to identity matrix
+void mrlLoadIdentity(void);
+
+// Multiply the current matrix by a translation matrix
+void mrlTranslatef(float x, float y, float z);
+
+// Multiply the current matrix by a rotation matrix
+void mrlRotatef(float angle, float x, float y, float z);
+
+// Multiply the current matrix by a scaling matrix
+void mrlScalef(float x, float y, float z);
+
+// Multiply the current matrix by another matrix
+void mrlMultMatrixf(float * matf);
+
+// 
+void mrlFrustum(double left, double right, double bottom, double top, double znear, double zfar);
+
+// 
+void mrlOrtho(double left, double right, double bottom, double top, double znear, double zfar);
+
+// Set the viewport area
+void mrlViewport(int x, int y, int width, int height);
+
+// Initialize drawing mode (how to organize vertex)
+void mrlBegin(int mode);
+
+// Finish vertex providing
+void mrlEnd(void);
+
+// Define one vertex (position) - 2 int
+void mrlVertex2i(int x, int y);
+
+// Define one vertex (position) - 2 float
+void mrlVertex2f(float x, float y);
+
+// Define one vertex (position) - 3 float
+void mrlVertex3f(float x, float y, float z);
+
+// Define one vertex (texture coordinate) - 2 float
+void mrlTexCoord2f(float x, float y);
+
+// Define one vertex (normal) - 3 float
+void mrlNormal3f(float x, float y, float z);
+
+// Define one vertex (color) - 4 byte
+void mrlColor4ub(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
+// Define one vertex (color) - 3 float
+void mrlColor3f(float x, float y, float z);
+
+// Define one vertex (color) - 4 float
+void mrlColor4f(float x, float y, float z, float w);
+
+// Enable vertex array (VAO, if supported)
+bool mrlEnableVertexArray(unsigned int vaoId);
+
+// Disable vertex array (VAO, if supported)
+void mrlDisableVertexArray(void);
+
+// Enable vertex buffer (VBO)
+void mrlEnableVertexBuffer(unsigned int id);
+
+// Disable vertex buffer (VBO)
+void mrlDisableVertexBuffer(void);
+
+// Enable vertex buffer element (VBO element)
+void mrlEnableVertexBufferElement(unsigned int id);
+
+// Disable vertex buffer element (VBO element)
+void mrlDisableVertexBufferElement(void);
+
+// Enable vertex attribute index
+void mrlEnableVertexAttribute(unsigned int index);
+
+// Disable vertex attribute index
+void mrlDisableVertexAttribute(unsigned int index);
+
+// Select and active a texture slot
+void mrlActiveTextureSlot(int slot);
+
+// Enable texture
+void mrlEnableTexture(unsigned int id);
+
+// Disable texture
+void mrlDisableTexture(void);
+
+// Enable texture cubemap
+void mrlEnableTextureCubemap(unsigned int id);
+
+// Disable texture cubemap
+void mrlDisableTextureCubemap(void);
+
+// Set texture parameters (filter, wrap)
+void mrlTextureParameters(unsigned int id, int param, int value);
+
+// Enable shader program
+void mrlEnableShader(unsigned int id);
+
+// Disable shader program
+void mrlDisableShader(void);
+
+// Enable render texture (fbo)
+void mrlEnableFramebuffer(unsigned int id);
+
+// Disable render texture (fbo), return to default framebuffer
+void mrlDisableFramebuffer(void);
+
+// Activate multiple draw color buffers
+void mrlActiveDrawBuffers(int count);
+
+// Enable color blending
+void mrlEnableColorBlend(void);
+
+// Disable color blending
+void mrlDisableColorBlend(void);
+
+// Enable depth test
+void mrlEnableDepthTest(void);
+
+// Disable depth test
+void mrlDisableDepthTest(void);
+
+// Enable depth write
+void mrlEnableDepthMask(void);
+
+// Disable depth write
+void mrlDisableDepthMask(void);
+
+// Enable backface culling
+void mrlEnableBackfaceCulling(void);
+
+// Disable backface culling
+void mrlDisableBackfaceCulling(void);
+
+// Enable scissor test
+void mrlEnableScissorTest(void);
+
+// Disable scissor test
+void mrlDisableScissorTest(void);
+
+// Scissor test
+void mrlScissor(int x, int y, int width, int height);
+
+// Enable wire mode
+void mrlEnableWireMode(void);
+
+// Disable wire mode
+void mrlDisableWireMode(void);
+
+// Set the line drawing width
+void mrlSetLineWidth(float width);
+
+// Get the line drawing width
+float mrlGetLineWidth(void);
+
+// Enable line aliasing
+void mrlEnableSmoothLines(void);
+
+// Disable line aliasing
+void mrlDisableSmoothLines(void);
+
+// Enable stereo rendering
+void mrlEnableStereoRender(void);
+
+// Disable stereo rendering
+void mrlDisableStereoRender(void);
+
+// Check if stereo render is enabled
+bool mrlIsStereoRenderEnabled(void);
+
+// Clear color buffer with color
+void mrlClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
+// Clear used screen buffers (color and depth)
+void mrlClearScreenBuffers(void);
+
+// Check and log OpenGL error codes
+void mrlCheckErrors(void);
+
+// Set blending mode
+void mrlSetBlendMode(int mode);
+
+// Set blending mode factor and equation (using OpenGL factors)
+void mrlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation);
+
+// Initialize rlgl (buffers, shaders, textures, states)
+void mrlglInit(int width, int height);
+
+// De-inititialize rlgl (buffers, shaders, textures)
+void mrlglClose(void);
+
+// Load OpenGL extensions (loader function required)
+void mrlLoadExtensions(void * loader);
+
+// Get current OpenGL version
+int mrlGetVersion(void);
+
+// Set current framebuffer width
+void mrlSetFramebufferWidth(int width);
+
+// Get default framebuffer width
+int mrlGetFramebufferWidth(void);
+
+// Set current framebuffer height
+void mrlSetFramebufferHeight(int height);
+
+// Get default framebuffer height
+int mrlGetFramebufferHeight(void);
+
+// Get default texture id
+unsigned int mrlGetTextureIdDefault(void);
+
+// Get default shader id
+unsigned int mrlGetShaderIdDefault(void);
+
+// Get default shader locations
+int * mrlGetShaderLocsDefault(void);
+
+// Load a render batch system
+void mrlLoadRenderBatch(rlRenderBatch *out, int numBuffers, int bufferElements);
+
+// Unload render batch system
+void mrlUnloadRenderBatch(rlRenderBatch *batch);
+
+// Draw render batch data (Update->Draw->Reset)
+void mrlDrawRenderBatch(rlRenderBatch * batch);
+
+// Set the active render batch for rlgl (NULL for default internal)
+void mrlSetRenderBatchActive(rlRenderBatch * batch);
+
+// Update and draw internal render batch
+void mrlDrawRenderBatchActive(void);
+
+// Check internal buffer overflow for a given number of vertex
+bool mrlCheckRenderBatchLimit(int vCount);
+
+// Set current texture for render batch and check buffers limits
+void mrlSetTexture(unsigned int id);
+
+// Load vertex array (vao) if supported
+unsigned int mrlLoadVertexArray(void);
+
+// Load a vertex buffer attribute
+unsigned int mrlLoadVertexBuffer(const void * buffer, int size, bool dynamic);
+
+// Load a new attributes element buffer
+unsigned int mrlLoadVertexBufferElement(const void * buffer, int size, bool dynamic);
+
+// Update GPU buffer with new data
+void mrlUpdateVertexBuffer(unsigned int bufferId, const void * data, int dataSize, int offset);
+
+// Update vertex buffer elements with new data
+void mrlUpdateVertexBufferElements(unsigned int id, const void * data, int dataSize, int offset);
+
+// 
+void mrlUnloadVertexArray(unsigned int vaoId);
+
+// 
+void mrlUnloadVertexBuffer(unsigned int vboId);
+
+// 
+void mrlSetVertexAttribute(unsigned int index, int compSize, int type, bool normalized, int stride, const void * pointer);
+
+// 
+void mrlSetVertexAttributeDivisor(unsigned int index, int divisor);
+
+// Set vertex attribute default value
+void mrlSetVertexAttributeDefault(int locIndex, const void * value, int attribType, int count);
+
+// 
+void mrlDrawVertexArray(int offset, int count);
+
+// 
+void mrlDrawVertexArrayElements(int offset, int count, const void * buffer);
+
+// 
+void mrlDrawVertexArrayInstanced(int offset, int count, int instances);
+
+// 
+void mrlDrawVertexArrayElementsInstanced(int offset, int count, const void * buffer, int instances);
+
+// Load texture in GPU
+unsigned int mrlLoadTexture(const void * data, int width, int height, int format, int mipmapCount);
+
+// Load depth texture/renderbuffer (to be attached to fbo)
+unsigned int mrlLoadTextureDepth(int width, int height, bool useRenderBuffer);
+
+// Load texture cubemap
+unsigned int mrlLoadTextureCubemap(const void * data, int size, int format);
+
+// Update GPU texture with new data
+void mrlUpdateTexture(unsigned int id, int offsetX, int offsetY, int width, int height, int format, const void * data);
+
+// Get OpenGL internal formats
+void mrlGetGlTextureFormats(int format, int * glInternalFormat, int * glFormat, int * glType);
+
+// Get name string for pixel format
+const char * mrlGetPixelFormatName(unsigned int format);
+
+// Unload texture from GPU memory
+void mrlUnloadTexture(unsigned int id);
+
+// Generate mipmap data for selected texture
+void mrlGenTextureMipmaps(unsigned int id, int width, int height, int format, int * mipmaps);
+
+// Read texture pixel data
+void * mrlReadTexturePixels(unsigned int id, int width, int height, int format);
+
+// Read screen pixel data (color buffer)
+unsigned char * mrlReadScreenPixels(int width, int height);
+
+// Load an empty framebuffer
+unsigned int mrlLoadFramebuffer(int width, int height);
+
+// Attach texture/renderbuffer to a framebuffer
+void mrlFramebufferAttach(unsigned int fboId, unsigned int texId, int attachType, int texType, int mipLevel);
+
+// Verify framebuffer is complete
+bool mrlFramebufferComplete(unsigned int id);
+
+// Delete framebuffer from GPU
+void mrlUnloadFramebuffer(unsigned int id);
+
+// Load shader from code strings
+unsigned int mrlLoadShaderCode(const char * vsCode, const char * fsCode);
+
+// Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+unsigned int mrlCompileShader(const char * shaderCode, int type);
+
+// Load custom shader program
+unsigned int mrlLoadShaderProgram(unsigned int vShaderId, unsigned int fShaderId);
+
+// Unload shader program
+void mrlUnloadShaderProgram(unsigned int id);
+
+// Get shader location uniform
+int mrlGetLocationUniform(unsigned int shaderId, const char * uniformName);
+
+// Get shader location attribute
+int mrlGetLocationAttrib(unsigned int shaderId, const char * attribName);
+
+// Set shader value uniform
+void mrlSetUniform(int locIndex, const void * value, int uniformType, int count);
+
+// Set shader value matrix
+void mrlSetUniformMatrix(int locIndex, Matrix *mat);
+
+// Set shader value sampler
+void mrlSetUniformSampler(int locIndex, unsigned int textureId);
+
+// Set shader currently active (id and locations)
+void mrlSetShader(unsigned int id, int * locs);
+
+// Load compute shader program
+unsigned int mrlLoadComputeShaderProgram(unsigned int shaderId);
+
+// Dispatch compute shader (equivalent to *draw* for graphics pilepine)
+void mrlComputeShaderDispatch(unsigned int groupX, unsigned int groupY, unsigned int groupZ);
+
+// Load shader storage buffer object (SSBO)
+unsigned int mrlLoadShaderBuffer(unsigned long long size, const void * data, int usageHint);
+
+// Unload shader storage buffer object (SSBO)
+void mrlUnloadShaderBuffer(unsigned int ssboId);
+
+// Update SSBO buffer data
+void mrlUpdateShaderBufferElements(unsigned int id, const void * data, unsigned long long dataSize, unsigned long long offset);
+
+// Get SSBO buffer size
+unsigned long long mrlGetShaderBufferSize(unsigned int id);
+
+// Bind SSBO buffer
+void mrlReadShaderBufferElements(unsigned int id, void * dest, unsigned long long count, unsigned long long offset);
+
+// Copy SSBO buffer data
+void mrlBindShaderBuffer(unsigned int id, unsigned int index);
+
+// Copy SSBO buffer data
+void mrlCopyBuffersElements(unsigned int destId, unsigned int srcId, unsigned long long destOffset, unsigned long long srcOffset, unsigned long long count);
+
+// Bind image texture
+void mrlBindImageTexture(unsigned int id, unsigned int index, unsigned int format, int readonly);
+
+// Get internal modelview matrix
+void mrlGetMatrixModelview(Matrix *out);
+
+// Get internal projection matrix
+void mrlGetMatrixProjection(Matrix *out);
+
+// Get internal accumulated transform matrix
+void mrlGetMatrixTransform(Matrix *out);
+
+// 
+void mrlGetMatrixProjectionStereo(Matrix *out, int eye);
+
+// 
+void mrlGetMatrixViewOffsetStereo(Matrix *out, int eye);
+
+// Set a custom projection matrix (replaces internal projection matrix)
+void mrlSetMatrixProjection(Matrix *proj);
+
+// Set a custom modelview matrix (replaces internal modelview matrix)
+void mrlSetMatrixModelview(Matrix *view);
+
+// Set eyes projection matrices for stereo rendering
+void mrlSetMatrixProjectionStereo(Matrix *right, Matrix *left);
+
+// Set eyes view offsets matrices for stereo rendering
+void mrlSetMatrixViewOffsetStereo(Matrix *right, Matrix *left);
+
+// Load and draw a cube
+void mrlLoadDrawCube(void);
+
+// Load and draw a quad
+void mrlLoadDrawQuad(void);
 
 // 
 float mClamp(float value, float min, float max);

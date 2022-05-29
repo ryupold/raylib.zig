@@ -1,14 +1,16 @@
+#define GRAPHICS_API_OPENGL_11
+// #define RLGL_IMPLEMENTATION
 #include "raylib.h"
+#include "rlgl.h"
 #include "raymath.h"
 #define RAYGUI_IMPLEMENTATION
 #include "extras/raygui.h"
 #define PHYSAC_IMPLEMENTATION
 #define PHYSAC_AVOID_TIMMING_SYSTEM
 #include "extras/physac.h"
-
 void mInitWindow(int width, int height, const char * title)
 {
-	return InitWindow(width, height, title);
+	InitWindow(width, height, title);
 }
 
 bool mWindowShouldClose(void)
@@ -18,7 +20,7 @@ bool mWindowShouldClose(void)
 
 void mCloseWindow(void)
 {
-	return CloseWindow();
+	CloseWindow();
 }
 
 bool mIsWindowReady(void)
@@ -63,67 +65,67 @@ bool mIsWindowState(unsigned int flag)
 
 void mSetWindowState(unsigned int flags)
 {
-	return SetWindowState(flags);
+	SetWindowState(flags);
 }
 
 void mClearWindowState(unsigned int flags)
 {
-	return ClearWindowState(flags);
+	ClearWindowState(flags);
 }
 
 void mToggleFullscreen(void)
 {
-	return ToggleFullscreen();
+	ToggleFullscreen();
 }
 
 void mMaximizeWindow(void)
 {
-	return MaximizeWindow();
+	MaximizeWindow();
 }
 
 void mMinimizeWindow(void)
 {
-	return MinimizeWindow();
+	MinimizeWindow();
 }
 
 void mRestoreWindow(void)
 {
-	return RestoreWindow();
+	RestoreWindow();
 }
 
 void mSetWindowIcon(Image *image)
 {
-	return SetWindowIcon(*image);
+	SetWindowIcon(*image);
 }
 
 void mSetWindowTitle(const char * title)
 {
-	return SetWindowTitle(title);
+	SetWindowTitle(title);
 }
 
 void mSetWindowPosition(int x, int y)
 {
-	return SetWindowPosition(x, y);
+	SetWindowPosition(x, y);
 }
 
 void mSetWindowMonitor(int monitor)
 {
-	return SetWindowMonitor(monitor);
+	SetWindowMonitor(monitor);
 }
 
 void mSetWindowMinSize(int width, int height)
 {
-	return SetWindowMinSize(width, height);
+	SetWindowMinSize(width, height);
 }
 
 void mSetWindowSize(int width, int height)
 {
-	return SetWindowSize(width, height);
+	SetWindowSize(width, height);
 }
 
 void mSetWindowOpacity(float opacity)
 {
-	return SetWindowOpacity(opacity);
+	SetWindowOpacity(opacity);
 }
 
 int mGetScreenWidth(void)
@@ -203,7 +205,7 @@ const char * mGetMonitorName(int monitor)
 
 void mSetClipboardText(const char * text)
 {
-	return SetClipboardText(text);
+	SetClipboardText(text);
 }
 
 const char * mGetClipboardText(void)
@@ -213,27 +215,27 @@ const char * mGetClipboardText(void)
 
 void mSwapScreenBuffer(void)
 {
-	return SwapScreenBuffer();
+	SwapScreenBuffer();
 }
 
 void mPollInputEvents(void)
 {
-	return PollInputEvents();
+	PollInputEvents();
 }
 
 void mWaitTime(float ms)
 {
-	return WaitTime(ms);
+	WaitTime(ms);
 }
 
 void mShowCursor(void)
 {
-	return ShowCursor();
+	ShowCursor();
 }
 
 void mHideCursor(void)
 {
-	return HideCursor();
+	HideCursor();
 }
 
 bool mIsCursorHidden(void)
@@ -243,12 +245,12 @@ bool mIsCursorHidden(void)
 
 void mEnableCursor(void)
 {
-	return EnableCursor();
+	EnableCursor();
 }
 
 void mDisableCursor(void)
 {
-	return DisableCursor();
+	DisableCursor();
 }
 
 bool mIsCursorOnScreen(void)
@@ -258,87 +260,87 @@ bool mIsCursorOnScreen(void)
 
 void mClearBackground(Color *color)
 {
-	return ClearBackground(*color);
+	ClearBackground(*color);
 }
 
 void mBeginDrawing(void)
 {
-	return BeginDrawing();
+	BeginDrawing();
 }
 
 void mEndDrawing(void)
 {
-	return EndDrawing();
+	EndDrawing();
 }
 
 void mBeginMode2D(Camera2D *camera)
 {
-	return BeginMode2D(*camera);
+	BeginMode2D(*camera);
 }
 
 void mEndMode2D(void)
 {
-	return EndMode2D();
+	EndMode2D();
 }
 
 void mBeginMode3D(Camera3D *camera)
 {
-	return BeginMode3D(*camera);
+	BeginMode3D(*camera);
 }
 
 void mEndMode3D(void)
 {
-	return EndMode3D();
+	EndMode3D();
 }
 
 void mBeginTextureMode(RenderTexture2D *target)
 {
-	return BeginTextureMode(*target);
+	BeginTextureMode(*target);
 }
 
 void mEndTextureMode(void)
 {
-	return EndTextureMode();
+	EndTextureMode();
 }
 
 void mBeginShaderMode(Shader *shader)
 {
-	return BeginShaderMode(*shader);
+	BeginShaderMode(*shader);
 }
 
 void mEndShaderMode(void)
 {
-	return EndShaderMode();
+	EndShaderMode();
 }
 
 void mBeginBlendMode(int mode)
 {
-	return BeginBlendMode(mode);
+	BeginBlendMode(mode);
 }
 
 void mEndBlendMode(void)
 {
-	return EndBlendMode();
+	EndBlendMode();
 }
 
 void mBeginScissorMode(int x, int y, int width, int height)
 {
-	return BeginScissorMode(x, y, width, height);
+	BeginScissorMode(x, y, width, height);
 }
 
 void mEndScissorMode(void)
 {
-	return EndScissorMode();
+	EndScissorMode();
 }
 
 void mBeginVrStereoMode(VrStereoConfig *config)
 {
-	return BeginVrStereoMode(*config);
+	BeginVrStereoMode(*config);
 }
 
 void mEndVrStereoMode(void)
 {
-	return EndVrStereoMode();
+	EndVrStereoMode();
 }
 
 void mLoadVrStereoConfig(VrStereoConfig *out, VrDeviceInfo *device)
@@ -348,7 +350,7 @@ void mLoadVrStereoConfig(VrStereoConfig *out, VrDeviceInfo *device)
 
 void mUnloadVrStereoConfig(VrStereoConfig *config)
 {
-	return UnloadVrStereoConfig(*config);
+	UnloadVrStereoConfig(*config);
 }
 
 void mLoadShader(Shader *out, const char * vsFileName, const char * fsFileName)
@@ -373,27 +375,27 @@ int mGetShaderLocationAttrib(Shader *shader, const char * attribName)
 
 void mSetShaderValue(Shader *shader, int locIndex, const void * value, int uniformType)
 {
-	return SetShaderValue(*shader, locIndex, value, uniformType);
+	SetShaderValue(*shader, locIndex, value, uniformType);
 }
 
 void mSetShaderValueV(Shader *shader, int locIndex, const void * value, int uniformType, int count)
 {
-	return SetShaderValueV(*shader, locIndex, value, uniformType, count);
+	SetShaderValueV(*shader, locIndex, value, uniformType, count);
 }
 
 void mSetShaderValueMatrix(Shader *shader, int locIndex, Matrix *mat)
 {
-	return SetShaderValueMatrix(*shader, locIndex, *mat);
+	SetShaderValueMatrix(*shader, locIndex, *mat);
 }
 
 void mSetShaderValueTexture(Shader *shader, int locIndex, Texture2D *texture)
 {
-	return SetShaderValueTexture(*shader, locIndex, *texture);
+	SetShaderValueTexture(*shader, locIndex, *texture);
 }
 
 void mUnloadShader(Shader *shader)
 {
-	return UnloadShader(*shader);
+	UnloadShader(*shader);
 }
 
 void mGetMouseRay(Ray *out, Vector2 *mousePosition, Camera3D *camera)
@@ -433,7 +435,7 @@ void mGetScreenToWorld2D(Vector2 *out, Vector2 *position, Camera2D *camera)
 
 void mSetTargetFPS(int fps)
 {
-	return SetTargetFPS(fps);
+	SetTargetFPS(fps);
 }
 
 int mGetFPS(void)
@@ -458,37 +460,37 @@ int mGetRandomValue(int min, int max)
 
 void mSetRandomSeed(unsigned int seed)
 {
-	return SetRandomSeed(seed);
+	SetRandomSeed(seed);
 }
 
 void mTakeScreenshot(const char * fileName)
 {
-	return TakeScreenshot(fileName);
+	TakeScreenshot(fileName);
 }
 
 void mSetTraceLogLevel(int logLevel)
 {
-	return SetTraceLogLevel(logLevel);
+	SetTraceLogLevel(logLevel);
 }
 
 void mSetLoadFileDataCallback(LoadFileDataCallback *callback)
 {
-	return SetLoadFileDataCallback(*callback);
+	SetLoadFileDataCallback(*callback);
 }
 
 void mSetSaveFileDataCallback(SaveFileDataCallback *callback)
 {
-	return SetSaveFileDataCallback(*callback);
+	SetSaveFileDataCallback(*callback);
 }
 
 void mSetLoadFileTextCallback(LoadFileTextCallback *callback)
 {
-	return SetLoadFileTextCallback(*callback);
+	SetLoadFileTextCallback(*callback);
 }
 
 void mSetSaveFileTextCallback(SaveFileTextCallback *callback)
 {
-	return SetSaveFileTextCallback(*callback);
+	SetSaveFileTextCallback(*callback);
 }
 
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite)
@@ -503,7 +505,7 @@ char * mLoadFileText(const char * fileName)
 
 void mUnloadFileText(char * text)
 {
-	return UnloadFileText(text);
+	UnloadFileText(text);
 }
 
 bool mSaveFileText(const char * fileName, char * text)
@@ -568,7 +570,7 @@ const char * mGetApplicationDirectory(void)
 
 void mClearDirectoryFiles(void)
 {
-	return ClearDirectoryFiles();
+	ClearDirectoryFiles();
 }
 
 bool mChangeDirectory(const char * dir)
@@ -583,7 +585,7 @@ bool mIsFileDropped(void)
 
 void mClearDroppedFiles(void)
 {
-	return ClearDroppedFiles();
+	ClearDroppedFiles();
 }
 
 long mGetFileModTime(const char * fileName)
@@ -623,7 +625,7 @@ int mLoadStorageValue(unsigned int position)
 
 void mOpenURL(const char * url)
 {
-	return OpenURL(url);
+	OpenURL(url);
 }
 
 bool mIsKeyPressed(int key)
@@ -648,7 +650,7 @@ bool mIsKeyUp(int key)
 
 void mSetExitKey(int key)
 {
-	return SetExitKey(key);
+	SetExitKey(key);
 }
 
 int mGetKeyPressed(void)
@@ -753,17 +755,17 @@ void mGetMouseDelta(Vector2 *out)
 
 void mSetMousePosition(int x, int y)
 {
-	return SetMousePosition(x, y);
+	SetMousePosition(x, y);
 }
 
 void mSetMouseOffset(int offsetX, int offsetY)
 {
-	return SetMouseOffset(offsetX, offsetY);
+	SetMouseOffset(offsetX, offsetY);
 }
 
 void mSetMouseScale(float scaleX, float scaleY)
 {
-	return SetMouseScale(scaleX, scaleY);
+	SetMouseScale(scaleX, scaleY);
 }
 
 float mGetMouseWheelMove(void)
@@ -773,7 +775,7 @@ float mGetMouseWheelMove(void)
 
 void mSetMouseCursor(int cursor)
 {
-	return SetMouseCursor(cursor);
+	SetMouseCursor(cursor);
 }
 
 int mGetTouchX(void)
@@ -803,7 +805,7 @@ int mGetTouchPointCount(void)
 
 void mSetGesturesEnabled(unsigned int flags)
 {
-	return SetGesturesEnabled(flags);
+	SetGesturesEnabled(flags);
 }
 
 bool mIsGestureDetected(int gesture)
@@ -843,222 +845,222 @@ float mGetGesturePinchAngle(void)
 
 void mSetCameraMode(Camera3D *camera, int mode)
 {
-	return SetCameraMode(*camera, mode);
+	SetCameraMode(*camera, mode);
 }
 
 void mUpdateCamera(Camera * camera)
 {
-	return UpdateCamera(camera);
+	UpdateCamera(camera);
 }
 
 void mSetCameraPanControl(int keyPan)
 {
-	return SetCameraPanControl(keyPan);
+	SetCameraPanControl(keyPan);
 }
 
 void mSetCameraAltControl(int keyAlt)
 {
-	return SetCameraAltControl(keyAlt);
+	SetCameraAltControl(keyAlt);
 }
 
 void mSetCameraSmoothZoomControl(int keySmoothZoom)
 {
-	return SetCameraSmoothZoomControl(keySmoothZoom);
+	SetCameraSmoothZoomControl(keySmoothZoom);
 }
 
 void mSetCameraMoveControls(int keyFront, int keyBack, int keyRight, int keyLeft, int keyUp, int keyDown)
 {
-	return SetCameraMoveControls(keyFront, keyBack, keyRight, keyLeft, keyUp, keyDown);
+	SetCameraMoveControls(keyFront, keyBack, keyRight, keyLeft, keyUp, keyDown);
 }
 
 void mSetShapesTexture(Texture2D *texture, Rectangle *source)
 {
-	return SetShapesTexture(*texture, *source);
+	SetShapesTexture(*texture, *source);
 }
 
 void mDrawPixel(int posX, int posY, Color *color)
 {
-	return DrawPixel(posX, posY, *color);
+	DrawPixel(posX, posY, *color);
 }
 
 void mDrawPixelV(Vector2 *position, Color *color)
 {
-	return DrawPixelV(*position, *color);
+	DrawPixelV(*position, *color);
 }
 
 void mDrawLine(int startPosX, int startPosY, int endPosX, int endPosY, Color *color)
 {
-	return DrawLine(startPosX, startPosY, endPosX, endPosY, *color);
+	DrawLine(startPosX, startPosY, endPosX, endPosY, *color);
 }
 
 void mDrawLineV(Vector2 *startPos, Vector2 *endPos, Color *color)
 {
-	return DrawLineV(*startPos, *endPos, *color);
+	DrawLineV(*startPos, *endPos, *color);
 }
 
 void mDrawLineEx(Vector2 *startPos, Vector2 *endPos, float thick, Color *color)
 {
-	return DrawLineEx(*startPos, *endPos, thick, *color);
+	DrawLineEx(*startPos, *endPos, thick, *color);
 }
 
 void mDrawLineBezier(Vector2 *startPos, Vector2 *endPos, float thick, Color *color)
 {
-	return DrawLineBezier(*startPos, *endPos, thick, *color);
+	DrawLineBezier(*startPos, *endPos, thick, *color);
 }
 
 void mDrawLineBezierQuad(Vector2 *startPos, Vector2 *endPos, Vector2 *controlPos, float thick, Color *color)
 {
-	return DrawLineBezierQuad(*startPos, *endPos, *controlPos, thick, *color);
+	DrawLineBezierQuad(*startPos, *endPos, *controlPos, thick, *color);
 }
 
 void mDrawLineBezierCubic(Vector2 *startPos, Vector2 *endPos, Vector2 *startControlPos, Vector2 *endControlPos, float thick, Color *color)
 {
-	return DrawLineBezierCubic(*startPos, *endPos, *startControlPos, *endControlPos, thick, *color);
+	DrawLineBezierCubic(*startPos, *endPos, *startControlPos, *endControlPos, thick, *color);
 }
 
 void mDrawLineStrip(Vector2 * points, int pointCount, Color *color)
 {
-	return DrawLineStrip(points, pointCount, *color);
+	DrawLineStrip(points, pointCount, *color);
 }
 
 void mDrawCircle(int centerX, int centerY, float radius, Color *color)
 {
-	return DrawCircle(centerX, centerY, radius, *color);
+	DrawCircle(centerX, centerY, radius, *color);
 }
 
 void mDrawCircleSector(Vector2 *center, float radius, float startAngle, float endAngle, int segments, Color *color)
 {
-	return DrawCircleSector(*center, radius, startAngle, endAngle, segments, *color);
+	DrawCircleSector(*center, radius, startAngle, endAngle, segments, *color);
 }
 
 void mDrawCircleSectorLines(Vector2 *center, float radius, float startAngle, float endAngle, int segments, Color *color)
 {
-	return DrawCircleSectorLines(*center, radius, startAngle, endAngle, segments, *color);
+	DrawCircleSectorLines(*center, radius, startAngle, endAngle, segments, *color);
 }
 
 void mDrawCircleGradient(int centerX, int centerY, float radius, Color *color1, Color *color2)
 {
-	return DrawCircleGradient(centerX, centerY, radius, *color1, *color2);
+	DrawCircleGradient(centerX, centerY, radius, *color1, *color2);
 }
 
 void mDrawCircleV(Vector2 *center, float radius, Color *color)
 {
-	return DrawCircleV(*center, radius, *color);
+	DrawCircleV(*center, radius, *color);
 }
 
 void mDrawCircleLines(int centerX, int centerY, float radius, Color *color)
 {
-	return DrawCircleLines(centerX, centerY, radius, *color);
+	DrawCircleLines(centerX, centerY, radius, *color);
 }
 
 void mDrawEllipse(int centerX, int centerY, float radiusH, float radiusV, Color *color)
 {
-	return DrawEllipse(centerX, centerY, radiusH, radiusV, *color);
+	DrawEllipse(centerX, centerY, radiusH, radiusV, *color);
 }
 
 void mDrawEllipseLines(int centerX, int centerY, float radiusH, float radiusV, Color *color)
 {
-	return DrawEllipseLines(centerX, centerY, radiusH, radiusV, *color);
+	DrawEllipseLines(centerX, centerY, radiusH, radiusV, *color);
 }
 
 void mDrawRing(Vector2 *center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color *color)
 {
-	return DrawRing(*center, innerRadius, outerRadius, startAngle, endAngle, segments, *color);
+	DrawRing(*center, innerRadius, outerRadius, startAngle, endAngle, segments, *color);
 }
 
 void mDrawRingLines(Vector2 *center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color *color)
 {
-	return DrawRingLines(*center, innerRadius, outerRadius, startAngle, endAngle, segments, *color);
+	DrawRingLines(*center, innerRadius, outerRadius, startAngle, endAngle, segments, *color);
 }
 
 void mDrawRectangle(int posX, int posY, int width, int height, Color *color)
 {
-	return DrawRectangle(posX, posY, width, height, *color);
+	DrawRectangle(posX, posY, width, height, *color);
 }
 
 void mDrawRectangleV(Vector2 *position, Vector2 *size, Color *color)
 {
-	return DrawRectangleV(*position, *size, *color);
+	DrawRectangleV(*position, *size, *color);
 }
 
 void mDrawRectangleRec(Rectangle *rec, Color *color)
 {
-	return DrawRectangleRec(*rec, *color);
+	DrawRectangleRec(*rec, *color);
 }
 
 void mDrawRectanglePro(Rectangle *rec, Vector2 *origin, float rotation, Color *color)
 {
-	return DrawRectanglePro(*rec, *origin, rotation, *color);
+	DrawRectanglePro(*rec, *origin, rotation, *color);
 }
 
 void mDrawRectangleGradientV(int posX, int posY, int width, int height, Color *color1, Color *color2)
 {
-	return DrawRectangleGradientV(posX, posY, width, height, *color1, *color2);
+	DrawRectangleGradientV(posX, posY, width, height, *color1, *color2);
 }
 
 void mDrawRectangleGradientH(int posX, int posY, int width, int height, Color *color1, Color *color2)
 {
-	return DrawRectangleGradientH(posX, posY, width, height, *color1, *color2);
+	DrawRectangleGradientH(posX, posY, width, height, *color1, *color2);
 }
 
 void mDrawRectangleGradientEx(Rectangle *rec, Color *col1, Color *col2, Color *col3, Color *col4)
 {
-	return DrawRectangleGradientEx(*rec, *col1, *col2, *col3, *col4);
+	DrawRectangleGradientEx(*rec, *col1, *col2, *col3, *col4);
 }
 
 void mDrawRectangleLines(int posX, int posY, int width, int height, Color *color)
 {
-	return DrawRectangleLines(posX, posY, width, height, *color);
+	DrawRectangleLines(posX, posY, width, height, *color);
 }
 
 void mDrawRectangleLinesEx(Rectangle *rec, float lineThick, Color *color)
 {
-	return DrawRectangleLinesEx(*rec, lineThick, *color);
+	DrawRectangleLinesEx(*rec, lineThick, *color);
 }
 
 void mDrawRectangleRounded(Rectangle *rec, float roundness, int segments, Color *color)
 {
-	return DrawRectangleRounded(*rec, roundness, segments, *color);
+	DrawRectangleRounded(*rec, roundness, segments, *color);
 }
 
 void mDrawRectangleRoundedLines(Rectangle *rec, float roundness, int segments, float lineThick, Color *color)
 {
-	return DrawRectangleRoundedLines(*rec, roundness, segments, lineThick, *color);
+	DrawRectangleRoundedLines(*rec, roundness, segments, lineThick, *color);
 }
 
 void mDrawTriangle(Vector2 *v1, Vector2 *v2, Vector2 *v3, Color *color)
 {
-	return DrawTriangle(*v1, *v2, *v3, *color);
+	DrawTriangle(*v1, *v2, *v3, *color);
 }
 
 void mDrawTriangleLines(Vector2 *v1, Vector2 *v2, Vector2 *v3, Color *color)
 {
-	return DrawTriangleLines(*v1, *v2, *v3, *color);
+	DrawTriangleLines(*v1, *v2, *v3, *color);
 }
 
 void mDrawTriangleFan(Vector2 * points, int pointCount, Color *color)
 {
-	return DrawTriangleFan(points, pointCount, *color);
+	DrawTriangleFan(points, pointCount, *color);
 }
 
 void mDrawTriangleStrip(Vector2 * points, int pointCount, Color *color)
 {
-	return DrawTriangleStrip(points, pointCount, *color);
+	DrawTriangleStrip(points, pointCount, *color);
 }
 
 void mDrawPoly(Vector2 *center, int sides, float radius, float rotation, Color *color)
 {
-	return DrawPoly(*center, sides, radius, rotation, *color);
+	DrawPoly(*center, sides, radius, rotation, *color);
 }
 
 void mDrawPolyLines(Vector2 *center, int sides, float radius, float rotation, Color *color)
 {
-	return DrawPolyLines(*center, sides, radius, rotation, *color);
+	DrawPolyLines(*center, sides, radius, rotation, *color);
 }
 
 void mDrawPolyLinesEx(Vector2 *center, int sides, float radius, float rotation, float lineThick, Color *color)
 {
-	return DrawPolyLinesEx(*center, sides, radius, rotation, lineThick, *color);
+	DrawPolyLinesEx(*center, sides, radius, rotation, lineThick, *color);
 }
 
 bool mCheckCollisionRecs(Rectangle *rec1, Rectangle *rec2)
@@ -1138,7 +1140,7 @@ void mLoadImageFromScreen(Image *out)
 
 void mUnloadImage(Image *image)
 {
-	return UnloadImage(*image);
+	UnloadImage(*image);
 }
 
 bool mExportImage(Image *image, const char * fileName)
@@ -1208,112 +1210,112 @@ void mImageTextEx(Image *out, Font *font, const char * text, float fontSize, flo
 
 void mImageFormat(Image * image, int newFormat)
 {
-	return ImageFormat(image, newFormat);
+	ImageFormat(image, newFormat);
 }
 
 void mImageToPOT(Image * image, Color *fill)
 {
-	return ImageToPOT(image, *fill);
+	ImageToPOT(image, *fill);
 }
 
 void mImageCrop(Image * image, Rectangle *crop)
 {
-	return ImageCrop(image, *crop);
+	ImageCrop(image, *crop);
 }
 
 void mImageAlphaCrop(Image * image, float threshold)
 {
-	return ImageAlphaCrop(image, threshold);
+	ImageAlphaCrop(image, threshold);
 }
 
 void mImageAlphaClear(Image * image, Color *color, float threshold)
 {
-	return ImageAlphaClear(image, *color, threshold);
+	ImageAlphaClear(image, *color, threshold);
 }
 
 void mImageAlphaMask(Image * image, Image *alphaMask)
 {
-	return ImageAlphaMask(image, *alphaMask);
+	ImageAlphaMask(image, *alphaMask);
 }
 
 void mImageAlphaPremultiply(Image * image)
 {
-	return ImageAlphaPremultiply(image);
+	ImageAlphaPremultiply(image);
 }
 
 void mImageResize(Image * image, int newWidth, int newHeight)
 {
-	return ImageResize(image, newWidth, newHeight);
+	ImageResize(image, newWidth, newHeight);
 }
 
 void mImageResizeNN(Image * image, int newWidth, int newHeight)
 {
-	return ImageResizeNN(image, newWidth, newHeight);
+	ImageResizeNN(image, newWidth, newHeight);
 }
 
 void mImageResizeCanvas(Image * image, int newWidth, int newHeight, int offsetX, int offsetY, Color *fill)
 {
-	return ImageResizeCanvas(image, newWidth, newHeight, offsetX, offsetY, *fill);
+	ImageResizeCanvas(image, newWidth, newHeight, offsetX, offsetY, *fill);
 }
 
 void mImageMipmaps(Image * image)
 {
-	return ImageMipmaps(image);
+	ImageMipmaps(image);
 }
 
 void mImageDither(Image * image, int rBpp, int gBpp, int bBpp, int aBpp)
 {
-	return ImageDither(image, rBpp, gBpp, bBpp, aBpp);
+	ImageDither(image, rBpp, gBpp, bBpp, aBpp);
 }
 
 void mImageFlipVertical(Image * image)
 {
-	return ImageFlipVertical(image);
+	ImageFlipVertical(image);
 }
 
 void mImageFlipHorizontal(Image * image)
 {
-	return ImageFlipHorizontal(image);
+	ImageFlipHorizontal(image);
 }
 
 void mImageRotateCW(Image * image)
 {
-	return ImageRotateCW(image);
+	ImageRotateCW(image);
 }
 
 void mImageRotateCCW(Image * image)
 {
-	return ImageRotateCCW(image);
+	ImageRotateCCW(image);
 }
 
 void mImageColorTint(Image * image, Color *color)
 {
-	return ImageColorTint(image, *color);
+	ImageColorTint(image, *color);
 }
 
 void mImageColorInvert(Image * image)
 {
-	return ImageColorInvert(image);
+	ImageColorInvert(image);
 }
 
 void mImageColorGrayscale(Image * image)
 {
-	return ImageColorGrayscale(image);
+	ImageColorGrayscale(image);
 }
 
 void mImageColorContrast(Image * image, float contrast)
 {
-	return ImageColorContrast(image, contrast);
+	ImageColorContrast(image, contrast);
 }
 
 void mImageColorBrightness(Image * image, int brightness)
 {
-	return ImageColorBrightness(image, brightness);
+	ImageColorBrightness(image, brightness);
 }
 
 void mImageColorReplace(Image * image, Color *color, Color *replace)
 {
-	return ImageColorReplace(image, *color, *replace);
+	ImageColorReplace(image, *color, *replace);
 }
 
 Color * mLoadImageColors(Image *image)
@@ -1328,12 +1330,12 @@ Color * mLoadImagePalette(Image *image, int maxPaletteSize, int * colorCount)
 
 void mUnloadImageColors(Color * colors)
 {
-	return UnloadImageColors(colors);
+	UnloadImageColors(colors);
 }
 
 void mUnloadImagePalette(Color * colors)
 {
-	return UnloadImagePalette(colors);
+	UnloadImagePalette(colors);
 }
 
 void mGetImageAlphaBorder(Rectangle *out, Image *image, float threshold)
@@ -1348,72 +1350,72 @@ void mGetImageColor(Color *out, Image *image, int x, int y)
 
 void mImageClearBackground(Image * dst, Color *color)
 {
-	return ImageClearBackground(dst, *color);
+	ImageClearBackground(dst, *color);
 }
 
 void mImageDrawPixel(Image * dst, int posX, int posY, Color *color)
 {
-	return ImageDrawPixel(dst, posX, posY, *color);
+	ImageDrawPixel(dst, posX, posY, *color);
 }
 
 void mImageDrawPixelV(Image * dst, Vector2 *position, Color *color)
 {
-	return ImageDrawPixelV(dst, *position, *color);
+	ImageDrawPixelV(dst, *position, *color);
 }
 
 void mImageDrawLine(Image * dst, int startPosX, int startPosY, int endPosX, int endPosY, Color *color)
 {
-	return ImageDrawLine(dst, startPosX, startPosY, endPosX, endPosY, *color);
+	ImageDrawLine(dst, startPosX, startPosY, endPosX, endPosY, *color);
 }
 
 void mImageDrawLineV(Image * dst, Vector2 *start, Vector2 *end, Color *color)
 {
-	return ImageDrawLineV(dst, *start, *end, *color);
+	ImageDrawLineV(dst, *start, *end, *color);
 }
 
 void mImageDrawCircle(Image * dst, int centerX, int centerY, int radius, Color *color)
 {
-	return ImageDrawCircle(dst, centerX, centerY, radius, *color);
+	ImageDrawCircle(dst, centerX, centerY, radius, *color);
 }
 
 void mImageDrawCircleV(Image * dst, Vector2 *center, int radius, Color *color)
 {
-	return ImageDrawCircleV(dst, *center, radius, *color);
+	ImageDrawCircleV(dst, *center, radius, *color);
 }
 
 void mImageDrawRectangle(Image * dst, int posX, int posY, int width, int height, Color *color)
 {
-	return ImageDrawRectangle(dst, posX, posY, width, height, *color);
+	ImageDrawRectangle(dst, posX, posY, width, height, *color);
 }
 
 void mImageDrawRectangleV(Image * dst, Vector2 *position, Vector2 *size, Color *color)
 {
-	return ImageDrawRectangleV(dst, *position, *size, *color);
+	ImageDrawRectangleV(dst, *position, *size, *color);
 }
 
 void mImageDrawRectangleRec(Image * dst, Rectangle *rec, Color *color)
 {
-	return ImageDrawRectangleRec(dst, *rec, *color);
+	ImageDrawRectangleRec(dst, *rec, *color);
 }
 
 void mImageDrawRectangleLines(Image * dst, Rectangle *rec, int thick, Color *color)
 {
-	return ImageDrawRectangleLines(dst, *rec, thick, *color);
+	ImageDrawRectangleLines(dst, *rec, thick, *color);
 }
 
 void mImageDraw(Image * dst, Image *src, Rectangle *srcRec, Rectangle *dstRec, Color *tint)
 {
-	return ImageDraw(dst, *src, *srcRec, *dstRec, *tint);
+	ImageDraw(dst, *src, *srcRec, *dstRec, *tint);
 }
 
 void mImageDrawText(Image * dst, const char * text, int posX, int posY, int fontSize, Color *color)
 {
-	return ImageDrawText(dst, text, posX, posY, fontSize, *color);
+	ImageDrawText(dst, text, posX, posY, fontSize, *color);
 }
 
 void mImageDrawTextEx(Image * dst, Font *font, const char * text, Vector2 *position, float fontSize, float spacing, Color *tint)
 {
-	return ImageDrawTextEx(dst, *font, text, *position, fontSize, spacing, *tint);
+	ImageDrawTextEx(dst, *font, text, *position, fontSize, spacing, *tint);
 }
 
 void mLoadTexture(Texture2D *out, const char * fileName)
@@ -1438,82 +1440,82 @@ void mLoadRenderTexture(RenderTexture2D *out, int width, int height)
 
 void mUnloadTexture(Texture2D *texture)
 {
-	return UnloadTexture(*texture);
+	UnloadTexture(*texture);
 }
 
 void mUnloadRenderTexture(RenderTexture2D *target)
 {
-	return UnloadRenderTexture(*target);
+	UnloadRenderTexture(*target);
 }
 
 void mUpdateTexture(Texture2D *texture, const void * pixels)
 {
-	return UpdateTexture(*texture, pixels);
+	UpdateTexture(*texture, pixels);
 }
 
 void mUpdateTextureRec(Texture2D *texture, Rectangle *rec, const void * pixels)
 {
-	return UpdateTextureRec(*texture, *rec, pixels);
+	UpdateTextureRec(*texture, *rec, pixels);
 }
 
 void mGenTextureMipmaps(Texture2D * texture)
 {
-	return GenTextureMipmaps(texture);
+	GenTextureMipmaps(texture);
 }
 
 void mSetTextureFilter(Texture2D *texture, int filter)
 {
-	return SetTextureFilter(*texture, filter);
+	SetTextureFilter(*texture, filter);
 }
 
 void mSetTextureWrap(Texture2D *texture, int wrap)
 {
-	return SetTextureWrap(*texture, wrap);
+	SetTextureWrap(*texture, wrap);
 }
 
 void mDrawTexture(Texture2D *texture, int posX, int posY, Color *tint)
 {
-	return DrawTexture(*texture, posX, posY, *tint);
+	DrawTexture(*texture, posX, posY, *tint);
 }
 
 void mDrawTextureV(Texture2D *texture, Vector2 *position, Color *tint)
 {
-	return DrawTextureV(*texture, *position, *tint);
+	DrawTextureV(*texture, *position, *tint);
 }
 
 void mDrawTextureEx(Texture2D *texture, Vector2 *position, float rotation, float scale, Color *tint)
 {
-	return DrawTextureEx(*texture, *position, rotation, scale, *tint);
+	DrawTextureEx(*texture, *position, rotation, scale, *tint);
 }
 
 void mDrawTextureRec(Texture2D *texture, Rectangle *source, Vector2 *position, Color *tint)
 {
-	return DrawTextureRec(*texture, *source, *position, *tint);
+	DrawTextureRec(*texture, *source, *position, *tint);
 }
 
 void mDrawTextureQuad(Texture2D *texture, Vector2 *tiling, Vector2 *offset, Rectangle *quad, Color *tint)
 {
-	return DrawTextureQuad(*texture, *tiling, *offset, *quad, *tint);
+	DrawTextureQuad(*texture, *tiling, *offset, *quad, *tint);
 }
 
 void mDrawTextureTiled(Texture2D *texture, Rectangle *source, Rectangle *dest, Vector2 *origin, float rotation, float scale, Color *tint)
 {
-	return DrawTextureTiled(*texture, *source, *dest, *origin, rotation, scale, *tint);
+	DrawTextureTiled(*texture, *source, *dest, *origin, rotation, scale, *tint);
 }
 
 void mDrawTexturePro(Texture2D *texture, Rectangle *source, Rectangle *dest, Vector2 *origin, float rotation, Color *tint)
 {
-	return DrawTexturePro(*texture, *source, *dest, *origin, rotation, *tint);
+	DrawTexturePro(*texture, *source, *dest, *origin, rotation, *tint);
 }
 
 void mDrawTextureNPatch(Texture2D *texture, NPatchInfo *nPatchInfo, Rectangle *dest, Vector2 *origin, float rotation, Color *tint)
 {
-	return DrawTextureNPatch(*texture, *nPatchInfo, *dest, *origin, rotation, *tint);
+	DrawTextureNPatch(*texture, *nPatchInfo, *dest, *origin, rotation, *tint);
 }
 
 void mDrawTexturePoly(Texture2D *texture, Vector2 *center, Vector2 * points, Vector2 * texcoords, int pointCount, Color *tint)
 {
-	return DrawTexturePoly(*texture, *center, points, texcoords, pointCount, *tint);
+	DrawTexturePoly(*texture, *center, points, texcoords, pointCount, *tint);
 }
 
 void mFade(Color *out, Color *color, float alpha)
@@ -1568,7 +1570,7 @@ void mGetPixelColor(Color *out, void * srcPtr, int format)
 
 void mSetPixelColor(void * dstPtr, Color *color, int format)
 {
-	return SetPixelColor(dstPtr, *color, format);
+	SetPixelColor(dstPtr, *color, format);
 }
 
 int mGetPixelDataSize(int width, int height, int format)
@@ -1608,12 +1610,12 @@ GlyphInfo * mLoadFontData(const unsigned char * fileData, int dataSize, int font
 
 void mUnloadFontData(GlyphInfo * chars, int glyphCount)
 {
-	return UnloadFontData(chars, glyphCount);
+	UnloadFontData(chars, glyphCount);
 }
 
 void mUnloadFont(Font *font)
 {
-	return UnloadFont(*font);
+	UnloadFont(*font);
 }
 
 bool mExportFontAsCode(Font *font, const char * fileName)
@@ -1623,32 +1625,32 @@ bool mExportFontAsCode(Font *font, const char * fileName)
 
 void mDrawFPS(int posX, int posY)
 {
-	return DrawFPS(posX, posY);
+	DrawFPS(posX, posY);
 }
 
 void mDrawText(const char * text, int posX, int posY, int fontSize, Color *color)
 {
-	return DrawText(text, posX, posY, fontSize, *color);
+	DrawText(text, posX, posY, fontSize, *color);
 }
 
 void mDrawTextEx(Font *font, const char * text, Vector2 *position, float fontSize, float spacing, Color *tint)
 {
-	return DrawTextEx(*font, text, *position, fontSize, spacing, *tint);
+	DrawTextEx(*font, text, *position, fontSize, spacing, *tint);
 }
 
 void mDrawTextPro(Font *font, const char * text, Vector2 *position, Vector2 *origin, float rotation, float fontSize, float spacing, Color *tint)
 {
-	return DrawTextPro(*font, text, *position, *origin, rotation, fontSize, spacing, *tint);
+	DrawTextPro(*font, text, *position, *origin, rotation, fontSize, spacing, *tint);
 }
 
 void mDrawTextCodepoint(Font *font, int codepoint, Vector2 *position, float fontSize, Color *tint)
 {
-	return DrawTextCodepoint(*font, codepoint, *position, fontSize, *tint);
+	DrawTextCodepoint(*font, codepoint, *position, fontSize, *tint);
 }
 
 void mDrawTextCodepoints(Font *font, const int * codepoints, int count, Vector2 *position, float fontSize, float spacing, Color *tint)
 {
-	return DrawTextCodepoints(*font, codepoints, count, *position, fontSize, spacing, *tint);
+	DrawTextCodepoints(*font, codepoints, count, *position, fontSize, spacing, *tint);
 }
 
 int mMeasureText(const char * text, int fontSize)
@@ -1683,7 +1685,7 @@ int * mLoadCodepoints(const char * text, int * count)
 
 void mUnloadCodepoints(int * codepoints)
 {
-	return UnloadCodepoints(codepoints);
+	UnloadCodepoints(codepoints);
 }
 
 int mGetCodepointCount(const char * text)
@@ -1763,107 +1765,107 @@ int mTextToInteger(const char * text)
 
 void mDrawLine3D(Vector3 *startPos, Vector3 *endPos, Color *color)
 {
-	return DrawLine3D(*startPos, *endPos, *color);
+	DrawLine3D(*startPos, *endPos, *color);
 }
 
 void mDrawPoint3D(Vector3 *position, Color *color)
 {
-	return DrawPoint3D(*position, *color);
+	DrawPoint3D(*position, *color);
 }
 
 void mDrawCircle3D(Vector3 *center, float radius, Vector3 *rotationAxis, float rotationAngle, Color *color)
 {
-	return DrawCircle3D(*center, radius, *rotationAxis, rotationAngle, *color);
+	DrawCircle3D(*center, radius, *rotationAxis, rotationAngle, *color);
 }
 
 void mDrawTriangle3D(Vector3 *v1, Vector3 *v2, Vector3 *v3, Color *color)
 {
-	return DrawTriangle3D(*v1, *v2, *v3, *color);
+	DrawTriangle3D(*v1, *v2, *v3, *color);
 }
 
 void mDrawTriangleStrip3D(Vector3 * points, int pointCount, Color *color)
 {
-	return DrawTriangleStrip3D(points, pointCount, *color);
+	DrawTriangleStrip3D(points, pointCount, *color);
 }
 
 void mDrawCube(Vector3 *position, float width, float height, float length, Color *color)
 {
-	return DrawCube(*position, width, height, length, *color);
+	DrawCube(*position, width, height, length, *color);
 }
 
 void mDrawCubeV(Vector3 *position, Vector3 *size, Color *color)
 {
-	return DrawCubeV(*position, *size, *color);
+	DrawCubeV(*position, *size, *color);
 }
 
 void mDrawCubeWires(Vector3 *position, float width, float height, float length, Color *color)
 {
-	return DrawCubeWires(*position, width, height, length, *color);
+	DrawCubeWires(*position, width, height, length, *color);
 }
 
 void mDrawCubeWiresV(Vector3 *position, Vector3 *size, Color *color)
 {
-	return DrawCubeWiresV(*position, *size, *color);
+	DrawCubeWiresV(*position, *size, *color);
 }
 
 void mDrawCubeTexture(Texture2D *texture, Vector3 *position, float width, float height, float length, Color *color)
 {
-	return DrawCubeTexture(*texture, *position, width, height, length, *color);
+	DrawCubeTexture(*texture, *position, width, height, length, *color);
 }
 
 void mDrawCubeTextureRec(Texture2D *texture, Rectangle *source, Vector3 *position, float width, float height, float length, Color *color)
 {
-	return DrawCubeTextureRec(*texture, *source, *position, width, height, length, *color);
+	DrawCubeTextureRec(*texture, *source, *position, width, height, length, *color);
 }
 
 void mDrawSphere(Vector3 *centerPos, float radius, Color *color)
 {
-	return DrawSphere(*centerPos, radius, *color);
+	DrawSphere(*centerPos, radius, *color);
 }
 
 void mDrawSphereEx(Vector3 *centerPos, float radius, int rings, int slices, Color *color)
 {
-	return DrawSphereEx(*centerPos, radius, rings, slices, *color);
+	DrawSphereEx(*centerPos, radius, rings, slices, *color);
 }
 
 void mDrawSphereWires(Vector3 *centerPos, float radius, int rings, int slices, Color *color)
 {
-	return DrawSphereWires(*centerPos, radius, rings, slices, *color);
+	DrawSphereWires(*centerPos, radius, rings, slices, *color);
 }
 
 void mDrawCylinder(Vector3 *position, float radiusTop, float radiusBottom, float height, int slices, Color *color)
 {
-	return DrawCylinder(*position, radiusTop, radiusBottom, height, slices, *color);
+	DrawCylinder(*position, radiusTop, radiusBottom, height, slices, *color);
 }
 
 void mDrawCylinderEx(Vector3 *startPos, Vector3 *endPos, float startRadius, float endRadius, int sides, Color *color)
 {
-	return DrawCylinderEx(*startPos, *endPos, startRadius, endRadius, sides, *color);
+	DrawCylinderEx(*startPos, *endPos, startRadius, endRadius, sides, *color);
 }
 
 void mDrawCylinderWires(Vector3 *position, float radiusTop, float radiusBottom, float height, int slices, Color *color)
 {
-	return DrawCylinderWires(*position, radiusTop, radiusBottom, height, slices, *color);
+	DrawCylinderWires(*position, radiusTop, radiusBottom, height, slices, *color);
 }
 
 void mDrawCylinderWiresEx(Vector3 *startPos, Vector3 *endPos, float startRadius, float endRadius, int sides, Color *color)
 {
-	return DrawCylinderWiresEx(*startPos, *endPos, startRadius, endRadius, sides, *color);
+	DrawCylinderWiresEx(*startPos, *endPos, startRadius, endRadius, sides, *color);
 }
 
 void mDrawPlane(Vector3 *centerPos, Vector2 *size, Color *color)
 {
-	return DrawPlane(*centerPos, *size, *color);
+	DrawPlane(*centerPos, *size, *color);
 }
 
 void mDrawRay(Ray *ray, Color *color)
 {
-	return DrawRay(*ray, *color);
+	DrawRay(*ray, *color);
 }
 
 void mDrawGrid(int slices, float spacing)
 {
-	return DrawGrid(slices, spacing);
+	DrawGrid(slices, spacing);
 }
 
 void mLoadModel(Model *out, const char * fileName)
@@ -1878,12 +1880,12 @@ void mLoadModelFromMesh(Model *out, Mesh *mesh)
 
 void mUnloadModel(Model *model)
 {
-	return UnloadModel(*model);
+	UnloadModel(*model);
 }
 
 void mUnloadModelKeepMeshes(Model *model)
 {
-	return UnloadModelKeepMeshes(*model);
+	UnloadModelKeepMeshes(*model);
 }
 
 void mGetModelBoundingBox(BoundingBox *out, Model *model)
@@ -1893,67 +1895,67 @@ void mGetModelBoundingBox(BoundingBox *out, Model *model)
 
 void mDrawModel(Model *model, Vector3 *position, float scale, Color *tint)
 {
-	return DrawModel(*model, *position, scale, *tint);
+	DrawModel(*model, *position, scale, *tint);
 }
 
 void mDrawModelEx(Model *model, Vector3 *position, Vector3 *rotationAxis, float rotationAngle, Vector3 *scale, Color *tint)
 {
-	return DrawModelEx(*model, *position, *rotationAxis, rotationAngle, *scale, *tint);
+	DrawModelEx(*model, *position, *rotationAxis, rotationAngle, *scale, *tint);
 }
 
 void mDrawModelWires(Model *model, Vector3 *position, float scale, Color *tint)
 {
-	return DrawModelWires(*model, *position, scale, *tint);
+	DrawModelWires(*model, *position, scale, *tint);
 }
 
 void mDrawModelWiresEx(Model *model, Vector3 *position, Vector3 *rotationAxis, float rotationAngle, Vector3 *scale, Color *tint)
 {
-	return DrawModelWiresEx(*model, *position, *rotationAxis, rotationAngle, *scale, *tint);
+	DrawModelWiresEx(*model, *position, *rotationAxis, rotationAngle, *scale, *tint);
 }
 
 void mDrawBoundingBox(BoundingBox *box, Color *color)
 {
-	return DrawBoundingBox(*box, *color);
+	DrawBoundingBox(*box, *color);
 }
 
 void mDrawBillboard(Camera3D *camera, Texture2D *texture, Vector3 *position, float size, Color *tint)
 {
-	return DrawBillboard(*camera, *texture, *position, size, *tint);
+	DrawBillboard(*camera, *texture, *position, size, *tint);
 }
 
 void mDrawBillboardRec(Camera3D *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector2 *size, Color *tint)
 {
-	return DrawBillboardRec(*camera, *texture, *source, *position, *size, *tint);
+	DrawBillboardRec(*camera, *texture, *source, *position, *size, *tint);
 }
 
 void mDrawBillboardPro(Camera3D *camera, Texture2D *texture, Rectangle *source, Vector3 *position, Vector3 *up, Vector2 *size, Vector2 *origin, float rotation, Color *tint)
 {
-	return DrawBillboardPro(*camera, *texture, *source, *position, *up, *size, *origin, rotation, *tint);
+	DrawBillboardPro(*camera, *texture, *source, *position, *up, *size, *origin, rotation, *tint);
 }
 
 void mUploadMesh(Mesh * mesh, bool dynamic)
 {
-	return UploadMesh(mesh, dynamic);
+	UploadMesh(mesh, dynamic);
 }
 
 void mUpdateMeshBuffer(Mesh *mesh, int index, const void * data, int dataSize, int offset)
 {
-	return UpdateMeshBuffer(*mesh, index, data, dataSize, offset);
+	UpdateMeshBuffer(*mesh, index, data, dataSize, offset);
 }
 
 void mUnloadMesh(Mesh *mesh)
 {
-	return UnloadMesh(*mesh);
+	UnloadMesh(*mesh);
 }
 
 void mDrawMesh(Mesh *mesh, Material *material, Matrix *transform)
 {
-	return DrawMesh(*mesh, *material, *transform);
+	DrawMesh(*mesh, *material, *transform);
 }
 
 void mDrawMeshInstanced(Mesh *mesh, Material *material, const Matrix * transforms, int instances)
 {
-	return DrawMeshInstanced(*mesh, *material, transforms, instances);
+	DrawMeshInstanced(*mesh, *material, transforms, instances);
 }
 
 bool mExportMesh(Mesh *mesh, const char * fileName)
@@ -1968,12 +1970,12 @@ void mGetMeshBoundingBox(BoundingBox *out, Mesh *mesh)
 
 void mGenMeshTangents(Mesh * mesh)
 {
-	return GenMeshTangents(mesh);
+	GenMeshTangents(mesh);
 }
 
 void mGenMeshBinormals(Mesh * mesh)
 {
-	return GenMeshBinormals(mesh);
+	GenMeshBinormals(mesh);
 }
 
 void mGenMeshPoly(Mesh *out, int sides, float radius)
@@ -2043,17 +2045,17 @@ void mLoadMaterialDefault(Material *out)
 
 void mUnloadMaterial(Material *material)
 {
-	return UnloadMaterial(*material);
+	UnloadMaterial(*material);
 }
 
 void mSetMaterialTexture(Material * material, int mapType, Texture2D *texture)
 {
-	return SetMaterialTexture(material, mapType, *texture);
+	SetMaterialTexture(material, mapType, *texture);
 }
 
 void mSetModelMeshMaterial(Model * model, int meshId, int materialId)
 {
-	return SetModelMeshMaterial(model, meshId, materialId);
+	SetModelMeshMaterial(model, meshId, materialId);
 }
 
 ModelAnimation * mLoadModelAnimations(const char * fileName, unsigned int * animCount)
@@ -2063,17 +2065,17 @@ ModelAnimation * mLoadModelAnimations(const char * fileName, unsigned int * anim
 
 void mUpdateModelAnimation(Model *model, ModelAnimation *anim, int frame)
 {
-	return UpdateModelAnimation(*model, *anim, frame);
+	UpdateModelAnimation(*model, *anim, frame);
 }
 
 void mUnloadModelAnimation(ModelAnimation *anim)
 {
-	return UnloadModelAnimation(*anim);
+	UnloadModelAnimation(*anim);
 }
 
 void mUnloadModelAnimations(ModelAnimation * animations, unsigned int count)
 {
-	return UnloadModelAnimations(animations, count);
+	UnloadModelAnimations(animations, count);
 }
 
 bool mIsModelAnimationValid(Model *model, ModelAnimation *anim)
@@ -2123,12 +2125,12 @@ void mGetRayCollisionQuad(RayCollision *out, Ray *ray, Vector3 *p1, Vector3 *p2,
 
 void mInitAudioDevice(void)
 {
-	return InitAudioDevice();
+	InitAudioDevice();
 }
 
 void mCloseAudioDevice(void)
 {
-	return CloseAudioDevice();
+	CloseAudioDevice();
 }
 
 bool mIsAudioDeviceReady(void)
@@ -2138,7 +2140,7 @@ bool mIsAudioDeviceReady(void)
 
 void mSetMasterVolume(float volume)
 {
-	return SetMasterVolume(volume);
+	SetMasterVolume(volume);
 }
 
 void mLoadWave(Wave *out, const char * fileName)
@@ -2163,17 +2165,17 @@ void mLoadSoundFromWave(Sound *out, Wave *wave)
 
 void mUpdateSound(Sound *sound, const void * data, int sampleCount)
 {
-	return UpdateSound(*sound, data, sampleCount);
+	UpdateSound(*sound, data, sampleCount);
 }
 
 void mUnloadWave(Wave *wave)
 {
-	return UnloadWave(*wave);
+	UnloadWave(*wave);
 }
 
 void mUnloadSound(Sound *sound)
 {
-	return UnloadSound(*sound);
+	UnloadSound(*sound);
 }
 
 bool mExportWave(Wave *wave, const char * fileName)
@@ -2188,32 +2190,32 @@ bool mExportWaveAsCode(Wave *wave, const char * fileName)
 
 void mPlaySound(Sound *sound)
 {
-	return PlaySound(*sound);
+	PlaySound(*sound);
 }
 
 void mStopSound(Sound *sound)
 {
-	return StopSound(*sound);
+	StopSound(*sound);
 }
 
 void mPauseSound(Sound *sound)
 {
-	return PauseSound(*sound);
+	PauseSound(*sound);
 }
 
 void mResumeSound(Sound *sound)
 {
-	return ResumeSound(*sound);
+	ResumeSound(*sound);
 }
 
 void mPlaySoundMulti(Sound *sound)
 {
-	return PlaySoundMulti(*sound);
+	PlaySoundMulti(*sound);
 }
 
 void mStopSoundMulti(void)
 {
-	return StopSoundMulti();
+	StopSoundMulti();
 }
 
 int mGetSoundsPlaying(void)
@@ -2228,17 +2230,17 @@ bool mIsSoundPlaying(Sound *sound)
 
 void mSetSoundVolume(Sound *sound, float volume)
 {
-	return SetSoundVolume(*sound, volume);
+	SetSoundVolume(*sound, volume);
 }
 
 void mSetSoundPitch(Sound *sound, float pitch)
 {
-	return SetSoundPitch(*sound, pitch);
+	SetSoundPitch(*sound, pitch);
 }
 
 void mSetSoundPan(Sound *sound, float pan)
 {
-	return SetSoundPan(*sound, pan);
+	SetSoundPan(*sound, pan);
 }
 
 void mWaveCopy(Wave *out, Wave *wave)
@@ -2248,12 +2250,12 @@ void mWaveCopy(Wave *out, Wave *wave)
 
 void mWaveCrop(Wave * wave, int initSample, int finalSample)
 {
-	return WaveCrop(wave, initSample, finalSample);
+	WaveCrop(wave, initSample, finalSample);
 }
 
 void mWaveFormat(Wave * wave, int sampleRate, int sampleSize, int channels)
 {
-	return WaveFormat(wave, sampleRate, sampleSize, channels);
+	WaveFormat(wave, sampleRate, sampleSize, channels);
 }
 
 float * mLoadWaveSamples(Wave *wave)
@@ -2263,7 +2265,7 @@ float * mLoadWaveSamples(Wave *wave)
 
 void mUnloadWaveSamples(float * samples)
 {
-	return UnloadWaveSamples(samples);
+	UnloadWaveSamples(samples);
 }
 
 void mLoadMusicStream(Music *out, const char * fileName)
@@ -2278,12 +2280,12 @@ void mLoadMusicStreamFromMemory(Music *out, const char * fileType, const unsigne
 
 void mUnloadMusicStream(Music *music)
 {
-	return UnloadMusicStream(*music);
+	UnloadMusicStream(*music);
 }
 
 void mPlayMusicStream(Music *music)
 {
-	return PlayMusicStream(*music);
+	PlayMusicStream(*music);
 }
 
 bool mIsMusicStreamPlaying(Music *music)
@@ -2293,42 +2295,42 @@ bool mIsMusicStreamPlaying(Music *music)
 
 void mUpdateMusicStream(Music *music)
 {
-	return UpdateMusicStream(*music);
+	UpdateMusicStream(*music);
 }
 
 void mStopMusicStream(Music *music)
 {
-	return StopMusicStream(*music);
+	StopMusicStream(*music);
 }
 
 void mPauseMusicStream(Music *music)
 {
-	return PauseMusicStream(*music);
+	PauseMusicStream(*music);
 }
 
 void mResumeMusicStream(Music *music)
 {
-	return ResumeMusicStream(*music);
+	ResumeMusicStream(*music);
 }
 
 void mSeekMusicStream(Music *music, float position)
 {
-	return SeekMusicStream(*music, position);
+	SeekMusicStream(*music, position);
 }
 
 void mSetMusicVolume(Music *music, float volume)
 {
-	return SetMusicVolume(*music, volume);
+	SetMusicVolume(*music, volume);
 }
 
 void mSetMusicPitch(Music *music, float pitch)
 {
-	return SetMusicPitch(*music, pitch);
+	SetMusicPitch(*music, pitch);
 }
 
 void mSetMusicPan(Music *music, float pan)
 {
-	return SetMusicPan(*music, pan);
+	SetMusicPan(*music, pan);
 }
 
 float mGetMusicTimeLength(Music *music)
@@ -2348,12 +2350,12 @@ void mLoadAudioStream(AudioStream *out, unsigned int sampleRate, unsigned int sa
 
 void mUnloadAudioStream(AudioStream *stream)
 {
-	return UnloadAudioStream(*stream);
+	UnloadAudioStream(*stream);
 }
 
 void mUpdateAudioStream(AudioStream *stream, const void * data, int frameCount)
 {
-	return UpdateAudioStream(*stream, data, frameCount);
+	UpdateAudioStream(*stream, data, frameCount);
 }
 
 bool mIsAudioStreamProcessed(AudioStream *stream)
@@ -2363,17 +2365,17 @@ bool mIsAudioStreamProcessed(AudioStream *stream)
 
 void mPlayAudioStream(AudioStream *stream)
 {
-	return PlayAudioStream(*stream);
+	PlayAudioStream(*stream);
 }
 
 void mPauseAudioStream(AudioStream *stream)
 {
-	return PauseAudioStream(*stream);
+	PauseAudioStream(*stream);
 }
 
 void mResumeAudioStream(AudioStream *stream)
 {
-	return ResumeAudioStream(*stream);
+	ResumeAudioStream(*stream);
 }
 
 bool mIsAudioStreamPlaying(AudioStream *stream)
@@ -2383,42 +2385,752 @@ bool mIsAudioStreamPlaying(AudioStream *stream)
 
 void mStopAudioStream(AudioStream *stream)
 {
-	return StopAudioStream(*stream);
+	StopAudioStream(*stream);
 }
 
 void mSetAudioStreamVolume(AudioStream *stream, float volume)
 {
-	return SetAudioStreamVolume(*stream, volume);
+	SetAudioStreamVolume(*stream, volume);
 }
 
 void mSetAudioStreamPitch(AudioStream *stream, float pitch)
 {
-	return SetAudioStreamPitch(*stream, pitch);
+	SetAudioStreamPitch(*stream, pitch);
 }
 
 void mSetAudioStreamPan(AudioStream *stream, float pan)
 {
-	return SetAudioStreamPan(*stream, pan);
+	SetAudioStreamPan(*stream, pan);
 }
 
 void mSetAudioStreamBufferSizeDefault(int size)
 {
-	return SetAudioStreamBufferSizeDefault(size);
+	SetAudioStreamBufferSizeDefault(size);
 }
 
 void mSetAudioStreamCallback(AudioStream *stream, AudioCallback *callback)
 {
-	return SetAudioStreamCallback(*stream, *callback);
+	SetAudioStreamCallback(*stream, *callback);
 }
 
 void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor)
 {
-	return AttachAudioStreamProcessor(*stream, *processor);
+	AttachAudioStreamProcessor(*stream, *processor);
 }
 
 void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor)
 {
-	return DetachAudioStreamProcessor(*stream, *processor);
+	DetachAudioStreamProcessor(*stream, *processor);
+}
+
+void mrlMatrixMode(int mode)
+{
+	rlMatrixMode(mode);
+}
+
+void mrlPushMatrix(void)
+{
+	rlPushMatrix();
+}
+
+void mrlPopMatrix(void)
+{
+	rlPopMatrix();
+}
+
+void mrlLoadIdentity(void)
+{
+	rlLoadIdentity();
+}
+
+void mrlTranslatef(float x, float y, float z)
+{
+	rlTranslatef(x, y, z);
+}
+
+void mrlRotatef(float angle, float x, float y, float z)
+{
+	rlRotatef(angle, x, y, z);
+}
+
+void mrlScalef(float x, float y, float z)
+{
+	rlScalef(x, y, z);
+}
+
+void mrlMultMatrixf(float * matf)
+{
+	rlMultMatrixf(matf);
+}
+
+void mrlFrustum(double left, double right, double bottom, double top, double znear, double zfar)
+{
+	rlFrustum(left, right, bottom, top, znear, zfar);
+}
+
+void mrlOrtho(double left, double right, double bottom, double top, double znear, double zfar)
+{
+	rlOrtho(left, right, bottom, top, znear, zfar);
+}
+
+void mrlViewport(int x, int y, int width, int height)
+{
+	rlViewport(x, y, width, height);
+}
+
+void mrlBegin(int mode)
+{
+	rlBegin(mode);
+}
+
+void mrlEnd(void)
+{
+	rlEnd();
+}
+
+void mrlVertex2i(int x, int y)
+{
+	rlVertex2i(x, y);
+}
+
+void mrlVertex2f(float x, float y)
+{
+	rlVertex2f(x, y);
+}
+
+void mrlVertex3f(float x, float y, float z)
+{
+	rlVertex3f(x, y, z);
+}
+
+void mrlTexCoord2f(float x, float y)
+{
+	rlTexCoord2f(x, y);
+}
+
+void mrlNormal3f(float x, float y, float z)
+{
+	rlNormal3f(x, y, z);
+}
+
+void mrlColor4ub(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+	rlColor4ub(r, g, b, a);
+}
+
+void mrlColor3f(float x, float y, float z)
+{
+	rlColor3f(x, y, z);
+}
+
+void mrlColor4f(float x, float y, float z, float w)
+{
+	rlColor4f(x, y, z, w);
+}
+
+bool mrlEnableVertexArray(unsigned int vaoId)
+{
+	return rlEnableVertexArray(vaoId);
+}
+
+void mrlDisableVertexArray(void)
+{
+	rlDisableVertexArray();
+}
+
+void mrlEnableVertexBuffer(unsigned int id)
+{
+	rlEnableVertexBuffer(id);
+}
+
+void mrlDisableVertexBuffer(void)
+{
+	rlDisableVertexBuffer();
+}
+
+void mrlEnableVertexBufferElement(unsigned int id)
+{
+	rlEnableVertexBufferElement(id);
+}
+
+void mrlDisableVertexBufferElement(void)
+{
+	rlDisableVertexBufferElement();
+}
+
+void mrlEnableVertexAttribute(unsigned int index)
+{
+	rlEnableVertexAttribute(index);
+}
+
+void mrlDisableVertexAttribute(unsigned int index)
+{
+	rlDisableVertexAttribute(index);
+}
+
+void mrlActiveTextureSlot(int slot)
+{
+	rlActiveTextureSlot(slot);
+}
+
+void mrlEnableTexture(unsigned int id)
+{
+	rlEnableTexture(id);
+}
+
+void mrlDisableTexture(void)
+{
+	rlDisableTexture();
+}
+
+void mrlEnableTextureCubemap(unsigned int id)
+{
+	rlEnableTextureCubemap(id);
+}
+
+void mrlDisableTextureCubemap(void)
+{
+	rlDisableTextureCubemap();
+}
+
+void mrlTextureParameters(unsigned int id, int param, int value)
+{
+	rlTextureParameters(id, param, value);
+}
+
+void mrlEnableShader(unsigned int id)
+{
+	rlEnableShader(id);
+}
+
+void mrlDisableShader(void)
+{
+	rlDisableShader();
+}
+
+void mrlEnableFramebuffer(unsigned int id)
+{
+	rlEnableFramebuffer(id);
+}
+
+void mrlDisableFramebuffer(void)
+{
+	rlDisableFramebuffer();
+}
+
+void mrlActiveDrawBuffers(int count)
+{
+	rlActiveDrawBuffers(count);
+}
+
+void mrlEnableColorBlend(void)
+{
+	rlEnableColorBlend();
+}
+
+void mrlDisableColorBlend(void)
+{
+	rlDisableColorBlend();
+}
+
+void mrlEnableDepthTest(void)
+{
+	rlEnableDepthTest();
+}
+
+void mrlDisableDepthTest(void)
+{
+	rlDisableDepthTest();
+}
+
+void mrlEnableDepthMask(void)
+{
+	rlEnableDepthMask();
+}
+
+void mrlDisableDepthMask(void)
+{
+	rlDisableDepthMask();
+}
+
+void mrlEnableBackfaceCulling(void)
+{
+	rlEnableBackfaceCulling();
+}
+
+void mrlDisableBackfaceCulling(void)
+{
+	rlDisableBackfaceCulling();
+}
+
+void mrlEnableScissorTest(void)
+{
+	rlEnableScissorTest();
+}
+
+void mrlDisableScissorTest(void)
+{
+	rlDisableScissorTest();
+}
+
+void mrlScissor(int x, int y, int width, int height)
+{
+	rlScissor(x, y, width, height);
+}
+
+void mrlEnableWireMode(void)
+{
+	rlEnableWireMode();
+}
+
+void mrlDisableWireMode(void)
+{
+	rlDisableWireMode();
+}
+
+void mrlSetLineWidth(float width)
+{
+	rlSetLineWidth(width);
+}
+
+float mrlGetLineWidth(void)
+{
+	return rlGetLineWidth();
+}
+
+void mrlEnableSmoothLines(void)
+{
+	rlEnableSmoothLines();
+}
+
+void mrlDisableSmoothLines(void)
+{
+	rlDisableSmoothLines();
+}
+
+void mrlEnableStereoRender(void)
+{
+	rlEnableStereoRender();
+}
+
+void mrlDisableStereoRender(void)
+{
+	rlDisableStereoRender();
+}
+
+bool mrlIsStereoRenderEnabled(void)
+{
+	return rlIsStereoRenderEnabled();
+}
+
+void mrlClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+	rlClearColor(r, g, b, a);
+}
+
+void mrlClearScreenBuffers(void)
+{
+	rlClearScreenBuffers();
+}
+
+void mrlCheckErrors(void)
+{
+	rlCheckErrors();
+}
+
+void mrlSetBlendMode(int mode)
+{
+	rlSetBlendMode(mode);
+}
+
+void mrlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation)
+{
+	rlSetBlendFactors(glSrcFactor, glDstFactor, glEquation);
+}
+
+void mrlglInit(int width, int height)
+{
+	rlglInit(width, height);
+}
+
+void mrlglClose(void)
+{
+	rlglClose();
+}
+
+void mrlLoadExtensions(void * loader)
+{
+	rlLoadExtensions(loader);
+}
+
+int mrlGetVersion(void)
+{
+	return rlGetVersion();
+}
+
+void mrlSetFramebufferWidth(int width)
+{
+	rlSetFramebufferWidth(width);
+}
+
+int mrlGetFramebufferWidth(void)
+{
+	return rlGetFramebufferWidth();
+}
+
+void mrlSetFramebufferHeight(int height)
+{
+	rlSetFramebufferHeight(height);
+}
+
+int mrlGetFramebufferHeight(void)
+{
+	return rlGetFramebufferHeight();
+}
+
+unsigned int mrlGetTextureIdDefault(void)
+{
+	return rlGetTextureIdDefault();
+}
+
+unsigned int mrlGetShaderIdDefault(void)
+{
+	return rlGetShaderIdDefault();
+}
+
+int * mrlGetShaderLocsDefault(void)
+{
+	return rlGetShaderLocsDefault();
+}
+
+void mrlLoadRenderBatch(rlRenderBatch *out, int numBuffers, int bufferElements)
+{
+	*out = rlLoadRenderBatch(numBuffers, bufferElements);
+}
+
+void mrlUnloadRenderBatch(rlRenderBatch *batch)
+{
+	rlUnloadRenderBatch(*batch);
+}
+
+void mrlDrawRenderBatch(rlRenderBatch * batch)
+{
+	rlDrawRenderBatch(batch);
+}
+
+void mrlSetRenderBatchActive(rlRenderBatch * batch)
+{
+	rlSetRenderBatchActive(batch);
+}
+
+void mrlDrawRenderBatchActive(void)
+{
+	rlDrawRenderBatchActive();
+}
+
+bool mrlCheckRenderBatchLimit(int vCount)
+{
+	return rlCheckRenderBatchLimit(vCount);
+}
+
+void mrlSetTexture(unsigned int id)
+{
+	rlSetTexture(id);
+}
+
+unsigned int mrlLoadVertexArray(void)
+{
+	return rlLoadVertexArray();
+}
+
+unsigned int mrlLoadVertexBuffer(const void * buffer, int size, bool dynamic)
+{
+	return rlLoadVertexBuffer(buffer, size, dynamic);
+}
+
+unsigned int mrlLoadVertexBufferElement(const void * buffer, int size, bool dynamic)
+{
+	return rlLoadVertexBufferElement(buffer, size, dynamic);
+}
+
+void mrlUpdateVertexBuffer(unsigned int bufferId, const void * data, int dataSize, int offset)
+{
+	rlUpdateVertexBuffer(bufferId, data, dataSize, offset);
+}
+
+void mrlUpdateVertexBufferElements(unsigned int id, const void * data, int dataSize, int offset)
+{
+	rlUpdateVertexBufferElements(id, data, dataSize, offset);
+}
+
+void mrlUnloadVertexArray(unsigned int vaoId)
+{
+	rlUnloadVertexArray(vaoId);
+}
+
+void mrlUnloadVertexBuffer(unsigned int vboId)
+{
+	rlUnloadVertexBuffer(vboId);
+}
+
+void mrlSetVertexAttribute(unsigned int index, int compSize, int type, bool normalized, int stride, const void * pointer)
+{
+	rlSetVertexAttribute(index, compSize, type, normalized, stride, pointer);
+}
+
+void mrlSetVertexAttributeDivisor(unsigned int index, int divisor)
+{
+	rlSetVertexAttributeDivisor(index, divisor);
+}
+
+void mrlSetVertexAttributeDefault(int locIndex, const void * value, int attribType, int count)
+{
+	rlSetVertexAttributeDefault(locIndex, value, attribType, count);
+}
+
+void mrlDrawVertexArray(int offset, int count)
+{
+	rlDrawVertexArray(offset, count);
+}
+
+void mrlDrawVertexArrayElements(int offset, int count, const void * buffer)
+{
+	rlDrawVertexArrayElements(offset, count, buffer);
+}
+
+void mrlDrawVertexArrayInstanced(int offset, int count, int instances)
+{
+	rlDrawVertexArrayInstanced(offset, count, instances);
+}
+
+void mrlDrawVertexArrayElementsInstanced(int offset, int count, const void * buffer, int instances)
+{
+	rlDrawVertexArrayElementsInstanced(offset, count, buffer, instances);
+}
+
+unsigned int mrlLoadTexture(const void * data, int width, int height, int format, int mipmapCount)
+{
+	return rlLoadTexture(data, width, height, format, mipmapCount);
+}
+
+unsigned int mrlLoadTextureDepth(int width, int height, bool useRenderBuffer)
+{
+	return rlLoadTextureDepth(width, height, useRenderBuffer);
+}
+
+unsigned int mrlLoadTextureCubemap(const void * data, int size, int format)
+{
+	return rlLoadTextureCubemap(data, size, format);
+}
+
+void mrlUpdateTexture(unsigned int id, int offsetX, int offsetY, int width, int height, int format, const void * data)
+{
+	rlUpdateTexture(id, offsetX, offsetY, width, height, format, data);
+}
+
+void mrlGetGlTextureFormats(int format, int * glInternalFormat, int * glFormat, int * glType)
+{
+	rlGetGlTextureFormats(format, glInternalFormat, glFormat, glType);
+}
+
+const char * mrlGetPixelFormatName(unsigned int format)
+{
+	return rlGetPixelFormatName(format);
+}
+
+void mrlUnloadTexture(unsigned int id)
+{
+	rlUnloadTexture(id);
+}
+
+void mrlGenTextureMipmaps(unsigned int id, int width, int height, int format, int * mipmaps)
+{
+	rlGenTextureMipmaps(id, width, height, format, mipmaps);
+}
+
+void * mrlReadTexturePixels(unsigned int id, int width, int height, int format)
+{
+	return rlReadTexturePixels(id, width, height, format);
+}
+
+unsigned char * mrlReadScreenPixels(int width, int height)
+{
+	return rlReadScreenPixels(width, height);
+}
+
+unsigned int mrlLoadFramebuffer(int width, int height)
+{
+	return rlLoadFramebuffer(width, height);
+}
+
+void mrlFramebufferAttach(unsigned int fboId, unsigned int texId, int attachType, int texType, int mipLevel)
+{
+	rlFramebufferAttach(fboId, texId, attachType, texType, mipLevel);
+}
+
+bool mrlFramebufferComplete(unsigned int id)
+{
+	return rlFramebufferComplete(id);
+}
+
+void mrlUnloadFramebuffer(unsigned int id)
+{
+	rlUnloadFramebuffer(id);
+}
+
+unsigned int mrlLoadShaderCode(const char * vsCode, const char * fsCode)
+{
+	return rlLoadShaderCode(vsCode, fsCode);
+}
+
+unsigned int mrlCompileShader(const char * shaderCode, int type)
+{
+	return rlCompileShader(shaderCode, type);
+}
+
+unsigned int mrlLoadShaderProgram(unsigned int vShaderId, unsigned int fShaderId)
+{
+	return rlLoadShaderProgram(vShaderId, fShaderId);
+}
+
+void mrlUnloadShaderProgram(unsigned int id)
+{
+	rlUnloadShaderProgram(id);
+}
+
+int mrlGetLocationUniform(unsigned int shaderId, const char * uniformName)
+{
+	return rlGetLocationUniform(shaderId, uniformName);
+}
+
+int mrlGetLocationAttrib(unsigned int shaderId, const char * attribName)
+{
+	return rlGetLocationAttrib(shaderId, attribName);
+}
+
+void mrlSetUniform(int locIndex, const void * value, int uniformType, int count)
+{
+	rlSetUniform(locIndex, value, uniformType, count);
+}
+
+void mrlSetUniformMatrix(int locIndex, Matrix *mat)
+{
+	rlSetUniformMatrix(locIndex, *mat);
+}
+
+void mrlSetUniformSampler(int locIndex, unsigned int textureId)
+{
+	rlSetUniformSampler(locIndex, textureId);
+}
+
+void mrlSetShader(unsigned int id, int * locs)
+{
+	rlSetShader(id, locs);
+}
+
+unsigned int mrlLoadComputeShaderProgram(unsigned int shaderId)
+{
+	return rlLoadComputeShaderProgram(shaderId);
+}
+
+void mrlComputeShaderDispatch(unsigned int groupX, unsigned int groupY, unsigned int groupZ)
+{
+	rlComputeShaderDispatch(groupX, groupY, groupZ);
+}
+
+unsigned int mrlLoadShaderBuffer(unsigned long long size, const void * data, int usageHint)
+{
+	return rlLoadShaderBuffer(size, data, usageHint);
+}
+
+void mrlUnloadShaderBuffer(unsigned int ssboId)
+{
+	rlUnloadShaderBuffer(ssboId);
+}
+
+void mrlUpdateShaderBufferElements(unsigned int id, const void * data, unsigned long long dataSize, unsigned long long offset)
+{
+	rlUpdateShaderBufferElements(id, data, dataSize, offset);
+}
+
+unsigned long long mrlGetShaderBufferSize(unsigned int id)
+{
+	return rlGetShaderBufferSize(id);
+}
+
+void mrlReadShaderBufferElements(unsigned int id, void * dest, unsigned long long count, unsigned long long offset)
+{
+	rlReadShaderBufferElements(id, dest, count, offset);
+}
+
+void mrlBindShaderBuffer(unsigned int id, unsigned int index)
+{
+	rlBindShaderBuffer(id, index);
+}
+
+void mrlCopyBuffersElements(unsigned int destId, unsigned int srcId, unsigned long long destOffset, unsigned long long srcOffset, unsigned long long count)
+{
+	rlCopyBuffersElements(destId, srcId, destOffset, srcOffset, count);
+}
+
+void mrlBindImageTexture(unsigned int id, unsigned int index, unsigned int format, int readonly)
+{
+	rlBindImageTexture(id, index, format, readonly);
+}
+
+void mrlGetMatrixModelview(Matrix *out)
+{
+	*out = rlGetMatrixModelview();
+}
+
+void mrlGetMatrixProjection(Matrix *out)
+{
+	*out = rlGetMatrixProjection();
+}
+
+void mrlGetMatrixTransform(Matrix *out)
+{
+	*out = rlGetMatrixTransform();
+}
+
+void mrlGetMatrixProjectionStereo(Matrix *out, int eye)
+{
+	*out = rlGetMatrixProjectionStereo(eye);
+}
+
+void mrlGetMatrixViewOffsetStereo(Matrix *out, int eye)
+{
+	*out = rlGetMatrixViewOffsetStereo(eye);
+}
+
+void mrlSetMatrixProjection(Matrix *proj)
+{
+	rlSetMatrixProjection(*proj);
+}
+
+void mrlSetMatrixModelview(Matrix *view)
+{
+	rlSetMatrixModelview(*view);
+}
+
+void mrlSetMatrixProjectionStereo(Matrix *right, Matrix *left)
+{
+	rlSetMatrixProjectionStereo(*right, *left);
+}
+
+void mrlSetMatrixViewOffsetStereo(Matrix *right, Matrix *left)
+{
+	rlSetMatrixViewOffsetStereo(*right, *left);
+}
+
+void mrlLoadDrawCube(void)
+{
+	rlLoadDrawCube();
+}
+
+void mrlLoadDrawQuad(void)
+{
+	rlLoadDrawQuad();
 }
 
 float mClamp(float value, float min, float max)
@@ -2673,7 +3385,7 @@ void mVector3Normalize(Vector3 *out, Vector3 *v)
 
 void mVector3OrthoNormalize(Vector3 * v1, Vector3 * v2)
 {
-	return Vector3OrthoNormalize(v1, v2);
+	Vector3OrthoNormalize(v1, v2);
 }
 
 void mVector3Transform(Vector3 *out, Vector3 *v, Matrix *mat)
@@ -2943,7 +3655,7 @@ void mQuaternionFromAxisAngle(Vector4 *out, Vector3 *axis, float angle)
 
 void mQuaternionToAxisAngle(Vector4 *q, Vector3 * outAxis, float * outAngle)
 {
-	return QuaternionToAxisAngle(*q, outAxis, outAngle);
+	QuaternionToAxisAngle(*q, outAxis, outAngle);
 }
 
 void mQuaternionFromEuler(Vector4 *out, float pitch, float yaw, float roll)
@@ -2968,22 +3680,22 @@ int mQuaternionEquals(Vector4 *p, Vector4 *q)
 
 void mGuiEnable(void)
 {
-	return GuiEnable();
+	GuiEnable();
 }
 
 void mGuiDisable(void)
 {
-	return GuiDisable();
+	GuiDisable();
 }
 
 void mGuiLock(void)
 {
-	return GuiLock();
+	GuiLock();
 }
 
 void mGuiUnlock(void)
 {
-	return GuiUnlock();
+	GuiUnlock();
 }
 
 bool mGuiIsLocked(void)
@@ -2993,12 +3705,12 @@ bool mGuiIsLocked(void)
 
 void mGuiFade(float alpha)
 {
-	return GuiFade(alpha);
+	GuiFade(alpha);
 }
 
 void mGuiSetState(int state)
 {
-	return GuiSetState(state);
+	GuiSetState(state);
 }
 
 int mGuiGetState(void)
@@ -3008,7 +3720,7 @@ int mGuiGetState(void)
 
 void mGuiSetFont(Font *font)
 {
-	return GuiSetFont(*font);
+	GuiSetFont(*font);
 }
 
 void mGuiGetFont(Font *out)
@@ -3018,7 +3730,7 @@ void mGuiGetFont(Font *out)
 
 void mGuiSetStyle(int control, int property, int value)
 {
-	return GuiSetStyle(control, property, value);
+	GuiSetStyle(control, property, value);
 }
 
 int mGuiGetStyle(int control, int property)
@@ -3033,17 +3745,17 @@ bool mGuiWindowBox(Rectangle *bounds, const char * title)
 
 void mGuiGroupBox(Rectangle *bounds, const char * text)
 {
-	return GuiGroupBox(*bounds, text);
+	GuiGroupBox(*bounds, text);
 }
 
 void mGuiLine(Rectangle *bounds, const char * text)
 {
-	return GuiLine(*bounds, text);
+	GuiLine(*bounds, text);
 }
 
 void mGuiPanel(Rectangle *bounds)
 {
-	return GuiPanel(*bounds);
+	GuiPanel(*bounds);
 }
 
 void mGuiScrollPanel(Rectangle *out, Rectangle *bounds, Rectangle *content, Vector2 * scroll)
@@ -3053,7 +3765,7 @@ void mGuiScrollPanel(Rectangle *out, Rectangle *bounds, Rectangle *content, Vect
 
 void mGuiLabel(Rectangle *bounds, const char * text)
 {
-	return GuiLabel(*bounds, text);
+	GuiLabel(*bounds, text);
 }
 
 bool mGuiButton(Rectangle *bounds, const char * text)
@@ -3123,12 +3835,12 @@ float mGuiProgressBar(Rectangle *bounds, const char * textLeft, const char * tex
 
 void mGuiStatusBar(Rectangle *bounds, const char * text)
 {
-	return GuiStatusBar(*bounds, text);
+	GuiStatusBar(*bounds, text);
 }
 
 void mGuiDummyRec(Rectangle *bounds, const char * text)
 {
-	return GuiDummyRec(*bounds, text);
+	GuiDummyRec(*bounds, text);
 }
 
 int mGuiScrollBar(Rectangle *bounds, int value, int minValue, int maxValue)
@@ -3178,12 +3890,12 @@ float mGuiColorBarHue(Rectangle *bounds, float value)
 
 void mGuiLoadStyle(const char * fileName)
 {
-	return GuiLoadStyle(fileName);
+	GuiLoadStyle(fileName);
 }
 
 void mGuiLoadStyleDefault(void)
 {
-	return GuiLoadStyleDefault();
+	GuiLoadStyleDefault();
 }
 
 const char * mGuiIconText(int iconId, const char * text)
@@ -3203,17 +3915,17 @@ unsigned int * mGuiGetIconData(int iconId)
 
 void mGuiSetIconData(int iconId, unsigned int * data)
 {
-	return GuiSetIconData(iconId, data);
+	GuiSetIconData(iconId, data);
 }
 
 void mGuiSetIconPixel(int iconId, int x, int y)
 {
-	return GuiSetIconPixel(iconId, x, y);
+	GuiSetIconPixel(iconId, x, y);
 }
 
 void mGuiClearIconPixel(int iconId, int x, int y)
 {
-	return GuiClearIconPixel(iconId, x, y);
+	GuiClearIconPixel(iconId, x, y);
 }
 
 bool mGuiCheckIconPixel(int iconId, int x, int y)
@@ -3223,32 +3935,32 @@ bool mGuiCheckIconPixel(int iconId, int x, int y)
 
 void mInitPhysics(void)
 {
-	return InitPhysics();
+	InitPhysics();
 }
 
 void mUpdatePhysics(void)
 {
-	return UpdatePhysics();
+	UpdatePhysics();
 }
 
 void mResetPhysics(void)
 {
-	return ResetPhysics();
+	ResetPhysics();
 }
 
 void mClosePhysics(void)
 {
-	return ClosePhysics();
+	ClosePhysics();
 }
 
 void mSetPhysicsTimeStep(double delta)
 {
-	return SetPhysicsTimeStep(delta);
+	SetPhysicsTimeStep(delta);
 }
 
 void mSetPhysicsGravity(float x, float y)
 {
-	return SetPhysicsGravity(x, y);
+	SetPhysicsGravity(x, y);
 }
 
 PhysicsBodyData * mCreatePhysicsBodyCircle(Vector2 *pos, float radius, float density)
@@ -3268,27 +3980,27 @@ PhysicsBodyData * mCreatePhysicsBodyPolygon(Vector2 *pos, float radius, int side
 
 void mDestroyPhysicsBody(PhysicsBodyData * body)
 {
-	return DestroyPhysicsBody(body);
+	DestroyPhysicsBody(body);
 }
 
 void mPhysicsAddForce(PhysicsBodyData * body, Vector2 *force)
 {
-	return PhysicsAddForce(body, *force);
+	PhysicsAddForce(body, *force);
 }
 
 void mPhysicsAddTorque(PhysicsBodyData * body, float amount)
 {
-	return PhysicsAddTorque(body, amount);
+	PhysicsAddTorque(body, amount);
 }
 
 void mPhysicsShatter(PhysicsBodyData * body, Vector2 *position, float force)
 {
-	return PhysicsShatter(body, *position, force);
+	PhysicsShatter(body, *position, force);
 }
 
 void mSetPhysicsBodyRotation(PhysicsBodyData * body, float radians)
 {
-	return SetPhysicsBodyRotation(body, radians);
+	SetPhysicsBodyRotation(body, radians);
 }
 
 int mGetPhysicsBodiesCount(void)

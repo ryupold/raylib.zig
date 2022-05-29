@@ -462,6 +462,7 @@ const raylibToZigType = std.ComptimeStringMap([]const u8, .{
     .{ "unsigned int", "u32" },
     .{ "long", "i64" },
     .{ "unsigned long", "u64" },
+    .{ "unsigned long long", "u64" },
     .{ "float", "f32" },
     .{ "double", "f64" },
 });
@@ -510,6 +511,7 @@ pub const CombinedRaylib = struct {
         var functions = std.StringArrayHashMap(RaylibFunction).init(allocator);
 
         for (jsonFiles) |jsonFile| {
+            std.log.info("parsing {s}", .{jsonFile});
             const jsonData = try std.fs.cwd().readFileAlloc(allocator, jsonFile, memoryConstrain);
             defer allocator.free(jsonData);
 
@@ -673,6 +675,7 @@ pub fn isPrimitiveOrPointer(c: []const u8) bool {
         .{ "unsigned int", {} },
         .{ "long", {} },
         .{ "unsigned long", {} },
+        .{ "unsigned long long", {} },
         .{ "float", {} },
         .{ "double", {} },
     });

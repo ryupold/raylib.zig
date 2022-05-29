@@ -15,6 +15,7 @@ Additional infos and WebGL examples [here](https://ryupold.de/pages/raylib.zig/r
 
 ## supported APIs
 - [x] RLAPI (raylib.h)
+- [x] RLAPI (rlgl.h)
 - [x] RMAPI (raymath.h)
 - [x] RAYGUIAPI (extras/raygui.h)
 - [x] PHYSACDEF (extras/physac.h)

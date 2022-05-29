@@ -297,7 +297,9 @@ fn writeCFunctions(
 
         //--- C-IMPLEMENT -----------------------------
 
-        if (mapping.isPrimitiveOrPointer(func.returnType)) {
+        if (eql(func.returnType, "void")) {
+            try c.writeAll("\t");
+        } else if (mapping.isPrimitiveOrPointer(func.returnType)) {
             try c.writeAll("\treturn ");
         } else {
             try c.writeAll("\t*out = ");

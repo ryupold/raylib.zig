@@ -1,8 +1,14 @@
 const std = @import("std");
 const raylib = @cImport({
-    @cDefine("RAYMATH_IMPLEMENTATION", {});
     @cInclude("raylib.h");
+
+    @cDefine("GRAPHICS_API_OPENGL_11", {});
+    // @cDefine("RLGL_IMPLEMENTATION", {});
+    @cInclude("rlgl.h");
+
+    @cDefine("RAYMATH_IMPLEMENTATION", {});
     @cInclude("raymath.h");
+
     @cInclude("marshal.h");
 });
 
@@ -217,6 +223,14 @@ pub const Vector2 = extern struct {
     pub fn rotate(self: @This(), angle: f32) @This() {
         return Vector2Rotate(self, angle);
     }
+
+    pub fn xy0(self: @This()) Vector3 {
+        return .{ .x = self.x, .y = self.y };
+    }
+
+    pub fn x0z(self: @This()) Vector3 {
+        return .{ .x = self.x, .z = self.y };
+    }
 };
 
 pub const Vector2i = extern struct {
@@ -291,6 +305,10 @@ pub const Vector3 = extern struct {
 
     pub fn forward() @This() {
         return @This().new(0, 0, 1);
+    }
+
+    pub fn xy(self: @This()) Vector2 {
+        return .{ .x = self.x, .y = self.y };
     }
 };
 
@@ -441,6 +459,31 @@ pub const SaveFileTextCallback = fn (fileName: [*c]const u8, text: [*c]const u8)
 pub const AudioCallback = fn (bufferData: ?*anyopaque, frames: u32) callconv(.C) void;
 
 //--- utils ---------------------------------------------------------------------------------------
+
+// Camera global state context data [56 bytes]
+pub const CameraData = extern struct {
+    /// Current camera mode
+    mode: u32,
+    /// Camera distance from position to target
+    targetDistance: f32,
+    /// Player eyes position from ground (in meters)
+    playerEyesPosition: f32,
+    /// Camera angle in plane XZ
+    angle: Vector2,
+    /// Previous mouse position
+    previousMousePosition: Vector2,
+
+    // Camera movement control keys
+
+    /// Move controls (CAMERA_FIRST_PERSON)
+    moveControl: i32[6],
+    /// Smooth zoom control key
+    smoothZoomControl: i32,
+    /// Alternative control key
+    altControl: i32,
+    /// Pan view control key
+    panControl: i32,
+};
 
 pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
     return rng.float(f32) * (max - min) + min;
@@ -738,4 +781,145 @@ pub fn GetPhysicsBody(
     return @ptrCast(?*PhysicsBodyData, raylib.GetPhysicsBody(
         index,
     ));
+}
+
+//--- RLGL ----------------------------------------------------------------------------------------
+
+pub const DEG2RAD: f32 = PI / 180;
+pub const RAD2DEG: f32 = 180 / PI;
+
+/// 
+pub const rlglData = extern struct {
+    /// Current render batch
+    currentBatch: ?*rlRenderBatch,
+    /// Default internal render batch
+    defaultBatch: rlRenderBatch,
+
+    pub const State = extern struct {
+        /// Current active render batch vertex counter (generic, used for all batches)
+        vertexCounter: i32,
+        /// Current active texture coordinate X (added on glVertex*())
+        texcoordx: f32,
+        /// Current active texture coordinate Y (added on glVertex*())
+        texcoordy: f32,
+        /// Current active normal X (added on glVertex*())
+        normalx: f32,
+        /// Current active normal Y (added on glVertex*())
+        normaly: f32,
+        /// Current active normal Z (added on glVertex*())
+        normalz: f32,
+        /// Current active color R (added on glVertex*())
+        colorr: u8,
+        /// Current active color G (added on glVertex*())
+        colorg: u8,
+        /// Current active color B (added on glVertex*())
+        colorb: u8,
+        /// Current active color A (added on glVertex*())
+        colora: u8,
+        /// Current matrix mode
+        currentMatrixMode: i32,
+        /// Current matrix pointer
+        currentMatrix: ?*Matrix,
+        /// Default modelview matrix
+        modelview: Matrix,
+        /// Default projection matrix
+        projection: Matrix,
+        /// Transform matrix to be used with rlTranslate, rlRotate, rlScale
+        transform: Matrix,
+        /// Require transform matrix application to current draw-call vertex (if required)
+        transformRequired: bool,
+        /// Matrix stack for push/pop
+        stack: [RL_MAX_MATRIX_STACK_SIZE]Matrix,
+        /// Matrix stack counter
+        stackCounter: i32,
+        /// Default texture used on shapes/poly drawing (required by shader)
+        defaultTextureId: u32,
+        /// Active texture ids to be enabled on batch drawing (0 active by default)
+        activeTextureId: [RL_DEFAULT_BATCH_MAX_TEXTURE_UNITS]u32,
+        /// Default vertex shader id (used by default shader program)
+        defaultVShaderId: u32,
+        /// Default fragment shader id (used by default shader program)
+        defaultFShaderId: u32,
+        /// Default shader program id, supports vertex color and diffuse texture
+        defaultShaderId: u32,
+        /// Default shader locations pointer to be used on rendering
+        defaultShaderLocs: [*]i32,
+        /// Current shader id to be used on rendering (by default, defaultShaderId)
+        currentShaderId: u32,
+        /// Current shader locations pointer to be used on rendering (by default, defaultShaderLocs)
+        currentShaderLocs: [*]i32,
+        /// Stereo rendering flag
+        stereoRender: bool,
+        /// VR stereo rendering eyes projection matrices
+        projectionStereo: [2]Matrix,
+        /// VR stereo rendering eyes view offset matrices
+        viewOffsetStereo: [2]Matrix,
+        /// Blending mode active
+        currentBlendMode: i32,
+        /// Blending source factor
+        glBlendSrcFactor: i32,
+        /// Blending destination factor
+        glBlendDstFactor: i32,
+        /// Blending equation
+        glBlendEquation: i32,
+        /// Current framebuffer width
+        framebufferWidth: i32,
+        /// Current framebuffer height
+        framebufferHeight: i32,
+    };
+
+    pub const ExtSupported = extern struct {
+        /// VAO support (OpenGL ES2 could not support VAO extension) (GL_ARB_vertex_array_object)
+        vao: bool,
+        /// Instancing supported (GL_ANGLE_instanced_arrays, GL_EXT_draw_instanced + GL_EXT_instanced_arrays)
+        instancing: bool,
+        /// NPOT textures full support (GL_ARB_texture_non_power_of_two, GL_OES_texture_npot)
+        texNPOT: bool,
+        /// Depth textures supported (GL_ARB_depth_texture, GL_WEBGL_depth_texture, GL_OES_depth_texture)
+        texDepth: bool,
+        /// float textures support (32 bit per channel) (GL_OES_texture_float)
+        texFloat32: bool,
+        /// DDS texture compression support (GL_EXT_texture_compression_s3tc, GL_WEBGL_compressed_texture_s3tc, GL_WEBKIT_WEBGL_compressed_texture_s3tc)
+        texCompDXT: bool,
+        /// ETC1 texture compression support (GL_OES_compressed_ETC1_RGB8_texture, GL_WEBGL_compressed_texture_etc1)
+        texCompETC1: bool,
+        /// ETC2/EAC texture compression support (GL_ARB_ES3_compatibility)
+        texCompETC2: bool,
+        /// PVR texture compression support (GL_IMG_texture_compression_pvrtc)
+        texCompPVRT: bool,
+        /// ASTC texture compression support (GL_KHR_texture_compression_astc_hdr, GL_KHR_texture_compression_astc_ldr)
+        texCompASTC: bool,
+        /// Clamp mirror wrap mode supported (GL_EXT_texture_mirror_clamp)
+        texMirrorClamp: bool,
+        /// Anisotropic texture filtering support (GL_EXT_texture_filter_anisotropic)
+        texAnisoFilter: bool,
+        /// Compute shaders support (GL_ARB_compute_shader)
+        computeShader: bool,
+        /// Shader storage buffer object support (GL_ARB_shader_storage_buffer_object)
+        ssbo: bool,
+        /// Maximum anisotropy level supported (minimum is 2.0f)
+        maxAnisotropyLevel: f32,
+        /// Maximum bits for depth component
+        maxDepthBits: i32,
+    };
+};
+
+/// Enable attribute state pointer
+pub fn rlEnableStatePointer(
+    vertexAttribType: i32,
+    buffer: *anyopaque,
+) void {
+    raylib.rlEnableStatePointer(
+        vertexAttribType,
+        @ptrCast([*c]anyopaque, buffer),
+    );
+}
+
+/// Disable attribute state pointer
+pub fn rlDisableStatePointer(
+    vertexAttribType: i32,
+) void {
+    raylib.rlDisableStatePointer(
+        vertexAttribType,
+    );
 }

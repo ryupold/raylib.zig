@@ -5,6 +5,7 @@ const json = std.json;
 
 pub const jsonFiles: []const []const u8 = &.{
     "raylib.json",
+    "rlgl.json",
     "raymath.json",
     "raygui.json",
     "physac.json",

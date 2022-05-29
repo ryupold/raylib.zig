@@ -1,8 +1,14 @@
 const std = @import("std");
 const raylib = @cImport({
-    @cDefine("RAYMATH_IMPLEMENTATION", {});
     @cInclude("raylib.h");
+
+    @cDefine("GRAPHICS_API_OPENGL_11", {});
+    // @cDefine("RLGL_IMPLEMENTATION", {});
+    @cInclude("rlgl.h");
+
+    @cDefine("RAYMATH_IMPLEMENTATION", {});
     @cInclude("raymath.h");
+
     @cInclude("marshal.h");
 });
 
@@ -217,6 +223,14 @@ pub const Vector2 = extern struct {
     pub fn rotate(self: @This(), angle: f32) @This() {
         return Vector2Rotate(self, angle);
     }
+
+    pub fn xy0(self: @This()) Vector3 {
+        return .{ .x = self.x, .y = self.y };
+    }
+
+    pub fn x0z(self: @This()) Vector3 {
+        return .{ .x = self.x, .z = self.y };
+    }
 };
 
 pub const Vector2i = extern struct {
@@ -291,6 +305,10 @@ pub const Vector3 = extern struct {
 
     pub fn forward() @This() {
         return @This().new(0, 0, 1);
+    }
+
+    pub fn xy(self: @This()) Vector2 {
+        return .{ .x = self.x, .y = self.y };
     }
 };
 
@@ -441,6 +459,31 @@ pub const SaveFileTextCallback = fn (fileName: [*c]const u8, text: [*c]const u8)
 pub const AudioCallback = fn (bufferData: ?*anyopaque, frames: u32) callconv(.C) void;
 
 //--- utils ---------------------------------------------------------------------------------------
+
+// Camera global state context data [56 bytes]
+pub const CameraData = extern struct {
+    /// Current camera mode
+    mode: u32,
+    /// Camera distance from position to target
+    targetDistance: f32,
+    /// Player eyes position from ground (in meters)
+    playerEyesPosition: f32,
+    /// Camera angle in plane XZ
+    angle: Vector2,
+    /// Previous mouse position
+    previousMousePosition: Vector2,
+
+    // Camera movement control keys
+
+    /// Move controls (CAMERA_FIRST_PERSON)
+    moveControl: i32[6],
+    /// Smooth zoom control key
+    smoothZoomControl: i32,
+    /// Alternative control key
+    altControl: i32,
+    /// Pan view control key
+    panControl: i32,
+};
 
 pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
     return rng.float(f32) * (max - min) + min;
@@ -738,6 +781,147 @@ pub fn GetPhysicsBody(
     return @ptrCast(?*PhysicsBodyData, raylib.GetPhysicsBody(
         index,
     ));
+}
+
+//--- RLGL ----------------------------------------------------------------------------------------
+
+pub const DEG2RAD: f32 = PI / 180;
+pub const RAD2DEG: f32 = 180 / PI;
+
+/// 
+pub const rlglData = extern struct {
+    /// Current render batch
+    currentBatch: ?*rlRenderBatch,
+    /// Default internal render batch
+    defaultBatch: rlRenderBatch,
+
+    pub const State = extern struct {
+        /// Current active render batch vertex counter (generic, used for all batches)
+        vertexCounter: i32,
+        /// Current active texture coordinate X (added on glVertex*())
+        texcoordx: f32,
+        /// Current active texture coordinate Y (added on glVertex*())
+        texcoordy: f32,
+        /// Current active normal X (added on glVertex*())
+        normalx: f32,
+        /// Current active normal Y (added on glVertex*())
+        normaly: f32,
+        /// Current active normal Z (added on glVertex*())
+        normalz: f32,
+        /// Current active color R (added on glVertex*())
+        colorr: u8,
+        /// Current active color G (added on glVertex*())
+        colorg: u8,
+        /// Current active color B (added on glVertex*())
+        colorb: u8,
+        /// Current active color A (added on glVertex*())
+        colora: u8,
+        /// Current matrix mode
+        currentMatrixMode: i32,
+        /// Current matrix pointer
+        currentMatrix: ?*Matrix,
+        /// Default modelview matrix
+        modelview: Matrix,
+        /// Default projection matrix
+        projection: Matrix,
+        /// Transform matrix to be used with rlTranslate, rlRotate, rlScale
+        transform: Matrix,
+        /// Require transform matrix application to current draw-call vertex (if required)
+        transformRequired: bool,
+        /// Matrix stack for push/pop
+        stack: [RL_MAX_MATRIX_STACK_SIZE]Matrix,
+        /// Matrix stack counter
+        stackCounter: i32,
+        /// Default texture used on shapes/poly drawing (required by shader)
+        defaultTextureId: u32,
+        /// Active texture ids to be enabled on batch drawing (0 active by default)
+        activeTextureId: [RL_DEFAULT_BATCH_MAX_TEXTURE_UNITS]u32,
+        /// Default vertex shader id (used by default shader program)
+        defaultVShaderId: u32,
+        /// Default fragment shader id (used by default shader program)
+        defaultFShaderId: u32,
+        /// Default shader program id, supports vertex color and diffuse texture
+        defaultShaderId: u32,
+        /// Default shader locations pointer to be used on rendering
+        defaultShaderLocs: [*]i32,
+        /// Current shader id to be used on rendering (by default, defaultShaderId)
+        currentShaderId: u32,
+        /// Current shader locations pointer to be used on rendering (by default, defaultShaderLocs)
+        currentShaderLocs: [*]i32,
+        /// Stereo rendering flag
+        stereoRender: bool,
+        /// VR stereo rendering eyes projection matrices
+        projectionStereo: [2]Matrix,
+        /// VR stereo rendering eyes view offset matrices
+        viewOffsetStereo: [2]Matrix,
+        /// Blending mode active
+        currentBlendMode: i32,
+        /// Blending source factor
+        glBlendSrcFactor: i32,
+        /// Blending destination factor
+        glBlendDstFactor: i32,
+        /// Blending equation
+        glBlendEquation: i32,
+        /// Current framebuffer width
+        framebufferWidth: i32,
+        /// Current framebuffer height
+        framebufferHeight: i32,
+    };
+
+    pub const ExtSupported = extern struct {
+        /// VAO support (OpenGL ES2 could not support VAO extension) (GL_ARB_vertex_array_object)
+        vao: bool,
+        /// Instancing supported (GL_ANGLE_instanced_arrays, GL_EXT_draw_instanced + GL_EXT_instanced_arrays)
+        instancing: bool,
+        /// NPOT textures full support (GL_ARB_texture_non_power_of_two, GL_OES_texture_npot)
+        texNPOT: bool,
+        /// Depth textures supported (GL_ARB_depth_texture, GL_WEBGL_depth_texture, GL_OES_depth_texture)
+        texDepth: bool,
+        /// float textures support (32 bit per channel) (GL_OES_texture_float)
+        texFloat32: bool,
+        /// DDS texture compression support (GL_EXT_texture_compression_s3tc, GL_WEBGL_compressed_texture_s3tc, GL_WEBKIT_WEBGL_compressed_texture_s3tc)
+        texCompDXT: bool,
+        /// ETC1 texture compression support (GL_OES_compressed_ETC1_RGB8_texture, GL_WEBGL_compressed_texture_etc1)
+        texCompETC1: bool,
+        /// ETC2/EAC texture compression support (GL_ARB_ES3_compatibility)
+        texCompETC2: bool,
+        /// PVR texture compression support (GL_IMG_texture_compression_pvrtc)
+        texCompPVRT: bool,
+        /// ASTC texture compression support (GL_KHR_texture_compression_astc_hdr, GL_KHR_texture_compression_astc_ldr)
+        texCompASTC: bool,
+        /// Clamp mirror wrap mode supported (GL_EXT_texture_mirror_clamp)
+        texMirrorClamp: bool,
+        /// Anisotropic texture filtering support (GL_EXT_texture_filter_anisotropic)
+        texAnisoFilter: bool,
+        /// Compute shaders support (GL_ARB_compute_shader)
+        computeShader: bool,
+        /// Shader storage buffer object support (GL_ARB_shader_storage_buffer_object)
+        ssbo: bool,
+        /// Maximum anisotropy level supported (minimum is 2.0f)
+        maxAnisotropyLevel: f32,
+        /// Maximum bits for depth component
+        maxDepthBits: i32,
+    };
+};
+
+/// Enable attribute state pointer
+pub fn rlEnableStatePointer(
+    vertexAttribType: i32,
+    buffer: *anyopaque,
+) void {
+    raylib.rlEnableStatePointer(
+        vertexAttribType,
+        @ptrCast([*c]anyopaque, buffer),
+    );
+}
+
+/// Disable attribute state pointer
+pub fn rlDisableStatePointer(
+    vertexAttribType: i32,
+) void {
+    raylib.rlDisableStatePointer(
+        vertexAttribType,
+    );
 }
 
 /// Initialize window and OpenGL context
@@ -6450,6 +6634,1407 @@ pub fn DetachAudioStreamProcessor(
     );
 }
 
+/// Choose the current matrix to be transformed
+pub fn rlMatrixMode(
+    mode: i32,
+) void {
+    raylib.mrlMatrixMode(
+        mode,
+    );
+}
+
+/// Push the current matrix to stack
+pub fn rlPushMatrix() void {
+    raylib.mrlPushMatrix();
+}
+
+/// Pop lattest inserted matrix from stack
+pub fn rlPopMatrix() void {
+    raylib.mrlPopMatrix();
+}
+
+/// Reset current matrix to identity matrix
+pub fn rlLoadIdentity() void {
+    raylib.mrlLoadIdentity();
+}
+
+/// Multiply the current matrix by a translation matrix
+pub fn rlTranslatef(
+    x: f32,
+    y: f32,
+    z: f32,
+) void {
+    raylib.mrlTranslatef(
+        x,
+        y,
+        z,
+    );
+}
+
+/// Multiply the current matrix by a rotation matrix
+pub fn rlRotatef(
+    angle: f32,
+    x: f32,
+    y: f32,
+    z: f32,
+) void {
+    raylib.mrlRotatef(
+        angle,
+        x,
+        y,
+        z,
+    );
+}
+
+/// Multiply the current matrix by a scaling matrix
+pub fn rlScalef(
+    x: f32,
+    y: f32,
+    z: f32,
+) void {
+    raylib.mrlScalef(
+        x,
+        y,
+        z,
+    );
+}
+
+/// Multiply the current matrix by another matrix
+pub fn rlMultMatrixf(
+    matf: [*]f32,
+) void {
+    raylib.mrlMultMatrixf(
+        @ptrCast([*c]f32, matf),
+    );
+}
+
+/// 
+pub fn rlFrustum(
+    left: f64,
+    right: f64,
+    bottom: f64,
+    top: f64,
+    znear: f64,
+    zfar: f64,
+) void {
+    raylib.mrlFrustum(
+        left,
+        right,
+        bottom,
+        top,
+        znear,
+        zfar,
+    );
+}
+
+/// 
+pub fn rlOrtho(
+    left: f64,
+    right: f64,
+    bottom: f64,
+    top: f64,
+    znear: f64,
+    zfar: f64,
+) void {
+    raylib.mrlOrtho(
+        left,
+        right,
+        bottom,
+        top,
+        znear,
+        zfar,
+    );
+}
+
+/// Set the viewport area
+pub fn rlViewport(
+    x: i32,
+    y: i32,
+    width: i32,
+    height: i32,
+) void {
+    raylib.mrlViewport(
+        x,
+        y,
+        width,
+        height,
+    );
+}
+
+/// Initialize drawing mode (how to organize vertex)
+pub fn rlBegin(
+    mode: i32,
+) void {
+    raylib.mrlBegin(
+        mode,
+    );
+}
+
+/// Finish vertex providing
+pub fn rlEnd() void {
+    raylib.mrlEnd();
+}
+
+/// Define one vertex (position) - 2 int
+pub fn rlVertex2i(
+    x: i32,
+    y: i32,
+) void {
+    raylib.mrlVertex2i(
+        x,
+        y,
+    );
+}
+
+/// Define one vertex (position) - 2 float
+pub fn rlVertex2f(
+    x: f32,
+    y: f32,
+) void {
+    raylib.mrlVertex2f(
+        x,
+        y,
+    );
+}
+
+/// Define one vertex (position) - 3 float
+pub fn rlVertex3f(
+    x: f32,
+    y: f32,
+    z: f32,
+) void {
+    raylib.mrlVertex3f(
+        x,
+        y,
+        z,
+    );
+}
+
+/// Define one vertex (texture coordinate) - 2 float
+pub fn rlTexCoord2f(
+    x: f32,
+    y: f32,
+) void {
+    raylib.mrlTexCoord2f(
+        x,
+        y,
+    );
+}
+
+/// Define one vertex (normal) - 3 float
+pub fn rlNormal3f(
+    x: f32,
+    y: f32,
+    z: f32,
+) void {
+    raylib.mrlNormal3f(
+        x,
+        y,
+        z,
+    );
+}
+
+/// Define one vertex (color) - 4 byte
+pub fn rlColor4ub(
+    r: u8,
+    g: u8,
+    b: u8,
+    a: u8,
+) void {
+    raylib.mrlColor4ub(
+        r,
+        g,
+        b,
+        a,
+    );
+}
+
+/// Define one vertex (color) - 3 float
+pub fn rlColor3f(
+    x: f32,
+    y: f32,
+    z: f32,
+) void {
+    raylib.mrlColor3f(
+        x,
+        y,
+        z,
+    );
+}
+
+/// Define one vertex (color) - 4 float
+pub fn rlColor4f(
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+) void {
+    raylib.mrlColor4f(
+        x,
+        y,
+        z,
+        w,
+    );
+}
+
+/// Enable vertex array (VAO, if supported)
+pub fn rlEnableVertexArray(
+    vaoId: u32,
+) bool {
+    return raylib.mrlEnableVertexArray(
+        vaoId,
+    );
+}
+
+/// Disable vertex array (VAO, if supported)
+pub fn rlDisableVertexArray() void {
+    raylib.mrlDisableVertexArray();
+}
+
+/// Enable vertex buffer (VBO)
+pub fn rlEnableVertexBuffer(
+    id: u32,
+) void {
+    raylib.mrlEnableVertexBuffer(
+        id,
+    );
+}
+
+/// Disable vertex buffer (VBO)
+pub fn rlDisableVertexBuffer() void {
+    raylib.mrlDisableVertexBuffer();
+}
+
+/// Enable vertex buffer element (VBO element)
+pub fn rlEnableVertexBufferElement(
+    id: u32,
+) void {
+    raylib.mrlEnableVertexBufferElement(
+        id,
+    );
+}
+
+/// Disable vertex buffer element (VBO element)
+pub fn rlDisableVertexBufferElement() void {
+    raylib.mrlDisableVertexBufferElement();
+}
+
+/// Enable vertex attribute index
+pub fn rlEnableVertexAttribute(
+    index: u32,
+) void {
+    raylib.mrlEnableVertexAttribute(
+        index,
+    );
+}
+
+/// Disable vertex attribute index
+pub fn rlDisableVertexAttribute(
+    index: u32,
+) void {
+    raylib.mrlDisableVertexAttribute(
+        index,
+    );
+}
+
+/// Select and active a texture slot
+pub fn rlActiveTextureSlot(
+    slot: i32,
+) void {
+    raylib.mrlActiveTextureSlot(
+        slot,
+    );
+}
+
+/// Enable texture
+pub fn rlEnableTexture(
+    id: u32,
+) void {
+    raylib.mrlEnableTexture(
+        id,
+    );
+}
+
+/// Disable texture
+pub fn rlDisableTexture() void {
+    raylib.mrlDisableTexture();
+}
+
+/// Enable texture cubemap
+pub fn rlEnableTextureCubemap(
+    id: u32,
+) void {
+    raylib.mrlEnableTextureCubemap(
+        id,
+    );
+}
+
+/// Disable texture cubemap
+pub fn rlDisableTextureCubemap() void {
+    raylib.mrlDisableTextureCubemap();
+}
+
+/// Set texture parameters (filter, wrap)
+pub fn rlTextureParameters(
+    id: u32,
+    param: i32,
+    value: i32,
+) void {
+    raylib.mrlTextureParameters(
+        id,
+        param,
+        value,
+    );
+}
+
+/// Enable shader program
+pub fn rlEnableShader(
+    id: u32,
+) void {
+    raylib.mrlEnableShader(
+        id,
+    );
+}
+
+/// Disable shader program
+pub fn rlDisableShader() void {
+    raylib.mrlDisableShader();
+}
+
+/// Enable render texture (fbo)
+pub fn rlEnableFramebuffer(
+    id: u32,
+) void {
+    raylib.mrlEnableFramebuffer(
+        id,
+    );
+}
+
+/// Disable render texture (fbo), return to default framebuffer
+pub fn rlDisableFramebuffer() void {
+    raylib.mrlDisableFramebuffer();
+}
+
+/// Activate multiple draw color buffers
+pub fn rlActiveDrawBuffers(
+    count: i32,
+) void {
+    raylib.mrlActiveDrawBuffers(
+        count,
+    );
+}
+
+/// Enable color blending
+pub fn rlEnableColorBlend() void {
+    raylib.mrlEnableColorBlend();
+}
+
+/// Disable color blending
+pub fn rlDisableColorBlend() void {
+    raylib.mrlDisableColorBlend();
+}
+
+/// Enable depth test
+pub fn rlEnableDepthTest() void {
+    raylib.mrlEnableDepthTest();
+}
+
+/// Disable depth test
+pub fn rlDisableDepthTest() void {
+    raylib.mrlDisableDepthTest();
+}
+
+/// Enable depth write
+pub fn rlEnableDepthMask() void {
+    raylib.mrlEnableDepthMask();
+}
+
+/// Disable depth write
+pub fn rlDisableDepthMask() void {
+    raylib.mrlDisableDepthMask();
+}
+
+/// Enable backface culling
+pub fn rlEnableBackfaceCulling() void {
+    raylib.mrlEnableBackfaceCulling();
+}
+
+/// Disable backface culling
+pub fn rlDisableBackfaceCulling() void {
+    raylib.mrlDisableBackfaceCulling();
+}
+
+/// Enable scissor test
+pub fn rlEnableScissorTest() void {
+    raylib.mrlEnableScissorTest();
+}
+
+/// Disable scissor test
+pub fn rlDisableScissorTest() void {
+    raylib.mrlDisableScissorTest();
+}
+
+/// Scissor test
+pub fn rlScissor(
+    x: i32,
+    y: i32,
+    width: i32,
+    height: i32,
+) void {
+    raylib.mrlScissor(
+        x,
+        y,
+        width,
+        height,
+    );
+}
+
+/// Enable wire mode
+pub fn rlEnableWireMode() void {
+    raylib.mrlEnableWireMode();
+}
+
+/// Disable wire mode
+pub fn rlDisableWireMode() void {
+    raylib.mrlDisableWireMode();
+}
+
+/// Set the line drawing width
+pub fn rlSetLineWidth(
+    width: f32,
+) void {
+    raylib.mrlSetLineWidth(
+        width,
+    );
+}
+
+/// Get the line drawing width
+pub fn rlGetLineWidth() f32 {
+    return raylib.mrlGetLineWidth();
+}
+
+/// Enable line aliasing
+pub fn rlEnableSmoothLines() void {
+    raylib.mrlEnableSmoothLines();
+}
+
+/// Disable line aliasing
+pub fn rlDisableSmoothLines() void {
+    raylib.mrlDisableSmoothLines();
+}
+
+/// Enable stereo rendering
+pub fn rlEnableStereoRender() void {
+    raylib.mrlEnableStereoRender();
+}
+
+/// Disable stereo rendering
+pub fn rlDisableStereoRender() void {
+    raylib.mrlDisableStereoRender();
+}
+
+/// Check if stereo render is enabled
+pub fn rlIsStereoRenderEnabled() bool {
+    return raylib.mrlIsStereoRenderEnabled();
+}
+
+/// Clear color buffer with color
+pub fn rlClearColor(
+    r: u8,
+    g: u8,
+    b: u8,
+    a: u8,
+) void {
+    raylib.mrlClearColor(
+        r,
+        g,
+        b,
+        a,
+    );
+}
+
+/// Clear used screen buffers (color and depth)
+pub fn rlClearScreenBuffers() void {
+    raylib.mrlClearScreenBuffers();
+}
+
+/// Check and log OpenGL error codes
+pub fn rlCheckErrors() void {
+    raylib.mrlCheckErrors();
+}
+
+/// Set blending mode
+pub fn rlSetBlendMode(
+    mode: i32,
+) void {
+    raylib.mrlSetBlendMode(
+        mode,
+    );
+}
+
+/// Set blending mode factor and equation (using OpenGL factors)
+pub fn rlSetBlendFactors(
+    glSrcFactor: i32,
+    glDstFactor: i32,
+    glEquation: i32,
+) void {
+    raylib.mrlSetBlendFactors(
+        glSrcFactor,
+        glDstFactor,
+        glEquation,
+    );
+}
+
+/// Initialize rlgl (buffers, shaders, textures, states)
+pub fn rlglInit(
+    width: i32,
+    height: i32,
+) void {
+    raylib.mrlglInit(
+        width,
+        height,
+    );
+}
+
+/// De-inititialize rlgl (buffers, shaders, textures)
+pub fn rlglClose() void {
+    raylib.mrlglClose();
+}
+
+/// Load OpenGL extensions (loader function required)
+pub fn rlLoadExtensions(
+    loader: *anyopaque,
+) void {
+    raylib.mrlLoadExtensions(
+        @ptrCast([*c]anyopaque, loader),
+    );
+}
+
+/// Get current OpenGL version
+pub fn rlGetVersion() i32 {
+    return raylib.mrlGetVersion();
+}
+
+/// Set current framebuffer width
+pub fn rlSetFramebufferWidth(
+    width: i32,
+) void {
+    raylib.mrlSetFramebufferWidth(
+        width,
+    );
+}
+
+/// Get default framebuffer width
+pub fn rlGetFramebufferWidth() i32 {
+    return raylib.mrlGetFramebufferWidth();
+}
+
+/// Set current framebuffer height
+pub fn rlSetFramebufferHeight(
+    height: i32,
+) void {
+    raylib.mrlSetFramebufferHeight(
+        height,
+    );
+}
+
+/// Get default framebuffer height
+pub fn rlGetFramebufferHeight() i32 {
+    return raylib.mrlGetFramebufferHeight();
+}
+
+/// Get default texture id
+pub fn rlGetTextureIdDefault() u32 {
+    return raylib.mrlGetTextureIdDefault();
+}
+
+/// Get default shader id
+pub fn rlGetShaderIdDefault() u32 {
+    return raylib.mrlGetShaderIdDefault();
+}
+
+/// Get default shader locations
+pub fn rlGetShaderLocsDefault() [*]const i32 {
+    return @ptrCast(
+        [*]i32,
+        raylib.mrlGetShaderLocsDefault(),
+    );
+}
+
+/// Load a render batch system
+pub fn rlLoadRenderBatch(
+    numBuffers: i32,
+    bufferElements: i32,
+) rlRenderBatch {
+    var out: rlRenderBatch = undefined;
+    raylib.mrlLoadRenderBatch(
+        @ptrCast([*c]raylib.rlRenderBatch, &out),
+        numBuffers,
+        bufferElements,
+    );
+    return out;
+}
+
+/// Unload render batch system
+pub fn rlUnloadRenderBatch(
+    batch: rlRenderBatch,
+) void {
+    raylib.mrlUnloadRenderBatch(
+        @intToPtr([*c]raylib.rlRenderBatch, @ptrToInt(&batch)),
+    );
+}
+
+/// Draw render batch data (Update->Draw->Reset)
+pub fn rlDrawRenderBatch(
+    batch: [*]rlRenderBatch,
+) void {
+    raylib.mrlDrawRenderBatch(
+        @intToPtr([*c]raylib.rlRenderBatch, @ptrToInt(batch)),
+    );
+}
+
+/// Set the active render batch for rlgl (NULL for default internal)
+pub fn rlSetRenderBatchActive(
+    batch: [*]rlRenderBatch,
+) void {
+    raylib.mrlSetRenderBatchActive(
+        @intToPtr([*c]raylib.rlRenderBatch, @ptrToInt(batch)),
+    );
+}
+
+/// Update and draw internal render batch
+pub fn rlDrawRenderBatchActive() void {
+    raylib.mrlDrawRenderBatchActive();
+}
+
+/// Check internal buffer overflow for a given number of vertex
+pub fn rlCheckRenderBatchLimit(
+    vCount: i32,
+) bool {
+    return raylib.mrlCheckRenderBatchLimit(
+        vCount,
+    );
+}
+
+/// Set current texture for render batch and check buffers limits
+pub fn rlSetTexture(
+    id: u32,
+) void {
+    raylib.mrlSetTexture(
+        id,
+    );
+}
+
+/// Load vertex array (vao) if supported
+pub fn rlLoadVertexArray() u32 {
+    return raylib.mrlLoadVertexArray();
+}
+
+/// Load a vertex buffer attribute
+pub fn rlLoadVertexBuffer(
+    buffer: *anyopaque,
+    size: i32,
+    dynamic: bool,
+) u32 {
+    return raylib.mrlLoadVertexBuffer(
+        @ptrCast([*c]anyopaque, buffer),
+        size,
+        dynamic,
+    );
+}
+
+/// Load a new attributes element buffer
+pub fn rlLoadVertexBufferElement(
+    buffer: *anyopaque,
+    size: i32,
+    dynamic: bool,
+) u32 {
+    return raylib.mrlLoadVertexBufferElement(
+        @ptrCast([*c]anyopaque, buffer),
+        size,
+        dynamic,
+    );
+}
+
+/// Update GPU buffer with new data
+pub fn rlUpdateVertexBuffer(
+    bufferId: u32,
+    data: *anyopaque,
+    dataSize: i32,
+    offset: i32,
+) void {
+    raylib.mrlUpdateVertexBuffer(
+        bufferId,
+        @ptrCast([*c]anyopaque, data),
+        dataSize,
+        offset,
+    );
+}
+
+/// Update vertex buffer elements with new data
+pub fn rlUpdateVertexBufferElements(
+    id: u32,
+    data: *anyopaque,
+    dataSize: i32,
+    offset: i32,
+) void {
+    raylib.mrlUpdateVertexBufferElements(
+        id,
+        @ptrCast([*c]anyopaque, data),
+        dataSize,
+        offset,
+    );
+}
+
+/// 
+pub fn rlUnloadVertexArray(
+    vaoId: u32,
+) void {
+    raylib.mrlUnloadVertexArray(
+        vaoId,
+    );
+}
+
+/// 
+pub fn rlUnloadVertexBuffer(
+    vboId: u32,
+) void {
+    raylib.mrlUnloadVertexBuffer(
+        vboId,
+    );
+}
+
+/// 
+pub fn rlSetVertexAttribute(
+    index: u32,
+    compSize: i32,
+    typ: i32,
+    normalized: bool,
+    stride: i32,
+    pointer: *anyopaque,
+) void {
+    raylib.mrlSetVertexAttribute(
+        index,
+        compSize,
+        typ,
+        normalized,
+        stride,
+        @ptrCast([*c]anyopaque, pointer),
+    );
+}
+
+/// 
+pub fn rlSetVertexAttributeDivisor(
+    index: u32,
+    divisor: i32,
+) void {
+    raylib.mrlSetVertexAttributeDivisor(
+        index,
+        divisor,
+    );
+}
+
+/// Set vertex attribute default value
+pub fn rlSetVertexAttributeDefault(
+    locIndex: i32,
+    value: *anyopaque,
+    attribType: i32,
+    count: i32,
+) void {
+    raylib.mrlSetVertexAttributeDefault(
+        locIndex,
+        @ptrCast([*c]anyopaque, value),
+        attribType,
+        count,
+    );
+}
+
+/// 
+pub fn rlDrawVertexArray(
+    offset: i32,
+    count: i32,
+) void {
+    raylib.mrlDrawVertexArray(
+        offset,
+        count,
+    );
+}
+
+/// 
+pub fn rlDrawVertexArrayElements(
+    offset: i32,
+    count: i32,
+    buffer: *anyopaque,
+) void {
+    raylib.mrlDrawVertexArrayElements(
+        offset,
+        count,
+        @ptrCast([*c]anyopaque, buffer),
+    );
+}
+
+/// 
+pub fn rlDrawVertexArrayInstanced(
+    offset: i32,
+    count: i32,
+    instances: i32,
+) void {
+    raylib.mrlDrawVertexArrayInstanced(
+        offset,
+        count,
+        instances,
+    );
+}
+
+/// 
+pub fn rlDrawVertexArrayElementsInstanced(
+    offset: i32,
+    count: i32,
+    buffer: *anyopaque,
+    instances: i32,
+) void {
+    raylib.mrlDrawVertexArrayElementsInstanced(
+        offset,
+        count,
+        @ptrCast([*c]anyopaque, buffer),
+        instances,
+    );
+}
+
+/// Load texture in GPU
+pub fn rlLoadTexture(
+    data: *anyopaque,
+    width: i32,
+    height: i32,
+    format: i32,
+    mipmapCount: i32,
+) u32 {
+    return raylib.mrlLoadTexture(
+        @ptrCast([*c]anyopaque, data),
+        width,
+        height,
+        format,
+        mipmapCount,
+    );
+}
+
+/// Load depth texture/renderbuffer (to be attached to fbo)
+pub fn rlLoadTextureDepth(
+    width: i32,
+    height: i32,
+    useRenderBuffer: bool,
+) u32 {
+    return raylib.mrlLoadTextureDepth(
+        width,
+        height,
+        useRenderBuffer,
+    );
+}
+
+/// Load texture cubemap
+pub fn rlLoadTextureCubemap(
+    data: *anyopaque,
+    size: i32,
+    format: i32,
+) u32 {
+    return raylib.mrlLoadTextureCubemap(
+        @ptrCast([*c]anyopaque, data),
+        size,
+        format,
+    );
+}
+
+/// Update GPU texture with new data
+pub fn rlUpdateTexture(
+    id: u32,
+    offsetX: i32,
+    offsetY: i32,
+    width: i32,
+    height: i32,
+    format: i32,
+    data: *anyopaque,
+) void {
+    raylib.mrlUpdateTexture(
+        id,
+        offsetX,
+        offsetY,
+        width,
+        height,
+        format,
+        @ptrCast([*c]anyopaque, data),
+    );
+}
+
+/// Get OpenGL internal formats
+pub fn rlGetGlTextureFormats(
+    format: i32,
+    glInternalFormat: [*]i32,
+    glFormat: [*]i32,
+    glType: [*]i32,
+) void {
+    raylib.mrlGetGlTextureFormats(
+        format,
+        @ptrCast([*c]i32, glInternalFormat),
+        @ptrCast([*c]i32, glFormat),
+        @ptrCast([*c]i32, glType),
+    );
+}
+
+/// Get name string for pixel format
+pub fn rlGetPixelFormatName(
+    format: u32,
+) [*:0]const u8 {
+    return @ptrCast(
+        [*:0]const u8,
+        raylib.mrlGetPixelFormatName(
+            format,
+        ),
+    );
+}
+
+/// Unload texture from GPU memory
+pub fn rlUnloadTexture(
+    id: u32,
+) void {
+    raylib.mrlUnloadTexture(
+        id,
+    );
+}
+
+/// Generate mipmap data for selected texture
+pub fn rlGenTextureMipmaps(
+    id: u32,
+    width: i32,
+    height: i32,
+    format: i32,
+    mipmaps: [*]i32,
+) void {
+    raylib.mrlGenTextureMipmaps(
+        id,
+        width,
+        height,
+        format,
+        @ptrCast([*c]i32, mipmaps),
+    );
+}
+
+/// Read texture pixel data
+pub fn rlReadTexturePixels(
+    id: u32,
+    width: i32,
+    height: i32,
+    format: i32,
+) [*]const anyopaque {
+    return @ptrCast(
+        *anyopaque,
+        raylib.mrlReadTexturePixels(
+            id,
+            width,
+            height,
+            format,
+        ),
+    );
+}
+
+/// Read screen pixel data (color buffer)
+pub fn rlReadScreenPixels(
+    width: i32,
+    height: i32,
+) [*:0]const u8 {
+    return @ptrCast(
+        [*]u8,
+        raylib.mrlReadScreenPixels(
+            width,
+            height,
+        ),
+    );
+}
+
+/// Load an empty framebuffer
+pub fn rlLoadFramebuffer(
+    width: i32,
+    height: i32,
+) u32 {
+    return raylib.mrlLoadFramebuffer(
+        width,
+        height,
+    );
+}
+
+/// Attach texture/renderbuffer to a framebuffer
+pub fn rlFramebufferAttach(
+    fboId: u32,
+    texId: u32,
+    attachType: i32,
+    texType: i32,
+    mipLevel: i32,
+) void {
+    raylib.mrlFramebufferAttach(
+        fboId,
+        texId,
+        attachType,
+        texType,
+        mipLevel,
+    );
+}
+
+/// Verify framebuffer is complete
+pub fn rlFramebufferComplete(
+    id: u32,
+) bool {
+    return raylib.mrlFramebufferComplete(
+        id,
+    );
+}
+
+/// Delete framebuffer from GPU
+pub fn rlUnloadFramebuffer(
+    id: u32,
+) void {
+    raylib.mrlUnloadFramebuffer(
+        id,
+    );
+}
+
+/// Load shader from code strings
+pub fn rlLoadShaderCode(
+    vsCode: [*:0]const u8,
+    fsCode: [*:0]const u8,
+) u32 {
+    return raylib.mrlLoadShaderCode(
+        @intToPtr([*c]const u8, @ptrToInt(vsCode)),
+        @intToPtr([*c]const u8, @ptrToInt(fsCode)),
+    );
+}
+
+/// Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+pub fn rlCompileShader(
+    shaderCode: [*:0]const u8,
+    typ: i32,
+) u32 {
+    return raylib.mrlCompileShader(
+        @intToPtr([*c]const u8, @ptrToInt(shaderCode)),
+        typ,
+    );
+}
+
+/// Load custom shader program
+pub fn rlLoadShaderProgram(
+    vShaderId: u32,
+    fShaderId: u32,
+) u32 {
+    return raylib.mrlLoadShaderProgram(
+        vShaderId,
+        fShaderId,
+    );
+}
+
+/// Unload shader program
+pub fn rlUnloadShaderProgram(
+    id: u32,
+) void {
+    raylib.mrlUnloadShaderProgram(
+        id,
+    );
+}
+
+/// Get shader location uniform
+pub fn rlGetLocationUniform(
+    shaderId: u32,
+    uniformName: [*:0]const u8,
+) i32 {
+    return raylib.mrlGetLocationUniform(
+        shaderId,
+        @intToPtr([*c]const u8, @ptrToInt(uniformName)),
+    );
+}
+
+/// Get shader location attribute
+pub fn rlGetLocationAttrib(
+    shaderId: u32,
+    attribName: [*:0]const u8,
+) i32 {
+    return raylib.mrlGetLocationAttrib(
+        shaderId,
+        @intToPtr([*c]const u8, @ptrToInt(attribName)),
+    );
+}
+
+/// Set shader value uniform
+pub fn rlSetUniform(
+    locIndex: i32,
+    value: *anyopaque,
+    uniformType: i32,
+    count: i32,
+) void {
+    raylib.mrlSetUniform(
+        locIndex,
+        @ptrCast([*c]anyopaque, value),
+        uniformType,
+        count,
+    );
+}
+
+/// Set shader value matrix
+pub fn rlSetUniformMatrix(
+    locIndex: i32,
+    mat: Matrix,
+) void {
+    raylib.mrlSetUniformMatrix(
+        locIndex,
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&mat)),
+    );
+}
+
+/// Set shader value sampler
+pub fn rlSetUniformSampler(
+    locIndex: i32,
+    textureId: u32,
+) void {
+    raylib.mrlSetUniformSampler(
+        locIndex,
+        textureId,
+    );
+}
+
+/// Set shader currently active (id and locations)
+pub fn rlSetShader(
+    id: u32,
+    locs: [*]i32,
+) void {
+    raylib.mrlSetShader(
+        id,
+        @ptrCast([*c]i32, locs),
+    );
+}
+
+/// Load compute shader program
+pub fn rlLoadComputeShaderProgram(
+    shaderId: u32,
+) u32 {
+    return raylib.mrlLoadComputeShaderProgram(
+        shaderId,
+    );
+}
+
+/// Dispatch compute shader (equivalent to *draw* for graphics pilepine)
+pub fn rlComputeShaderDispatch(
+    groupX: u32,
+    groupY: u32,
+    groupZ: u32,
+) void {
+    raylib.mrlComputeShaderDispatch(
+        groupX,
+        groupY,
+        groupZ,
+    );
+}
+
+/// Load shader storage buffer object (SSBO)
+pub fn rlLoadShaderBuffer(
+    size: u64,
+    data: *anyopaque,
+    usageHint: i32,
+) u32 {
+    return raylib.mrlLoadShaderBuffer(
+        size,
+        @ptrCast([*c]anyopaque, data),
+        usageHint,
+    );
+}
+
+/// Unload shader storage buffer object (SSBO)
+pub fn rlUnloadShaderBuffer(
+    ssboId: u32,
+) void {
+    raylib.mrlUnloadShaderBuffer(
+        ssboId,
+    );
+}
+
+/// Update SSBO buffer data
+pub fn rlUpdateShaderBufferElements(
+    id: u32,
+    data: *anyopaque,
+    dataSize: u64,
+    offset: u64,
+) void {
+    raylib.mrlUpdateShaderBufferElements(
+        id,
+        @ptrCast([*c]anyopaque, data),
+        dataSize,
+        offset,
+    );
+}
+
+/// Get SSBO buffer size
+pub fn rlGetShaderBufferSize(
+    id: u32,
+) u64 {
+    return raylib.mrlGetShaderBufferSize(
+        id,
+    );
+}
+
+/// Bind SSBO buffer
+pub fn rlReadShaderBufferElements(
+    id: u32,
+    dest: *anyopaque,
+    count: u64,
+    offset: u64,
+) void {
+    raylib.mrlReadShaderBufferElements(
+        id,
+        @ptrCast([*c]anyopaque, dest),
+        count,
+        offset,
+    );
+}
+
+/// Copy SSBO buffer data
+pub fn rlBindShaderBuffer(
+    id: u32,
+    index: u32,
+) void {
+    raylib.mrlBindShaderBuffer(
+        id,
+        index,
+    );
+}
+
+/// Copy SSBO buffer data
+pub fn rlCopyBuffersElements(
+    destId: u32,
+    srcId: u32,
+    destOffset: u64,
+    srcOffset: u64,
+    count: u64,
+) void {
+    raylib.mrlCopyBuffersElements(
+        destId,
+        srcId,
+        destOffset,
+        srcOffset,
+        count,
+    );
+}
+
+/// Bind image texture
+pub fn rlBindImageTexture(
+    id: u32,
+    index: u32,
+    format: u32,
+    readonly: i32,
+) void {
+    raylib.mrlBindImageTexture(
+        id,
+        index,
+        format,
+        readonly,
+    );
+}
+
+/// Get internal modelview matrix
+pub fn rlGetMatrixModelview() Matrix {
+    var out: Matrix = undefined;
+    raylib.mrlGetMatrixModelview(
+        @ptrCast([*c]raylib.Matrix, &out),
+    );
+    return out;
+}
+
+/// Get internal projection matrix
+pub fn rlGetMatrixProjection() Matrix {
+    var out: Matrix = undefined;
+    raylib.mrlGetMatrixProjection(
+        @ptrCast([*c]raylib.Matrix, &out),
+    );
+    return out;
+}
+
+/// Get internal accumulated transform matrix
+pub fn rlGetMatrixTransform() Matrix {
+    var out: Matrix = undefined;
+    raylib.mrlGetMatrixTransform(
+        @ptrCast([*c]raylib.Matrix, &out),
+    );
+    return out;
+}
+
+/// 
+pub fn rlGetMatrixProjectionStereo(
+    eye: i32,
+) Matrix {
+    var out: Matrix = undefined;
+    raylib.mrlGetMatrixProjectionStereo(
+        @ptrCast([*c]raylib.Matrix, &out),
+        eye,
+    );
+    return out;
+}
+
+/// 
+pub fn rlGetMatrixViewOffsetStereo(
+    eye: i32,
+) Matrix {
+    var out: Matrix = undefined;
+    raylib.mrlGetMatrixViewOffsetStereo(
+        @ptrCast([*c]raylib.Matrix, &out),
+        eye,
+    );
+    return out;
+}
+
+/// Set a custom projection matrix (replaces internal projection matrix)
+pub fn rlSetMatrixProjection(
+    proj: Matrix,
+) void {
+    raylib.mrlSetMatrixProjection(
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&proj)),
+    );
+}
+
+/// Set a custom modelview matrix (replaces internal modelview matrix)
+pub fn rlSetMatrixModelview(
+    view: Matrix,
+) void {
+    raylib.mrlSetMatrixModelview(
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&view)),
+    );
+}
+
+/// Set eyes projection matrices for stereo rendering
+pub fn rlSetMatrixProjectionStereo(
+    right: Matrix,
+    left: Matrix,
+) void {
+    raylib.mrlSetMatrixProjectionStereo(
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&right)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&left)),
+    );
+}
+
+/// Set eyes view offsets matrices for stereo rendering
+pub fn rlSetMatrixViewOffsetStereo(
+    right: Matrix,
+    left: Matrix,
+) void {
+    raylib.mrlSetMatrixViewOffsetStereo(
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&right)),
+        @intToPtr([*c]raylib.Matrix, @ptrToInt(&left)),
+    );
+}
+
+/// Load and draw a cube
+pub fn rlLoadDrawCube() void {
+    raylib.mrlLoadDrawCube();
+}
+
+/// Load and draw a quad
+pub fn rlLoadDrawQuad() void {
+    raylib.mrlLoadDrawQuad();
+}
+
 /// 
 pub fn Clamp(
     value: f32,
@@ -8979,6 +10564,52 @@ pub const VrStereoConfig = extern struct {
     scaleIn: [2]f32,
 };
 
+/// Dynamic vertex buffers (position + texcoords + colors + indices arrays)
+pub const rlVertexBuffer = extern struct {
+    /// Number of elements in the buffer (QUADS)
+    elementCount: i32,
+    /// Vertex position (XYZ - 3 components per vertex) (shader-location = 0)
+    vertices: [*]f32,
+    /// Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1)
+    texcoords: [*]f32,
+    /// Vertex colors (RGBA - 4 components per vertex) (shader-location = 3)
+    colors: [*]u8,
+    /// Vertex indices (in case vertex data comes indexed) (6 indices per quad)
+    indices: [*]u16,
+    /// OpenGL Vertex Array Object id
+    vaoId: u32,
+    /// OpenGL Vertex Buffer Objects id (4 types of vertex data)
+    vboId: [4]u32,
+};
+
+/// of those state-change happens (this is done in core module)
+pub const rlDrawCall = extern struct {
+    /// Drawing mode: LINES, TRIANGLES, QUADS
+    mode: i32,
+    /// Number of vertex of the draw
+    vertexCount: i32,
+    /// Number of vertex required for index alignment (LINES, TRIANGLES)
+    vertexAlignment: i32,
+    /// Texture id to be used on the draw -> Use to create new draw call if changes
+    textureId: u32,
+};
+
+/// rlRenderBatch type
+pub const rlRenderBatch = extern struct {
+    /// Number of vertex buffers (multi-buffering support)
+    bufferCount: i32,
+    /// Current buffer tracking in case of multi-buffering
+    currentBuffer: i32,
+    /// Dynamic buffer(s) for vertex data
+    vertexBuffer: [*]rlVertexBuffer,
+    /// Draw calls array, depends on textureId
+    draws: [*]rlDrawCall,
+    /// Draw calls counter
+    drawCounter: i32,
+    /// Current depth value for next draw
+    currentDepth: f32,
+};
+
 /// NOTE: Helper types to be used instead of array return types for *ToFloat functions
 pub const float3 = extern struct {
     /// 
@@ -9767,6 +11398,254 @@ pub const NPatchLayout = enum(i32) {
     NPATCH_THREE_PATCH_VERTICAL = 1,
     /// Npatch layout: 3x1 tiles
     NPATCH_THREE_PATCH_HORIZONTAL = 2,
+};
+
+/// edef enum {
+pub const rlGlVersion = enum(i32) {
+    /// 
+    OPENGL_11 = 1,
+    /// 
+    OPENGL_21 = 2,
+    /// 
+    OPENGL_33 = 3,
+    /// 
+    OPENGL_43 = 4,
+    /// 
+    OPENGL_ES_20 = 5,
+};
+
+/// edef enum {
+pub const rlFramebufferAttachType = enum(i32) {
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL0 = 0,
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL1 = 1,
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL2 = 2,
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL3 = 3,
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL4 = 4,
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL5 = 5,
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL6 = 6,
+    /// 
+    RL_ATTACHMENT_COLOR_CHANNEL7 = 7,
+    /// 
+    RL_ATTACHMENT_DEPTH = 100,
+    /// 
+    RL_ATTACHMENT_STENCIL = 200,
+};
+
+/// edef enum {
+pub const rlFramebufferAttachTextureType = enum(i32) {
+    /// 
+    RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0,
+    /// 
+    RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1,
+    /// 
+    RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2,
+    /// 
+    RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y = 3,
+    /// 
+    RL_ATTACHMENT_CUBEMAP_POSITIVE_Z = 4,
+    /// 
+    RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5,
+    /// 
+    RL_ATTACHMENT_TEXTURE2D = 100,
+    /// 
+    RL_ATTACHMENT_RENDERBUFFER = 200,
+};
+
+/// Trace log level
+pub const rlTraceLogLevel = enum(i32) {
+    /// Display all logs
+    RL_LOG_ALL = 0,
+    /// Trace logging, intended for internal use only
+    RL_LOG_TRACE = 1,
+    /// Debug logging, used for internal debugging, it should be disabled on release builds
+    RL_LOG_DEBUG = 2,
+    /// Info logging, used for program execution info
+    RL_LOG_INFO = 3,
+    /// Warning logging, used on recoverable failures
+    RL_LOG_WARNING = 4,
+    /// Error logging, used on unrecoverable failures
+    RL_LOG_ERROR = 5,
+    /// Fatal logging, used to abort program: exit(EXIT_FAILURE)
+    RL_LOG_FATAL = 6,
+    /// Disable logging
+    RL_LOG_NONE = 7,
+};
+
+/// Texture formats (support depends on OpenGL version)
+pub const rlPixelFormat = enum(i32) {
+    /// 8 bit per pixel (no alpha)
+    RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1,
+    /// 8*2 bpp (2 channels)
+    RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA = 2,
+    /// 16 bpp
+    RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5 = 3,
+    /// 24 bpp
+    RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8 = 4,
+    /// 16 bpp (1 bit alpha)
+    RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1 = 5,
+    /// 16 bpp (4 bit alpha)
+    RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4 = 6,
+    /// 32 bpp
+    RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 = 7,
+    /// 32 bpp (1 channel - float)
+    RL_PIXELFORMAT_UNCOMPRESSED_R32 = 8,
+    /// 32*3 bpp (3 channels - float)
+    RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32 = 9,
+    /// 32*4 bpp (4 channels - float)
+    RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 = 10,
+    /// 4 bpp (no alpha)
+    RL_PIXELFORMAT_COMPRESSED_DXT1_RGB = 11,
+    /// 4 bpp (1 bit alpha)
+    RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA = 12,
+    /// 8 bpp
+    RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA = 13,
+    /// 8 bpp
+    RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA = 14,
+    /// 4 bpp
+    RL_PIXELFORMAT_COMPRESSED_ETC1_RGB = 15,
+    /// 4 bpp
+    RL_PIXELFORMAT_COMPRESSED_ETC2_RGB = 16,
+    /// 8 bpp
+    RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 17,
+    /// 4 bpp
+    RL_PIXELFORMAT_COMPRESSED_PVRT_RGB = 18,
+    /// 4 bpp
+    RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA = 19,
+    /// 8 bpp
+    RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 20,
+    /// 2 bpp
+    RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 21,
+};
+
+/// Texture parameters: filter mode
+pub const rlTextureFilter = enum(i32) {
+    /// No filter, just pixel approximation
+    RL_TEXTURE_FILTER_POINT = 0,
+    /// Linear filtering
+    RL_TEXTURE_FILTER_BILINEAR = 1,
+    /// Trilinear filtering (linear with mipmaps)
+    RL_TEXTURE_FILTER_TRILINEAR = 2,
+    /// Anisotropic filtering 4x
+    RL_TEXTURE_FILTER_ANISOTROPIC_4X = 3,
+    /// Anisotropic filtering 8x
+    RL_TEXTURE_FILTER_ANISOTROPIC_8X = 4,
+    /// Anisotropic filtering 16x
+    RL_TEXTURE_FILTER_ANISOTROPIC_16X = 5,
+};
+
+/// Color blending modes (pre-defined)
+pub const rlBlendMode = enum(i32) {
+    /// Blend textures considering alpha (default)
+    RL_BLEND_ALPHA = 0,
+    /// Blend textures adding colors
+    RL_BLEND_ADDITIVE = 1,
+    /// Blend textures multiplying colors
+    RL_BLEND_MULTIPLIED = 2,
+    /// Blend textures adding colors (alternative)
+    RL_BLEND_ADD_COLORS = 3,
+    /// Blend textures subtracting colors (alternative)
+    RL_BLEND_SUBTRACT_COLORS = 4,
+    /// Blend premultiplied textures considering alpha
+    RL_BLEND_ALPHA_PREMUL = 5,
+    /// Blend textures using custom src/dst factors (use rlSetBlendFactors())
+    RL_BLEND_CUSTOM = 6,
+};
+
+/// Shader location point type
+pub const rlShaderLocationIndex = enum(i32) {
+    /// Shader location: vertex attribute: position
+    RL_SHADER_LOC_VERTEX_POSITION = 0,
+    /// Shader location: vertex attribute: texcoord01
+    RL_SHADER_LOC_VERTEX_TEXCOORD01 = 1,
+    /// Shader location: vertex attribute: texcoord02
+    RL_SHADER_LOC_VERTEX_TEXCOORD02 = 2,
+    /// Shader location: vertex attribute: normal
+    RL_SHADER_LOC_VERTEX_NORMAL = 3,
+    /// Shader location: vertex attribute: tangent
+    RL_SHADER_LOC_VERTEX_TANGENT = 4,
+    /// Shader location: vertex attribute: color
+    RL_SHADER_LOC_VERTEX_COLOR = 5,
+    /// Shader location: matrix uniform: model-view-projection
+    RL_SHADER_LOC_MATRIX_MVP = 6,
+    /// Shader location: matrix uniform: view (camera transform)
+    RL_SHADER_LOC_MATRIX_VIEW = 7,
+    /// Shader location: matrix uniform: projection
+    RL_SHADER_LOC_MATRIX_PROJECTION = 8,
+    /// Shader location: matrix uniform: model (transform)
+    RL_SHADER_LOC_MATRIX_MODEL = 9,
+    /// Shader location: matrix uniform: normal
+    RL_SHADER_LOC_MATRIX_NORMAL = 10,
+    /// Shader location: vector uniform: view
+    RL_SHADER_LOC_VECTOR_VIEW = 11,
+    /// Shader location: vector uniform: diffuse color
+    RL_SHADER_LOC_COLOR_DIFFUSE = 12,
+    /// Shader location: vector uniform: specular color
+    RL_SHADER_LOC_COLOR_SPECULAR = 13,
+    /// Shader location: vector uniform: ambient color
+    RL_SHADER_LOC_COLOR_AMBIENT = 14,
+    /// Shader location: sampler2d texture: albedo (same as: RL_SHADER_LOC_MAP_DIFFUSE)
+    RL_SHADER_LOC_MAP_ALBEDO = 15,
+    /// Shader location: sampler2d texture: metalness (same as: RL_SHADER_LOC_MAP_SPECULAR)
+    RL_SHADER_LOC_MAP_METALNESS = 16,
+    /// Shader location: sampler2d texture: normal
+    RL_SHADER_LOC_MAP_NORMAL = 17,
+    /// Shader location: sampler2d texture: roughness
+    RL_SHADER_LOC_MAP_ROUGHNESS = 18,
+    /// Shader location: sampler2d texture: occlusion
+    RL_SHADER_LOC_MAP_OCCLUSION = 19,
+    /// Shader location: sampler2d texture: emission
+    RL_SHADER_LOC_MAP_EMISSION = 20,
+    /// Shader location: sampler2d texture: height
+    RL_SHADER_LOC_MAP_HEIGHT = 21,
+    /// Shader location: samplerCube texture: cubemap
+    RL_SHADER_LOC_MAP_CUBEMAP = 22,
+    /// Shader location: samplerCube texture: irradiance
+    RL_SHADER_LOC_MAP_IRRADIANCE = 23,
+    /// Shader location: samplerCube texture: prefilter
+    RL_SHADER_LOC_MAP_PREFILTER = 24,
+    /// Shader location: sampler2d texture: brdf
+    RL_SHADER_LOC_MAP_BRDF = 25,
+};
+
+/// Shader uniform data type
+pub const rlShaderUniformDataType = enum(i32) {
+    /// Shader uniform type: float
+    RL_SHADER_UNIFORM_FLOAT = 0,
+    /// Shader uniform type: vec2 (2 float)
+    RL_SHADER_UNIFORM_VEC2 = 1,
+    /// Shader uniform type: vec3 (3 float)
+    RL_SHADER_UNIFORM_VEC3 = 2,
+    /// Shader uniform type: vec4 (4 float)
+    RL_SHADER_UNIFORM_VEC4 = 3,
+    /// Shader uniform type: int
+    RL_SHADER_UNIFORM_INT = 4,
+    /// Shader uniform type: ivec2 (2 int)
+    RL_SHADER_UNIFORM_IVEC2 = 5,
+    /// Shader uniform type: ivec3 (3 int)
+    RL_SHADER_UNIFORM_IVEC3 = 6,
+    /// Shader uniform type: ivec4 (4 int)
+    RL_SHADER_UNIFORM_IVEC4 = 7,
+    /// Shader uniform type: sampler2d
+    RL_SHADER_UNIFORM_SAMPLER2D = 8,
+};
+
+/// Shader attribute data types
+pub const rlShaderAttributeDataType = enum(i32) {
+    /// Shader attribute type: float
+    RL_SHADER_ATTRIB_FLOAT = 0,
+    /// Shader attribute type: vec2 (2 float)
+    RL_SHADER_ATTRIB_VEC2 = 1,
+    /// Shader attribute type: vec3 (3 float)
+    RL_SHADER_ATTRIB_VEC3 = 2,
+    /// Shader attribute type: vec4 (4 float)
+    RL_SHADER_ATTRIB_VEC4 = 3,
 };
 
 /// Gui control state
@@ -10600,6 +12479,234 @@ pub const RAYWHITE: Color = .{ .r = 245, .g = 245, .b = 245, .a = 255 };
 
 /// 
 pub const MOUSE_LEFT_BUTTON: i32 = 0;
+
+/// 
+pub const RLGL_VERSION: []const u8 = "4.0";
+
+/// 
+pub const RL_DEFAULT_BATCH_BUFFER_ELEMENTS: i32 = 8192;
+
+/// Default number of batch buffers (multi-buffering)
+pub const RL_DEFAULT_BATCH_BUFFERS: i32 = 1;
+
+/// Default number of batch draw calls (by state changes: mode, texture)
+pub const RL_DEFAULT_BATCH_DRAWCALLS: i32 = 256;
+
+/// Maximum number of textures units that can be activated on batch drawing (SetShaderValueTexture())
+pub const RL_DEFAULT_BATCH_MAX_TEXTURE_UNITS: i32 = 4;
+
+/// Maximum size of Matrix stack
+pub const RL_MAX_MATRIX_STACK_SIZE: i32 = 32;
+
+/// Maximum number of shader locations supported
+pub const RL_MAX_SHADER_LOCATIONS: i32 = 32;
+
+/// GL_TEXTURE_WRAP_S
+pub const RL_TEXTURE_WRAP_S: i32 = 10242;
+
+/// GL_TEXTURE_WRAP_T
+pub const RL_TEXTURE_WRAP_T: i32 = 10243;
+
+/// GL_TEXTURE_MAG_FILTER
+pub const RL_TEXTURE_MAG_FILTER: i32 = 10240;
+
+/// GL_TEXTURE_MIN_FILTER
+pub const RL_TEXTURE_MIN_FILTER: i32 = 10241;
+
+/// GL_NEAREST
+pub const RL_TEXTURE_FILTER_NEAREST: i32 = 9728;
+
+/// GL_LINEAR
+pub const RL_TEXTURE_FILTER_LINEAR: i32 = 9729;
+
+/// GL_NEAREST_MIPMAP_NEAREST
+pub const RL_TEXTURE_FILTER_MIP_NEAREST: i32 = 9984;
+
+/// GL_NEAREST_MIPMAP_LINEAR
+pub const RL_TEXTURE_FILTER_NEAREST_MIP_LINEAR: i32 = 9986;
+
+/// GL_LINEAR_MIPMAP_NEAREST
+pub const RL_TEXTURE_FILTER_LINEAR_MIP_NEAREST: i32 = 9985;
+
+/// GL_LINEAR_MIPMAP_LINEAR
+pub const RL_TEXTURE_FILTER_MIP_LINEAR: i32 = 9987;
+
+/// Anisotropic filter (custom identifier)
+pub const RL_TEXTURE_FILTER_ANISOTROPIC: i32 = 12288;
+
+/// GL_REPEAT
+pub const RL_TEXTURE_WRAP_REPEAT: i32 = 10497;
+
+/// GL_CLAMP_TO_EDGE
+pub const RL_TEXTURE_WRAP_CLAMP: i32 = 33071;
+
+/// GL_MIRRORED_REPEAT
+pub const RL_TEXTURE_WRAP_MIRROR_REPEAT: i32 = 33648;
+
+/// GL_MIRROR_CLAMP_EXT
+pub const RL_TEXTURE_WRAP_MIRROR_CLAMP: i32 = 34626;
+
+/// GL_MODELVIEW
+pub const RL_MODELVIEW: i32 = 5888;
+
+/// GL_PROJECTION
+pub const RL_PROJECTION: i32 = 5889;
+
+/// GL_TEXTURE
+pub const RL_TEXTURE: i32 = 5890;
+
+/// GL_LINES
+pub const RL_LINES: i32 = 1;
+
+/// GL_TRIANGLES
+pub const RL_TRIANGLES: i32 = 4;
+
+/// GL_QUADS
+pub const RL_QUADS: i32 = 7;
+
+/// GL_UNSIGNED_BYTE
+pub const RL_UNSIGNED_BYTE: i32 = 5121;
+
+/// GL_FLOAT
+pub const RL_FLOAT: i32 = 5126;
+
+/// GL_STREAM_DRAW
+pub const RL_STREAM_DRAW: i32 = 35040;
+
+/// GL_STREAM_READ
+pub const RL_STREAM_READ: i32 = 35041;
+
+/// GL_STREAM_COPY
+pub const RL_STREAM_COPY: i32 = 35042;
+
+/// GL_STATIC_DRAW
+pub const RL_STATIC_DRAW: i32 = 35044;
+
+/// GL_STATIC_READ
+pub const RL_STATIC_READ: i32 = 35045;
+
+/// GL_STATIC_COPY
+pub const RL_STATIC_COPY: i32 = 35046;
+
+/// GL_DYNAMIC_DRAW
+pub const RL_DYNAMIC_DRAW: i32 = 35048;
+
+/// GL_DYNAMIC_READ
+pub const RL_DYNAMIC_READ: i32 = 35049;
+
+/// GL_DYNAMIC_COPY
+pub const RL_DYNAMIC_COPY: i32 = 35050;
+
+/// GL_FRAGMENT_SHADER
+pub const RL_FRAGMENT_SHADER: i32 = 35632;
+
+/// GL_VERTEX_SHADER
+pub const RL_VERTEX_SHADER: i32 = 35633;
+
+/// GL_COMPUTE_SHADER
+pub const RL_COMPUTE_SHADER: i32 = 37305;
+
+/// 
+pub const GL_SHADING_LANGUAGE_VERSION: i32 = 35724;
+
+/// 
+pub const GL_COMPRESSED_RGB_S3TC_DXT1_EXT: i32 = 33776;
+
+/// 
+pub const GL_COMPRESSED_RGBA_S3TC_DXT1_EXT: i32 = 33777;
+
+/// 
+pub const GL_COMPRESSED_RGBA_S3TC_DXT3_EXT: i32 = 33778;
+
+/// 
+pub const GL_COMPRESSED_RGBA_S3TC_DXT5_EXT: i32 = 33779;
+
+/// 
+pub const GL_ETC1_RGB8_OES: i32 = 36196;
+
+/// 
+pub const GL_COMPRESSED_RGB8_ETC2: i32 = 37492;
+
+/// 
+pub const GL_COMPRESSED_RGBA8_ETC2_EAC: i32 = 37496;
+
+/// 
+pub const GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG: i32 = 35840;
+
+/// 
+pub const GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG: i32 = 35842;
+
+/// 
+pub const GL_COMPRESSED_RGBA_ASTC_4x4_KHR: i32 = 37808;
+
+/// 
+pub const GL_COMPRESSED_RGBA_ASTC_8x8_KHR: i32 = 37815;
+
+/// 
+pub const GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT: i32 = 34047;
+
+/// 
+pub const GL_TEXTURE_MAX_ANISOTROPY_EXT: i32 = 34046;
+
+/// 
+pub const GL_UNSIGNED_SHORT_5_6_5: i32 = 33635;
+
+/// 
+pub const GL_UNSIGNED_SHORT_5_5_5_1: i32 = 32820;
+
+/// 
+pub const GL_UNSIGNED_SHORT_4_4_4_4: i32 = 32819;
+
+/// 
+pub const GL_LUMINANCE: i32 = 6409;
+
+/// 
+pub const GL_LUMINANCE_ALPHA: i32 = 6410;
+
+/// Binded by default to shader location: 0
+pub const RL_DEFAULT_SHADER_ATTRIB_NAME_POSITION: []const u8 = "vertexPosition";
+
+/// Binded by default to shader location: 1
+pub const RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD: []const u8 = "vertexTexCoord";
+
+/// Binded by default to shader location: 2
+pub const RL_DEFAULT_SHADER_ATTRIB_NAME_NORMAL: []const u8 = "vertexNormal";
+
+/// Binded by default to shader location: 3
+pub const RL_DEFAULT_SHADER_ATTRIB_NAME_COLOR: []const u8 = "vertexColor";
+
+/// Binded by default to shader location: 4
+pub const RL_DEFAULT_SHADER_ATTRIB_NAME_TANGENT: []const u8 = "vertexTangent";
+
+/// Binded by default to shader location: 5
+pub const RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD2: []const u8 = "vertexTexCoord2";
+
+/// model-view-projection matrix
+pub const RL_DEFAULT_SHADER_UNIFORM_NAME_MVP: []const u8 = "mvp";
+
+/// view matrix
+pub const RL_DEFAULT_SHADER_UNIFORM_NAME_VIEW: []const u8 = "matView";
+
+/// projection matrix
+pub const RL_DEFAULT_SHADER_UNIFORM_NAME_PROJECTION: []const u8 = "matProjection";
+
+/// model matrix
+pub const RL_DEFAULT_SHADER_UNIFORM_NAME_MODEL: []const u8 = "matModel";
+
+/// normal matrix (transpose(inverse(matModelView))
+pub const RL_DEFAULT_SHADER_UNIFORM_NAME_NORMAL: []const u8 = "matNormal";
+
+/// color diffuse (base tint color, multiplied by texture color)
+pub const RL_DEFAULT_SHADER_UNIFORM_NAME_COLOR: []const u8 = "colDiffuse";
+
+/// texture0 (texture slot active 0)
+pub const RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE0: []const u8 = "texture0";
+
+/// texture1 (texture slot active 1)
+pub const RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE1: []const u8 = "texture1";
+
+/// texture2 (texture slot active 2)
+pub const RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE2: []const u8 = "texture2";
 
 /// 
 pub const EPSILON: f32 = 0.0000009999999974752427;
