@@ -307,6 +307,10 @@ pub const Vector3 = extern struct {
         return @This().new(0, 0, 1);
     }
 
+    pub fn rotate(self: @This(), quaternion: Vector4) @This() {
+        return Vector3RotateByQuaternion(self, quaternion);
+    }
+
     pub fn xy(self: @This()) Vector2 {
         return .{ .x = self.x, .y = self.y };
     }
