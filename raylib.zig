@@ -399,12 +399,14 @@ pub const Color = extern struct {
     b: u8 = 0,
     a: u8 = 255,
 
-    pub fn set(self: @This(), c: struct {
+    pub const ColorChangeConfig = struct {
         r: ?u8 = null,
         g: ?u8 = null,
         b: ?u8 = null,
         a: ?u8 = null,
-    }) Color {
+    };
+
+    pub fn set(self: @This(), c: ColorChangeConfig) Color {
         return .{
             .r = if (c.r) |_r| _r else self.r,
             .g = if (c.g) |_g| _g else self.g,
