@@ -179,6 +179,7 @@ pub const Vector2 = extern struct {
         };
     }
 
+    /// same as add but assign result directly to this
     pub fn addSet(self: *@This(), other: @This()) void {
         self.x += other.x;
         self.y += other.y;
@@ -220,8 +221,16 @@ pub const Vector2 = extern struct {
         return .{ .x = @floatToInt(i32, self.x), .y = @floatToInt(i32, self.y) };
     }
 
-    pub fn rotate(self: @This(), angle: f32) @This() {
-        return Vector2Rotate(self, angle);
+    pub fn rotate(self: @This(), a: f32) @This() {
+        return Vector2Rotate(self, a);
+    }
+
+    pub fn fromAngle(a: f32) @This() {
+        return Vector2Rotate(.{ .x = 1 }, a);
+    }
+
+    pub fn angle(this: @This()) f32 {
+        return Vector2Angle(this, .{ .x = 1 });
     }
 
     pub fn xy0(self: @This()) Vector3 {
@@ -399,12 +408,14 @@ pub const Color = extern struct {
     b: u8 = 0,
     a: u8 = 255,
 
-    pub fn set(self: @This(), c: struct {
+    pub const ColorChangeConfig = struct {
         r: ?u8 = null,
         g: ?u8 = null,
         b: ?u8 = null,
         a: ?u8 = null,
-    }) Color {
+    };
+
+    pub fn set(self: @This(), c: ColorChangeConfig) Color {
         return .{
             .r = if (c.r) |_r| _r else self.r,
             .g = if (c.g) |_g| _g else self.g,
