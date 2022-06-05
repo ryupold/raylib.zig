@@ -221,6 +221,16 @@ pub const Vector2 = extern struct {
         return .{ .x = @floatToInt(i32, self.x), .y = @floatToInt(i32, self.y) };
     }
 
+    /// Cross product
+    pub fn cross(self: @This(), other: @This()) f32 {
+        return self.x * other.y - self.y * other.x;
+    }
+
+    /// Dot product.
+    pub fn dot(self: @This(), other: @This()) f32 {
+        return self.x * other.x + self.y * other.y;
+    }
+
     pub fn rotate(self: @This(), a: f32) @This() {
         return Vector2Rotate(self, a);
     }
@@ -230,7 +240,12 @@ pub const Vector2 = extern struct {
     }
 
     pub fn angle(this: @This()) f32 {
-        return Vector2Angle(this, .{ .x = 1 });
+        const zeroRotation: Vector2 = .{ .x = 1, .y = 0 };
+        if (this.x == zeroRotation.x and this.y == zeroRotation.y) return 0;
+
+        const c = zeroRotation.cross(this);
+        const d = zeroRotation.dot(this);
+        return std.math.atan2(f32, c, d);
     }
 
     pub fn xy0(self: @This()) Vector3 {
