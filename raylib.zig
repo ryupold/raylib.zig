@@ -95,6 +95,20 @@ pub const Rectangle = extern struct {
             .y = self.y,
         };
     }
+
+    pub fn size(self: @This()) Vector2 {
+        return .{
+            .x = self.width,
+            .y = self.height,
+        };
+    }
+
+    pub fn center(self: @This()) Vector2 {
+        return .{
+            .x = self.x + self.width / 2,
+            .y = self.y + self.height / 2,
+        };
+    }
 };
 
 pub const RectangleI = extern struct {
