@@ -80,7 +80,7 @@ pub const Rectangle = extern struct {
     width: f32,
     height: f32,
 
-    pub fn toI32(self: @This()) Rectangle {
+    pub fn toI32(self: @This()) RectangleI {
         return .{
             .x = @floatToInt(i32, self.x),
             .y = @floatToInt(i32, self.y),
@@ -103,10 +103,66 @@ pub const Rectangle = extern struct {
         };
     }
 
+    pub fn topLeft(self: @This()) Vector2 {
+        return .{
+            .x = self.x,
+            .y = self.y,
+        };
+    }
+
+    pub fn topCenter(self: @This()) Vector2 {
+        return .{
+            .x = self.x + self.width / 2,
+            .y = self.y,
+        };
+    }
+
+    pub fn topRight(self: @This()) Vector2 {
+        return .{
+            .x = self.x + self.width,
+            .y = self.y,
+        };
+    }
+
+    pub fn centerLeft(self: @This()) Vector2 {
+        return .{
+            .x = self.x,
+            .y = self.y + self.height / 2,
+        };
+    }
+
     pub fn center(self: @This()) Vector2 {
         return .{
             .x = self.x + self.width / 2,
             .y = self.y + self.height / 2,
+        };
+    }
+
+    pub fn centerRight(self: @This()) Vector2 {
+        return .{
+            .x = self.x + self.width,
+            .y = self.y + self.height / 2,
+        };
+    }
+
+    pub fn bottomLeft(self: @This()) Vector2 {
+        return .{
+            .x = self.x + 0,
+            .y = self.y + self.height,
+        };
+    }
+
+    pub fn bottomCenter(self: @This()) Vector2 {
+        return .{
+            .x = self.x + self.width / 2,
+            .y = self.y + self.height,
+        };
+    }
+
+    pub fn bottomRight(self: @This()) Vector2 {
+        return .{
+            .x = self.x + self.width,
+            .y = self.y + self.height,
         };
     }
 };
@@ -269,6 +325,13 @@ pub const Vector2 = extern struct {
     pub fn x0z(self: @This()) Vector3 {
         return .{ .x = self.x, .z = self.y };
     }
+
+    pub fn set(self: @This(), setter: struct { x: ?f32 = null, y: ?f32 = null }) Vector2 {
+        var copy = self;
+        if (setter.x) |x| copy.x = x;
+        if (setter.y) |y| copy.y = y;
+        return copy;
+    }
 };
 
 pub const Vector2i = extern struct {
@@ -351,6 +414,14 @@ pub const Vector3 = extern struct {
 
     pub fn xy(self: @This()) Vector2 {
         return .{ .x = self.x, .y = self.y };
+    }
+
+    pub fn set(self: @This(), setter: struct { x: ?f32 = null, y: ?f32 = null, z: ?f32 = null }) Vector3 {
+        var copy = self;
+        if (setter.x) |x| copy.x = x;
+        if (setter.y) |y| copy.y = y;
+        if (setter.z) |z| copy.z = z;
+        return copy;
     }
 };
 
@@ -455,6 +526,13 @@ pub const Color = extern struct {
 
     pub fn lerp(self: @This(), other: @This(), t: f32) @This() {
         return self.toVector4().lerp(other.toVector4(), t).toColor();
+    }
+
+    pub fn lerpA(self: @This(), targetAlpha: u8, t: f32) @This() {
+        var copy = self;
+        const a = @intToFloat(f32, self.a);
+        copy.a = @floatToInt(u8, a * (1 - t) + @intToFloat(f32, targetAlpha) * t);
+        return copy;
     }
 
     pub fn toVector4(self: @This()) Vector4 {
