@@ -5,16 +5,16 @@ const raylibSrc = "raylib/src/";
 
 pub fn build(b: *std.build.Builder) !void {
     const target = b.standardTargetOptions(.{});
-    const mode = b.standardReleaseOptions();
 
     //--- parse raylib and generate JSONs for all signatures --------------------------------------
     const jsons = b.step("parse", "parse raylib headers and generate raylib jsons");
     const raylib_parser_build = b.addExecutable("raylib_parser", "raylib_parser.zig");
     raylib_parser_build.addCSourceFile("raylib/parser/raylib_parser.c", &.{});
     raylib_parser_build.setTarget(target);
-    raylib_parser_build.setBuildMode(mode);
+    raylib_parser_build.setBuildMode(.ReleaseFast);
     raylib_parser_build.linkLibC();
 
+    //raylib
     const raylib_H = raylib_parser_build.run();
     raylib_H.addArgs(&.{
         "-i", raylibSrc ++ "raylib.h",
@@ -23,14 +23,8 @@ pub fn build(b: *std.build.Builder) !void {
         "-d", "RLAPI",
     });
     jsons.dependOn(&raylib_H.step);
-    const rlgl_H = raylib_parser_build.run();
-    rlgl_H.addArgs(&.{
-        "-i", raylibSrc ++ "rlgl.h",
-        "-o", "rlgl.json",
-        "-f", "JSON",
-        "-d", "RLAPI",
-    });
-    jsons.dependOn(&rlgl_H.step);
+    
+    //raymath
     const raymath_H = raylib_parser_build.run();
     raymath_H.addArgs(&.{
         "-i", raylibSrc ++ "raymath.h",
@@ -39,17 +33,31 @@ pub fn build(b: *std.build.Builder) !void {
         "-d", "RMAPI",
     });
     jsons.dependOn(&raymath_H.step);
+    
+    //rlgl
+    const rlgl_H = raylib_parser_build.run();
+    rlgl_H.addArgs(&.{
+        "-i", raylibSrc ++ "rlgl.h",
+        "-o", "rlgl.json",
+        "-f", "JSON",
+        "-d", "RLAPI",
+    });
+    jsons.dependOn(&rlgl_H.step);
+
+    //raygui
     const raygui_H = raylib_parser_build.run();
     raygui_H.addArgs(&.{
-        "-i", raylibSrc ++ "extras/raygui.h",
+        "-i", "raygui/src/raygui.h",
         "-o", "raygui.json",
         "-f", "JSON",
         "-d", "RAYGUIAPI",
     });
     jsons.dependOn(&raygui_H.step);
+
+    //physac
     const physac = raylib_parser_build.run();
     physac.addArgs(&.{
-        "-i", raylibSrc ++ "extras/physac.h",
+        "-i", "physac/src/physac.h",
         "-o", "physac.json",
         "-f", "JSON",
         "-d", "PHYSACDEF",
