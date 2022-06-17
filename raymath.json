@@ -349,6 +349,25 @@
       ]
     },
     {
+      "name": "Wrap",
+      "description": "",
+      "returnType": "float",
+      "params": [
+        {
+          "type": "float",
+          "name": "value"
+        },
+        {
+          "type": "float",
+          "name": "min"
+        },
+        {
+          "type": "float",
+          "name": "max"
+        }
+      ]
+    },
+    {
       "name": "FloatEquals",
       "description": "",
       "returnType": "int",

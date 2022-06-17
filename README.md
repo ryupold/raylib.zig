@@ -1,7 +1,7 @@
 ![logo](logo.png)
 
 # raylib.zig
-Idiomatic [raylib](https://www.raylib.com/) (4.1) bindings for [Zig](https://ziglang.org/) (0.9.1).
+Idiomatic [raylib](https://www.raylib.com/) (4.2) bindings for [Zig](https://ziglang.org/) (0.10.0).
 
 For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig).
 
@@ -17,13 +17,10 @@ Additional infos and WebGL examples [here](https://ryupold.de/pages/raylib.zig/r
 - [x] RLAPI (raylib.h)
 - [x] RLAPI (rlgl.h)
 - [x] RMAPI (raymath.h)
-- [x] RAYGUIAPI (extras/raygui.h)
-- [x] PHYSACDEF (extras/physac.h)
-- [ ] Constants
+- [x] Constants
   - [x] int, float, string
   - [x] Colors
   - [x] Versions
-  - [ ] GUI dimensions
 
 ## usage
 

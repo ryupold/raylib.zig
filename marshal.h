@@ -5,15 +5,6 @@
 #include "rlgl.h"
 #include "raymath.h"
 
-//--- RAYGUI --------------------------------------------------------------------------------------
-#define RAYGUI_CUSTOM_ICONS    // Custom icons set required
-#include "gui_icons.h"         // Custom icons set provided, generated with rGuiIcons tool
-#include "extras/raygui.h"
-
-//--- PHYSACDEF -----------------------------------------------------------------------------------
-#include "extras/physac.h"
-
-
 // Enable vertex state pointer
 void rlEnableStatePointer(int vertexAttribType, void *buffer);
 
@@ -111,10 +102,10 @@ int mGetCurrentMonitor(void);
 // Get specified monitor position
 void mGetMonitorPosition(Vector2 *out, int monitor);
 
-// Get specified monitor width (max available by monitor)
+// Get specified monitor width (current video mode used by monitor)
 int mGetMonitorWidth(int monitor);
 
-// Get specified monitor height (max available by monitor)
+// Get specified monitor height (current video mode used by monitor)
 int mGetMonitorHeight(int monitor);
 
 // Get specified monitor physical width in millimetres
@@ -153,8 +144,8 @@ void mSwapScreenBuffer(void);
 // Register all input events
 void mPollInputEvents(void);
 
-// Wait for some milliseconds (halt program execution)
-void mWaitTime(float ms);
+// Wait for some time (halt program execution)
+void mWaitTime(double seconds);
 
 // Shows cursor
 void mShowCursor(void);
@@ -270,14 +261,14 @@ void mGetCameraMatrix2D(Matrix *out, Camera2D *camera);
 // Get the screen space position for a 3d world space position
 void mGetWorldToScreen(Vector2 *out, Vector3 *position, Camera3D *camera);
 
+// Get the world space position for a 2d camera screen space position
+void mGetScreenToWorld2D(Vector2 *out, Vector2 *position, Camera2D *camera);
+
 // Get size position for a 3d world space position
 void mGetWorldToScreenEx(Vector2 *out, Vector3 *position, Camera3D *camera, int width, int height);
 
 // Get the screen space position for a 2d camera world space position
 void mGetWorldToScreen2D(Vector2 *out, Vector2 *position, Camera2D *camera);
-
-// Get the world space position for a 2d camera screen space position
-void mGetScreenToWorld2D(Vector2 *out, Vector2 *position, Camera2D *camera);
 
 // Set target FPS (maximum)
 void mSetTargetFPS(int fps);
@@ -363,17 +354,29 @@ const char * mGetWorkingDirectory(void);
 // Get the directory if the running application (uses static string)
 const char * mGetApplicationDirectory(void);
 
-// Clear directory files paths buffers (free memory)
-void mClearDirectoryFiles(void);
-
 // Change working directory, return true on success
 bool mChangeDirectory(const char * dir);
+
+// Check if a given path is a file or a directory
+bool mIsPathFile(const char * path);
+
+// Load directory filepaths
+void mLoadDirectoryFiles(FilePathList *out, const char * dirPath);
+
+// Load directory filepaths with extension filtering and recursive directory scan
+void mLoadDirectoryFilesEx(FilePathList *out, const char * basePath, const char * filter, bool scanSubdirs);
+
+// Unload filepaths
+void mUnloadDirectoryFiles(FilePathList *files);
 
 // Check if a file has been dropped into window
 bool mIsFileDropped(void);
 
-// Clear dropped files paths buffer (free memory)
-void mClearDroppedFiles(void);
+// Load dropped filepaths
+void mLoadDroppedFiles(FilePathList *out);
+
+// Unload dropped filepaths
+void mUnloadDroppedFiles(FilePathList *files);
 
 // Get file modification time (last write time)
 long mGetFileModTime(const char * fileName);
@@ -483,8 +486,11 @@ void mSetMouseOffset(int offsetX, int offsetY);
 // Set mouse scaling
 void mSetMouseScale(float scaleX, float scaleY);
 
-// Get mouse wheel movement Y
+// Get mouse wheel movement for X or Y, whichever is larger
 float mGetMouseWheelMove(void);
+
+// Get mouse wheel movement for both X and Y
+void mGetMouseWheelMoveV(Vector2 *out);
 
 // Set mouse cursor
 void mSetMouseCursor(int cursor);
@@ -1915,6 +1921,9 @@ float mNormalize(float value, float start, float end);
 float mRemap(float value, float inputStart, float inputEnd, float outputStart, float outputEnd);
 
 // 
+float mWrap(float value, float min, float max);
+
+// 
 int mFloatEquals(float x, float y);
 
 // 
@@ -2228,211 +2237,4 @@ void mQuaternionTransform(Vector4 *out, Vector4 *q, Matrix *mat);
 
 // 
 int mQuaternionEquals(Vector4 *p, Vector4 *q);
-
-// Enable gui controls (global state)
-void mGuiEnable(void);
-
-// Disable gui controls (global state)
-void mGuiDisable(void);
-
-// Lock gui controls (global state)
-void mGuiLock(void);
-
-// Unlock gui controls (global state)
-void mGuiUnlock(void);
-
-// Check if gui is locked (global state)
-bool mGuiIsLocked(void);
-
-// Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
-void mGuiFade(float alpha);
-
-// Set gui state (global state)
-void mGuiSetState(int state);
-
-// Get gui state (global state)
-int mGuiGetState(void);
-
-// Set gui custom font (global state)
-void mGuiSetFont(Font *font);
-
-// Get gui custom font (global state)
-void mGuiGetFont(Font *out);
-
-// Set one style property
-void mGuiSetStyle(int control, int property, int value);
-
-// Get one style property
-int mGuiGetStyle(int control, int property);
-
-// Window Box control, shows a window that can be closed
-bool mGuiWindowBox(Rectangle *bounds, const char * title);
-
-// Group Box control with text name
-void mGuiGroupBox(Rectangle *bounds, const char * text);
-
-// Line separator control, could contain text
-void mGuiLine(Rectangle *bounds, const char * text);
-
-// Panel control, useful to group controls
-void mGuiPanel(Rectangle *bounds);
-
-// Scroll Panel control
-void mGuiScrollPanel(Rectangle *out, Rectangle *bounds, Rectangle *content, Vector2 * scroll);
-
-// Label control, shows text
-void mGuiLabel(Rectangle *bounds, const char * text);
-
-// Button control, returns true when clicked
-bool mGuiButton(Rectangle *bounds, const char * text);
-
-// Label button control, show true when clicked
-bool mGuiLabelButton(Rectangle *bounds, const char * text);
-
-// Toggle Button control, returns true when active
-bool mGuiToggle(Rectangle *bounds, const char * text, bool active);
-
-// Toggle Group control, returns active toggle index
-int mGuiToggleGroup(Rectangle *bounds, const char * text, int active);
-
-// Check Box control, returns true when active
-bool mGuiCheckBox(Rectangle *bounds, const char * text, bool checked);
-
-// Combo Box control, returns selected item index
-int mGuiComboBox(Rectangle *bounds, const char * text, int active);
-
-// Dropdown Box control, returns selected item
-bool mGuiDropdownBox(Rectangle *bounds, const char * text, int * active, bool editMode);
-
-// Spinner control, returns selected value
-bool mGuiSpinner(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode);
-
-// Value Box control, updates input text with numbers
-bool mGuiValueBox(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode);
-
-// Text Box control, updates input text
-bool mGuiTextBox(Rectangle *bounds, char * text, int textSize, bool editMode);
-
-// Slider control, returns selected value
-float mGuiSlider(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue);
-
-// Slider Bar control, returns selected value
-float mGuiSliderBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue);
-
-// Progress Bar control, shows current progress value
-float mGuiProgressBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue);
-
-// Status Bar control, shows info text
-void mGuiStatusBar(Rectangle *bounds, const char * text);
-
-// Dummy control for placeholders
-void mGuiDummyRec(Rectangle *bounds, const char * text);
-
-// Scroll Bar control
-int mGuiScrollBar(Rectangle *bounds, int value, int minValue, int maxValue);
-
-// Grid control
-void mGuiGrid(Vector2 *out, Rectangle *bounds, float spacing, int subdivs);
-
-// List View control, returns selected list item index
-int mGuiListView(Rectangle *bounds, const char * text, int * scrollIndex, int active);
-
-// Message Box control, displays a message
-int mGuiMessageBox(Rectangle *bounds, const char * title, const char * message, const char * buttons);
-
-// Text Input Box control, ask for text
-int mGuiTextInputBox(Rectangle *bounds, const char * title, const char * message, const char * buttons, char * text);
-
-// Color Picker control (multiple color controls)
-void mGuiColorPicker(Color *out, Rectangle *bounds, Color *color);
-
-// Color Panel control
-void mGuiColorPanel(Color *out, Rectangle *bounds, Color *color);
-
-// Color Bar Alpha control
-float mGuiColorBarAlpha(Rectangle *bounds, float alpha);
-
-// Color Bar Hue control
-float mGuiColorBarHue(Rectangle *bounds, float value);
-
-// Load style file over global style variable (.rgs)
-void mGuiLoadStyle(const char * fileName);
-
-// Load style default over global style
-void mGuiLoadStyleDefault(void);
-
-// Get text with icon id prepended (if supported)
-const char * mGuiIconText(int iconId, const char * text);
-
-// Get full icons data pointer
-unsigned int * mGuiGetIcons(void);
-
-// Get icon bit data
-unsigned int * mGuiGetIconData(int iconId);
-
-// Set icon bit data
-void mGuiSetIconData(int iconId, unsigned int * data);
-
-// Set icon pixel value
-void mGuiSetIconPixel(int iconId, int x, int y);
-
-// Clear icon pixel value
-void mGuiClearIconPixel(int iconId, int x, int y);
-
-// Check icon pixel value
-bool mGuiCheckIconPixel(int iconId, int x, int y);
-
-// Initializes physics system
-void mInitPhysics(void);
-
-// Update physics system
-void mUpdatePhysics(void);
-
-// Reset physics system (global variables)
-void mResetPhysics(void);
-
-// Close physics system and unload used memory
-void mClosePhysics(void);
-
-// Sets physics fixed time step in milliseconds. 1.666666 by default
-void mSetPhysicsTimeStep(double delta);
-
-// Sets physics global gravity force
-void mSetPhysicsGravity(float x, float y);
-
-// Creates a new circle physics body with generic parameters
-PhysicsBodyData * mCreatePhysicsBodyCircle(Vector2 *pos, float radius, float density);
-
-// Creates a new rectangle physics body with generic parameters
-PhysicsBodyData * mCreatePhysicsBodyRectangle(Vector2 *pos, float width, float height, float density);
-
-// Creates a new polygon physics body with generic parameters
-PhysicsBodyData * mCreatePhysicsBodyPolygon(Vector2 *pos, float radius, int sides, float density);
-
-// Destroy a physics body
-void mDestroyPhysicsBody(PhysicsBodyData * body);
-
-// Adds a force to a physics body
-void mPhysicsAddForce(PhysicsBodyData * body, Vector2 *force);
-
-// Adds an angular force to a physics body
-void mPhysicsAddTorque(PhysicsBodyData * body, float amount);
-
-// Shatters a polygon shape physics body to little physics bodies with explosion force
-void mPhysicsShatter(PhysicsBodyData * body, Vector2 *position, float force);
-
-// Sets physics body shape transform based on radians parameter
-void mSetPhysicsBodyRotation(PhysicsBodyData * body, float radians);
-
-// Returns the current amount of created physics bodies
-int mGetPhysicsBodiesCount(void);
-
-// Returns the physics body shape type (PHYSICS_CIRCLE or PHYSICS_POLYGON)
-int mGetPhysicsShapeType(int index);
-
-// Returns the amount of vertices of a physics body shape
-int mGetPhysicsShapeVerticesCount(int index);
-
-// Returns transformed position of a body shape (body position + vertex transformed position)
-void mGetPhysicsShapeVertex(Vector2 *out, PhysicsBodyData * body, int vertex);
 

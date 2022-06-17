@@ -44,26 +44,6 @@ pub fn build(b: *std.build.Builder) !void {
     });
     jsons.dependOn(&rlgl_H.step);
 
-    //raygui
-    const raygui_H = raylib_parser_build.run();
-    raygui_H.addArgs(&.{
-        "-i", "raygui/src/raygui.h",
-        "-o", "raygui.json",
-        "-f", "JSON",
-        "-d", "RAYGUIAPI",
-    });
-    jsons.dependOn(&raygui_H.step);
-
-    //physac
-    const physac = raylib_parser_build.run();
-    physac.addArgs(&.{
-        "-i", "physac/src/physac.h",
-        "-o", "physac.json",
-        "-f", "JSON",
-        "-d", "PHYSACDEF",
-    });
-    jsons.dependOn(&physac.step);
-
     //--- Generate intermediate -------------------------------------------------------------------
     const intermediate = b.step("intermediate", "generate intermediate representation of the results from 'zig build parse' (keep custom=true)");
     const intermediateZig = b.addExecutable("intermediate", "intermediate.zig");

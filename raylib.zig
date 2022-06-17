@@ -644,40 +644,11 @@ pub fn UnloadFileData(
     );
 }
 
-/// Load style from file (.rgs)
-pub fn LoadGuiStyle(_: [*:0]const u8) u32 {
-    @panic("LoadGuiStyle is not implemented");
-    //return raylib.LoadGuiStyle(fileName);
-}
-
-/// Unload style
-pub fn UnloadGuiStyle(_: u32) void {
-    @panic("UnloadGuiStyle is not implemented");
-    // raylib.UnloadGuiStyle(style);
-}
-
 /// Set custom trace log
 pub fn SetTraceLogCallback(
     _: TraceLogCallback,
 ) void {
     @panic("use log.zig for that");
-}
-
-/// Text Box control with multiple lines
-pub fn GuiTextBoxMulti(_: Rectangle, _: [*]u8, _: i32, _: bool) bool {
-    @panic("this gets translated wrong with cImport");
-}
-
-/// List View with extended parameters
-pub fn GuiListViewEx(
-    _: Rectangle,
-    _: [*]const [*:0]const u8,
-    _: i32,
-    _: [*]i32,
-    _: [*]i32,
-    _: i32,
-) i32 {
-    @panic("TODO: link with raygui somehow");
 }
 
 /// Generate image font atlas using chars info
@@ -717,48 +688,6 @@ export fn mGenImageFontAtlas(
         fontSize,
         padding,
         packMethod,
-    );
-}
-
-/// Get dropped files names (memory should be freed)
-pub fn GetDroppedFiles(
-    count: [*]i32,
-) [*]const [*]const u8 {
-    return @ptrCast(
-        [*]u8,
-        mGetDroppedFiles(
-            @ptrCast([*c]i32, count),
-        ),
-    );
-}
-export fn mGetDroppedFiles(
-    count: [*c]i32,
-) [*c]const [*c]const u8 {
-    return raylib.GetDroppedFiles(
-        count,
-    );
-}
-
-/// Get filenames in a directory path (memory should be freed)
-pub fn GetDirectoryFiles(
-    dirPath: [*:0]const u8,
-    count: [*]i32,
-) [*]const [*]const u8 {
-    return @ptrCast(
-        [*]u8,
-        mGetDirectoryFiles(
-            @ptrCast([*c]u8, dirPath),
-            @ptrCast([*c]i32, count),
-        ),
-    );
-}
-export fn mGetDirectoryFiles(
-    dirPath: [*c]u8,
-    count: [*c]i32,
-) [*c]const [*c]const u8 {
-    return raylib.GetDirectoryFiles(
-        dirPath,
-        count,
     );
 }
 
@@ -835,74 +764,6 @@ pub fn TextAppend(allocator: std.mem.Allocator, text: []const u8, append: []cons
         append,
         text[position..],
     })).ptr;
-}
-
-//--- RAYGUI --------------------------------------------------------------------------------------
-
-pub fn textAlignPixelOffset(h: i32) i32 {
-    return h % 2;
-}
-
-fn bitCheck(a: u32, b: u32) bool {
-    var r: u32 = undefined;
-    _ = @shlWithOverflow(u32, 1, @truncate(u5, b), &r);
-    return (a & (r)) != 0;
-}
-
-/// Draw selected icon using rectangles pixel-by-pixel
-pub fn GuiDrawIcon(
-    icon: guiIconName,
-    posX: i32,
-    posY: i32,
-    pixelSize: i32,
-    color: Color,
-) void {
-    const iconId = @enumToInt(icon);
-
-    var i: i32 = 0;
-    var y: i32 = 0;
-    while (i < RICON_SIZE * RICON_SIZE / 32) : (i += 1) {
-        var k: u32 = 0;
-        while (k < 32) : (k += 1) {
-            if (bitCheck(raylib.guiIcons[@intCast(usize, iconId * RICON_DATA_ELEMENTS + i)], k)) {
-                _ = DrawRectangle(
-                    posX + @intCast(i32, k % RICON_SIZE) * pixelSize,
-                    posY + y * pixelSize,
-                    pixelSize,
-                    pixelSize,
-                    color,
-                );
-            }
-
-            if ((k == 15) or (k == 31)) {
-                y += 1;
-            }
-        }
-    }
-}
-
-/// Draw button with icon centered
-pub fn GuiDrawIconButton(bounds: Rectangle, icon: guiIconName, iconTint: Color) bool {
-    const pressed = GuiButton(bounds, "");
-    GuiDrawIcon(
-        icon,
-        @floatToInt(i32, bounds.x + bounds.width / 2 - @intToFloat(f32, RICON_SIZE) / 2),
-        @floatToInt(i32, bounds.y + (bounds.height / 2) - @intToFloat(f32, RICON_SIZE) / 2),
-        1,
-        iconTint,
-    );
-    return pressed;
-}
-
-//--- PHYSAC --------------------------------------------------------------------------------------
-
-/// Returns a physics body of the bodies pool at a specific index
-pub fn GetPhysicsBody(
-    index: i32,
-) ?*PhysicsBodyData {
-    return @ptrCast(?*PhysicsBodyData, raylib.GetPhysicsBody(
-        index,
-    ));
 }
 
 //--- RLGL ----------------------------------------------------------------------------------------
@@ -1262,7 +1123,7 @@ pub fn GetMonitorPosition(
     return out;
 }
 
-/// Get specified monitor width (max available by monitor)
+/// Get specified monitor width (current video mode used by monitor)
 pub fn GetMonitorWidth(
     monitor: i32,
 ) i32 {
@@ -1271,7 +1132,7 @@ pub fn GetMonitorWidth(
     );
 }
 
-/// Get specified monitor height (max available by monitor)
+/// Get specified monitor height (current video mode used by monitor)
 pub fn GetMonitorHeight(
     monitor: i32,
 ) i32 {
@@ -1374,12 +1235,12 @@ pub fn PollInputEvents() void {
     raylib.mPollInputEvents();
 }
 
-/// Wait for some milliseconds (halt program execution)
+/// Wait for some time (halt program execution)
 pub fn WaitTime(
-    ms: f32,
+    seconds: f64,
 ) void {
     raylib.mWaitTime(
-        ms,
+        seconds,
     );
 }
 
@@ -1726,6 +1587,20 @@ pub fn GetWorldToScreen(
     return out;
 }
 
+/// Get the world space position for a 2d camera screen space position
+pub fn GetScreenToWorld2D(
+    position: Vector2,
+    camera: Camera2D,
+) Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetScreenToWorld2D(
+        @ptrCast([*c]raylib.Vector2, &out),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
+        @intToPtr([*c]raylib.Camera2D, @ptrToInt(&camera)),
+    );
+    return out;
+}
+
 /// Get size position for a 3d world space position
 pub fn GetWorldToScreenEx(
     position: Vector3,
@@ -1751,20 +1626,6 @@ pub fn GetWorldToScreen2D(
 ) Vector2 {
     var out: Vector2 = undefined;
     raylib.mGetWorldToScreen2D(
-        @ptrCast([*c]raylib.Vector2, &out),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
-        @intToPtr([*c]raylib.Camera2D, @ptrToInt(&camera)),
-    );
-    return out;
-}
-
-/// Get the world space position for a 2d camera screen space position
-pub fn GetScreenToWorld2D(
-    position: Vector2,
-    camera: Camera2D,
-) Vector2 {
-    var out: Vector2 = undefined;
-    raylib.mGetScreenToWorld2D(
         @ptrCast([*c]raylib.Vector2, &out),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         @intToPtr([*c]raylib.Camera2D, @ptrToInt(&camera)),
@@ -2042,11 +1903,6 @@ pub fn GetApplicationDirectory() [*:0]const u8 {
     );
 }
 
-/// Clear directory files paths buffers (free memory)
-pub fn ClearDirectoryFiles() void {
-    raylib.mClearDirectoryFiles();
-}
-
 /// Change working directory, return true on success
 pub fn ChangeDirectory(
     dir: [*:0]const u8,
@@ -2056,14 +1912,73 @@ pub fn ChangeDirectory(
     );
 }
 
+/// Check if a given path is a file or a directory
+pub fn IsPathFile(
+    path: [*:0]const u8,
+) bool {
+    return raylib.mIsPathFile(
+        @intToPtr([*c]const u8, @ptrToInt(path)),
+    );
+}
+
+/// Load directory filepaths
+pub fn LoadDirectoryFiles(
+    dirPath: [*:0]const u8,
+) FilePathList {
+    var out: FilePathList = undefined;
+    raylib.mLoadDirectoryFiles(
+        @ptrCast([*c]raylib.FilePathList, &out),
+        @intToPtr([*c]const u8, @ptrToInt(dirPath)),
+    );
+    return out;
+}
+
+/// Load directory filepaths with extension filtering and recursive directory scan
+pub fn LoadDirectoryFilesEx(
+    basePath: [*:0]const u8,
+    filter: [*:0]const u8,
+    scanSubdirs: bool,
+) FilePathList {
+    var out: FilePathList = undefined;
+    raylib.mLoadDirectoryFilesEx(
+        @ptrCast([*c]raylib.FilePathList, &out),
+        @intToPtr([*c]const u8, @ptrToInt(basePath)),
+        @intToPtr([*c]const u8, @ptrToInt(filter)),
+        scanSubdirs,
+    );
+    return out;
+}
+
+/// Unload filepaths
+pub fn UnloadDirectoryFiles(
+    files: FilePathList,
+) void {
+    raylib.mUnloadDirectoryFiles(
+        @intToPtr([*c]raylib.FilePathList, @ptrToInt(&files)),
+    );
+}
+
 /// Check if a file has been dropped into window
 pub fn IsFileDropped() bool {
     return raylib.mIsFileDropped();
 }
 
-/// Clear dropped files paths buffer (free memory)
-pub fn ClearDroppedFiles() void {
-    raylib.mClearDroppedFiles();
+/// Load dropped filepaths
+pub fn LoadDroppedFiles() FilePathList {
+    var out: FilePathList = undefined;
+    raylib.mLoadDroppedFiles(
+        @ptrCast([*c]raylib.FilePathList, &out),
+    );
+    return out;
+}
+
+/// Unload dropped filepaths
+pub fn UnloadDroppedFiles(
+    files: FilePathList,
+) void {
+    raylib.mUnloadDroppedFiles(
+        @intToPtr([*c]raylib.FilePathList, @ptrToInt(&files)),
+    );
 }
 
 /// Get file modification time (last write time)
@@ -2417,9 +2332,18 @@ pub fn SetMouseScale(
     );
 }
 
-/// Get mouse wheel movement Y
+/// Get mouse wheel movement for X or Y, whichever is larger
 pub fn GetMouseWheelMove() f32 {
     return raylib.mGetMouseWheelMove();
+}
+
+/// Get mouse wheel movement for both X and Y
+pub fn GetMouseWheelMoveV() Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetMouseWheelMoveV(
+        @ptrCast([*c]raylib.Vector2, &out),
+    );
+    return out;
 }
 
 /// Set mouse cursor
@@ -8237,6 +8161,19 @@ pub fn Remap(
 }
 
 ///
+pub fn Wrap(
+    value: f32,
+    min: f32,
+    max: f32,
+) f32 {
+    return raylib.mWrap(
+        value,
+        min,
+        max,
+    );
+}
+
+///
 pub fn FloatEquals(
     x: f32,
     y: f32,
@@ -9597,796 +9534,6 @@ pub fn QuaternionEquals(
     );
 }
 
-/// Enable gui controls (global state)
-pub fn GuiEnable() void {
-    raylib.mGuiEnable();
-}
-
-/// Disable gui controls (global state)
-pub fn GuiDisable() void {
-    raylib.mGuiDisable();
-}
-
-/// Lock gui controls (global state)
-pub fn GuiLock() void {
-    raylib.mGuiLock();
-}
-
-/// Unlock gui controls (global state)
-pub fn GuiUnlock() void {
-    raylib.mGuiUnlock();
-}
-
-/// Check if gui is locked (global state)
-pub fn GuiIsLocked() bool {
-    return raylib.mGuiIsLocked();
-}
-
-/// Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
-pub fn GuiFade(
-    alpha: f32,
-) void {
-    raylib.mGuiFade(
-        alpha,
-    );
-}
-
-/// Set gui state (global state)
-pub fn GuiSetState(
-    state: i32,
-) void {
-    raylib.mGuiSetState(
-        state,
-    );
-}
-
-/// Get gui state (global state)
-pub fn GuiGetState() i32 {
-    return raylib.mGuiGetState();
-}
-
-/// Set gui custom font (global state)
-pub fn GuiSetFont(
-    font: Font,
-) void {
-    raylib.mGuiSetFont(
-        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
-    );
-}
-
-/// Get gui custom font (global state)
-pub fn GuiGetFont() Font {
-    var out: Font = undefined;
-    raylib.mGuiGetFont(
-        @ptrCast([*c]raylib.Font, &out),
-    );
-    return out;
-}
-
-/// Set one style property
-pub fn GuiSetStyle(
-    control: i32,
-    property: i32,
-    value: i32,
-) void {
-    raylib.mGuiSetStyle(
-        control,
-        property,
-        value,
-    );
-}
-
-/// Get one style property
-pub fn GuiGetStyle(
-    control: i32,
-    property: i32,
-) i32 {
-    return raylib.mGuiGetStyle(
-        control,
-        property,
-    );
-}
-
-/// Window Box control, shows a window that can be closed
-pub fn GuiWindowBox(
-    bounds: Rectangle,
-    title: [*:0]const u8,
-) bool {
-    return raylib.mGuiWindowBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(title)),
-    );
-}
-
-/// Group Box control with text name
-pub fn GuiGroupBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.mGuiGroupBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-    );
-}
-
-/// Line separator control, could contain text
-pub fn GuiLine(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.mGuiLine(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-    );
-}
-
-/// Panel control, useful to group controls
-pub fn GuiPanel(
-    bounds: Rectangle,
-) void {
-    raylib.mGuiPanel(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-    );
-}
-
-/// Scroll Panel control
-pub fn GuiScrollPanel(
-    bounds: Rectangle,
-    content: Rectangle,
-    scroll: [*]Vector2,
-) Rectangle {
-    var out: Rectangle = undefined;
-    raylib.mGuiScrollPanel(
-        @ptrCast([*c]raylib.Rectangle, &out),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&content)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(scroll)),
-    );
-    return out;
-}
-
-/// Label control, shows text
-pub fn GuiLabel(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.mGuiLabel(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-    );
-}
-
-/// Button control, returns true when clicked
-pub fn GuiButton(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) bool {
-    return raylib.mGuiButton(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-    );
-}
-
-/// Label button control, show true when clicked
-pub fn GuiLabelButton(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) bool {
-    return raylib.mGuiLabelButton(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-    );
-}
-
-/// Toggle Button control, returns true when active
-pub fn GuiToggle(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: bool,
-) bool {
-    return raylib.mGuiToggle(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        active,
-    );
-}
-
-/// Toggle Group control, returns active toggle index
-pub fn GuiToggleGroup(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: i32,
-) i32 {
-    return raylib.mGuiToggleGroup(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        active,
-    );
-}
-
-/// Check Box control, returns true when active
-pub fn GuiCheckBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    checked: bool,
-) bool {
-    return raylib.mGuiCheckBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        checked,
-    );
-}
-
-/// Combo Box control, returns selected item index
-pub fn GuiComboBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: i32,
-) i32 {
-    return raylib.mGuiComboBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        active,
-    );
-}
-
-/// Dropdown Box control, returns selected item
-pub fn GuiDropdownBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    active: [*]i32,
-    editMode: bool,
-) bool {
-    return raylib.mGuiDropdownBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        @ptrCast([*c]i32, active),
-        editMode,
-    );
-}
-
-/// Spinner control, returns selected value
-pub fn GuiSpinner(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    value: [*]i32,
-    minValue: i32,
-    maxValue: i32,
-    editMode: bool,
-) bool {
-    return raylib.mGuiSpinner(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        @ptrCast([*c]i32, value),
-        minValue,
-        maxValue,
-        editMode,
-    );
-}
-
-/// Value Box control, updates input text with numbers
-pub fn GuiValueBox(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    value: [*]i32,
-    minValue: i32,
-    maxValue: i32,
-    editMode: bool,
-) bool {
-    return raylib.mGuiValueBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        @ptrCast([*c]i32, value),
-        minValue,
-        maxValue,
-        editMode,
-    );
-}
-
-/// Text Box control, updates input text
-pub fn GuiTextBox(
-    bounds: Rectangle,
-    text: [*]u8,
-    textSize: i32,
-    editMode: bool,
-) bool {
-    return raylib.mGuiTextBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @ptrCast([*c]u8, text),
-        textSize,
-        editMode,
-    );
-}
-
-/// Slider control, returns selected value
-pub fn GuiSlider(
-    bounds: Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) f32 {
-    return raylib.mGuiSlider(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(textLeft)),
-        @intToPtr([*c]const u8, @ptrToInt(textRight)),
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Slider Bar control, returns selected value
-pub fn GuiSliderBar(
-    bounds: Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) f32 {
-    return raylib.mGuiSliderBar(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(textLeft)),
-        @intToPtr([*c]const u8, @ptrToInt(textRight)),
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Progress Bar control, shows current progress value
-pub fn GuiProgressBar(
-    bounds: Rectangle,
-    textLeft: [*:0]const u8,
-    textRight: [*:0]const u8,
-    value: f32,
-    minValue: f32,
-    maxValue: f32,
-) f32 {
-    return raylib.mGuiProgressBar(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(textLeft)),
-        @intToPtr([*c]const u8, @ptrToInt(textRight)),
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Status Bar control, shows info text
-pub fn GuiStatusBar(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.mGuiStatusBar(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-    );
-}
-
-/// Dummy control for placeholders
-pub fn GuiDummyRec(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-) void {
-    raylib.mGuiDummyRec(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-    );
-}
-
-/// Scroll Bar control
-pub fn GuiScrollBar(
-    bounds: Rectangle,
-    value: i32,
-    minValue: i32,
-    maxValue: i32,
-) i32 {
-    return raylib.mGuiScrollBar(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        value,
-        minValue,
-        maxValue,
-    );
-}
-
-/// Grid control
-pub fn GuiGrid(
-    bounds: Rectangle,
-    spacing: f32,
-    subdivs: i32,
-) Vector2 {
-    var out: Vector2 = undefined;
-    raylib.mGuiGrid(
-        @ptrCast([*c]raylib.Vector2, &out),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        spacing,
-        subdivs,
-    );
-    return out;
-}
-
-/// List View control, returns selected list item index
-pub fn GuiListView(
-    bounds: Rectangle,
-    text: [*:0]const u8,
-    scrollIndex: [*]i32,
-    active: i32,
-) i32 {
-    return raylib.mGuiListView(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(text)),
-        @ptrCast([*c]i32, scrollIndex),
-        active,
-    );
-}
-
-/// Message Box control, displays a message
-pub fn GuiMessageBox(
-    bounds: Rectangle,
-    title: [*:0]const u8,
-    message: [*:0]const u8,
-    buttons: [*:0]const u8,
-) i32 {
-    return raylib.mGuiMessageBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(title)),
-        @intToPtr([*c]const u8, @ptrToInt(message)),
-        @intToPtr([*c]const u8, @ptrToInt(buttons)),
-    );
-}
-
-/// Text Input Box control, ask for text
-pub fn GuiTextInputBox(
-    bounds: Rectangle,
-    title: [*:0]const u8,
-    message: [*:0]const u8,
-    buttons: [*:0]const u8,
-    text: [*]u8,
-) i32 {
-    return raylib.mGuiTextInputBox(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]const u8, @ptrToInt(title)),
-        @intToPtr([*c]const u8, @ptrToInt(message)),
-        @intToPtr([*c]const u8, @ptrToInt(buttons)),
-        @ptrCast([*c]u8, text),
-    );
-}
-
-/// Color Picker control (multiple color controls)
-pub fn GuiColorPicker(
-    bounds: Rectangle,
-    color: Color,
-) Color {
-    var out: Color = undefined;
-    raylib.mGuiColorPicker(
-        @ptrCast([*c]raylib.Color, &out),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
-    );
-    return out;
-}
-
-/// Color Panel control
-pub fn GuiColorPanel(
-    bounds: Rectangle,
-    color: Color,
-) Color {
-    var out: Color = undefined;
-    raylib.mGuiColorPanel(
-        @ptrCast([*c]raylib.Color, &out),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
-    );
-    return out;
-}
-
-/// Color Bar Alpha control
-pub fn GuiColorBarAlpha(
-    bounds: Rectangle,
-    alpha: f32,
-) f32 {
-    return raylib.mGuiColorBarAlpha(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        alpha,
-    );
-}
-
-/// Color Bar Hue control
-pub fn GuiColorBarHue(
-    bounds: Rectangle,
-    value: f32,
-) f32 {
-    return raylib.mGuiColorBarHue(
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&bounds)),
-        value,
-    );
-}
-
-/// Load style file over global style variable (.rgs)
-pub fn GuiLoadStyle(
-    fileName: [*:0]const u8,
-) void {
-    raylib.mGuiLoadStyle(
-        @intToPtr([*c]const u8, @ptrToInt(fileName)),
-    );
-}
-
-/// Load style default over global style
-pub fn GuiLoadStyleDefault() void {
-    raylib.mGuiLoadStyleDefault();
-}
-
-/// Get text with icon id prepended (if supported)
-pub fn GuiIconText(
-    iconId: i32,
-    text: [*:0]const u8,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*:0]const u8,
-        raylib.mGuiIconText(
-            iconId,
-            @intToPtr([*c]const u8, @ptrToInt(text)),
-        ),
-    );
-}
-
-/// Get full icons data pointer
-pub fn GuiGetIcons() [*]const u32 {
-    return @ptrCast(
-        [*]u32,
-        raylib.mGuiGetIcons(),
-    );
-}
-
-/// Get icon bit data
-pub fn GuiGetIconData(
-    iconId: i32,
-) [*]const u32 {
-    return @ptrCast(
-        [*]u32,
-        raylib.mGuiGetIconData(
-            iconId,
-        ),
-    );
-}
-
-/// Set icon bit data
-pub fn GuiSetIconData(
-    iconId: i32,
-    data: [*]u32,
-) void {
-    raylib.mGuiSetIconData(
-        iconId,
-        @ptrCast([*c]u32, data),
-    );
-}
-
-/// Set icon pixel value
-pub fn GuiSetIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) void {
-    raylib.mGuiSetIconPixel(
-        iconId,
-        x,
-        y,
-    );
-}
-
-/// Clear icon pixel value
-pub fn GuiClearIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) void {
-    raylib.mGuiClearIconPixel(
-        iconId,
-        x,
-        y,
-    );
-}
-
-/// Check icon pixel value
-pub fn GuiCheckIconPixel(
-    iconId: i32,
-    x: i32,
-    y: i32,
-) bool {
-    return raylib.mGuiCheckIconPixel(
-        iconId,
-        x,
-        y,
-    );
-}
-
-/// Initializes physics system
-pub fn InitPhysics() void {
-    raylib.mInitPhysics();
-}
-
-/// Update physics system
-pub fn UpdatePhysics() void {
-    raylib.mUpdatePhysics();
-}
-
-/// Reset physics system (global variables)
-pub fn ResetPhysics() void {
-    raylib.mResetPhysics();
-}
-
-/// Close physics system and unload used memory
-pub fn ClosePhysics() void {
-    raylib.mClosePhysics();
-}
-
-/// Sets physics fixed time step in milliseconds. 1.666666 by default
-pub fn SetPhysicsTimeStep(
-    delta: f64,
-) void {
-    raylib.mSetPhysicsTimeStep(
-        delta,
-    );
-}
-
-/// Sets physics global gravity force
-pub fn SetPhysicsGravity(
-    x: f32,
-    y: f32,
-) void {
-    raylib.mSetPhysicsGravity(
-        x,
-        y,
-    );
-}
-
-/// Creates a new circle physics body with generic parameters
-pub fn CreatePhysicsBodyCircle(
-    pos: Vector2,
-    radius: f32,
-    density: f32,
-) *PhysicsBodyData {
-    return @ptrCast(
-        *PhysicsBodyData,
-        raylib.mCreatePhysicsBodyCircle(
-            @intToPtr([*c]raylib.Vector2, @ptrToInt(&pos)),
-            radius,
-            density,
-        ),
-    );
-}
-
-/// Creates a new rectangle physics body with generic parameters
-pub fn CreatePhysicsBodyRectangle(
-    pos: Vector2,
-    width: f32,
-    height: f32,
-    density: f32,
-) *PhysicsBodyData {
-    return @ptrCast(
-        *PhysicsBodyData,
-        raylib.mCreatePhysicsBodyRectangle(
-            @intToPtr([*c]raylib.Vector2, @ptrToInt(&pos)),
-            width,
-            height,
-            density,
-        ),
-    );
-}
-
-/// Creates a new polygon physics body with generic parameters
-pub fn CreatePhysicsBodyPolygon(
-    pos: Vector2,
-    radius: f32,
-    sides: i32,
-    density: f32,
-) *PhysicsBodyData {
-    return @ptrCast(
-        *PhysicsBodyData,
-        raylib.mCreatePhysicsBodyPolygon(
-            @intToPtr([*c]raylib.Vector2, @ptrToInt(&pos)),
-            radius,
-            sides,
-            density,
-        ),
-    );
-}
-
-/// Destroy a physics body
-pub fn DestroyPhysicsBody(
-    body: *PhysicsBodyData,
-) void {
-    raylib.mDestroyPhysicsBody(
-        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
-    );
-}
-
-/// Adds a force to a physics body
-pub fn PhysicsAddForce(
-    body: *PhysicsBodyData,
-    force: Vector2,
-) void {
-    raylib.mPhysicsAddForce(
-        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(&force)),
-    );
-}
-
-/// Adds an angular force to a physics body
-pub fn PhysicsAddTorque(
-    body: *PhysicsBodyData,
-    amount: f32,
-) void {
-    raylib.mPhysicsAddTorque(
-        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
-        amount,
-    );
-}
-
-/// Shatters a polygon shape physics body to little physics bodies with explosion force
-pub fn PhysicsShatter(
-    body: *PhysicsBodyData,
-    position: Vector2,
-    force: f32,
-) void {
-    raylib.mPhysicsShatter(
-        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
-        force,
-    );
-}
-
-/// Sets physics body shape transform based on radians parameter
-pub fn SetPhysicsBodyRotation(
-    body: *PhysicsBodyData,
-    radians: f32,
-) void {
-    raylib.mSetPhysicsBodyRotation(
-        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
-        radians,
-    );
-}
-
-/// Returns the current amount of created physics bodies
-pub fn GetPhysicsBodiesCount() i32 {
-    return raylib.mGetPhysicsBodiesCount();
-}
-
-/// Returns the physics body shape type (PHYSICS_CIRCLE or PHYSICS_POLYGON)
-pub fn GetPhysicsShapeType(
-    index: i32,
-) i32 {
-    return raylib.mGetPhysicsShapeType(
-        index,
-    );
-}
-
-/// Returns the amount of vertices of a physics body shape
-pub fn GetPhysicsShapeVerticesCount(
-    index: i32,
-) i32 {
-    return raylib.mGetPhysicsShapeVerticesCount(
-        index,
-    );
-}
-
-/// Returns transformed position of a body shape (body position + vertex transformed position)
-pub fn GetPhysicsShapeVertex(
-    body: *PhysicsBodyData,
-    vertex: i32,
-) Vector2 {
-    var out: Vector2 = undefined;
-    raylib.mGetPhysicsShapeVertex(
-        @ptrCast([*c]raylib.Vector2, &out),
-        @intToPtr([*c]raylib.PhysicsBodyData, @ptrToInt(body)),
-        vertex,
-    );
-    return out;
-}
-
 /// Image, pixel data stored in CPU memory (RAM)
 pub const Image = extern struct {
     /// Image raw data
@@ -10455,18 +9602,20 @@ pub const GlyphInfo = extern struct {
     image: Image,
 };
 
-/// It should be redesigned to be provided by user
+/// Font, font texture and GlyphInfo array data
 pub const Font = extern struct {
     /// Base size (default chars height)
     baseSize: i32,
-    /// Number of characters
+    /// Number of glyph characters
     glyphCount: i32,
-    /// Characters texture atlas
+    /// Padding around the glyph characters
+    glyphPadding: i32,
+    /// Texture atlas containing the glyphs
     texture: Texture2D,
-    /// Characters rectangles in texture
+    /// Rectangles in texture for the glyphs
     recs: [*]Rectangle,
-    /// Characters info data
-    chars: [*]GlyphInfo,
+    /// Glyphs info data
+    glyphs: [*]GlyphInfo,
 };
 
 /// Camera, defines position/orientation in 3d space
@@ -10709,6 +9858,16 @@ pub const VrStereoConfig = extern struct {
     scaleIn: [2]f32,
 };
 
+/// File path list
+pub const FilePathList = extern struct {
+    /// Filepaths max entries
+    capacity: u32,
+    /// Filepaths entries count
+    count: u32,
+    /// Filepaths entries
+    paths: [*]u8,
+};
+
 /// Dynamic vertex buffers (position + texcoords + colors + indices arrays)
 pub const rlVertexBuffer = extern struct {
     /// Number of elements in the buffer (QUADS)
@@ -10767,118 +9926,6 @@ pub const float16 = extern struct {
     v: [16]f32,
 };
 
-/// Style property
-pub const GuiStyleProp = extern struct {
-    ///
-    controlId: u16,
-    ///
-    propertyId: u16,
-    ///
-    propertyValue: i32,
-};
-
-/// Matrix2x2 type (used for polygon shape rotation matrix)
-pub const Matrix2x2 = extern struct {
-    ///
-    m00: f32,
-    ///
-    m01: f32,
-    ///
-    m10: f32,
-    ///
-    m11: f32,
-};
-
-///
-pub const PhysicsVertexData = extern struct {
-    /// Vertex count (positions and normals)
-    vertexCount: u32,
-    /// Vertex positions vectors
-    positions: Vector2,
-    /// Vertex normals vectors
-    normals: Vector2,
-};
-
-///
-pub const PhysicsShape = extern struct {
-    /// Shape type (circle or polygon)
-    type: PhysicsShapeType,
-    /// Shape physics body data pointer
-    body: [*]PhysicsBodyData,
-    /// Shape vertices data (used for polygon shapes)
-    vertexData: PhysicsVertexData,
-    /// Shape radius (used for circle shapes)
-    radius: f32,
-    /// Vertices transform matrix 2x2
-    transform: Matrix2x2,
-};
-
-///
-pub const PhysicsBodyData = extern struct {
-    /// Unique identifier
-    id: u32,
-    /// Enabled dynamics state (collisions are calculated anyway)
-    enabled: bool,
-    /// Physics body shape pivot
-    position: Vector2,
-    /// Current linear velocity applied to position
-    velocity: Vector2,
-    /// Current linear force (reset to 0 every step)
-    force: Vector2,
-    /// Current angular velocity applied to orient
-    angularVelocity: f32,
-    /// Current angular force (reset to 0 every step)
-    torque: f32,
-    /// Rotation in radians
-    orient: f32,
-    /// Moment of inertia
-    inertia: f32,
-    /// Inverse value of inertia
-    inverseInertia: f32,
-    /// Physics body mass
-    mass: f32,
-    /// Inverse value of mass
-    inverseMass: f32,
-    /// Friction when the body has not movement (0 to 1)
-    staticFriction: f32,
-    /// Friction when the body has movement (0 to 1)
-    dynamicFriction: f32,
-    /// Restitution coefficient of the body (0 to 1)
-    restitution: f32,
-    /// Apply gravity force to dynamics
-    useGravity: bool,
-    /// Physics grounded on other body state
-    isGrounded: bool,
-    /// Physics rotation constraint
-    freezeOrient: bool,
-    /// Physics body shape information (type, radius, vertices, transform)
-    shape: PhysicsShape,
-};
-
-///
-pub const PhysicsManifoldData = extern struct {
-    /// Unique identifier
-    id: u32,
-    /// Manifold first physics body reference
-    bodyA: [*]PhysicsBodyData,
-    /// Manifold second physics body reference
-    bodyB: [*]PhysicsBodyData,
-    /// Depth of penetration from collision
-    penetration: f32,
-    /// Normal direction vector from 'a' to 'b'
-    normal: Vector2,
-    /// Points of contact during collision
-    contacts: [2]Vector2,
-    /// Current collision number of contacts
-    contactsCount: u32,
-    /// Mixed restitution during collision
-    restitution: f32,
-    /// Mixed dynamic friction during collision
-    dynamicFriction: f32,
-    /// Mixed static friction during collision
-    staticFriction: f32,
-};
-
 /// System/Window config flags
 pub const ConfigFlags = enum(i32) {
     /// Set to try enabling V-Sync on GPU
@@ -10905,6 +9952,8 @@ pub const ConfigFlags = enum(i32) {
     FLAG_WINDOW_TRANSPARENT = 16,
     /// Set to support HighDPI
     FLAG_WINDOW_HIGHDPI = 8192,
+    /// Set to support mouse passthrough, only supported when FLAG_WINDOW_UNDECORATED
+    FLAG_WINDOW_MOUSE_PASSTHROUGH = 16384,
     /// Set to try enabling MSAA 4X
     FLAG_MSAA_4X_HINT = 32,
     /// Set to try enabling interlaced video format (for V3D)
@@ -11482,7 +10531,7 @@ pub const BlendMode = enum(i32) {
     /// Blend textures subtracting colors (alternative)
     BLEND_SUBTRACT_COLORS = 4,
     /// Blend premultiplied textures considering alpha
-    BLEND_ALPHA_PREMUL = 5,
+    BLEND_ALPHA_PREMULTIPLY = 5,
     /// Blend textures using custom src/dst factors (use rlSetBlendMode())
     BLEND_CUSTOM = 6,
 };
@@ -11698,7 +10747,7 @@ pub const rlBlendMode = enum(i32) {
     /// Blend textures subtracting colors (alternative)
     RL_BLEND_SUBTRACT_COLORS = 4,
     /// Blend premultiplied textures considering alpha
-    RL_BLEND_ALPHA_PREMUL = 5,
+    RL_BLEND_ALPHA_PREMULTIPLY = 5,
     /// Blend textures using custom src/dst factors (use rlSetBlendFactors())
     RL_BLEND_CUSTOM = 6,
 };
@@ -11793,740 +10842,6 @@ pub const rlShaderAttributeDataType = enum(i32) {
     RL_SHADER_ATTRIB_VEC4 = 3,
 };
 
-/// Gui control state
-pub const GuiControlState = enum(i32) {
-    ///
-    GUI_STATE_NORMAL = 0,
-    ///
-    GUI_STATE_FOCUSED = 1,
-    ///
-    GUI_STATE_PRESSED = 2,
-    ///
-    GUI_STATE_DISABLED = 3,
-};
-
-/// Gui control text alignment
-pub const GuiTextAlignment = enum(i32) {
-    ///
-    GUI_TEXT_ALIGN_LEFT = 0,
-    ///
-    GUI_TEXT_ALIGN_CENTER = 1,
-    ///
-    GUI_TEXT_ALIGN_RIGHT = 2,
-};
-
-/// Gui controls
-pub const GuiControl = enum(i32) {
-    /// Generic control -> populates to all controls when set
-    DEFAULT = 0,
-    /// Used also for: LABELBUTTON
-    LABEL = 1,
-    ///
-    BUTTON = 2,
-    /// Used also for: TOGGLEGROUP
-    TOGGLE = 3,
-    /// Used also for: SLIDERBAR
-    SLIDER = 4,
-    ///
-    PROGRESSBAR = 5,
-    ///
-    CHECKBOX = 6,
-    ///
-    COMBOBOX = 7,
-    ///
-    DROPDOWNBOX = 8,
-    /// Used also for: TEXTBOXMULTI
-    TEXTBOX = 9,
-    ///
-    VALUEBOX = 10,
-    ///
-    SPINNER = 11,
-    ///
-    LISTVIEW = 12,
-    ///
-    COLORPICKER = 13,
-    ///
-    SCROLLBAR = 14,
-    ///
-    STATUSBAR = 15,
-};
-
-/// Gui base properties for every control
-pub const GuiControlProperty = enum(i32) {
-    ///
-    BORDER_COLOR_NORMAL = 0,
-    ///
-    BASE_COLOR_NORMAL = 1,
-    ///
-    TEXT_COLOR_NORMAL = 2,
-    ///
-    BORDER_COLOR_FOCUSED = 3,
-    ///
-    BASE_COLOR_FOCUSED = 4,
-    ///
-    TEXT_COLOR_FOCUSED = 5,
-    ///
-    BORDER_COLOR_PRESSED = 6,
-    ///
-    BASE_COLOR_PRESSED = 7,
-    ///
-    TEXT_COLOR_PRESSED = 8,
-    ///
-    BORDER_COLOR_DISABLED = 9,
-    ///
-    BASE_COLOR_DISABLED = 10,
-    ///
-    TEXT_COLOR_DISABLED = 11,
-    ///
-    BORDER_WIDTH = 12,
-    ///
-    TEXT_PADDING = 13,
-    ///
-    TEXT_ALIGNMENT = 14,
-    ///
-    RESERVED = 15,
-};
-
-/// DEFAULT extended properties
-pub const GuiDefaultProperty = enum(i32) {
-    ///
-    TEXT_SIZE = 16,
-    ///
-    TEXT_SPACING = 17,
-    ///
-    LINE_COLOR = 18,
-    ///
-    BACKGROUND_COLOR = 19,
-};
-
-/// Toggle/ToggleGroup
-pub const GuiToggleProperty = enum(i32) {
-    ///
-    GROUP_PADDING = 16,
-};
-
-/// Slider/SliderBar
-pub const GuiSliderProperty = enum(i32) {
-    ///
-    SLIDER_WIDTH = 16,
-    ///
-    SLIDER_PADDING = 17,
-};
-
-/// ProgressBar
-pub const GuiProgressBarProperty = enum(i32) {
-    ///
-    PROGRESS_PADDING = 16,
-};
-
-/// CheckBox
-pub const GuiCheckBoxProperty = enum(i32) {
-    ///
-    CHECK_PADDING = 16,
-};
-
-/// ComboBox
-pub const GuiComboBoxProperty = enum(i32) {
-    ///
-    COMBO_BUTTON_WIDTH = 16,
-    ///
-    COMBO_BUTTON_PADDING = 17,
-};
-
-/// DropdownBox
-pub const GuiDropdownBoxProperty = enum(i32) {
-    ///
-    ARROW_PADDING = 16,
-    ///
-    DROPDOWN_ITEMS_PADDING = 17,
-};
-
-/// TextBox/TextBoxMulti/ValueBox/Spinner
-pub const GuiTextBoxProperty = enum(i32) {
-    ///
-    TEXT_INNER_PADDING = 16,
-    ///
-    TEXT_LINES_PADDING = 17,
-    ///
-    COLOR_SELECTED_FG = 18,
-    ///
-    COLOR_SELECTED_BG = 19,
-};
-
-/// Spinner
-pub const GuiSpinnerProperty = enum(i32) {
-    ///
-    SPIN_BUTTON_WIDTH = 16,
-    ///
-    SPIN_BUTTON_PADDING = 17,
-};
-
-/// ScrollBar
-pub const GuiScrollBarProperty = enum(i32) {
-    ///
-    ARROWS_SIZE = 16,
-    ///
-    ARROWS_VISIBLE = 17,
-    ///
-    SCROLL_SLIDER_PADDING = 18,
-    ///
-    SCROLL_SLIDER_SIZE = 19,
-    ///
-    SCROLL_PADDING = 20,
-    ///
-    SCROLL_SPEED = 21,
-};
-
-/// ScrollBar side
-pub const GuiScrollBarSide = enum(i32) {
-    ///
-    SCROLLBAR_LEFT_SIDE = 0,
-    ///
-    SCROLLBAR_RIGHT_SIDE = 1,
-};
-
-/// ListView
-pub const GuiListViewProperty = enum(i32) {
-    ///
-    LIST_ITEMS_HEIGHT = 16,
-    ///
-    LIST_ITEMS_PADDING = 17,
-    ///
-    SCROLLBAR_WIDTH = 18,
-    ///
-    SCROLLBAR_SIDE = 19,
-};
-
-/// ColorPicker
-pub const GuiColorPickerProperty = enum(i32) {
-    ///
-    COLOR_SELECTOR_SIZE = 16,
-    /// Right hue bar width
-    HUEBAR_WIDTH = 17,
-    /// Right hue bar separation from panel
-    HUEBAR_PADDING = 18,
-    /// Right hue bar selector height
-    HUEBAR_SELECTOR_HEIGHT = 19,
-    /// Right hue bar selector overflow
-    HUEBAR_SELECTOR_OVERFLOW = 20,
-};
-
-///
-pub const guiIconName = enum(i32) {
-    ///
-    RICON_NONE = 0,
-    ///
-    RICON_FOLDER_FILE_OPEN = 1,
-    ///
-    RICON_FILE_SAVE_CLASSIC = 2,
-    ///
-    RICON_FOLDER_OPEN = 3,
-    ///
-    RICON_FOLDER_SAVE = 4,
-    ///
-    RICON_FILE_OPEN = 5,
-    ///
-    RICON_FILE_SAVE = 6,
-    ///
-    RICON_FILE_EXPORT = 7,
-    ///
-    RICON_FILE_NEW = 8,
-    ///
-    RICON_FILE_DELETE = 9,
-    ///
-    RICON_FILETYPE_TEXT = 10,
-    ///
-    RICON_FILETYPE_AUDIO = 11,
-    ///
-    RICON_FILETYPE_IMAGE = 12,
-    ///
-    RICON_FILETYPE_PLAY = 13,
-    ///
-    RICON_FILETYPE_VIDEO = 14,
-    ///
-    RICON_FILETYPE_INFO = 15,
-    ///
-    RICON_FILE_COPY = 16,
-    ///
-    RICON_FILE_CUT = 17,
-    ///
-    RICON_FILE_PASTE = 18,
-    ///
-    RICON_CURSOR_HAND = 19,
-    ///
-    RICON_CURSOR_POINTER = 20,
-    ///
-    RICON_CURSOR_CLASSIC = 21,
-    ///
-    RICON_PENCIL = 22,
-    ///
-    RICON_PENCIL_BIG = 23,
-    ///
-    RICON_BRUSH_CLASSIC = 24,
-    ///
-    RICON_BRUSH_PAINTER = 25,
-    ///
-    RICON_WATER_DROP = 26,
-    ///
-    RICON_COLOR_PICKER = 27,
-    ///
-    RICON_RUBBER = 28,
-    ///
-    RICON_COLOR_BUCKET = 29,
-    ///
-    RICON_TEXT_T = 30,
-    ///
-    RICON_TEXT_A = 31,
-    ///
-    RICON_SCALE = 32,
-    ///
-    RICON_RESIZE = 33,
-    ///
-    RICON_FILTER_POINT = 34,
-    ///
-    RICON_FILTER_BILINEAR = 35,
-    ///
-    RICON_CROP = 36,
-    ///
-    RICON_CROP_ALPHA = 37,
-    ///
-    RICON_SQUARE_TOGGLE = 38,
-    ///
-    RICON_SYMMETRY = 39,
-    ///
-    RICON_SYMMETRY_HORIZONTAL = 40,
-    ///
-    RICON_SYMMETRY_VERTICAL = 41,
-    ///
-    RICON_LENS = 42,
-    ///
-    RICON_LENS_BIG = 43,
-    ///
-    RICON_EYE_ON = 44,
-    ///
-    RICON_EYE_OFF = 45,
-    ///
-    RICON_FILTER_TOP = 46,
-    ///
-    RICON_FILTER = 47,
-    ///
-    RICON_TARGET_POINT = 48,
-    ///
-    RICON_TARGET_SMALL = 49,
-    ///
-    RICON_TARGET_BIG = 50,
-    ///
-    RICON_TARGET_MOVE = 51,
-    ///
-    RICON_CURSOR_MOVE = 52,
-    ///
-    RICON_CURSOR_SCALE = 53,
-    ///
-    RICON_CURSOR_SCALE_RIGHT = 54,
-    ///
-    RICON_CURSOR_SCALE_LEFT = 55,
-    ///
-    RICON_UNDO = 56,
-    ///
-    RICON_REDO = 57,
-    ///
-    RICON_REREDO = 58,
-    ///
-    RICON_MUTATE = 59,
-    ///
-    RICON_ROTATE = 60,
-    ///
-    RICON_REPEAT = 61,
-    ///
-    RICON_SHUFFLE = 62,
-    ///
-    RICON_EMPTYBOX = 63,
-    ///
-    RICON_TARGET = 64,
-    ///
-    RICON_TARGET_SMALL_FILL = 65,
-    ///
-    RICON_TARGET_BIG_FILL = 66,
-    ///
-    RICON_TARGET_MOVE_FILL = 67,
-    ///
-    RICON_CURSOR_MOVE_FILL = 68,
-    ///
-    RICON_CURSOR_SCALE_FILL = 69,
-    ///
-    RICON_CURSOR_SCALE_RIGHT_FILL = 70,
-    ///
-    RICON_CURSOR_SCALE_LEFT_FILL = 71,
-    ///
-    RICON_UNDO_FILL = 72,
-    ///
-    RICON_REDO_FILL = 73,
-    ///
-    RICON_REREDO_FILL = 74,
-    ///
-    RICON_MUTATE_FILL = 75,
-    ///
-    RICON_ROTATE_FILL = 76,
-    ///
-    RICON_REPEAT_FILL = 77,
-    ///
-    RICON_SHUFFLE_FILL = 78,
-    ///
-    RICON_EMPTYBOX_SMALL = 79,
-    ///
-    RICON_BOX = 80,
-    ///
-    RICON_BOX_TOP = 81,
-    ///
-    RICON_BOX_TOP_RIGHT = 82,
-    ///
-    RICON_BOX_RIGHT = 83,
-    ///
-    RICON_BOX_BOTTOM_RIGHT = 84,
-    ///
-    RICON_BOX_BOTTOM = 85,
-    ///
-    RICON_BOX_BOTTOM_LEFT = 86,
-    ///
-    RICON_BOX_LEFT = 87,
-    ///
-    RICON_BOX_TOP_LEFT = 88,
-    ///
-    RICON_BOX_CENTER = 89,
-    ///
-    RICON_BOX_CIRCLE_MASK = 90,
-    ///
-    RICON_POT = 91,
-    ///
-    RICON_ALPHA_MULTIPLY = 92,
-    ///
-    RICON_ALPHA_CLEAR = 93,
-    ///
-    RICON_DITHERING = 94,
-    ///
-    RICON_MIPMAPS = 95,
-    ///
-    RICON_BOX_GRID = 96,
-    ///
-    RICON_GRID = 97,
-    ///
-    RICON_BOX_CORNERS_SMALL = 98,
-    ///
-    RICON_BOX_CORNERS_BIG = 99,
-    ///
-    RICON_FOUR_BOXES = 100,
-    ///
-    RICON_GRID_FILL = 101,
-    ///
-    RICON_BOX_MULTISIZE = 102,
-    ///
-    RICON_ZOOM_SMALL = 103,
-    ///
-    RICON_ZOOM_MEDIUM = 104,
-    ///
-    RICON_ZOOM_BIG = 105,
-    ///
-    RICON_ZOOM_ALL = 106,
-    ///
-    RICON_ZOOM_CENTER = 107,
-    ///
-    RICON_BOX_DOTS_SMALL = 108,
-    ///
-    RICON_BOX_DOTS_BIG = 109,
-    ///
-    RICON_BOX_CONCENTRIC = 110,
-    ///
-    RICON_BOX_GRID_BIG = 111,
-    ///
-    RICON_OK_TICK = 112,
-    ///
-    RICON_CROSS = 113,
-    ///
-    RICON_ARROW_LEFT = 114,
-    ///
-    RICON_ARROW_RIGHT = 115,
-    ///
-    RICON_ARROW_DOWN = 116,
-    ///
-    RICON_ARROW_UP = 117,
-    ///
-    RICON_ARROW_LEFT_FILL = 118,
-    ///
-    RICON_ARROW_RIGHT_FILL = 119,
-    ///
-    RICON_ARROW_DOWN_FILL = 120,
-    ///
-    RICON_ARROW_UP_FILL = 121,
-    ///
-    RICON_AUDIO = 122,
-    ///
-    RICON_FX = 123,
-    ///
-    RICON_WAVE = 124,
-    ///
-    RICON_WAVE_SINUS = 125,
-    ///
-    RICON_WAVE_SQUARE = 126,
-    ///
-    RICON_WAVE_TRIANGULAR = 127,
-    ///
-    RICON_CROSS_SMALL = 128,
-    ///
-    RICON_PLAYER_PREVIOUS = 129,
-    ///
-    RICON_PLAYER_PLAY_BACK = 130,
-    ///
-    RICON_PLAYER_PLAY = 131,
-    ///
-    RICON_PLAYER_PAUSE = 132,
-    ///
-    RICON_PLAYER_STOP = 133,
-    ///
-    RICON_PLAYER_NEXT = 134,
-    ///
-    RICON_PLAYER_RECORD = 135,
-    ///
-    RICON_MAGNET = 136,
-    ///
-    RICON_LOCK_CLOSE = 137,
-    ///
-    RICON_LOCK_OPEN = 138,
-    ///
-    RICON_CLOCK = 139,
-    ///
-    RICON_TOOLS = 140,
-    ///
-    RICON_GEAR = 141,
-    ///
-    RICON_GEAR_BIG = 142,
-    ///
-    RICON_BIN = 143,
-    ///
-    RICON_HAND_POINTER = 144,
-    ///
-    RICON_LASER = 145,
-    ///
-    RICON_COIN = 146,
-    ///
-    RICON_EXPLOSION = 147,
-    ///
-    RICON_1UP = 148,
-    ///
-    RICON_PLAYER = 149,
-    ///
-    RICON_PLAYER_JUMP = 150,
-    ///
-    RICON_KEY = 151,
-    ///
-    RICON_DEMON = 152,
-    ///
-    RICON_TEXT_POPUP = 153,
-    ///
-    RICON_GEAR_EX = 154,
-    ///
-    RICON_CRACK = 155,
-    ///
-    RICON_CRACK_POINTS = 156,
-    ///
-    RICON_STAR = 157,
-    ///
-    RICON_DOOR = 158,
-    ///
-    RICON_EXIT = 159,
-    ///
-    RICON_MODE_2D = 160,
-    ///
-    RICON_MODE_3D = 161,
-    ///
-    RICON_CUBE = 162,
-    ///
-    RICON_CUBE_FACE_TOP = 163,
-    ///
-    RICON_CUBE_FACE_LEFT = 164,
-    ///
-    RICON_CUBE_FACE_FRONT = 165,
-    ///
-    RICON_CUBE_FACE_BOTTOM = 166,
-    ///
-    RICON_CUBE_FACE_RIGHT = 167,
-    ///
-    RICON_CUBE_FACE_BACK = 168,
-    ///
-    RICON_CAMERA = 169,
-    ///
-    RICON_SPECIAL = 170,
-    ///
-    RICON_LINK_NET = 171,
-    ///
-    RICON_LINK_BOXES = 172,
-    ///
-    RICON_LINK_MULTI = 173,
-    ///
-    RICON_LINK = 174,
-    ///
-    RICON_LINK_BROKE = 175,
-    ///
-    RICON_TEXT_NOTES = 176,
-    ///
-    RICON_NOTEBOOK = 177,
-    ///
-    RICON_SUITCASE = 178,
-    ///
-    RICON_SUITCASE_ZIP = 179,
-    ///
-    RICON_MAILBOX = 180,
-    ///
-    RICON_MONITOR = 181,
-    ///
-    RICON_PRINTER = 182,
-    ///
-    RICON_PHOTO_CAMERA = 183,
-    ///
-    RICON_PHOTO_CAMERA_FLASH = 184,
-    ///
-    RICON_HOUSE = 185,
-    ///
-    RICON_HEART = 186,
-    ///
-    RICON_CORNER = 187,
-    ///
-    RICON_VERTICAL_BARS = 188,
-    ///
-    RICON_VERTICAL_BARS_FILL = 189,
-    ///
-    RICON_LIFE_BARS = 190,
-    ///
-    RICON_INFO = 191,
-    ///
-    RICON_CROSSLINE = 192,
-    ///
-    RICON_HELP = 193,
-    ///
-    RICON_FILETYPE_ALPHA = 194,
-    ///
-    RICON_FILETYPE_HOME = 195,
-    ///
-    RICON_LAYERS_VISIBLE = 196,
-    ///
-    RICON_LAYERS = 197,
-    ///
-    RICON_WINDOW = 198,
-    ///
-    RICON_HIDPI = 199,
-    ///
-    RICON_200 = 200,
-    ///
-    RICON_201 = 201,
-    ///
-    RICON_202 = 202,
-    ///
-    RICON_203 = 203,
-    ///
-    RICON_204 = 204,
-    ///
-    RICON_205 = 205,
-    ///
-    RICON_206 = 206,
-    ///
-    RICON_207 = 207,
-    ///
-    RICON_208 = 208,
-    ///
-    RICON_209 = 209,
-    ///
-    RICON_210 = 210,
-    ///
-    RICON_211 = 211,
-    ///
-    RICON_212 = 212,
-    ///
-    RICON_213 = 213,
-    ///
-    RICON_214 = 214,
-    ///
-    RICON_215 = 215,
-    ///
-    RICON_216 = 216,
-    ///
-    RICON_217 = 217,
-    ///
-    RICON_218 = 218,
-    ///
-    RICON_219 = 219,
-    ///
-    RICON_220 = 220,
-    ///
-    RICON_221 = 221,
-    ///
-    RICON_222 = 222,
-    ///
-    RICON_223 = 223,
-    ///
-    RICON_224 = 224,
-    ///
-    RICON_225 = 225,
-    ///
-    RICON_226 = 226,
-    ///
-    RICON_227 = 227,
-    ///
-    RICON_228 = 228,
-    ///
-    RICON_229 = 229,
-    ///
-    RICON_230 = 230,
-    ///
-    RICON_231 = 231,
-    ///
-    RICON_232 = 232,
-    ///
-    RICON_233 = 233,
-    ///
-    RICON_234 = 234,
-    ///
-    RICON_235 = 235,
-    ///
-    RICON_236 = 236,
-    ///
-    RICON_237 = 237,
-    ///
-    RICON_238 = 238,
-    ///
-    RICON_239 = 239,
-    ///
-    RICON_240 = 240,
-    ///
-    RICON_241 = 241,
-    ///
-    RICON_242 = 242,
-    ///
-    RICON_243 = 243,
-    ///
-    RICON_244 = 244,
-    ///
-    RICON_245 = 245,
-    ///
-    RICON_246 = 246,
-    ///
-    RICON_247 = 247,
-    ///
-    RICON_248 = 248,
-    ///
-    RICON_249 = 249,
-    ///
-    RICON_250 = 250,
-    ///
-    RICON_251 = 251,
-    ///
-    RICON_252 = 252,
-    ///
-    RICON_253 = 253,
-    ///
-    RICON_254 = 254,
-    ///
-    RICON_255 = 255,
-};
-
 /// circle or polygon
 pub const PhysicsShapeType = enum(i32) {
     /// physics shape is a circle
@@ -12535,11 +10850,8 @@ pub const PhysicsShapeType = enum(i32) {
     PHYSICS_POLYGON = 1,
 };
 
-/// Icons data is defined by bit array (every bit represents one pixel). Those arrays are stored as unsigned int data arrays, so every array element defines 32 pixels (bits) of information. Number of elemens depend on RICON_SIZE (by default 16x16 pixels)
-pub const RICON_DATA_ELEMENTS: i32 = RICON_SIZE * RICON_SIZE / 32;
-
 ///
-pub const RAYLIB_VERSION: []const u8 = "4.1-dev";
+pub const RAYLIB_VERSION: []const u8 = "4.2-dev";
 
 ///
 pub const PI: f32 = 3.1415927410125732;
@@ -12621,9 +10933,6 @@ pub const MAGENTA: Color = .{ .r = 255, .g = 0, .b = 255, .a = 255 };
 
 /// My own White (raylib logo)
 pub const RAYWHITE: Color = .{ .r = 245, .g = 245, .b = 245, .a = 255 };
-
-///
-pub const MOUSE_LEFT_BUTTON: i32 = 0;
 
 ///
 pub const RLGL_VERSION: []const u8 = "4.0";
@@ -12855,138 +11164,3 @@ pub const RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE2: []const u8 = "texture2";
 
 ///
 pub const EPSILON: f32 = 0.0000009999999974752427;
-
-///
-pub const RAYGUI_VERSION: []const u8 = "3.0";
-
-/// Size of icons (squared)
-pub const RICON_SIZE: i32 = 16;
-
-/// Maximum number of icons
-pub const RICON_MAX_ICONS: i32 = 256;
-
-/// Maximum length of icon name id
-pub const RICON_MAX_NAME_LENGTH: i32 = 32;
-
-/// Maximum number of standard controls
-pub const RAYGUI_MAX_CONTROLS: i32 = 16;
-
-/// Maximum number of standard properties
-pub const RAYGUI_MAX_PROPS_BASE: i32 = 16;
-
-/// Maximum number of extended properties
-pub const RAYGUI_MAX_PROPS_EXTENDED: i32 = 8;
-
-///
-pub const KEY_RIGHT: i32 = 262;
-
-///
-pub const KEY_LEFT: i32 = 263;
-
-///
-pub const KEY_DOWN: i32 = 264;
-
-///
-pub const KEY_UP: i32 = 265;
-
-///
-pub const KEY_BACKSPACE: i32 = 259;
-
-///
-pub const KEY_ENTER: i32 = 257;
-
-///
-pub const WINDOW_STATUSBAR_HEIGHT: i32 = 22;
-
-///
-pub const GROUPBOX_LINE_THICK: i32 = 1;
-
-///
-pub const GROUPBOX_TEXT_PADDING: i32 = 10;
-
-///
-pub const LINE_TEXT_PADDING: i32 = 10;
-
-///
-pub const PANEL_BORDER_WIDTH: i32 = 1;
-
-///
-pub const TOGGLEGROUP_MAX_ELEMENTS: i32 = 32;
-
-///
-pub const VALUEBOX_MAX_CHARS: i32 = 32;
-
-///
-pub const COLORBARALPHA_CHECKED_SIZE: i32 = 10;
-
-///
-pub const MESSAGEBOX_BUTTON_HEIGHT: i32 = 24;
-
-///
-pub const MESSAGEBOX_BUTTON_PADDING: i32 = 10;
-
-///
-pub const TEXTINPUTBOX_BUTTON_HEIGHT: i32 = 24;
-
-///
-pub const TEXTINPUTBOX_BUTTON_PADDING: i32 = 10;
-
-///
-pub const TEXTINPUTBOX_HEIGHT: i32 = 30;
-
-///
-pub const TEXTINPUTBOX_MAX_TEXT_LENGTH: i32 = 256;
-
-/// Grid lines alpha amount
-pub const GRID_COLOR_ALPHA: f32 = 0.15000000596046448;
-
-///
-pub const RICON_TEXT_PADDING: i32 = 4;
-
-///
-pub const TEXTSPLIT_MAX_TEXT_LENGTH: i32 = 1024;
-
-///
-pub const TEXTSPLIT_MAX_TEXT_ELEMENTS: i32 = 128;
-
-///
-pub const MAX_FORMATTEXT_LENGTH: i32 = 64;
-
-/// Size of static buffer: TextSplit()
-pub const TEXTSPLIT_MAX_TEXT_BUFFER_LENGTH: i32 = 1024;
-
-/// Size of static pointers array: TextSplit()
-pub const TEXTSPLIT_MAX_SUBSTRINGS_COUNT: i32 = 128;
-
-/// Maximum number of physic bodies supported
-pub const PHYSAC_MAX_BODIES: i32 = 64;
-
-/// Maximum number of physic bodies interactions (64x64)
-pub const PHYSAC_MAX_MANIFOLDS: i32 = 4096;
-
-/// Maximum number of vertex for polygons shapes
-pub const PHYSAC_MAX_VERTICES: i32 = 24;
-
-/// Default number of vertices for circle shapes
-pub const PHYSAC_DEFAULT_CIRCLE_VERTICES: i32 = 24;
-
-///
-pub const PHYSAC_COLLISION_ITERATIONS: i32 = 100;
-
-///
-pub const PHYSAC_PENETRATION_ALLOWANCE: f32 = 0.05000000074505806;
-
-///
-pub const PHYSAC_PENETRATION_CORRECTION: f32 = 0.4000000059604645;
-
-///
-pub const PHYSAC_PI: f32 = 3.1415927410125732;
-
-/// Required for CLOCK_MONOTONIC if compiled with c99 without gnu ext.
-pub const _POSIX_C_SOURCE: i64 = 199309;
-
-///
-pub const PHYSAC_FLT_MAX: f32 = 340282346638528860000000000000000000000;
-
-///
-pub const PHYSAC_EPSILON: f32 = 0.0000009999999974752427;

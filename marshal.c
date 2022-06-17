@@ -3,11 +3,6 @@
 #include "raylib.h"
 #include "rlgl.h"
 #include "raymath.h"
-#define RAYGUI_IMPLEMENTATION
-#include "extras/raygui.h"
-#define PHYSAC_IMPLEMENTATION
-#define PHYSAC_AVOID_TIMMING_SYSTEM
-#include "extras/physac.h"
 void mInitWindow(int width, int height, const char * title)
 {
 	InitWindow(width, height, title);
@@ -233,9 +228,9 @@ void mPollInputEvents(void)
 	PollInputEvents();
 }
 
-void mWaitTime(float ms)
+void mWaitTime(double seconds)
 {
-	WaitTime(ms);
+	WaitTime(seconds);
 }
 
 void mShowCursor(void)
@@ -428,6 +423,11 @@ void mGetWorldToScreen(Vector2 *out, Vector3 *position, Camera3D *camera)
 	*out = GetWorldToScreen(*position, *camera);
 }
 
+void mGetScreenToWorld2D(Vector2 *out, Vector2 *position, Camera2D *camera)
+{
+	*out = GetScreenToWorld2D(*position, *camera);
+}
+
 void mGetWorldToScreenEx(Vector2 *out, Vector3 *position, Camera3D *camera, int width, int height)
 {
 	*out = GetWorldToScreenEx(*position, *camera, width, height);
@@ -436,11 +436,6 @@ void mGetWorldToScreenEx(Vector2 *out, Vector3 *position, Camera3D *camera, int 
 void mGetWorldToScreen2D(Vector2 *out, Vector2 *position, Camera2D *camera)
 {
 	*out = GetWorldToScreen2D(*position, *camera);
-}
-
-void mGetScreenToWorld2D(Vector2 *out, Vector2 *position, Camera2D *camera)
-{
-	*out = GetScreenToWorld2D(*position, *camera);
 }
 
 void mSetTargetFPS(int fps)
@@ -583,14 +578,29 @@ const char * mGetApplicationDirectory(void)
 	return GetApplicationDirectory();
 }
 
-void mClearDirectoryFiles(void)
-{
-	ClearDirectoryFiles();
-}
-
 bool mChangeDirectory(const char * dir)
 {
 	return ChangeDirectory(dir);
+}
+
+bool mIsPathFile(const char * path)
+{
+	return IsPathFile(path);
+}
+
+void mLoadDirectoryFiles(FilePathList *out, const char * dirPath)
+{
+	*out = LoadDirectoryFiles(dirPath);
+}
+
+void mLoadDirectoryFilesEx(FilePathList *out, const char * basePath, const char * filter, bool scanSubdirs)
+{
+	*out = LoadDirectoryFilesEx(basePath, filter, scanSubdirs);
+}
+
+void mUnloadDirectoryFiles(FilePathList *files)
+{
+	UnloadDirectoryFiles(*files);
 }
 
 bool mIsFileDropped(void)
@@ -598,9 +608,14 @@ bool mIsFileDropped(void)
 	return IsFileDropped();
 }
 
-void mClearDroppedFiles(void)
+void mLoadDroppedFiles(FilePathList *out)
 {
-	ClearDroppedFiles();
+	*out = LoadDroppedFiles();
+}
+
+void mUnloadDroppedFiles(FilePathList *files)
+{
+	UnloadDroppedFiles(*files);
 }
 
 long mGetFileModTime(const char * fileName)
@@ -786,6 +801,11 @@ void mSetMouseScale(float scaleX, float scaleY)
 float mGetMouseWheelMove(void)
 {
 	return GetMouseWheelMove();
+}
+
+void mGetMouseWheelMoveV(Vector2 *out)
+{
+	*out = GetMouseWheelMoveV();
 }
 
 void mSetMouseCursor(int cursor)
@@ -3168,6 +3188,11 @@ float mRemap(float value, float inputStart, float inputEnd, float outputStart, f
 	return Remap(value, inputStart, inputEnd, outputStart, outputEnd);
 }
 
+float mWrap(float value, float min, float max)
+{
+	return Wrap(value, min, max);
+}
+
 int mFloatEquals(float x, float y)
 {
 	return FloatEquals(x, y);
@@ -3691,350 +3716,5 @@ void mQuaternionTransform(Vector4 *out, Vector4 *q, Matrix *mat)
 int mQuaternionEquals(Vector4 *p, Vector4 *q)
 {
 	return QuaternionEquals(*p, *q);
-}
-
-void mGuiEnable(void)
-{
-	GuiEnable();
-}
-
-void mGuiDisable(void)
-{
-	GuiDisable();
-}
-
-void mGuiLock(void)
-{
-	GuiLock();
-}
-
-void mGuiUnlock(void)
-{
-	GuiUnlock();
-}
-
-bool mGuiIsLocked(void)
-{
-	return GuiIsLocked();
-}
-
-void mGuiFade(float alpha)
-{
-	GuiFade(alpha);
-}
-
-void mGuiSetState(int state)
-{
-	GuiSetState(state);
-}
-
-int mGuiGetState(void)
-{
-	return GuiGetState();
-}
-
-void mGuiSetFont(Font *font)
-{
-	GuiSetFont(*font);
-}
-
-void mGuiGetFont(Font *out)
-{
-	*out = GuiGetFont();
-}
-
-void mGuiSetStyle(int control, int property, int value)
-{
-	GuiSetStyle(control, property, value);
-}
-
-int mGuiGetStyle(int control, int property)
-{
-	return GuiGetStyle(control, property);
-}
-
-bool mGuiWindowBox(Rectangle *bounds, const char * title)
-{
-	return GuiWindowBox(*bounds, title);
-}
-
-void mGuiGroupBox(Rectangle *bounds, const char * text)
-{
-	GuiGroupBox(*bounds, text);
-}
-
-void mGuiLine(Rectangle *bounds, const char * text)
-{
-	GuiLine(*bounds, text);
-}
-
-void mGuiPanel(Rectangle *bounds)
-{
-	GuiPanel(*bounds);
-}
-
-void mGuiScrollPanel(Rectangle *out, Rectangle *bounds, Rectangle *content, Vector2 * scroll)
-{
-	*out = GuiScrollPanel(*bounds, *content, scroll);
-}
-
-void mGuiLabel(Rectangle *bounds, const char * text)
-{
-	GuiLabel(*bounds, text);
-}
-
-bool mGuiButton(Rectangle *bounds, const char * text)
-{
-	return GuiButton(*bounds, text);
-}
-
-bool mGuiLabelButton(Rectangle *bounds, const char * text)
-{
-	return GuiLabelButton(*bounds, text);
-}
-
-bool mGuiToggle(Rectangle *bounds, const char * text, bool active)
-{
-	return GuiToggle(*bounds, text, active);
-}
-
-int mGuiToggleGroup(Rectangle *bounds, const char * text, int active)
-{
-	return GuiToggleGroup(*bounds, text, active);
-}
-
-bool mGuiCheckBox(Rectangle *bounds, const char * text, bool checked)
-{
-	return GuiCheckBox(*bounds, text, checked);
-}
-
-int mGuiComboBox(Rectangle *bounds, const char * text, int active)
-{
-	return GuiComboBox(*bounds, text, active);
-}
-
-bool mGuiDropdownBox(Rectangle *bounds, const char * text, int * active, bool editMode)
-{
-	return GuiDropdownBox(*bounds, text, active, editMode);
-}
-
-bool mGuiSpinner(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode)
-{
-	return GuiSpinner(*bounds, text, value, minValue, maxValue, editMode);
-}
-
-bool mGuiValueBox(Rectangle *bounds, const char * text, int * value, int minValue, int maxValue, bool editMode)
-{
-	return GuiValueBox(*bounds, text, value, minValue, maxValue, editMode);
-}
-
-bool mGuiTextBox(Rectangle *bounds, char * text, int textSize, bool editMode)
-{
-	return GuiTextBox(*bounds, text, textSize, editMode);
-}
-
-float mGuiSlider(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue)
-{
-	return GuiSlider(*bounds, textLeft, textRight, value, minValue, maxValue);
-}
-
-float mGuiSliderBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue)
-{
-	return GuiSliderBar(*bounds, textLeft, textRight, value, minValue, maxValue);
-}
-
-float mGuiProgressBar(Rectangle *bounds, const char * textLeft, const char * textRight, float value, float minValue, float maxValue)
-{
-	return GuiProgressBar(*bounds, textLeft, textRight, value, minValue, maxValue);
-}
-
-void mGuiStatusBar(Rectangle *bounds, const char * text)
-{
-	GuiStatusBar(*bounds, text);
-}
-
-void mGuiDummyRec(Rectangle *bounds, const char * text)
-{
-	GuiDummyRec(*bounds, text);
-}
-
-int mGuiScrollBar(Rectangle *bounds, int value, int minValue, int maxValue)
-{
-	return GuiScrollBar(*bounds, value, minValue, maxValue);
-}
-
-void mGuiGrid(Vector2 *out, Rectangle *bounds, float spacing, int subdivs)
-{
-	*out = GuiGrid(*bounds, spacing, subdivs);
-}
-
-int mGuiListView(Rectangle *bounds, const char * text, int * scrollIndex, int active)
-{
-	return GuiListView(*bounds, text, scrollIndex, active);
-}
-
-int mGuiMessageBox(Rectangle *bounds, const char * title, const char * message, const char * buttons)
-{
-	return GuiMessageBox(*bounds, title, message, buttons);
-}
-
-int mGuiTextInputBox(Rectangle *bounds, const char * title, const char * message, const char * buttons, char * text)
-{
-	return GuiTextInputBox(*bounds, title, message, buttons, text);
-}
-
-void mGuiColorPicker(Color *out, Rectangle *bounds, Color *color)
-{
-	*out = GuiColorPicker(*bounds, *color);
-}
-
-void mGuiColorPanel(Color *out, Rectangle *bounds, Color *color)
-{
-	*out = GuiColorPanel(*bounds, *color);
-}
-
-float mGuiColorBarAlpha(Rectangle *bounds, float alpha)
-{
-	return GuiColorBarAlpha(*bounds, alpha);
-}
-
-float mGuiColorBarHue(Rectangle *bounds, float value)
-{
-	return GuiColorBarHue(*bounds, value);
-}
-
-void mGuiLoadStyle(const char * fileName)
-{
-	GuiLoadStyle(fileName);
-}
-
-void mGuiLoadStyleDefault(void)
-{
-	GuiLoadStyleDefault();
-}
-
-const char * mGuiIconText(int iconId, const char * text)
-{
-	return GuiIconText(iconId, text);
-}
-
-unsigned int * mGuiGetIcons(void)
-{
-	return GuiGetIcons();
-}
-
-unsigned int * mGuiGetIconData(int iconId)
-{
-	return GuiGetIconData(iconId);
-}
-
-void mGuiSetIconData(int iconId, unsigned int * data)
-{
-	GuiSetIconData(iconId, data);
-}
-
-void mGuiSetIconPixel(int iconId, int x, int y)
-{
-	GuiSetIconPixel(iconId, x, y);
-}
-
-void mGuiClearIconPixel(int iconId, int x, int y)
-{
-	GuiClearIconPixel(iconId, x, y);
-}
-
-bool mGuiCheckIconPixel(int iconId, int x, int y)
-{
-	return GuiCheckIconPixel(iconId, x, y);
-}
-
-void mInitPhysics(void)
-{
-	InitPhysics();
-}
-
-void mUpdatePhysics(void)
-{
-	UpdatePhysics();
-}
-
-void mResetPhysics(void)
-{
-	ResetPhysics();
-}
-
-void mClosePhysics(void)
-{
-	ClosePhysics();
-}
-
-void mSetPhysicsTimeStep(double delta)
-{
-	SetPhysicsTimeStep(delta);
-}
-
-void mSetPhysicsGravity(float x, float y)
-{
-	SetPhysicsGravity(x, y);
-}
-
-PhysicsBodyData * mCreatePhysicsBodyCircle(Vector2 *pos, float radius, float density)
-{
-	return CreatePhysicsBodyCircle(*pos, radius, density);
-}
-
-PhysicsBodyData * mCreatePhysicsBodyRectangle(Vector2 *pos, float width, float height, float density)
-{
-	return CreatePhysicsBodyRectangle(*pos, width, height, density);
-}
-
-PhysicsBodyData * mCreatePhysicsBodyPolygon(Vector2 *pos, float radius, int sides, float density)
-{
-	return CreatePhysicsBodyPolygon(*pos, radius, sides, density);
-}
-
-void mDestroyPhysicsBody(PhysicsBodyData * body)
-{
-	DestroyPhysicsBody(body);
-}
-
-void mPhysicsAddForce(PhysicsBodyData * body, Vector2 *force)
-{
-	PhysicsAddForce(body, *force);
-}
-
-void mPhysicsAddTorque(PhysicsBodyData * body, float amount)
-{
-	PhysicsAddTorque(body, amount);
-}
-
-void mPhysicsShatter(PhysicsBodyData * body, Vector2 *position, float force)
-{
-	PhysicsShatter(body, *position, force);
-}
-
-void mSetPhysicsBodyRotation(PhysicsBodyData * body, float radians)
-{
-	SetPhysicsBodyRotation(body, radians);
-}
-
-int mGetPhysicsBodiesCount(void)
-{
-	return GetPhysicsBodiesCount();
-}
-
-int mGetPhysicsShapeType(int index)
-{
-	return GetPhysicsShapeType(index);
-}
-
-int mGetPhysicsShapeVerticesCount(int index)
-{
-	return GetPhysicsShapeVerticesCount(index);
-}
-
-void mGetPhysicsShapeVertex(Vector2 *out, PhysicsBodyData * body, int vertex)
-{
-	*out = GetPhysicsShapeVertex(body, vertex);
 }
 

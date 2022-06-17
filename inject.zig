@@ -644,40 +644,11 @@ pub fn UnloadFileData(
     );
 }
 
-/// Load style from file (.rgs)
-pub fn LoadGuiStyle(_: [*:0]const u8) u32 {
-    @panic("LoadGuiStyle is not implemented");
-    //return raylib.LoadGuiStyle(fileName);
-}
-
-/// Unload style
-pub fn UnloadGuiStyle(_: u32) void {
-    @panic("UnloadGuiStyle is not implemented");
-    // raylib.UnloadGuiStyle(style);
-}
-
 /// Set custom trace log
 pub fn SetTraceLogCallback(
     _: TraceLogCallback,
 ) void {
     @panic("use log.zig for that");
-}
-
-/// Text Box control with multiple lines
-pub fn GuiTextBoxMulti(_: Rectangle, _: [*]u8, _: i32, _: bool) bool {
-    @panic("this gets translated wrong with cImport");
-}
-
-/// List View with extended parameters
-pub fn GuiListViewEx(
-    _: Rectangle,
-    _: [*]const [*:0]const u8,
-    _: i32,
-    _: [*]i32,
-    _: [*]i32,
-    _: i32,
-) i32 {
-    @panic("TODO: link with raygui somehow");
 }
 
 /// Generate image font atlas using chars info
@@ -717,48 +688,6 @@ export fn mGenImageFontAtlas(
         fontSize,
         padding,
         packMethod,
-    );
-}
-
-/// Get dropped files names (memory should be freed)
-pub fn GetDroppedFiles(
-    count: [*]i32,
-) [*]const [*]const u8 {
-    return @ptrCast(
-        [*]u8,
-        mGetDroppedFiles(
-            @ptrCast([*c]i32, count),
-        ),
-    );
-}
-export fn mGetDroppedFiles(
-    count: [*c]i32,
-) [*c]const [*c]const u8 {
-    return raylib.GetDroppedFiles(
-        count,
-    );
-}
-
-/// Get filenames in a directory path (memory should be freed)
-pub fn GetDirectoryFiles(
-    dirPath: [*:0]const u8,
-    count: [*]i32,
-) [*]const [*]const u8 {
-    return @ptrCast(
-        [*]u8,
-        mGetDirectoryFiles(
-            @ptrCast([*c]u8, dirPath),
-            @ptrCast([*c]i32, count),
-        ),
-    );
-}
-export fn mGetDirectoryFiles(
-    dirPath: [*c]u8,
-    count: [*c]i32,
-) [*c]const [*c]const u8 {
-    return raylib.GetDirectoryFiles(
-        dirPath,
-        count,
     );
 }
 
@@ -835,74 +764,6 @@ pub fn TextAppend(allocator: std.mem.Allocator, text: []const u8, append: []cons
         append,
         text[position..],
     })).ptr;
-}
-
-//--- RAYGUI --------------------------------------------------------------------------------------
-
-pub fn textAlignPixelOffset(h: i32) i32 {
-    return h % 2;
-}
-
-fn bitCheck(a: u32, b: u32) bool {
-    var r: u32 = undefined;
-    _ = @shlWithOverflow(u32, 1, @truncate(u5, b), &r);
-    return (a & (r)) != 0;
-}
-
-/// Draw selected icon using rectangles pixel-by-pixel
-pub fn GuiDrawIcon(
-    icon: guiIconName,
-    posX: i32,
-    posY: i32,
-    pixelSize: i32,
-    color: Color,
-) void {
-    const iconId = @enumToInt(icon);
-
-    var i: i32 = 0;
-    var y: i32 = 0;
-    while (i < RICON_SIZE * RICON_SIZE / 32) : (i += 1) {
-        var k: u32 = 0;
-        while (k < 32) : (k += 1) {
-            if (bitCheck(raylib.guiIcons[@intCast(usize, iconId * RICON_DATA_ELEMENTS + i)], k)) {
-                _ = DrawRectangle(
-                    posX + @intCast(i32, k % RICON_SIZE) * pixelSize,
-                    posY + y * pixelSize,
-                    pixelSize,
-                    pixelSize,
-                    color,
-                );
-            }
-
-            if ((k == 15) or (k == 31)) {
-                y += 1;
-            }
-        }
-    }
-}
-
-/// Draw button with icon centered
-pub fn GuiDrawIconButton(bounds: Rectangle, icon: guiIconName, iconTint: Color) bool {
-    const pressed = GuiButton(bounds, "");
-    GuiDrawIcon(
-        icon,
-        @floatToInt(i32, bounds.x + bounds.width / 2 - @intToFloat(f32, RICON_SIZE) / 2),
-        @floatToInt(i32, bounds.y + (bounds.height / 2) - @intToFloat(f32, RICON_SIZE) / 2),
-        1,
-        iconTint,
-    );
-    return pressed;
-}
-
-//--- PHYSAC --------------------------------------------------------------------------------------
-
-/// Returns a physics body of the bodies pool at a specific index
-pub fn GetPhysicsBody(
-    index: i32,
-) ?*PhysicsBodyData {
-    return @ptrCast(?*PhysicsBodyData, raylib.GetPhysicsBody(
-        index,
-    ));
 }
 
 //--- RLGL ----------------------------------------------------------------------------------------
