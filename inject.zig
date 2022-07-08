@@ -267,11 +267,11 @@ pub const Vector2 = extern struct {
     }
 
     pub fn randomInUnitCircle(rng: std.rand.Random) @This() {
-        return .{ .x = randomF32(rng, -1, 1), .y = randomF32(rng, -1, 1) };
+        return randomOnUnitCircle(rng).scale(randomF32(rng, 0, 1));
     }
 
     pub fn randomOnUnitCircle(rng: std.rand.Random) @This() {
-        return randomInUnitCircle(rng).normalize();
+        return (Vector2{ .x = 1 }).rotate(randomF32(rng, -PI, PI));
     }
 
     pub fn clampX(self: @This(), minX: f32, maxX: f32) @This() {
