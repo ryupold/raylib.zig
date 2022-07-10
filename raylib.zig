@@ -400,6 +400,14 @@ pub const Vector3 = extern struct {
         };
     }
 
+    pub fn neg(this: @This()) @This() {
+        return .{
+            .x = -this.x,
+            .y = -this.y,
+            .z = -this.z,
+        };
+    }
+
     pub fn lerp(self: @This(), other: @This(), t: f32) @This() {
         return self.scale(1 - t).add(other.scale(t));
     }
@@ -410,6 +418,16 @@ pub const Vector3 = extern struct {
 
     pub fn rotate(self: @This(), quaternion: Vector4) @This() {
         return Vector3RotateByQuaternion(self, quaternion);
+    }
+
+    pub fn angleBetween(self: @This(), other: Vector3) f32 {
+        return Vector3Angle(self, other);
+        // return std.math.acos(self.dot(other) / (self.length() * other.length()));
+    }
+
+    /// Dot product.
+    pub fn dot(self: @This(), other: @This()) f32 {
+        return self.x * other.x + self.y * other.y + self.z * other.z;
     }
 
     pub fn xy(self: @This()) Vector2 {
@@ -541,6 +559,16 @@ pub const Color = extern struct {
             .y = @intToFloat(f32, self.g) / 255.0,
             .z = @intToFloat(f32, self.b) / 255.0,
             .w = @intToFloat(f32, self.a) / 255.0,
+        };
+    }
+
+    /// negate color (keep alpha)
+    pub fn neg(self: @This()) @This() {
+        return .{
+            .r = 255-self.r,
+            .g = 255-self.g,
+            .b = 255-self.b,
+            .a = self.a,
         };
     }
 };
