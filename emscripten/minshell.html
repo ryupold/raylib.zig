@@ -4,10 +4,10 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  
+
   <!--no caching for now, the game is still pretty small-->
-  <meta http-equiv="cache-control" content="no-cache"/>
-  <meta http-equiv="expires" content="0"/>
+  <meta http-equiv="cache-control" content="no-cache" />
+  <meta http-equiv="expires" content="0" />
 
   <title>demo</title>
 
@@ -53,7 +53,7 @@
 </head>
 
 <body onload="setResizeInterval(300, 5)"
-  onresize="Module.resizeWindow(document.documentElement.clientWidth-16,document.documentElement.clientHeight-16)">
+  onresize="if(Module.resizeWindow) Module.resizeWindow(document.documentElement.clientWidth-16,document.documentElement.clientHeight-16)">
   <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"
     tabindex="-1"></canvas>
   <!-- <p id="output" /> -->
@@ -77,15 +77,16 @@
         return canvas;
       })(),
     };
-    Module.resizeWindow = function (w, h) {
-      Module.ccall(
-        "emsc_set_window_size",
-        null,
-        ["number", "number"],
-        [w, h]
-      );
-    };
+
     Module.onRuntimeInitialized = function () {
+      Module.resizeWindow = function (w, h) {
+        Module.ccall(
+          "emsc_set_window_size",
+          null,
+          ["number", "number"],
+          [w, h]
+        );
+      };
       Module.resizeWindow(document.documentElement.clientWidth - 16, document.documentElement.clientHeight - 16);
     };
   </script>
