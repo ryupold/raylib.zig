@@ -75,10 +75,10 @@ pub const Matrix = extern struct {
 };
 
 pub const Rectangle = extern struct {
-    x: f32,
-    y: f32,
-    width: f32,
-    height: f32,
+    x: f32 = 0,
+    y: f32 = 0,
+    width: f32 = 0,
+    height: f32 = 0,
 
     pub fn toI32(self: @This()) RectangleI {
         return .{
@@ -165,13 +165,17 @@ pub const Rectangle = extern struct {
             .y = self.y + self.height,
         };
     }
+
+    pub fn area(self: @This()) f32 {
+        return self.x * self.y;
+    }
 };
 
 pub const RectangleI = extern struct {
-    x: i32,
-    y: i32,
-    width: i32,
-    height: i32,
+    x: f32 = 0,
+    y: f32 = 0,
+    width: f32 = 0,
+    height: f32 = 0,
 
     pub fn toF32(self: @This()) Rectangle {
         return .{
