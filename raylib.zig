@@ -1801,32 +1801,32 @@ pub fn ExportDataAsCode(
 /// Load text data from file (read), returns a '\0' terminated string
 pub fn LoadFileText(
     fileName: [*:0]const u8,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mLoadFileText(
-            @intToPtr([*c]const u8, @ptrToInt(fileName)),
-        ),
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mLoadFileText(
+        @ptrCast([*c]?[*]u8, &out),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
     );
+    return out;
 }
 
 /// Unload file text data allocated by LoadFileText()
 pub fn UnloadFileText(
-    text: [*]u8,
+    text: ?[*]u8,
 ) void {
     raylib.mUnloadFileText(
-        @ptrCast([*c]u8, text),
+        text,
     );
 }
 
 /// Save text data to file (write), string must be '\0' terminated, returns true on success
 pub fn SaveFileText(
     fileName: [*:0]const u8,
-    text: [*]u8,
+    text: ?[*]u8,
 ) bool {
     return raylib.mSaveFileText(
         @intToPtr([*c]const u8, @ptrToInt(fileName)),
-        @ptrCast([*c]u8, text),
+        text,
     );
 }
 
@@ -2035,62 +2035,62 @@ pub fn GetFileModTime(
 pub fn CompressData(
     data: [*:0]const u8,
     dataSize: i32,
-    compDataSize: [*]i32,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mCompressData(
-            @intToPtr([*c]const u8, @ptrToInt(data)),
-            dataSize,
-            @ptrCast([*c]i32, compDataSize),
-        ),
+    compDataSize: ?[*]i32,
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mCompressData(
+        @ptrCast([*c]?[*]u8, &out),
+        @intToPtr([*c]const u8, @ptrToInt(data)),
+        dataSize,
+        compDataSize,
     );
+    return out;
 }
 
 /// Decompress data (DEFLATE algorithm), memory must be MemFree()
 pub fn DecompressData(
     compData: [*:0]const u8,
     compDataSize: i32,
-    dataSize: [*]i32,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mDecompressData(
-            @intToPtr([*c]const u8, @ptrToInt(compData)),
-            compDataSize,
-            @ptrCast([*c]i32, dataSize),
-        ),
+    dataSize: ?[*]i32,
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mDecompressData(
+        @ptrCast([*c]?[*]u8, &out),
+        @intToPtr([*c]const u8, @ptrToInt(compData)),
+        compDataSize,
+        dataSize,
     );
+    return out;
 }
 
 /// Encode data to Base64 string, memory must be MemFree()
 pub fn EncodeDataBase64(
     data: [*:0]const u8,
     dataSize: i32,
-    outputSize: [*]i32,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mEncodeDataBase64(
-            @intToPtr([*c]const u8, @ptrToInt(data)),
-            dataSize,
-            @ptrCast([*c]i32, outputSize),
-        ),
+    outputSize: ?[*]i32,
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mEncodeDataBase64(
+        @ptrCast([*c]?[*]u8, &out),
+        @intToPtr([*c]const u8, @ptrToInt(data)),
+        dataSize,
+        outputSize,
     );
+    return out;
 }
 
 /// Decode Base64 string data, memory must be MemFree()
 pub fn DecodeDataBase64(
     data: [*:0]const u8,
-    outputSize: [*]i32,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mDecodeDataBase64(
-            @intToPtr([*c]const u8, @ptrToInt(data)),
-            @ptrCast([*c]i32, outputSize),
-        ),
+    outputSize: ?[*]i32,
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mDecodeDataBase64(
+        @ptrCast([*c]?[*]u8, &out),
+        @intToPtr([*c]const u8, @ptrToInt(data)),
+        outputSize,
     );
+    return out;
 }
 
 /// Check if a key has been pressed once
@@ -2649,12 +2649,12 @@ pub fn DrawLineBezierCubic(
 
 /// Draw lines sequence
 pub fn DrawLineStrip(
-    points: [*]Vector2,
+    points: ?[*]Vector2,
     pointCount: i32,
     color: Color,
 ) void {
     raylib.mDrawLineStrip(
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
+        points,
         pointCount,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
@@ -3039,12 +3039,12 @@ pub fn DrawTriangleLines(
 
 /// Draw a triangle fan defined by points (first vertex is the center)
 pub fn DrawTriangleFan(
-    points: [*]Vector2,
+    points: ?[*]Vector2,
     pointCount: i32,
     color: Color,
 ) void {
     raylib.mDrawTriangleFan(
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
+        points,
         pointCount,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
@@ -3052,12 +3052,12 @@ pub fn DrawTriangleFan(
 
 /// Draw a triangle strip defined by points
 pub fn DrawTriangleStrip(
-    points: [*]Vector2,
+    points: ?[*]Vector2,
     pointCount: i32,
     color: Color,
 ) void {
     raylib.mDrawTriangleStrip(
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
+        points,
         pointCount,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
@@ -3200,14 +3200,14 @@ pub fn CheckCollisionLines(
     endPos1: Vector2,
     startPos2: Vector2,
     endPos2: Vector2,
-    collisionPoint: [*]Vector2,
+    collisionPoint: ?[*]Vector2,
 ) bool {
     return raylib.mCheckCollisionLines(
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos1)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos1)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&startPos2)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&endPos2)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(collisionPoint)),
+        collisionPoint,
     );
 }
 
@@ -3275,13 +3275,13 @@ pub fn LoadImageRaw(
 /// Load image sequence from file (frames appended to image.data)
 pub fn LoadImageAnim(
     fileName: [*:0]const u8,
-    frames: [*]i32,
+    frames: ?[*]i32,
 ) Image {
     var out: Image = undefined;
     raylib.mLoadImageAnim(
         @ptrCast([*c]raylib.Image, &out),
         @intToPtr([*c]const u8, @ptrToInt(fileName)),
-        @ptrCast([*c]i32, frames),
+        frames,
     );
     return out;
 }
@@ -3544,56 +3544,56 @@ pub fn ImageTextEx(
 
 /// Convert image data to desired format
 pub fn ImageFormat(
-    image: [*]Image,
+    image: ?[*]Image,
     newFormat: i32,
 ) void {
     raylib.mImageFormat(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         newFormat,
     );
 }
 
 /// Convert image to POT (power-of-two)
 pub fn ImageToPOT(
-    image: [*]Image,
+    image: ?[*]Image,
     fill: Color,
 ) void {
     raylib.mImageToPOT(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         @intToPtr([*c]raylib.Color, @ptrToInt(&fill)),
     );
 }
 
 /// Crop an image to a defined rectangle
 pub fn ImageCrop(
-    image: [*]Image,
+    image: ?[*]Image,
     crop: Rectangle,
 ) void {
     raylib.mImageCrop(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&crop)),
     );
 }
 
 /// Crop image depending on alpha value
 pub fn ImageAlphaCrop(
-    image: [*]Image,
+    image: ?[*]Image,
     threshold: f32,
 ) void {
     raylib.mImageAlphaCrop(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         threshold,
     );
 }
 
 /// Clear alpha channel to desired color
 pub fn ImageAlphaClear(
-    image: [*]Image,
+    image: ?[*]Image,
     color: Color,
     threshold: f32,
 ) void {
     raylib.mImageAlphaClear(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         threshold,
     );
@@ -3601,32 +3601,32 @@ pub fn ImageAlphaClear(
 
 /// Apply alpha mask to image
 pub fn ImageAlphaMask(
-    image: [*]Image,
+    image: ?[*]Image,
     alphaMask: Image,
 ) void {
     raylib.mImageAlphaMask(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         @intToPtr([*c]raylib.Image, @ptrToInt(&alphaMask)),
     );
 }
 
 /// Premultiply alpha channel
 pub fn ImageAlphaPremultiply(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageAlphaPremultiply(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Resize image (Bicubic scaling algorithm)
 pub fn ImageResize(
-    image: [*]Image,
+    image: ?[*]Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
     raylib.mImageResize(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         newWidth,
         newHeight,
     );
@@ -3634,12 +3634,12 @@ pub fn ImageResize(
 
 /// Resize image (Nearest-Neighbor scaling algorithm)
 pub fn ImageResizeNN(
-    image: [*]Image,
+    image: ?[*]Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
     raylib.mImageResizeNN(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         newWidth,
         newHeight,
     );
@@ -3647,7 +3647,7 @@ pub fn ImageResizeNN(
 
 /// Resize canvas and fill with color
 pub fn ImageResizeCanvas(
-    image: [*]Image,
+    image: ?[*]Image,
     newWidth: i32,
     newHeight: i32,
     offsetX: i32,
@@ -3655,7 +3655,7 @@ pub fn ImageResizeCanvas(
     fill: Color,
 ) void {
     raylib.mImageResizeCanvas(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         newWidth,
         newHeight,
         offsetX,
@@ -3666,23 +3666,23 @@ pub fn ImageResizeCanvas(
 
 /// Compute all mipmap levels for a provided image
 pub fn ImageMipmaps(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageMipmaps(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
 pub fn ImageDither(
-    image: [*]Image,
+    image: ?[*]Image,
     rBpp: i32,
     gBpp: i32,
     bBpp: i32,
     aBpp: i32,
 ) void {
     raylib.mImageDither(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         rBpp,
         gBpp,
         bBpp,
@@ -3692,99 +3692,99 @@ pub fn ImageDither(
 
 /// Flip image vertically
 pub fn ImageFlipVertical(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageFlipVertical(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Flip image horizontally
 pub fn ImageFlipHorizontal(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageFlipHorizontal(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Rotate image clockwise 90deg
 pub fn ImageRotateCW(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageRotateCW(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Rotate image counter-clockwise 90deg
 pub fn ImageRotateCCW(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageRotateCCW(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Modify image color: tint
 pub fn ImageColorTint(
-    image: [*]Image,
+    image: ?[*]Image,
     color: Color,
 ) void {
     raylib.mImageColorTint(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 /// Modify image color: invert
 pub fn ImageColorInvert(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageColorInvert(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Modify image color: grayscale
 pub fn ImageColorGrayscale(
-    image: [*]Image,
+    image: ?[*]Image,
 ) void {
     raylib.mImageColorGrayscale(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
     );
 }
 
 /// Modify image color: contrast (-100 to 100)
 pub fn ImageColorContrast(
-    image: [*]Image,
+    image: ?[*]Image,
     contrast: f32,
 ) void {
     raylib.mImageColorContrast(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         contrast,
     );
 }
 
 /// Modify image color: brightness (-255 to 255)
 pub fn ImageColorBrightness(
-    image: [*]Image,
+    image: ?[*]Image,
     brightness: i32,
 ) void {
     raylib.mImageColorBrightness(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         brightness,
     );
 }
 
 /// Modify image color: replace color
 pub fn ImageColorReplace(
-    image: [*]Image,
+    image: ?[*]Image,
     color: Color,
     replace: Color,
 ) void {
     raylib.mImageColorReplace(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        image,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&replace)),
     );
@@ -3793,46 +3793,46 @@ pub fn ImageColorReplace(
 /// Load color data from image as a Color array (RGBA - 32bit)
 pub fn LoadImageColors(
     image: Image,
-) [*]const Color {
-    return @ptrCast(
-        [*]Color,
-        raylib.mLoadImageColors(
-            @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
-        ),
+) ?[*]Color {
+    var out: ?[*]Color = undefined;
+    raylib.mLoadImageColors(
+        @ptrCast([*c]?[*]Color, &out),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
     );
+    return out;
 }
 
 /// Load colors palette from image as a Color array (RGBA - 32bit)
 pub fn LoadImagePalette(
     image: Image,
     maxPaletteSize: i32,
-    colorCount: [*]i32,
-) [*]const Color {
-    return @ptrCast(
-        [*]Color,
-        raylib.mLoadImagePalette(
-            @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
-            maxPaletteSize,
-            @ptrCast([*c]i32, colorCount),
-        ),
+    colorCount: ?[*]i32,
+) ?[*]Color {
+    var out: ?[*]Color = undefined;
+    raylib.mLoadImagePalette(
+        @ptrCast([*c]?[*]Color, &out),
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+        maxPaletteSize,
+        colorCount,
     );
+    return out;
 }
 
 /// Unload color data loaded with LoadImageColors()
 pub fn UnloadImageColors(
-    colors: [*]Color,
+    colors: ?[*]Color,
 ) void {
     raylib.mUnloadImageColors(
-        @intToPtr([*c]raylib.Color, @ptrToInt(colors)),
+        colors,
     );
 }
 
 /// Unload colors palette loaded with LoadImagePalette()
 pub fn UnloadImagePalette(
-    colors: [*]Color,
+    colors: ?[*]Color,
 ) void {
     raylib.mUnloadImagePalette(
-        @intToPtr([*c]raylib.Color, @ptrToInt(colors)),
+        colors,
     );
 }
 
@@ -3868,24 +3868,24 @@ pub fn GetImageColor(
 
 /// Clear image background with given color
 pub fn ImageClearBackground(
-    dst: [*]Image,
+    dst: ?[*]Image,
     color: Color,
 ) void {
     raylib.mImageClearBackground(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 /// Draw pixel within an image
 pub fn ImageDrawPixel(
-    dst: [*]Image,
+    dst: ?[*]Image,
     posX: i32,
     posY: i32,
     color: Color,
 ) void {
     raylib.mImageDrawPixel(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         posX,
         posY,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
@@ -3894,12 +3894,12 @@ pub fn ImageDrawPixel(
 
 /// Draw pixel within an image (Vector version)
 pub fn ImageDrawPixelV(
-    dst: [*]Image,
+    dst: ?[*]Image,
     position: Vector2,
     color: Color,
 ) void {
     raylib.mImageDrawPixelV(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
@@ -3907,7 +3907,7 @@ pub fn ImageDrawPixelV(
 
 /// Draw line within an image
 pub fn ImageDrawLine(
-    dst: [*]Image,
+    dst: ?[*]Image,
     startPosX: i32,
     startPosY: i32,
     endPosX: i32,
@@ -3915,7 +3915,7 @@ pub fn ImageDrawLine(
     color: Color,
 ) void {
     raylib.mImageDrawLine(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         startPosX,
         startPosY,
         endPosX,
@@ -3926,13 +3926,13 @@ pub fn ImageDrawLine(
 
 /// Draw line within an image (Vector version)
 pub fn ImageDrawLineV(
-    dst: [*]Image,
+    dst: ?[*]Image,
     start: Vector2,
     end: Vector2,
     color: Color,
 ) void {
     raylib.mImageDrawLineV(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&start)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&end)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
@@ -3941,14 +3941,14 @@ pub fn ImageDrawLineV(
 
 /// Draw circle within an image
 pub fn ImageDrawCircle(
-    dst: [*]Image,
+    dst: ?[*]Image,
     centerX: i32,
     centerY: i32,
     radius: i32,
     color: Color,
 ) void {
     raylib.mImageDrawCircle(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         centerX,
         centerY,
         radius,
@@ -3958,13 +3958,13 @@ pub fn ImageDrawCircle(
 
 /// Draw circle within an image (Vector version)
 pub fn ImageDrawCircleV(
-    dst: [*]Image,
+    dst: ?[*]Image,
     center: Vector2,
     radius: i32,
     color: Color,
 ) void {
     raylib.mImageDrawCircleV(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
@@ -3973,7 +3973,7 @@ pub fn ImageDrawCircleV(
 
 /// Draw rectangle within an image
 pub fn ImageDrawRectangle(
-    dst: [*]Image,
+    dst: ?[*]Image,
     posX: i32,
     posY: i32,
     width: i32,
@@ -3981,7 +3981,7 @@ pub fn ImageDrawRectangle(
     color: Color,
 ) void {
     raylib.mImageDrawRectangle(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         posX,
         posY,
         width,
@@ -3992,13 +3992,13 @@ pub fn ImageDrawRectangle(
 
 /// Draw rectangle within an image (Vector version)
 pub fn ImageDrawRectangleV(
-    dst: [*]Image,
+    dst: ?[*]Image,
     position: Vector2,
     size: Vector2,
     color: Color,
 ) void {
     raylib.mImageDrawRectangleV(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&size)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
@@ -4007,12 +4007,12 @@ pub fn ImageDrawRectangleV(
 
 /// Draw rectangle within an image
 pub fn ImageDrawRectangleRec(
-    dst: [*]Image,
+    dst: ?[*]Image,
     rec: Rectangle,
     color: Color,
 ) void {
     raylib.mImageDrawRectangleRec(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
@@ -4020,13 +4020,13 @@ pub fn ImageDrawRectangleRec(
 
 /// Draw rectangle lines within an image
 pub fn ImageDrawRectangleLines(
-    dst: [*]Image,
+    dst: ?[*]Image,
     rec: Rectangle,
     thick: i32,
     color: Color,
 ) void {
     raylib.mImageDrawRectangleLines(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
         thick,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
@@ -4035,14 +4035,14 @@ pub fn ImageDrawRectangleLines(
 
 /// Draw a source image within a destination image (tint applied to source)
 pub fn ImageDraw(
-    dst: [*]Image,
+    dst: ?[*]Image,
     src: Image,
     srcRec: Rectangle,
     dstRec: Rectangle,
     tint: Color,
 ) void {
     raylib.mImageDraw(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Image, @ptrToInt(&src)),
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&srcRec)),
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&dstRec)),
@@ -4052,7 +4052,7 @@ pub fn ImageDraw(
 
 /// Draw text (using default font) within an image (destination)
 pub fn ImageDrawText(
-    dst: [*]Image,
+    dst: ?[*]Image,
     text: [*:0]const u8,
     posX: i32,
     posY: i32,
@@ -4060,7 +4060,7 @@ pub fn ImageDrawText(
     color: Color,
 ) void {
     raylib.mImageDrawText(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]const u8, @ptrToInt(text)),
         posX,
         posY,
@@ -4071,7 +4071,7 @@ pub fn ImageDrawText(
 
 /// Draw text (custom sprite font) within an image (destination)
 pub fn ImageDrawTextEx(
-    dst: [*]Image,
+    dst: ?[*]Image,
     font: Font,
     text: [*:0]const u8,
     position: Vector2,
@@ -4080,7 +4080,7 @@ pub fn ImageDrawTextEx(
     tint: Color,
 ) void {
     raylib.mImageDrawTextEx(
-        @intToPtr([*c]raylib.Image, @ptrToInt(dst)),
+        dst,
         @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
         @intToPtr([*c]const u8, @ptrToInt(text)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
@@ -4186,7 +4186,7 @@ pub fn UpdateTextureRec(
 
 /// Generate GPU mipmaps for a texture
 pub fn GenTextureMipmaps(
-    texture: [*]Texture2D,
+    texture: *Texture2D,
 ) void {
     raylib.mGenTextureMipmaps(
         @intToPtr([*c]raylib.Texture2D, @ptrToInt(texture)),
@@ -4355,16 +4355,16 @@ pub fn DrawTextureNPatch(
 pub fn DrawTexturePoly(
     texture: Texture2D,
     center: Vector2,
-    points: [*]Vector2,
-    texcoords: [*]Vector2,
+    points: ?[*]Vector2,
+    texcoords: ?[*]Vector2,
     pointCount: i32,
     tint: Color,
 ) void {
     raylib.mDrawTexturePoly(
         @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(points)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(texcoords)),
+        points,
+        texcoords,
         pointCount,
         @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
@@ -4552,7 +4552,7 @@ pub fn LoadFont(
 pub fn LoadFontEx(
     fileName: [*:0]const u8,
     fontSize: i32,
-    fontChars: [*]i32,
+    fontChars: ?[*]i32,
     glyphCount: i32,
 ) Font {
     var out: Font = undefined;
@@ -4560,7 +4560,7 @@ pub fn LoadFontEx(
         @ptrCast([*c]raylib.Font, &out),
         @intToPtr([*c]const u8, @ptrToInt(fileName)),
         fontSize,
-        @ptrCast([*c]i32, fontChars),
+        fontChars,
         glyphCount,
     );
     return out;
@@ -4588,7 +4588,7 @@ pub fn LoadFontFromMemory(
     fileData: [*:0]const u8,
     dataSize: i32,
     fontSize: i32,
-    fontChars: [*]i32,
+    fontChars: ?[*]i32,
     glyphCount: i32,
 ) Font {
     var out: Font = undefined;
@@ -4598,7 +4598,7 @@ pub fn LoadFontFromMemory(
         @intToPtr([*c]const u8, @ptrToInt(fileData)),
         dataSize,
         fontSize,
-        @ptrCast([*c]i32, fontChars),
+        fontChars,
         glyphCount,
     );
     return out;
@@ -4615,11 +4615,11 @@ pub fn Vector3Length(
 
 /// Unload font chars info data (RAM)
 pub fn UnloadFontData(
-    chars: [*]GlyphInfo,
+    chars: ?[*]GlyphInfo,
     glyphCount: i32,
 ) void {
     raylib.mUnloadFontData(
-        @intToPtr([*c]raylib.GlyphInfo, @ptrToInt(chars)),
+        chars,
         glyphCount,
     );
 }
@@ -4734,7 +4734,7 @@ pub fn DrawTextCodepoint(
 /// Draw multiple character (codepoint)
 pub fn DrawTextCodepoints(
     font: Font,
-    codepoints: [*]const i32,
+    codepoints: ?[*]const i32,
     count: i32,
     position: Vector2,
     fontSize: f32,
@@ -4743,7 +4743,7 @@ pub fn DrawTextCodepoints(
 ) void {
     raylib.mDrawTextCodepoints(
         @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
-        @intToPtr([*c]const i32, @ptrToInt(codepoints)),
+        codepoints,
         count,
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&position)),
         fontSize,
@@ -4823,23 +4823,23 @@ pub fn GetGlyphAtlasRec(
 /// Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
 pub fn LoadCodepoints(
     text: [*:0]const u8,
-    count: [*]i32,
-) [*]const i32 {
-    return @ptrCast(
-        [*]i32,
-        raylib.mLoadCodepoints(
-            @intToPtr([*c]const u8, @ptrToInt(text)),
-            @ptrCast([*c]i32, count),
-        ),
+    count: ?[*]i32,
+) ?[*]i32 {
+    var out: ?[*]i32 = undefined;
+    raylib.mLoadCodepoints(
+        @ptrCast([*c]?[*]i32, &out),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        count,
     );
+    return out;
 }
 
 /// Unload codepoints data from memory
 pub fn UnloadCodepoints(
-    codepoints: [*]i32,
+    codepoints: ?[*]i32,
 ) void {
     raylib.mUnloadCodepoints(
-        @ptrCast([*c]i32, codepoints),
+        codepoints,
     );
 }
 
@@ -4855,49 +4855,49 @@ pub fn GetCodepointCount(
 /// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
 pub fn GetCodepoint(
     text: [*:0]const u8,
-    bytesProcessed: [*]i32,
+    bytesProcessed: ?[*]i32,
 ) i32 {
     return raylib.mGetCodepoint(
         @intToPtr([*c]const u8, @ptrToInt(text)),
-        @ptrCast([*c]i32, bytesProcessed),
+        bytesProcessed,
     );
 }
 
 /// Encode one codepoint into UTF-8 byte array (array length returned as parameter)
 pub fn CodepointToUTF8(
     codepoint: i32,
-    byteSize: [*]i32,
+    byteSize: ?[*]i32,
 ) [*:0]const u8 {
     return @ptrCast(
         [*:0]const u8,
         raylib.mCodepointToUTF8(
             codepoint,
-            @ptrCast([*c]i32, byteSize),
+            byteSize,
         ),
     );
 }
 
 /// Encode text as codepoints array into UTF-8 text string (WARNING: memory must be freed!)
 pub fn TextCodepointsToUTF8(
-    codepoints: [*]const i32,
+    codepoints: ?[*]const i32,
     length: i32,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mTextCodepointsToUTF8(
-            @intToPtr([*c]const i32, @ptrToInt(codepoints)),
-            length,
-        ),
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mTextCodepointsToUTF8(
+        @ptrCast([*c]?[*]u8, &out),
+        codepoints,
+        length,
     );
+    return out;
 }
 
 /// Copy one string to another, returns bytes copied
 pub fn TextCopy(
-    dst: [*]u8,
+    dst: ?[*]u8,
     src: [*:0]const u8,
 ) i32 {
     return raylib.mTextCopy(
-        @ptrCast([*c]u8, dst),
+        dst,
         @intToPtr([*c]const u8, @ptrToInt(src)),
     );
 }
@@ -4949,18 +4949,18 @@ pub fn TextSubtext(
 
 /// Replace text string (WARNING: memory must be freed!)
 pub fn TextReplace(
-    text: [*]u8,
+    text: ?[*]u8,
     replace: [*:0]const u8,
     by: [*:0]const u8,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mTextReplace(
-            @ptrCast([*c]u8, text),
-            @intToPtr([*c]const u8, @ptrToInt(replace)),
-            @intToPtr([*c]const u8, @ptrToInt(by)),
-        ),
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mTextReplace(
+        @ptrCast([*c]?[*]u8, &out),
+        text,
+        @intToPtr([*c]const u8, @ptrToInt(replace)),
+        @intToPtr([*c]const u8, @ptrToInt(by)),
     );
+    return out;
 }
 
 /// Insert text in a position (WARNING: memory must be freed!)
@@ -4968,15 +4968,15 @@ pub fn TextInsert(
     text: [*:0]const u8,
     insert: [*:0]const u8,
     position: i32,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mTextInsert(
-            @intToPtr([*c]const u8, @ptrToInt(text)),
-            @intToPtr([*c]const u8, @ptrToInt(insert)),
-            position,
-        ),
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mTextInsert(
+        @ptrCast([*c]?[*]u8, &out),
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        @intToPtr([*c]const u8, @ptrToInt(insert)),
+        position,
     );
+    return out;
 }
 
 /// Load font data for further use
@@ -5124,12 +5124,12 @@ pub fn DrawTriangle3D(
 
 /// Draw a triangle strip defined by points
 pub fn DrawTriangleStrip3D(
-    points: [*]Vector3,
+    points: ?[*]Vector3,
     pointCount: i32,
     color: Color,
 ) void {
     raylib.mDrawTriangleStrip3D(
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(points)),
+        points,
         pointCount,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
@@ -5589,11 +5589,11 @@ pub fn DrawBillboardPro(
 
 /// Upload mesh vertex data in GPU and provide VAO/VBO ids
 pub fn UploadMesh(
-    mesh: [*]Mesh,
+    mesh: ?[*]Mesh,
     dynamic: bool,
 ) void {
     raylib.mUploadMesh(
-        @intToPtr([*c]raylib.Mesh, @ptrToInt(mesh)),
+        mesh,
         dynamic,
     );
 }
@@ -5641,13 +5641,13 @@ pub fn DrawMesh(
 pub fn DrawMeshInstanced(
     mesh: Mesh,
     material: Material,
-    transforms: [*]const Matrix,
+    transforms: ?[*]const Matrix,
     instances: i32,
 ) void {
     raylib.mDrawMeshInstanced(
         @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
         @intToPtr([*c]raylib.Material, @ptrToInt(&material)),
-        @intToPtr([*c]raylib.Matrix, @ptrToInt(transforms)),
+        transforms,
         instances,
     );
 }
@@ -5677,10 +5677,10 @@ pub fn GetMeshBoundingBox(
 
 /// Compute mesh tangents
 pub fn GenMeshTangents(
-    mesh: [*]Mesh,
+    mesh: ?[*]Mesh,
 ) void {
     raylib.mGenMeshTangents(
-        @intToPtr([*c]raylib.Mesh, @ptrToInt(mesh)),
+        mesh,
     );
 }
 
@@ -5863,15 +5863,15 @@ pub fn GenMeshCubicmap(
 /// Load materials from model file
 pub fn LoadMaterials(
     fileName: [*:0]const u8,
-    materialCount: [*]i32,
-) [*]const Material {
-    return @ptrCast(
-        [*]Material,
-        raylib.mLoadMaterials(
-            @intToPtr([*c]const u8, @ptrToInt(fileName)),
-            @ptrCast([*c]i32, materialCount),
-        ),
+    materialCount: ?[*]i32,
+) ?[*]Material {
+    var out: ?[*]Material = undefined;
+    raylib.mLoadMaterials(
+        @ptrCast([*c]?[*]Material, &out),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        materialCount,
     );
+    return out;
 }
 
 /// Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
@@ -5894,12 +5894,12 @@ pub fn UnloadMaterial(
 
 /// Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
 pub fn SetMaterialTexture(
-    material: [*]Material,
+    material: ?[*]Material,
     mapType: i32,
     texture: Texture2D,
 ) void {
     raylib.mSetMaterialTexture(
-        @intToPtr([*c]raylib.Material, @ptrToInt(material)),
+        material,
         mapType,
         @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
     );
@@ -5907,12 +5907,12 @@ pub fn SetMaterialTexture(
 
 /// Set material for a mesh
 pub fn SetModelMeshMaterial(
-    model: [*]Model,
+    model: ?[*]Model,
     meshId: i32,
     materialId: i32,
 ) void {
     raylib.mSetModelMeshMaterial(
-        @intToPtr([*c]raylib.Model, @ptrToInt(model)),
+        model,
         meshId,
         materialId,
     );
@@ -5921,15 +5921,15 @@ pub fn SetModelMeshMaterial(
 /// Load model animations from file
 pub fn LoadModelAnimations(
     fileName: [*:0]const u8,
-    animCount: [*]u32,
-) [*]const ModelAnimation {
-    return @ptrCast(
-        [*]ModelAnimation,
-        raylib.mLoadModelAnimations(
-            @intToPtr([*c]const u8, @ptrToInt(fileName)),
-            @ptrCast([*c]u32, animCount),
-        ),
+    animCount: ?[*]u32,
+) ?[*]ModelAnimation {
+    var out: ?[*]ModelAnimation = undefined;
+    raylib.mLoadModelAnimations(
+        @ptrCast([*c]?[*]ModelAnimation, &out),
+        @intToPtr([*c]const u8, @ptrToInt(fileName)),
+        animCount,
     );
+    return out;
 }
 
 /// Update model animation pose
@@ -5956,11 +5956,11 @@ pub fn UnloadModelAnimation(
 
 /// Unload animation array data
 pub fn UnloadModelAnimations(
-    animations: [*]ModelAnimation,
+    animations: ?[*]ModelAnimation,
     count: u32,
 ) void {
     raylib.mUnloadModelAnimations(
-        @intToPtr([*c]raylib.ModelAnimation, @ptrToInt(animations)),
+        animations,
         count,
     );
 }
@@ -6339,12 +6339,12 @@ pub fn WaveCopy(
 
 /// Crop a wave to defined samples range
 pub fn WaveCrop(
-    wave: [*]Wave,
+    wave: ?[*]Wave,
     initSample: i32,
     finalSample: i32,
 ) void {
     raylib.mWaveCrop(
-        @intToPtr([*c]raylib.Wave, @ptrToInt(wave)),
+        wave,
         initSample,
         finalSample,
     );
@@ -6352,13 +6352,13 @@ pub fn WaveCrop(
 
 /// Convert wave data to desired format
 pub fn WaveFormat(
-    wave: [*]Wave,
+    wave: ?[*]Wave,
     sampleRate: i32,
     sampleSize: i32,
     channels: i32,
 ) void {
     raylib.mWaveFormat(
-        @intToPtr([*c]raylib.Wave, @ptrToInt(wave)),
+        wave,
         sampleRate,
         sampleSize,
         channels,
@@ -6368,21 +6368,21 @@ pub fn WaveFormat(
 /// Load samples data from wave as a 32bit float data array
 pub fn LoadWaveSamples(
     wave: Wave,
-) [*]const f32 {
-    return @ptrCast(
-        [*]f32,
-        raylib.mLoadWaveSamples(
-            @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
-        ),
+) ?[*]f32 {
+    var out: ?[*]f32 = undefined;
+    raylib.mLoadWaveSamples(
+        @ptrCast([*c]?[*]f32, &out),
+        @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
     );
+    return out;
 }
 
 /// Unload samples data loaded with LoadWaveSamples()
 pub fn UnloadWaveSamples(
-    samples: [*]f32,
+    samples: ?[*]f32,
 ) void {
     raylib.mUnloadWaveSamples(
-        @ptrCast([*c]f32, samples),
+        samples,
     );
 }
 
@@ -6773,10 +6773,10 @@ pub fn rlScalef(
 
 /// Multiply the current matrix by another matrix
 pub fn rlMultMatrixf(
-    matf: [*]f32,
+    matf: ?[*]f32,
 ) void {
     raylib.mrlMultMatrixf(
-        @ptrCast([*c]f32, matf),
+        matf,
     );
 }
 
@@ -7326,11 +7326,12 @@ pub fn rlGetShaderIdDefault() u32 {
 }
 
 /// Get default shader locations
-pub fn rlGetShaderLocsDefault() [*]const i32 {
-    return @ptrCast(
-        [*]i32,
-        raylib.mrlGetShaderLocsDefault(),
+pub fn rlGetShaderLocsDefault() ?[*]i32 {
+    var out: ?[*]i32 = undefined;
+    raylib.mrlGetShaderLocsDefault(
+        @ptrCast([*c]?[*]i32, &out),
     );
+    return out;
 }
 
 /// Load a render batch system
@@ -7358,19 +7359,19 @@ pub fn rlUnloadRenderBatch(
 
 /// Draw render batch data (Update->Draw->Reset)
 pub fn rlDrawRenderBatch(
-    batch: [*]rlRenderBatch,
+    batch: ?[*]rlRenderBatch,
 ) void {
     raylib.mrlDrawRenderBatch(
-        @intToPtr([*c]raylib.rlRenderBatch, @ptrToInt(batch)),
+        batch,
     );
 }
 
 /// Set the active render batch for rlgl (NULL for default internal)
 pub fn rlSetRenderBatchActive(
-    batch: [*]rlRenderBatch,
+    batch: ?[*]rlRenderBatch,
 ) void {
     raylib.mrlSetRenderBatchActive(
-        @intToPtr([*c]raylib.rlRenderBatch, @ptrToInt(batch)),
+        batch,
     );
 }
 
@@ -7640,15 +7641,15 @@ pub fn rlUpdateTexture(
 /// Get OpenGL internal formats
 pub fn rlGetGlTextureFormats(
     format: i32,
-    glInternalFormat: [*]u32,
-    glFormat: [*]u32,
-    glType: [*]u32,
+    glInternalFormat: ?[*]u32,
+    glFormat: ?[*]u32,
+    glType: ?[*]u32,
 ) void {
     raylib.mrlGetGlTextureFormats(
         format,
-        @ptrCast([*c]u32, glInternalFormat),
-        @ptrCast([*c]u32, glFormat),
-        @ptrCast([*c]u32, glType),
+        glInternalFormat,
+        glFormat,
+        glType,
     );
 }
 
@@ -7679,14 +7680,14 @@ pub fn rlGenTextureMipmaps(
     width: i32,
     height: i32,
     format: i32,
-    mipmaps: [*]i32,
+    mipmaps: ?[*]i32,
 ) void {
     raylib.mrlGenTextureMipmaps(
         id,
         width,
         height,
         format,
-        @ptrCast([*c]i32, mipmaps),
+        mipmaps,
     );
 }
 
@@ -7712,14 +7713,14 @@ pub fn rlReadTexturePixels(
 pub fn rlReadScreenPixels(
     width: i32,
     height: i32,
-) [*:0]const u8 {
-    return @ptrCast(
-        [*]u8,
-        raylib.mrlReadScreenPixels(
-            width,
-            height,
-        ),
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mrlReadScreenPixels(
+        @ptrCast([*c]?[*]u8, &out),
+        width,
+        height,
     );
+    return out;
 }
 
 /// Load an empty framebuffer
@@ -7872,11 +7873,11 @@ pub fn rlSetUniformSampler(
 /// Set shader currently active (id and locations)
 pub fn rlSetShader(
     id: u32,
-    locs: [*]i32,
+    locs: ?[*]i32,
 ) void {
     raylib.mrlSetShader(
         id,
-        @ptrCast([*c]i32, locs),
+        locs,
     );
 }
 
@@ -8730,12 +8731,12 @@ pub fn Vector3Normalize(
 
 ///
 pub fn Vector3OrthoNormalize(
-    v1: [*]Vector3,
-    v2: [*]Vector3,
+    v1: ?[*]Vector3,
+    v2: ?[*]Vector3,
 ) void {
     raylib.mVector3OrthoNormalize(
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(v1)),
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(v2)),
+        v1,
+        v2,
     );
 }
 
@@ -9490,13 +9491,13 @@ pub fn QuaternionFromAxisAngle(
 ///
 pub fn QuaternionToAxisAngle(
     q: Vector4,
-    outAxis: [*]Vector3,
-    outAngle: [*]f32,
+    outAxis: ?[*]Vector3,
+    outAngle: ?[*]f32,
 ) void {
     raylib.mQuaternionToAxisAngle(
         @intToPtr([*c]raylib.Vector4, @ptrToInt(&q)),
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(outAxis)),
-        @ptrCast([*c]f32, outAngle),
+        outAxis,
+        outAngle,
     );
 }
 
@@ -9632,9 +9633,9 @@ pub const Font = extern struct {
     /// Texture atlas containing the glyphs
     texture: Texture2D,
     /// Rectangles in texture for the glyphs
-    recs: [*]Rectangle,
+    recs: ?[*]Rectangle,
     /// Glyphs info data
-    glyphs: [*]GlyphInfo,
+    glyphs: ?[*]GlyphInfo,
 };
 
 /// Camera, defines position/orientation in 3d space
@@ -9658,31 +9659,31 @@ pub const Mesh = extern struct {
     /// Number of triangles stored (indexed or not)
     triangleCount: i32,
     /// Vertex position (XYZ - 3 components per vertex) (shader-location = 0)
-    vertices: [*]f32,
+    vertices: ?[*]f32,
     /// Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1)
-    texcoords: [*]f32,
+    texcoords: ?[*]f32,
     /// Vertex texture second coordinates (UV - 2 components per vertex) (shader-location = 5)
-    texcoords2: [*]f32,
+    texcoords2: ?[*]f32,
     /// Vertex normals (XYZ - 3 components per vertex) (shader-location = 2)
-    normals: [*]f32,
+    normals: ?[*]f32,
     /// Vertex tangents (XYZW - 4 components per vertex) (shader-location = 4)
-    tangents: [*]f32,
+    tangents: ?[*]f32,
     /// Vertex colors (RGBA - 4 components per vertex) (shader-location = 3)
-    colors: [*]u8,
+    colors: ?[*]u8,
     /// Vertex indices (in case vertex data comes indexed)
-    indices: [*]u16,
+    indices: ?[*]u16,
     /// Animated vertex positions (after bones transformations)
-    animVertices: [*]f32,
+    animVertices: ?[*]f32,
     /// Animated normals (after bones transformations)
-    animNormals: [*]f32,
+    animNormals: ?[*]f32,
     /// Vertex bone ids, max 255 bone ids, up to 4 bones influence by vertex (skinning)
-    boneIds: [*]u8,
+    boneIds: ?[*]u8,
     /// Vertex bone weight, up to 4 bones influence by vertex (skinning)
-    boneWeights: [*]f32,
+    boneWeights: ?[*]f32,
     /// OpenGL Vertex Array Object id
     vaoId: u32,
     /// OpenGL Vertex Buffer Objects id (default vertex data)
-    vboId: [*]u32,
+    vboId: ?[*]u32,
 };
 
 /// Shader
@@ -9690,7 +9691,7 @@ pub const Shader = extern struct {
     /// Shader program id
     id: u32,
     /// Shader locations array (RL_MAX_SHADER_LOCATIONS)
-    locs: [*]i32,
+    locs: ?[*]i32,
 };
 
 /// MaterialMap
@@ -9708,7 +9709,7 @@ pub const Material = extern struct {
     /// Material shader
     shader: Shader,
     /// Material maps array (MAX_MATERIAL_MAPS)
-    maps: [*]MaterialMap,
+    maps: ?[*]MaterialMap,
     /// Material generic parameters (if required)
     params: [4]f32,
 };
@@ -9730,17 +9731,17 @@ pub const Model = extern struct {
     /// Number of materials
     materialCount: i32,
     /// Meshes array
-    meshes: [*]Mesh,
+    meshes: ?[*]Mesh,
     /// Materials array
-    materials: [*]Material,
+    materials: ?[*]Material,
     /// Mesh material number
-    meshMaterial: [*]i32,
+    meshMaterial: ?[*]i32,
     /// Number of bones
     boneCount: i32,
     /// Bones information (skeleton)
-    bones: [*]BoneInfo,
+    bones: ?[*]BoneInfo,
     /// Bones base transformation (pose)
-    bindPose: [*]Transform,
+    bindPose: ?[*]Transform,
 };
 
 /// ModelAnimation
@@ -9750,9 +9751,9 @@ pub const ModelAnimation = extern struct {
     /// Number of animation frames
     frameCount: i32,
     /// Bones information (skeleton)
-    bones: [*]BoneInfo,
+    bones: ?[*]BoneInfo,
     /// Poses array by frame
-    framePoses: [*]Transform,
+    framePoses: ?[*]Transform,
 };
 
 /// Ray, ray for raycasting
@@ -9884,7 +9885,7 @@ pub const FilePathList = extern struct {
     /// Filepaths entries count
     count: u32,
     /// Filepaths entries
-    paths: [*]u8,
+    paths: [*][*:0]u8,
 };
 
 /// Dynamic vertex buffers (position + texcoords + colors + indices arrays)
@@ -9924,9 +9925,9 @@ pub const rlRenderBatch = extern struct {
     /// Current buffer tracking in case of multi-buffering
     currentBuffer: i32,
     /// Dynamic buffer(s) for vertex data
-    vertexBuffer: [*]rlVertexBuffer,
+    vertexBuffer: ?[*]rlVertexBuffer,
     /// Draw calls array, depends on textureId
-    draws: [*]rlDrawCall,
+    draws: ?[*]rlDrawCall,
     /// Draw calls counter
     drawCounter: i32,
     /// Current depth value for next draw

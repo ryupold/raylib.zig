@@ -1200,10 +1200,10 @@
                 },
                 {
                     "name": "bytesRead",
-                    "typ": "[*]u32"
+                    "typ": "?[*]u32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Load file data as byte array (read)",
             "custom": false
         },
@@ -1212,7 +1212,7 @@
             "params": [
                 {
                     "name": "data",
-                    "typ": "[*]u8"
+                    "typ": "?[*]u8"
                 }
             ],
             "returnType": "void",
@@ -1267,7 +1267,7 @@
                     "typ": "[*:0]const u8"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Load text data from file (read), returns a '\\0' terminated string",
             "custom": false
         },
@@ -1276,7 +1276,7 @@
             "params": [
                 {
                     "name": "text",
-                    "typ": "[*]u8"
+                    "typ": "?[*]u8"
                 }
             ],
             "returnType": "void",
@@ -1292,7 +1292,7 @@
                 },
                 {
                     "name": "text",
-                    "typ": "[*]u8"
+                    "typ": "?[*]u8"
                 }
             ],
             "returnType": "bool",
@@ -1544,10 +1544,10 @@
                 },
                 {
                     "name": "compDataSize",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Compress data (DEFLATE algorithm), memory must be MemFree()",
             "custom": false
         },
@@ -1564,10 +1564,10 @@
                 },
                 {
                     "name": "dataSize",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Decompress data (DEFLATE algorithm), memory must be MemFree()",
             "custom": false
         },
@@ -1584,10 +1584,10 @@
                 },
                 {
                     "name": "outputSize",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Encode data to Base64 string, memory must be MemFree()",
             "custom": false
         },
@@ -1600,10 +1600,10 @@
                 },
                 {
                     "name": "outputSize",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Decode Base64 string data, memory must be MemFree()",
             "custom": false
         },
@@ -2386,7 +2386,7 @@
             "params": [
                 {
                     "name": "points",
-                    "typ": "[*]Vector2"
+                    "typ": "?[*]Vector2"
                 },
                 {
                     "name": "pointCount",
@@ -3022,7 +3022,7 @@
             "params": [
                 {
                     "name": "points",
-                    "typ": "[*]Vector2"
+                    "typ": "?[*]Vector2"
                 },
                 {
                     "name": "pointCount",
@@ -3042,7 +3042,7 @@
             "params": [
                 {
                     "name": "points",
-                    "typ": "[*]Vector2"
+                    "typ": "?[*]Vector2"
                 },
                 {
                     "name": "pointCount",
@@ -3286,7 +3286,7 @@
                 },
                 {
                     "name": "collisionPoint",
-                    "typ": "[*]Vector2"
+                    "typ": "?[*]Vector2"
                 }
             ],
             "returnType": "bool",
@@ -3382,7 +3382,7 @@
                 },
                 {
                     "name": "frames",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
             "returnType": "Image",
@@ -3721,7 +3721,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "newFormat",
@@ -3737,7 +3737,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "fill",
@@ -3753,7 +3753,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "crop",
@@ -3769,7 +3769,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "threshold",
@@ -3785,7 +3785,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "color",
@@ -3805,7 +3805,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "alphaMask",
@@ -3821,7 +3821,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -3833,7 +3833,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "newWidth",
@@ -3853,7 +3853,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "newWidth",
@@ -3873,7 +3873,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "newWidth",
@@ -3905,7 +3905,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -3917,7 +3917,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "rBpp",
@@ -3945,7 +3945,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -3957,7 +3957,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -3969,7 +3969,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -3981,7 +3981,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -3993,7 +3993,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "color",
@@ -4009,7 +4009,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -4021,7 +4021,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 }
             ],
             "returnType": "void",
@@ -4033,7 +4033,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "contrast",
@@ -4049,7 +4049,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "brightness",
@@ -4065,7 +4065,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "color",
@@ -4088,7 +4088,7 @@
                     "typ": "Image"
                 }
             ],
-            "returnType": "[*]Color",
+            "returnType": "?[*]Color",
             "description": "Load color data from image as a Color array (RGBA - 32bit)",
             "custom": false
         },
@@ -4105,10 +4105,10 @@
                 },
                 {
                     "name": "colorCount",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
-            "returnType": "[*]Color",
+            "returnType": "?[*]Color",
             "description": "Load colors palette from image as a Color array (RGBA - 32bit)",
             "custom": false
         },
@@ -4117,7 +4117,7 @@
             "params": [
                 {
                     "name": "colors",
-                    "typ": "[*]Color"
+                    "typ": "?[*]Color"
                 }
             ],
             "returnType": "void",
@@ -4129,7 +4129,7 @@
             "params": [
                 {
                     "name": "colors",
-                    "typ": "[*]Color"
+                    "typ": "?[*]Color"
                 }
             ],
             "returnType": "void",
@@ -4177,7 +4177,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "color",
@@ -4193,7 +4193,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "posX",
@@ -4217,7 +4217,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "position",
@@ -4237,7 +4237,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "startPosX",
@@ -4269,7 +4269,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "start",
@@ -4293,7 +4293,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "centerX",
@@ -4321,7 +4321,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "center",
@@ -4345,7 +4345,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "posX",
@@ -4377,7 +4377,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "position",
@@ -4401,7 +4401,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "rec",
@@ -4421,7 +4421,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "rec",
@@ -4445,7 +4445,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "src",
@@ -4473,7 +4473,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "text",
@@ -4505,7 +4505,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]Image"
+                    "typ": "?[*]Image"
                 },
                 {
                     "name": "font",
@@ -4657,12 +4657,12 @@
             "params": [
                 {
                     "name": "texture",
-                    "typ": "[*]Texture2D"
+                    "typ": "*Texture2D"
                 }
             ],
             "returnType": "void",
             "description": "Generate GPU mipmaps for a texture",
-            "custom": false
+            "custom": true
         },
         {
             "name": "SetTextureFilter",
@@ -4933,11 +4933,11 @@
                 },
                 {
                     "name": "points",
-                    "typ": "[*]Vector2"
+                    "typ": "?[*]Vector2"
                 },
                 {
                     "name": "texcoords",
-                    "typ": "[*]Vector2"
+                    "typ": "?[*]Vector2"
                 },
                 {
                     "name": "pointCount",
@@ -5172,7 +5172,7 @@
                 },
                 {
                     "name": "fontChars",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 },
                 {
                     "name": "glyphCount",
@@ -5224,7 +5224,7 @@
                 },
                 {
                     "name": "fontChars",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 },
                 {
                     "name": "glyphCount",
@@ -5252,11 +5252,11 @@
             "params": [
                 {
                     "name": "chars",
-                    "typ": "[*]const GlyphInfo"
+                    "typ": "?[*]const GlyphInfo"
                 },
                 {
                     "name": "recs",
-                    "typ": "[*]Rectangle"
+                    "typ": "?[*]Rectangle"
                 },
                 {
                     "name": "glyphCount",
@@ -5284,7 +5284,7 @@
             "params": [
                 {
                     "name": "chars",
-                    "typ": "[*]GlyphInfo"
+                    "typ": "?[*]GlyphInfo"
                 },
                 {
                     "name": "glyphCount",
@@ -5476,7 +5476,7 @@
                 },
                 {
                     "name": "codepoints",
-                    "typ": "[*]const i32"
+                    "typ": "?[*]const i32"
                 },
                 {
                     "name": "count",
@@ -5600,10 +5600,10 @@
                 },
                 {
                     "name": "count",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
-            "returnType": "[*]i32",
+            "returnType": "?[*]i32",
             "description": "Load all codepoints from a UTF-8 text string, codepoints count returned by parameter",
             "custom": false
         },
@@ -5612,7 +5612,7 @@
             "params": [
                 {
                     "name": "codepoints",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
             "returnType": "void",
@@ -5640,7 +5640,7 @@
                 },
                 {
                     "name": "bytesProcessed",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
             "returnType": "i32",
@@ -5656,7 +5656,7 @@
                 },
                 {
                     "name": "byteSize",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
             "returnType": "[*:0]const u8",
@@ -5668,14 +5668,14 @@
             "params": [
                 {
                     "name": "codepoints",
-                    "typ": "[*]const i32"
+                    "typ": "?[*]const i32"
                 },
                 {
                     "name": "length",
                     "typ": "i32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Encode text as codepoints array into UTF-8 text string (WARNING: memory must be freed!)",
             "custom": false
         },
@@ -5684,7 +5684,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "[*]u8"
+                    "typ": "?[*]u8"
                 },
                 {
                     "name": "src",
@@ -5760,7 +5760,7 @@
             "params": [
                 {
                     "name": "text",
-                    "typ": "[*]u8"
+                    "typ": "?[*]u8"
                 },
                 {
                     "name": "replace",
@@ -5771,7 +5771,7 @@
                     "typ": "[*:0]const u8"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Replace text string (WARNING: memory must be freed!)",
             "custom": false
         },
@@ -5791,7 +5791,7 @@
                     "typ": "i32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Insert text in a position (WARNING: memory must be freed!)",
             "custom": false
         },
@@ -6016,7 +6016,7 @@
             "params": [
                 {
                     "name": "points",
-                    "typ": "[*]Vector3"
+                    "typ": "?[*]Vector3"
                 },
                 {
                     "name": "pointCount",
@@ -6748,7 +6748,7 @@
             "params": [
                 {
                     "name": "mesh",
-                    "typ": "[*]Mesh"
+                    "typ": "?[*]Mesh"
                 },
                 {
                     "name": "dynamic",
@@ -6832,7 +6832,7 @@
                 },
                 {
                     "name": "transforms",
-                    "typ": "[*]const Matrix"
+                    "typ": "?[*]const Matrix"
                 },
                 {
                     "name": "instances",
@@ -6876,7 +6876,7 @@
             "params": [
                 {
                     "name": "mesh",
-                    "typ": "[*]Mesh"
+                    "typ": "?[*]Mesh"
                 }
             ],
             "returnType": "void",
@@ -7112,10 +7112,10 @@
                 },
                 {
                     "name": "materialCount",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
-            "returnType": "[*]Material",
+            "returnType": "?[*]Material",
             "description": "Load materials from model file",
             "custom": false
         },
@@ -7143,7 +7143,7 @@
             "params": [
                 {
                     "name": "material",
-                    "typ": "[*]Material"
+                    "typ": "?[*]Material"
                 },
                 {
                     "name": "mapType",
@@ -7163,7 +7163,7 @@
             "params": [
                 {
                     "name": "model",
-                    "typ": "[*]Model"
+                    "typ": "?[*]Model"
                 },
                 {
                     "name": "meshId",
@@ -7187,10 +7187,10 @@
                 },
                 {
                     "name": "animCount",
-                    "typ": "[*]u32"
+                    "typ": "?[*]u32"
                 }
             ],
-            "returnType": "[*]ModelAnimation",
+            "returnType": "?[*]ModelAnimation",
             "description": "Load model animations from file",
             "custom": false
         },
@@ -7231,7 +7231,7 @@
             "params": [
                 {
                     "name": "animations",
-                    "typ": "[*]ModelAnimation"
+                    "typ": "?[*]ModelAnimation"
                 },
                 {
                     "name": "count",
@@ -7742,7 +7742,7 @@
             "params": [
                 {
                     "name": "wave",
-                    "typ": "[*]Wave"
+                    "typ": "?[*]Wave"
                 },
                 {
                     "name": "initSample",
@@ -7762,7 +7762,7 @@
             "params": [
                 {
                     "name": "wave",
-                    "typ": "[*]Wave"
+                    "typ": "?[*]Wave"
                 },
                 {
                     "name": "sampleRate",
@@ -7789,7 +7789,7 @@
                     "typ": "Wave"
                 }
             ],
-            "returnType": "[*]f32",
+            "returnType": "?[*]f32",
             "description": "Load samples data from wave as a 32bit float data array",
             "custom": false
         },
@@ -7798,7 +7798,7 @@
             "params": [
                 {
                     "name": "samples",
-                    "typ": "[*]f32"
+                    "typ": "?[*]f32"
                 }
             ],
             "returnType": "void",
@@ -8343,7 +8343,7 @@
             "params": [
                 {
                     "name": "matf",
-                    "typ": "[*]f32"
+                    "typ": "?[*]f32"
                 }
             ],
             "returnType": "void",
@@ -9171,7 +9171,7 @@
         {
             "name": "rlGetShaderLocsDefault",
             "params": [],
-            "returnType": "[*]i32",
+            "returnType": "?[*]i32",
             "description": "Get default shader locations",
             "custom": false
         },
@@ -9208,7 +9208,7 @@
             "params": [
                 {
                     "name": "batch",
-                    "typ": "[*]rlRenderBatch"
+                    "typ": "?[*]rlRenderBatch"
                 }
             ],
             "returnType": "void",
@@ -9220,7 +9220,7 @@
             "params": [
                 {
                     "name": "batch",
-                    "typ": "[*]rlRenderBatch"
+                    "typ": "?[*]rlRenderBatch"
                 }
             ],
             "returnType": "void",
@@ -9642,15 +9642,15 @@
                 },
                 {
                     "name": "glInternalFormat",
-                    "typ": "[*]u32"
+                    "typ": "?[*]u32"
                 },
                 {
                     "name": "glFormat",
-                    "typ": "[*]u32"
+                    "typ": "?[*]u32"
                 },
                 {
                     "name": "glType",
-                    "typ": "[*]u32"
+                    "typ": "?[*]u32"
                 }
             ],
             "returnType": "void",
@@ -9702,7 +9702,7 @@
                 },
                 {
                     "name": "mipmaps",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
             "returnType": "void",
@@ -9745,7 +9745,7 @@
                     "typ": "i32"
                 }
             ],
-            "returnType": "[*]u8",
+            "returnType": "?[*]u8",
             "description": "Read screen pixel data (color buffer)",
             "custom": false
         },
@@ -9974,7 +9974,7 @@
                 },
                 {
                     "name": "locs",
-                    "typ": "[*]i32"
+                    "typ": "?[*]i32"
                 }
             ],
             "returnType": "void",
@@ -11093,11 +11093,11 @@
             "params": [
                 {
                     "name": "v1",
-                    "typ": "[*]Vector3"
+                    "typ": "?[*]Vector3"
                 },
                 {
                     "name": "v2",
-                    "typ": "[*]Vector3"
+                    "typ": "?[*]Vector3"
                 }
             ],
             "returnType": "void",
@@ -11987,11 +11987,11 @@
                 },
                 {
                     "name": "outAxis",
-                    "typ": "[*]Vector3"
+                    "typ": "?[*]Vector3"
                 },
                 {
                     "name": "outAngle",
-                    "typ": "[*]f32"
+                    "typ": "?[*]f32"
                 }
             ],
             "returnType": "void",
@@ -14667,12 +14667,12 @@
                 },
                 {
                     "name": "recs",
-                    "typ": "[*]Rectangle",
+                    "typ": "?[*]Rectangle",
                     "description": "Rectangles in texture for the glyphs"
                 },
                 {
                     "name": "glyphs",
-                    "typ": "[*]GlyphInfo",
+                    "typ": "?[*]GlyphInfo",
                     "description": "Glyphs info data"
                 }
             ],
@@ -14753,57 +14753,57 @@
                 },
                 {
                     "name": "vertices",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Vertex position (XYZ - 3 components per vertex) (shader-location = 0)"
                 },
                 {
                     "name": "texcoords",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1)"
                 },
                 {
                     "name": "texcoords2",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Vertex texture second coordinates (UV - 2 components per vertex) (shader-location = 5)"
                 },
                 {
                     "name": "normals",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Vertex normals (XYZ - 3 components per vertex) (shader-location = 2)"
                 },
                 {
                     "name": "tangents",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Vertex tangents (XYZW - 4 components per vertex) (shader-location = 4)"
                 },
                 {
                     "name": "colors",
-                    "typ": "[*]u8",
+                    "typ": "?[*]u8",
                     "description": "Vertex colors (RGBA - 4 components per vertex) (shader-location = 3)"
                 },
                 {
                     "name": "indices",
-                    "typ": "[*]u16",
+                    "typ": "?[*]u16",
                     "description": "Vertex indices (in case vertex data comes indexed)"
                 },
                 {
                     "name": "animVertices",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Animated vertex positions (after bones transformations)"
                 },
                 {
                     "name": "animNormals",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Animated normals (after bones transformations)"
                 },
                 {
                     "name": "boneIds",
-                    "typ": "[*]u8",
+                    "typ": "?[*]u8",
                     "description": "Vertex bone ids, max 255 bone ids, up to 4 bones influence by vertex (skinning)"
                 },
                 {
                     "name": "boneWeights",
-                    "typ": "[*]f32",
+                    "typ": "?[*]f32",
                     "description": "Vertex bone weight, up to 4 bones influence by vertex (skinning)"
                 },
                 {
@@ -14813,7 +14813,7 @@
                 },
                 {
                     "name": "vboId",
-                    "typ": "[*]u32",
+                    "typ": "?[*]u32",
                     "description": "OpenGL Vertex Buffer Objects id (default vertex data)"
                 }
             ],
@@ -14830,7 +14830,7 @@
                 },
                 {
                     "name": "locs",
-                    "typ": "[*]i32",
+                    "typ": "?[*]i32",
                     "description": "Shader locations array (RL_MAX_SHADER_LOCATIONS)"
                 }
             ],
@@ -14869,7 +14869,7 @@
                 },
                 {
                     "name": "maps",
-                    "typ": "[*]MaterialMap",
+                    "typ": "?[*]MaterialMap",
                     "description": "Material maps array (MAX_MATERIAL_MAPS)"
                 },
                 {
@@ -14940,17 +14940,17 @@
                 },
                 {
                     "name": "meshes",
-                    "typ": "[*]Mesh",
+                    "typ": "?[*]Mesh",
                     "description": "Meshes array"
                 },
                 {
                     "name": "materials",
-                    "typ": "[*]Material",
+                    "typ": "?[*]Material",
                     "description": "Materials array"
                 },
                 {
                     "name": "meshMaterial",
-                    "typ": "[*]i32",
+                    "typ": "?[*]i32",
                     "description": "Mesh material number"
                 },
                 {
@@ -14960,12 +14960,12 @@
                 },
                 {
                     "name": "bones",
-                    "typ": "[*]BoneInfo",
+                    "typ": "?[*]BoneInfo",
                     "description": "Bones information (skeleton)"
                 },
                 {
                     "name": "bindPose",
-                    "typ": "[*]Transform",
+                    "typ": "?[*]Transform",
                     "description": "Bones base transformation (pose)"
                 }
             ],
@@ -14987,12 +14987,12 @@
                 },
                 {
                     "name": "bones",
-                    "typ": "[*]BoneInfo",
+                    "typ": "?[*]BoneInfo",
                     "description": "Bones information (skeleton)"
                 },
                 {
                     "name": "framePoses",
-                    "typ": "[*]Transform",
+                    "typ": "?[*]Transform",
                     "description": "Poses array by frame"
                 }
             ],
@@ -15292,7 +15292,7 @@
                 },
                 {
                     "name": "paths",
-                    "typ": "[*]u8",
+                    "typ": "[*][*:0]u8",
                     "description": "Filepaths entries"
                 }
             ],
@@ -15383,12 +15383,12 @@
                 },
                 {
                     "name": "vertexBuffer",
-                    "typ": "[*]rlVertexBuffer",
+                    "typ": "?[*]rlVertexBuffer",
                     "description": "Dynamic buffer(s) for vertex data"
                 },
                 {
                     "name": "draws",
-                    "typ": "[*]rlDrawCall",
+                    "typ": "?[*]rlDrawCall",
                     "description": "Draw calls array, depends on textureId"
                 },
                 {

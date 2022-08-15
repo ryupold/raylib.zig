@@ -433,7 +433,7 @@ fn toZig(allocator: Allocator, c: []const u8) ![]const u8 {
     }
 
     const consT = if (isConst(c)) "const " else "";
-    const pointeR = if (isPointer(c)) "[*]" else "";
+    const pointeR = if (isPointer(c)) "?[*]" else "";
     const stripped = stripType(c);
 
     const name = if (raylibToZigType.get(stripped)) |primitive| primitive else stripped;
@@ -447,7 +447,7 @@ test "toZig" {
 
     try expectEqualStrings("i32", try toZig(a, "int"));
     try expectEqualStrings("const i32", try toZig(a, "const int"));
-    try expectEqualStrings("[*]Vector2", try toZig(a, "Vector2 *"));
+    try expectEqualStrings("?[*]Vector2", try toZig(a, "Vector2 *"));
 }
 
 const raylibToZigType = std.ComptimeStringMap([]const u8, .{
@@ -472,6 +472,7 @@ const fixedMapping = std.ComptimeStringMap([]const u8, .{
     .{ "const unsigned char *", "[*:0]const u8" },
     .{ "const char *", "[*:0]const u8" },
     .{ "const char **", "[*]const [*:0]const u8" },
+    .{ "char **", "[*][*:0]u8" },
     .{ "rAudioBuffer *", "*anyopaque" },
     .{ "rAudioProcessor *", "*anyopaque" },
 });
