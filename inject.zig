@@ -172,10 +172,10 @@ pub const Rectangle = extern struct {
 };
 
 pub const RectangleI = extern struct {
-    x: f32 = 0,
-    y: f32 = 0,
-    width: f32 = 0,
-    height: f32 = 0,
+    x: i32 = 0,
+    y: i32 = 0,
+    width: i32 = 0,
+    height: i32 = 0,
 
     pub fn toF32(self: @This()) Rectangle {
         return .{
