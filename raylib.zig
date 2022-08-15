@@ -172,10 +172,10 @@ pub const Rectangle = extern struct {
 };
 
 pub const RectangleI = extern struct {
-    x: i32,
-    y: i32,
-    width: i32,
-    height: i32,
+    x: f32 = 0,
+    y: f32 = 0,
+    width: f32 = 0,
+    height: f32 = 0,
 
     pub fn toF32(self: @This()) Rectangle {
         return .{
@@ -569,9 +569,9 @@ pub const Color = extern struct {
     /// negate color (keep alpha)
     pub fn neg(self: @This()) @This() {
         return .{
-            .r = 255-self.r,
-            .g = 255-self.g,
-            .b = 255-self.b,
+            .r = 255 - self.r,
+            .g = 255 - self.g,
+            .b = 255 - self.b,
             .a = self.a,
         };
     }
@@ -1727,6 +1727,15 @@ pub fn SetTraceLogLevel(
     );
 }
 
+/// Open URL with default system browser (if available)
+pub fn OpenURL(
+    url: [*:0]const u8,
+) void {
+    raylib.mOpenURL(
+        @intToPtr([*c]const u8, @ptrToInt(url)),
+    );
+}
+
 /// Set custom file binary data loader
 pub fn SetLoadFileDataCallback(
     callback: LoadFileDataCallback,
@@ -2081,35 +2090,6 @@ pub fn DecodeDataBase64(
             @intToPtr([*c]const u8, @ptrToInt(data)),
             @ptrCast([*c]i32, outputSize),
         ),
-    );
-}
-
-/// Save integer value to storage file (to defined position), returns true on success
-pub fn SaveStorageValue(
-    position: u32,
-    value: i32,
-) bool {
-    return raylib.mSaveStorageValue(
-        position,
-        value,
-    );
-}
-
-/// Load integer value from storage file (from defined position)
-pub fn LoadStorageValue(
-    position: u32,
-) i32 {
-    return raylib.mLoadStorageValue(
-        position,
-    );
-}
-
-/// Open URL with default system browser (if available)
-pub fn OpenURL(
-    url: [*:0]const u8,
-) void {
-    raylib.mOpenURL(
-        @intToPtr([*c]const u8, @ptrToInt(url)),
     );
 }
 
@@ -5704,15 +5684,6 @@ pub fn GenMeshTangents(
     );
 }
 
-/// Compute mesh binormals
-pub fn GenMeshBinormals(
-    mesh: [*]Mesh,
-) void {
-    raylib.mGenMeshBinormals(
-        @intToPtr([*c]raylib.Mesh, @ptrToInt(mesh)),
-    );
-}
-
 /// Generate polygonal mesh
 pub fn GenMeshPoly(
     sides: i32,
@@ -6713,7 +6684,7 @@ pub fn SetAudioStreamCallback(
     );
 }
 
-///
+/// Attach audio stream processor to stream
 pub fn AttachAudioStreamProcessor(
     stream: AudioStream,
     processor: AudioCallback,
@@ -6724,7 +6695,7 @@ pub fn AttachAudioStreamProcessor(
     );
 }
 
-///
+/// Detach audio stream processor from stream
 pub fn DetachAudioStreamProcessor(
     stream: AudioStream,
     processor: AudioCallback,
@@ -7669,15 +7640,15 @@ pub fn rlUpdateTexture(
 /// Get OpenGL internal formats
 pub fn rlGetGlTextureFormats(
     format: i32,
-    glInternalFormat: [*]i32,
-    glFormat: [*]i32,
-    glType: [*]i32,
+    glInternalFormat: [*]u32,
+    glFormat: [*]u32,
+    glType: [*]u32,
 ) void {
     raylib.mrlGetGlTextureFormats(
         format,
-        @ptrCast([*c]i32, glInternalFormat),
-        @ptrCast([*c]i32, glFormat),
-        @ptrCast([*c]i32, glType),
+        @ptrCast([*c]u32, glInternalFormat),
+        @ptrCast([*c]u32, glFormat),
+        @ptrCast([*c]u32, glType),
     );
 }
 
@@ -8797,6 +8768,22 @@ pub fn Vector3RotateByQuaternion(
 }
 
 ///
+pub fn Vector3RotateByAxisAngle(
+    v: Vector3,
+    axis: Vector3,
+    angle: f32,
+) Vector3 {
+    var out: Vector3 = undefined;
+    raylib.mVector3RotateByAxisAngle(
+        @ptrCast([*c]raylib.Vector3, &out),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&axis)),
+        angle,
+    );
+    return out;
+}
+
+///
 pub fn Vector3Lerp(
     v1: Vector3,
     v2: Vector3,
@@ -9132,24 +9119,24 @@ pub fn MatrixRotateZ(
 
 ///
 pub fn MatrixRotateXYZ(
-    ang: Vector3,
+    angle: Vector3,
 ) Matrix {
     var out: Matrix = undefined;
     raylib.mMatrixRotateXYZ(
         @ptrCast([*c]raylib.Matrix, &out),
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&ang)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&angle)),
     );
     return out;
 }
 
 ///
 pub fn MatrixRotateZYX(
-    ang: Vector3,
+    angle: Vector3,
 ) Matrix {
     var out: Matrix = undefined;
     raylib.mMatrixRotateZYX(
         @ptrCast([*c]raylib.Matrix, &out),
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&ang)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&angle)),
     );
     return out;
 }
@@ -10883,7 +10870,7 @@ pub const PhysicsShapeType = enum(i32) {
 };
 
 ///
-pub const RAYLIB_VERSION: []const u8 = "4.2-dev";
+pub const RAYLIB_VERSION: []const u8 = "4.2";
 
 ///
 pub const PI: f32 = 3.1415927410125732;

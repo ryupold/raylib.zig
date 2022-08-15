@@ -1120,6 +1120,18 @@
             "custom": false
         },
         {
+            "name": "OpenURL",
+            "params": [
+                {
+                    "name": "url",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "void",
+            "description": "Open URL with default system browser (if available)",
+            "custom": false
+        },
+        {
             "name": "SetTraceLogCallback",
             "params": [
                 {
@@ -1593,46 +1605,6 @@
             ],
             "returnType": "[*]u8",
             "description": "Decode Base64 string data, memory must be MemFree()",
-            "custom": false
-        },
-        {
-            "name": "SaveStorageValue",
-            "params": [
-                {
-                    "name": "position",
-                    "typ": "u32"
-                },
-                {
-                    "name": "value",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "bool",
-            "description": "Save integer value to storage file (to defined position), returns true on success",
-            "custom": false
-        },
-        {
-            "name": "LoadStorageValue",
-            "params": [
-                {
-                    "name": "position",
-                    "typ": "u32"
-                }
-            ],
-            "returnType": "i32",
-            "description": "Load integer value from storage file (from defined position)",
-            "custom": false
-        },
-        {
-            "name": "OpenURL",
-            "params": [
-                {
-                    "name": "url",
-                    "typ": "[*:0]const u8"
-                }
-            ],
-            "returnType": "void",
-            "description": "Open URL with default system browser (if available)",
             "custom": false
         },
         {
@@ -6912,18 +6884,6 @@
             "custom": false
         },
         {
-            "name": "GenMeshBinormals",
-            "params": [
-                {
-                    "name": "mesh",
-                    "typ": "[*]Mesh"
-                }
-            ],
-            "returnType": "void",
-            "description": "Compute mesh binormals",
-            "custom": false
-        },
-        {
             "name": "GenMeshPoly",
             "params": [
                 {
@@ -8262,7 +8222,7 @@
                 }
             ],
             "returnType": "void",
-            "description": "",
+            "description": "Attach audio stream processor to stream",
             "custom": false
         },
         {
@@ -8278,7 +8238,7 @@
                 }
             ],
             "returnType": "void",
-            "description": "",
+            "description": "Detach audio stream processor from stream",
             "custom": false
         },
         {
@@ -9682,15 +9642,15 @@
                 },
                 {
                     "name": "glInternalFormat",
-                    "typ": "[*]i32"
+                    "typ": "[*]u32"
                 },
                 {
                     "name": "glFormat",
-                    "typ": "[*]i32"
+                    "typ": "[*]u32"
                 },
                 {
                     "name": "glType",
-                    "typ": "[*]i32"
+                    "typ": "[*]u32"
                 }
             ],
             "returnType": "void",
@@ -11177,6 +11137,26 @@
             "custom": false
         },
         {
+            "name": "Vector3RotateByAxisAngle",
+            "params": [
+                {
+                    "name": "v",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "axis",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "angle",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "Vector3",
+            "description": "",
+            "custom": false
+        },
+        {
             "name": "Vector3Lerp",
             "params": [
                 {
@@ -11567,7 +11547,7 @@
             "name": "MatrixRotateXYZ",
             "params": [
                 {
-                    "name": "ang",
+                    "name": "angle",
                     "typ": "Vector3"
                 }
             ],
@@ -11579,7 +11559,7 @@
             "name": "MatrixRotateZYX",
             "params": [
                 {
-                    "name": "ang",
+                    "name": "angle",
                     "typ": "Vector3"
                 }
             ],
@@ -15616,7 +15596,7 @@
         {
             "name": "RAYLIB_VERSION",
             "typ": "[]const u8",
-            "value": "\"4.2-dev\"",
+            "value": "\"4.2\"",
             "description": "",
             "custom": false
         },

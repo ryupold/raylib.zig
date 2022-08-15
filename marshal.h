@@ -294,6 +294,9 @@ void mTakeScreenshot(const char * fileName);
 // Set the current threshold (minimum) log level
 void mSetTraceLogLevel(int logLevel);
 
+// Open URL with default system browser (if available)
+void mOpenURL(const char * url);
+
 // Set custom file binary data loader
 void mSetLoadFileDataCallback(LoadFileDataCallback *callback);
 
@@ -392,15 +395,6 @@ char * mEncodeDataBase64(const unsigned char * data, int dataSize, int * outputS
 
 // Decode Base64 string data, memory must be MemFree()
 unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize);
-
-// Save integer value to storage file (to defined position), returns true on success
-bool mSaveStorageValue(unsigned int position, int value);
-
-// Load integer value from storage file (from defined position)
-int mLoadStorageValue(unsigned int position);
-
-// Open URL with default system browser (if available)
-void mOpenURL(const char * url);
 
 // Check if a key has been pressed once
 bool mIsKeyPressed(int key);
@@ -1212,9 +1206,6 @@ void mGetMeshBoundingBox(BoundingBox *out, Mesh *mesh);
 // Compute mesh tangents
 void mGenMeshTangents(Mesh * mesh);
 
-// Compute mesh binormals
-void mGenMeshBinormals(Mesh * mesh);
-
 // Generate polygonal mesh
 void mGenMeshPoly(Mesh *out, int sides, float radius);
 
@@ -1476,10 +1467,10 @@ void mSetAudioStreamBufferSizeDefault(int size);
 // Audio thread callback to request new data
 void mSetAudioStreamCallback(AudioStream *stream, AudioCallback *callback);
 
-// 
+// Attach audio stream processor to stream
 void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
 
-// 
+// Detach audio stream processor from stream
 void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
 
 // Choose the current matrix to be transformed
@@ -1786,7 +1777,7 @@ unsigned int mrlLoadTextureCubemap(const void * data, int size, int format);
 void mrlUpdateTexture(unsigned int id, int offsetX, int offsetY, int width, int height, int format, const void * data);
 
 // Get OpenGL internal formats
-void mrlGetGlTextureFormats(int format, int * glInternalFormat, int * glFormat, int * glType);
+void mrlGetGlTextureFormats(int format, unsigned int * glInternalFormat, unsigned int * glFormat, unsigned int * glType);
 
 // Get name string for pixel format
 const char * mrlGetPixelFormatName(unsigned int format);
@@ -2071,6 +2062,9 @@ void mVector3Transform(Vector3 *out, Vector3 *v, Matrix *mat);
 void mVector3RotateByQuaternion(Vector3 *out, Vector3 *v, Vector4 *q);
 
 // 
+void mVector3RotateByAxisAngle(Vector3 *out, Vector3 *v, Vector3 *axis, float angle);
+
+// 
 void mVector3Lerp(Vector3 *out, Vector3 *v1, Vector3 *v2, float amount);
 
 // 
@@ -2146,10 +2140,10 @@ void mMatrixRotateY(Matrix *out, float angle);
 void mMatrixRotateZ(Matrix *out, float angle);
 
 // 
-void mMatrixRotateXYZ(Matrix *out, Vector3 *ang);
+void mMatrixRotateXYZ(Matrix *out, Vector3 *angle);
 
 // 
-void mMatrixRotateZYX(Matrix *out, Vector3 *ang);
+void mMatrixRotateZYX(Matrix *out, Vector3 *angle);
 
 // 
 void mMatrixScale(Matrix *out, float x, float y, float z);

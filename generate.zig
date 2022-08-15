@@ -115,11 +115,12 @@ fn writeFunctions(
         defer fba.reset();
 
         //--- signature -------------------------
+        const funcDescription : []const u8 = func.description orelse "";
         try file.writeAll(
             try allocPrint(
                 allocator,
                 "\n/// {s}\npub fn {s} (\n",
-                .{ func.description, func.name },
+                .{ funcDescription, func.name },
             ),
         );
 
@@ -359,13 +360,13 @@ fn writeStructs(
         try file.writeAll(
             try allocPrint(
                 allocator,
-                "\n/// {s}\npub const {s} = extern struct {{\n",
+                "\n/// {?s}\npub const {s} = extern struct {{\n",
                 .{ s.description, s.name },
             ),
         );
 
         for (s.fields) |field| {
-            try file.writeAll(try allocPrint(allocator, "/// {s}\n\t{s}: {s},\n", .{
+            try file.writeAll(try allocPrint(allocator, "/// {?s}\n\t{s}: {s},\n", .{
                 field.description,
                 field.name,
                 field.typ,
@@ -394,13 +395,13 @@ fn writeEnums(
         try file.writeAll(
             try allocPrint(
                 allocator,
-                "\n/// {s}\npub const {s} = enum(i32) {{\n",
+                "\n/// {?s}\npub const {s} = enum(i32) {{\n",
                 .{ e.description, e.name },
             ),
         );
 
         for (e.values) |value| {
-            try file.writeAll(try allocPrint(allocator, "/// {s}\n{s} = {d},\n", .{
+            try file.writeAll(try allocPrint(allocator, "/// {?s}\n{s} = {d},\n", .{
                 value.description,
                 value.name,
                 value.value,
@@ -429,7 +430,7 @@ fn writeDefines(
         try file.writeAll(
             try allocPrint(
                 allocator,
-                "\n/// {s}\npub const {s}: {s} = {s};\n",
+                "\n/// {?s}\npub const {s}: {s} = {s};\n",
                 .{ d.description, d.name, d.typ, d.value },
             ),
         );

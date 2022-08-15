@@ -478,6 +478,11 @@ void mSetTraceLogLevel(int logLevel)
 	SetTraceLogLevel(logLevel);
 }
 
+void mOpenURL(const char * url)
+{
+	OpenURL(url);
+}
+
 void mSetLoadFileDataCallback(LoadFileDataCallback *callback)
 {
 	SetLoadFileDataCallback(*callback);
@@ -641,21 +646,6 @@ char * mEncodeDataBase64(const unsigned char * data, int dataSize, int * outputS
 unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize)
 {
 	return DecodeDataBase64(data, outputSize);
-}
-
-bool mSaveStorageValue(unsigned int position, int value)
-{
-	return SaveStorageValue(position, value);
-}
-
-int mLoadStorageValue(unsigned int position)
-{
-	return LoadStorageValue(position);
-}
-
-void mOpenURL(const char * url)
-{
-	OpenURL(url);
 }
 
 bool mIsKeyPressed(int key)
@@ -2008,11 +1998,6 @@ void mGenMeshTangents(Mesh * mesh)
 	GenMeshTangents(mesh);
 }
 
-void mGenMeshBinormals(Mesh * mesh)
-{
-	GenMeshBinormals(mesh);
-}
-
 void mGenMeshPoly(Mesh *out, int sides, float radius)
 {
 	*out = GenMeshPoly(sides, radius);
@@ -2963,7 +2948,7 @@ void mrlUpdateTexture(unsigned int id, int offsetX, int offsetY, int width, int 
 	rlUpdateTexture(id, offsetX, offsetY, width, height, format, data);
 }
 
-void mrlGetGlTextureFormats(int format, int * glInternalFormat, int * glFormat, int * glType)
+void mrlGetGlTextureFormats(int format, unsigned int * glInternalFormat, unsigned int * glFormat, unsigned int * glType)
 {
 	rlGetGlTextureFormats(format, glInternalFormat, glFormat, glType);
 }
@@ -3438,6 +3423,11 @@ void mVector3RotateByQuaternion(Vector3 *out, Vector3 *v, Vector4 *q)
 	*out = Vector3RotateByQuaternion(*v, *q);
 }
 
+void mVector3RotateByAxisAngle(Vector3 *out, Vector3 *v, Vector3 *axis, float angle)
+{
+	*out = Vector3RotateByAxisAngle(*v, *axis, angle);
+}
+
 void mVector3Lerp(Vector3 *out, Vector3 *v1, Vector3 *v2, float amount)
 {
 	*out = Vector3Lerp(*v1, *v2, amount);
@@ -3563,14 +3553,14 @@ void mMatrixRotateZ(Matrix *out, float angle)
 	*out = MatrixRotateZ(angle);
 }
 
-void mMatrixRotateXYZ(Matrix *out, Vector3 *ang)
+void mMatrixRotateXYZ(Matrix *out, Vector3 *angle)
 {
-	*out = MatrixRotateXYZ(*ang);
+	*out = MatrixRotateXYZ(*angle);
 }
 
-void mMatrixRotateZYX(Matrix *out, Vector3 *ang)
+void mMatrixRotateZYX(Matrix *out, Vector3 *angle)
 {
-	*out = MatrixRotateZYX(*ang);
+	*out = MatrixRotateZYX(*angle);
 }
 
 void mMatrixScale(Matrix *out, float x, float y, float z)

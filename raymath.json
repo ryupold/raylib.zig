@@ -1039,6 +1039,25 @@
       ]
     },
     {
+      "name": "Vector3RotateByAxisAngle",
+      "description": "",
+      "returnType": "Vector3",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "v"
+        },
+        {
+          "type": "Vector3",
+          "name": "axis"
+        },
+        {
+          "type": "float",
+          "name": "angle"
+        }
+      ]
+    },
+    {
       "name": "Vector3Lerp",
       "description": "",
       "returnType": "Vector3",
@@ -1406,7 +1425,7 @@
       "params": [
         {
           "type": "Vector3",
-          "name": "ang"
+          "name": "angle"
         }
       ]
     },
@@ -1417,7 +1436,7 @@
       "params": [
         {
           "type": "Vector3",
-          "name": "ang"
+          "name": "angle"
         }
       ]
     },

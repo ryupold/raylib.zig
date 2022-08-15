@@ -9,7 +9,13 @@
     {
       "name": "RAYLIB_VERSION",
       "type": "STRING",
-      "value": "4.2-dev",
+      "value": "4.2",
+      "description": ""
+    },
+    {
+      "name": "__declspec(x)",
+      "type": "MACRO",
+      "value": "__attribute__((x))",
       "description": ""
     },
     {
@@ -3997,6 +4003,17 @@
       ]
     },
     {
+      "name": "OpenURL",
+      "description": "Open URL with default system browser (if available)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "const char *",
+          "name": "url"
+        }
+      ]
+    },
+    {
       "name": "SetTraceLogCallback",
       "description": "Set custom trace log",
       "returnType": "void",
@@ -4429,43 +4446,6 @@
         {
           "type": "int *",
           "name": "outputSize"
-        }
-      ]
-    },
-    {
-      "name": "SaveStorageValue",
-      "description": "Save integer value to storage file (to defined position), returns true on success",
-      "returnType": "bool",
-      "params": [
-        {
-          "type": "unsigned int",
-          "name": "position"
-        },
-        {
-          "type": "int",
-          "name": "value"
-        }
-      ]
-    },
-    {
-      "name": "LoadStorageValue",
-      "description": "Load integer value from storage file (from defined position)",
-      "returnType": "int",
-      "params": [
-        {
-          "type": "unsigned int",
-          "name": "position"
-        }
-      ]
-    },
-    {
-      "name": "OpenURL",
-      "description": "Open URL with default system browser (if available)",
-      "returnType": "void",
-      "params": [
-        {
-          "type": "const char *",
-          "name": "url"
         }
       ]
     },
@@ -9471,17 +9451,6 @@
       ]
     },
     {
-      "name": "GenMeshBinormals",
-      "description": "Compute mesh binormals",
-      "returnType": "void",
-      "params": [
-        {
-          "type": "Mesh *",
-          "name": "mesh"
-        }
-      ]
-    },
-    {
       "name": "GenMeshPoly",
       "description": "Generate polygonal mesh",
       "returnType": "Mesh",
@@ -10716,7 +10685,7 @@
     },
     {
       "name": "AttachAudioStreamProcessor",
-      "description": "",
+      "description": "Attach audio stream processor to stream",
       "returnType": "void",
       "params": [
         {
@@ -10731,7 +10700,7 @@
     },
     {
       "name": "DetachAudioStreamProcessor",
-      "description": "",
+      "description": "Detach audio stream processor from stream",
       "returnType": "void",
       "params": [
         {
