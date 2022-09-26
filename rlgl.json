@@ -9,7 +9,7 @@
     {
       "name": "RLGL_VERSION",
       "type": "STRING",
-      "value": "4.0",
+      "value": "4.2",
       "description": ""
     },
     {
@@ -179,6 +179,12 @@
       "type": "INT",
       "value": 12288,
       "description": "Anisotropic filter (custom identifier)"
+    },
+    {
+      "name": "RL_TEXTURE_MIPMAP_BIAS_RATIO",
+      "type": "INT",
+      "value": 16384,
+      "description": "Texture mipmap bias, percentage ratio (custom identifier)"
     },
     {
       "name": "RL_TEXTURE_WRAP_REPEAT",
@@ -633,6 +639,92 @@
   ],
   "structs": [
     {
+      "name": "Matrix",
+      "description": "Matrix, 4x4 components, column major, OpenGL style, right handed",
+      "fields": [
+        {
+          "type": "float",
+          "name": "m0",
+          "description": "Matrix first row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m4",
+          "description": "Matrix first row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m8",
+          "description": "Matrix first row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m12",
+          "description": "Matrix first row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m1",
+          "description": "Matrix second row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m5",
+          "description": "Matrix second row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m9",
+          "description": "Matrix second row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m13",
+          "description": "Matrix second row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m2",
+          "description": "Matrix third row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m6",
+          "description": "Matrix third row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m10",
+          "description": "Matrix third row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m14",
+          "description": "Matrix third row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m3",
+          "description": "Matrix fourth row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m7",
+          "description": "Matrix fourth row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m11",
+          "description": "Matrix fourth row (4 components)"
+        },
+        {
+          "type": "float",
+          "name": "m15",
+          "description": "Matrix fourth row (4 components)"
+        }
+      ]
+    },
+    {
       "name": "rlVertexBuffer",
       "description": "Dynamic vertex buffers (position + texcoords + colors + indices arrays)",
       "fields": [
@@ -732,92 +824,6 @@
           "type": "float",
           "name": "currentDepth",
           "description": "Current depth value for next draw"
-        }
-      ]
-    },
-    {
-      "name": "Matrix",
-      "description": "Matrix, 4x4 components, column major, OpenGL style, right handed",
-      "fields": [
-        {
-          "type": "float",
-          "name": "m0",
-          "description": "Matrix first row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m4",
-          "description": "Matrix first row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m8",
-          "description": "Matrix first row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m12",
-          "description": "Matrix first row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m1",
-          "description": "Matrix second row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m5",
-          "description": "Matrix second row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m9",
-          "description": "Matrix second row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m13",
-          "description": "Matrix second row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m2",
-          "description": "Matrix third row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m6",
-          "description": "Matrix third row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m10",
-          "description": "Matrix third row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m14",
-          "description": "Matrix third row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m3",
-          "description": "Matrix fourth row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m7",
-          "description": "Matrix fourth row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m11",
-          "description": "Matrix fourth row (4 components)"
-        },
-        {
-          "type": "float",
-          "name": "m15",
-          "description": "Matrix fourth row (4 components)"
         }
       ]
     },
@@ -1013,139 +1019,36 @@
       ]
     }
   ],
-  "aliases": [
-  ],
+  "aliases": [],
   "enums": [
     {
       "name": "rlGlVersion",
-      "description": "",
+      "description": "OpenGL version",
       "values": [
         {
-          "name": "OPENGL_11",
+          "name": "RL_OPENGL_11",
           "value": 1,
-          "description": ""
+          "description": "OpenGL 1.1"
         },
         {
-          "name": "OPENGL_21",
+          "name": "RL_OPENGL_21",
           "value": 2,
-          "description": ""
+          "description": "OpenGL 2.1 (GLSL 120)"
         },
         {
-          "name": "OPENGL_33",
+          "name": "RL_OPENGL_33",
           "value": 3,
-          "description": ""
+          "description": "OpenGL 3.3 (GLSL 330)"
         },
         {
-          "name": "OPENGL_43",
+          "name": "RL_OPENGL_43",
           "value": 4,
-          "description": ""
+          "description": "OpenGL 4.3 (using GLSL 330)"
         },
         {
-          "name": "OPENGL_ES_20",
+          "name": "RL_OPENGL_ES_20",
           "value": 5,
-          "description": ""
-        }
-      ]
-    },
-    {
-      "name": "rlFramebufferAttachType",
-      "description": "",
-      "values": [
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL0",
-          "value": 0,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL1",
-          "value": 1,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL2",
-          "value": 2,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL3",
-          "value": 3,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL4",
-          "value": 4,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL5",
-          "value": 5,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL6",
-          "value": 6,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_COLOR_CHANNEL7",
-          "value": 7,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_DEPTH",
-          "value": 100,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_STENCIL",
-          "value": 200,
-          "description": ""
-        }
-      ]
-    },
-    {
-      "name": "rlFramebufferAttachTextureType",
-      "description": "",
-      "values": [
-        {
-          "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_X",
-          "value": 0,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_X",
-          "value": 1,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Y",
-          "value": 2,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y",
-          "value": 3,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Z",
-          "value": 4,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z",
-          "value": 5,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_TEXTURE2D",
-          "value": 100,
-          "description": ""
-        },
-        {
-          "name": "RL_ATTACHMENT_RENDERBUFFER",
-          "value": 200,
-          "description": ""
+          "description": "OpenGL ES 2.0 (GLSL 100)"
         }
       ]
     },
@@ -1197,7 +1100,7 @@
     },
     {
       "name": "rlPixelFormat",
-      "description": "Texture formats (support depends on OpenGL version)",
+      "description": "Texture pixel formats",
       "values": [
         {
           "name": "RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE",
@@ -1521,7 +1424,7 @@
     },
     {
       "name": "rlShaderUniformDataType",
-      "description": "Shader uniform data type",
+      "description": "Shader uniform data type ",
       "values": [
         {
           "name": "RL_SHADER_UNIFORM_FLOAT",
@@ -1593,6 +1496,108 @@
           "name": "RL_SHADER_ATTRIB_VEC4",
           "value": 3,
           "description": "Shader attribute type: vec4 (4 float)"
+        }
+      ]
+    },
+    {
+      "name": "rlFramebufferAttachType",
+      "description": "Framebuffer attachment type",
+      "values": [
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL0",
+          "value": 0,
+          "description": "Framebuffer attachmment type: color 0"
+        },
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL1",
+          "value": 1,
+          "description": "Framebuffer attachmment type: color 1"
+        },
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL2",
+          "value": 2,
+          "description": "Framebuffer attachmment type: color 2"
+        },
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL3",
+          "value": 3,
+          "description": "Framebuffer attachmment type: color 3"
+        },
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL4",
+          "value": 4,
+          "description": "Framebuffer attachmment type: color 4"
+        },
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL5",
+          "value": 5,
+          "description": "Framebuffer attachmment type: color 5"
+        },
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL6",
+          "value": 6,
+          "description": "Framebuffer attachmment type: color 6"
+        },
+        {
+          "name": "RL_ATTACHMENT_COLOR_CHANNEL7",
+          "value": 7,
+          "description": "Framebuffer attachmment type: color 7"
+        },
+        {
+          "name": "RL_ATTACHMENT_DEPTH",
+          "value": 100,
+          "description": "Framebuffer attachmment type: depth"
+        },
+        {
+          "name": "RL_ATTACHMENT_STENCIL",
+          "value": 200,
+          "description": "Framebuffer attachmment type: stencil"
+        }
+      ]
+    },
+    {
+      "name": "rlFramebufferAttachTextureType",
+      "description": "Framebuffer texture attachment type",
+      "values": [
+        {
+          "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_X",
+          "value": 0,
+          "description": "Framebuffer texture attachment type: cubemap, +X side"
+        },
+        {
+          "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_X",
+          "value": 1,
+          "description": "Framebuffer texture attachment type: cubemap, -X side"
+        },
+        {
+          "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Y",
+          "value": 2,
+          "description": "Framebuffer texture attachment type: cubemap, +Y side"
+        },
+        {
+          "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y",
+          "value": 3,
+          "description": "Framebuffer texture attachment type: cubemap, -Y side"
+        },
+        {
+          "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Z",
+          "value": 4,
+          "description": "Framebuffer texture attachment type: cubemap, +Z side"
+        },
+        {
+          "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z",
+          "value": 5,
+          "description": "Framebuffer texture attachment type: cubemap, -Z side"
+        },
+        {
+          "name": "RL_ATTACHMENT_TEXTURE2D",
+          "value": 100,
+          "description": "Framebuffer texture attachment type: texture2d"
+        },
+        {
+          "name": "RL_ATTACHMENT_RENDERBUFFER",
+          "value": 200,
+          "description": "Framebuffer texture attachment type: renderbuffer"
         }
       ]
     }
@@ -3224,7 +3229,7 @@
       "returnType": "unsigned int",
       "params": [
         {
-          "type": "unsigned long long",
+          "type": "unsigned int",
           "name": "size"
         },
         {
@@ -3249,7 +3254,7 @@
       ]
     },
     {
-      "name": "rlUpdateShaderBufferElements",
+      "name": "rlUpdateShaderBuffer",
       "description": "Update SSBO buffer data",
       "returnType": "void",
       "params": [
@@ -3262,52 +3267,18 @@
           "name": "data"
         },
         {
-          "type": "unsigned long long",
+          "type": "unsigned int",
           "name": "dataSize"
         },
         {
-          "type": "unsigned long long",
-          "name": "offset"
-        }
-      ]
-    },
-    {
-      "name": "rlGetShaderBufferSize",
-      "description": "Get SSBO buffer size",
-      "returnType": "unsigned long long",
-      "params": [
-        {
           "type": "unsigned int",
-          "name": "id"
-        }
-      ]
-    },
-    {
-      "name": "rlReadShaderBufferElements",
-      "description": "Bind SSBO buffer",
-      "returnType": "void",
-      "params": [
-        {
-          "type": "unsigned int",
-          "name": "id"
-        },
-        {
-          "type": "void *",
-          "name": "dest"
-        },
-        {
-          "type": "unsigned long long",
-          "name": "count"
-        },
-        {
-          "type": "unsigned long long",
           "name": "offset"
         }
       ]
     },
     {
       "name": "rlBindShaderBuffer",
-      "description": "Copy SSBO buffer data",
+      "description": "Bind SSBO buffer",
       "returnType": "void",
       "params": [
         {
@@ -3321,8 +3292,31 @@
       ]
     },
     {
-      "name": "rlCopyBuffersElements",
-      "description": "Copy SSBO buffer data",
+      "name": "rlReadShaderBuffer",
+      "description": "Read SSBO buffer data (GPU->CPU)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "unsigned int",
+          "name": "id"
+        },
+        {
+          "type": "void *",
+          "name": "dest"
+        },
+        {
+          "type": "unsigned int",
+          "name": "count"
+        },
+        {
+          "type": "unsigned int",
+          "name": "offset"
+        }
+      ]
+    },
+    {
+      "name": "rlCopyShaderBuffer",
+      "description": "Copy SSBO data between buffers",
       "returnType": "void",
       "params": [
         {
@@ -3334,16 +3328,27 @@
           "name": "srcId"
         },
         {
-          "type": "unsigned long long",
+          "type": "unsigned int",
           "name": "destOffset"
         },
         {
-          "type": "unsigned long long",
+          "type": "unsigned int",
           "name": "srcOffset"
         },
         {
-          "type": "unsigned long long",
+          "type": "unsigned int",
           "name": "count"
+        }
+      ]
+    },
+    {
+      "name": "rlGetShaderBufferSize",
+      "description": "Get SSBO buffer size",
+      "returnType": "unsigned int",
+      "params": [
+        {
+          "type": "unsigned int",
+          "name": "id"
         }
       ]
     },

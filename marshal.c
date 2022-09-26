@@ -1118,6 +1118,11 @@ bool mCheckCollisionPointTriangle(Vector2 *point, Vector2 *p1, Vector2 *p2, Vect
 	return CheckCollisionPointTriangle(*point, *p1, *p2, *p3);
 }
 
+bool mCheckCollisionPointPoly(Vector2 *point, Vector2 * points, int pointCount)
+{
+	return CheckCollisionPointPoly(*point, points, pointCount);
+}
+
 bool mCheckCollisionLines(Vector2 *startPos1, Vector2 *endPos1, Vector2 *startPos2, Vector2 *endPos2, Vector2 * collisionPoint)
 {
 	return CheckCollisionLines(*startPos1, *endPos1, *startPos2, *endPos2, collisionPoint);
@@ -1206,6 +1211,11 @@ void mGenImageChecked(Image *out, int width, int height, int checksX, int checks
 void mGenImageWhiteNoise(Image *out, int width, int height, float factor)
 {
 	*out = GenImageWhiteNoise(width, height, factor);
+}
+
+void mGenImagePerlinNoise(Image *out, int width, int height, int offsetX, int offsetY, float scale)
+{
+	*out = GenImagePerlinNoise(width, height, offsetX, offsetY, scale);
 }
 
 void mGenImageCellular(Image *out, int width, int height, int tileSize)
@@ -1406,6 +1416,16 @@ void mImageDrawCircle(Image * dst, int centerX, int centerY, int radius, Color *
 void mImageDrawCircleV(Image * dst, Vector2 *center, int radius, Color *color)
 {
 	ImageDrawCircleV(dst, *center, radius, *color);
+}
+
+void mImageDrawCircleLines(Image * dst, int centerX, int centerY, int radius, Color *color)
+{
+	ImageDrawCircleLines(dst, centerX, centerY, radius, *color);
+}
+
+void mImageDrawCircleLinesV(Image * dst, Vector2 *center, int radius, Color *color)
+{
+	ImageDrawCircleLinesV(dst, *center, radius, *color);
 }
 
 void mImageDrawRectangle(Image * dst, int posX, int posY, int width, int height, Color *color)
@@ -1703,6 +1723,16 @@ void mGetGlyphAtlasRec(Rectangle *out, Font *font, int codepoint)
 	*out = GetGlyphAtlasRec(*font, codepoint);
 }
 
+char * mLoadUTF8(const int * codepoints, int length)
+{
+	return LoadUTF8(codepoints, length);
+}
+
+void mUnloadUTF8(char * text)
+{
+	UnloadUTF8(text);
+}
+
 int * mLoadCodepoints(const char * text, int * count)
 {
 	return LoadCodepoints(text, count);
@@ -1718,19 +1748,24 @@ int mGetCodepointCount(const char * text)
 	return GetCodepointCount(text);
 }
 
-int mGetCodepoint(const char * text, int * bytesProcessed)
+int mGetCodepoint(const char * text, int * codepointSize)
 {
-	return GetCodepoint(text, bytesProcessed);
+	return GetCodepoint(text, codepointSize);
 }
 
-const char * mCodepointToUTF8(int codepoint, int * byteSize)
+int mGetCodepointNext(const char * text, int * codepointSize)
 {
-	return CodepointToUTF8(codepoint, byteSize);
+	return GetCodepointNext(text, codepointSize);
 }
 
-char * mTextCodepointsToUTF8(const int * codepoints, int length)
+int mGetCodepointPrevious(const char * text, int * codepointSize)
 {
-	return TextCodepointsToUTF8(codepoints, length);
+	return GetCodepointPrevious(text, codepointSize);
+}
+
+const char * mCodepointToUTF8(int codepoint, int * utf8Size)
+{
+	return CodepointToUTF8(codepoint, utf8Size);
 }
 
 int mTextCopy(char * dst, const char * src)
@@ -3058,7 +3093,7 @@ void mrlComputeShaderDispatch(unsigned int groupX, unsigned int groupY, unsigned
 	rlComputeShaderDispatch(groupX, groupY, groupZ);
 }
 
-unsigned int mrlLoadShaderBuffer(unsigned long long size, const void * data, int usageHint)
+unsigned int mrlLoadShaderBuffer(unsigned int size, const void * data, int usageHint)
 {
 	return rlLoadShaderBuffer(size, data, usageHint);
 }
@@ -3068,19 +3103,9 @@ void mrlUnloadShaderBuffer(unsigned int ssboId)
 	rlUnloadShaderBuffer(ssboId);
 }
 
-void mrlUpdateShaderBufferElements(unsigned int id, const void * data, unsigned long long dataSize, unsigned long long offset)
+void mrlUpdateShaderBuffer(unsigned int id, const void * data, unsigned int dataSize, unsigned int offset)
 {
-	rlUpdateShaderBufferElements(id, data, dataSize, offset);
-}
-
-unsigned long long mrlGetShaderBufferSize(unsigned int id)
-{
-	return rlGetShaderBufferSize(id);
-}
-
-void mrlReadShaderBufferElements(unsigned int id, void * dest, unsigned long long count, unsigned long long offset)
-{
-	rlReadShaderBufferElements(id, dest, count, offset);
+	rlUpdateShaderBuffer(id, data, dataSize, offset);
 }
 
 void mrlBindShaderBuffer(unsigned int id, unsigned int index)
@@ -3088,9 +3113,19 @@ void mrlBindShaderBuffer(unsigned int id, unsigned int index)
 	rlBindShaderBuffer(id, index);
 }
 
-void mrlCopyBuffersElements(unsigned int destId, unsigned int srcId, unsigned long long destOffset, unsigned long long srcOffset, unsigned long long count)
+void mrlReadShaderBuffer(unsigned int id, void * dest, unsigned int count, unsigned int offset)
 {
-	rlCopyBuffersElements(destId, srcId, destOffset, srcOffset, count);
+	rlReadShaderBuffer(id, dest, count, offset);
+}
+
+void mrlCopyShaderBuffer(unsigned int destId, unsigned int srcId, unsigned int destOffset, unsigned int srcOffset, unsigned int count)
+{
+	rlCopyShaderBuffer(destId, srcId, destOffset, srcOffset, count);
+}
+
+unsigned int mrlGetShaderBufferSize(unsigned int id)
+{
+	return rlGetShaderBufferSize(id);
 }
 
 void mrlBindImageTexture(unsigned int id, unsigned int index, unsigned int format, int readonly)

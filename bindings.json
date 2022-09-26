@@ -1084,7 +1084,7 @@
             "params": [
                 {
                     "name": "size",
-                    "typ": "i32"
+                    "typ": "u32"
                 }
             ],
             "returnType": "*anyopaque",
@@ -1100,7 +1100,7 @@
                 },
                 {
                     "name": "size",
-                    "typ": "i32"
+                    "typ": "u32"
                 }
             ],
             "returnType": "*anyopaque",
@@ -3266,6 +3266,26 @@
             "custom": false
         },
         {
+            "name": "CheckCollisionPointPoly",
+            "params": [
+                {
+                    "name": "point",
+                    "typ": "Vector2"
+                },
+                {
+                    "name": "points",
+                    "typ": "?[*]Vector2"
+                },
+                {
+                    "name": "pointCount",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check if point is within a polygon described by array of vertices",
+            "custom": false
+        },
+        {
             "name": "CheckCollisionLines",
             "params": [
                 {
@@ -3618,6 +3638,34 @@
             ],
             "returnType": "Image",
             "description": "Generate image: white noise",
+            "custom": false
+        },
+        {
+            "name": "GenImagePerlinNoise",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "offsetX",
+                    "typ": "i32"
+                },
+                {
+                    "name": "offsetY",
+                    "typ": "i32"
+                },
+                {
+                    "name": "scale",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "Image",
+            "description": "Generate image: perlin noise",
             "custom": false
         },
         {
@@ -4313,7 +4361,7 @@
                 }
             ],
             "returnType": "void",
-            "description": "Draw circle within an image",
+            "description": "Draw a filled circle within an image",
             "custom": false
         },
         {
@@ -4337,7 +4385,59 @@
                 }
             ],
             "returnType": "void",
-            "description": "Draw circle within an image (Vector version)",
+            "description": "Draw a filled circle within an image (Vector version)",
+            "custom": false
+        },
+        {
+            "name": "ImageDrawCircleLines",
+            "params": [
+                {
+                    "name": "dst",
+                    "typ": "?[*]Image"
+                },
+                {
+                    "name": "centerX",
+                    "typ": "i32"
+                },
+                {
+                    "name": "centerY",
+                    "typ": "i32"
+                },
+                {
+                    "name": "radius",
+                    "typ": "i32"
+                },
+                {
+                    "name": "color",
+                    "typ": "Color"
+                }
+            ],
+            "returnType": "void",
+            "description": "Draw circle outline within an image",
+            "custom": false
+        },
+        {
+            "name": "ImageDrawCircleLinesV",
+            "params": [
+                {
+                    "name": "dst",
+                    "typ": "?[*]Image"
+                },
+                {
+                    "name": "center",
+                    "typ": "Vector2"
+                },
+                {
+                    "name": "radius",
+                    "typ": "i32"
+                },
+                {
+                    "name": "color",
+                    "typ": "Color"
+                }
+            ],
+            "returnType": "void",
+            "description": "Draw circle outline within an image (Vector version)",
             "custom": false
         },
         {
@@ -5592,6 +5692,34 @@
             "custom": false
         },
         {
+            "name": "LoadUTF8",
+            "params": [
+                {
+                    "name": "codepoints",
+                    "typ": "?[*]const i32"
+                },
+                {
+                    "name": "length",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "?[*]u8",
+            "description": "Load UTF-8 text encoded from codepoints array",
+            "custom": false
+        },
+        {
+            "name": "UnloadUTF8",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "?[*]u8"
+                }
+            ],
+            "returnType": "void",
+            "description": "Unload UTF-8 text encoded from codepoints array",
+            "custom": false
+        },
+        {
             "name": "LoadCodepoints",
             "params": [
                 {
@@ -5639,12 +5767,44 @@
                     "typ": "[*:0]const u8"
                 },
                 {
-                    "name": "bytesProcessed",
+                    "name": "codepointSize",
                     "typ": "?[*]i32"
                 }
             ],
             "returnType": "i32",
             "description": "Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure",
+            "custom": false
+        },
+        {
+            "name": "GetCodepointNext",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "codepointSize",
+                    "typ": "?[*]i32"
+                }
+            ],
+            "returnType": "i32",
+            "description": "Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure",
+            "custom": false
+        },
+        {
+            "name": "GetCodepointPrevious",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "codepointSize",
+                    "typ": "?[*]i32"
+                }
+            ],
+            "returnType": "i32",
+            "description": "Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure",
             "custom": false
         },
         {
@@ -5655,28 +5815,12 @@
                     "typ": "i32"
                 },
                 {
-                    "name": "byteSize",
+                    "name": "utf8Size",
                     "typ": "?[*]i32"
                 }
             ],
             "returnType": "[*:0]const u8",
             "description": "Encode one codepoint into UTF-8 byte array (array length returned as parameter)",
-            "custom": false
-        },
-        {
-            "name": "TextCodepointsToUTF8",
-            "params": [
-                {
-                    "name": "codepoints",
-                    "typ": "?[*]const i32"
-                },
-                {
-                    "name": "length",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "?[*]u8",
-            "description": "Encode text as codepoints array into UTF-8 text string (WARNING: memory must be freed!)",
             "custom": false
         },
         {
@@ -10018,7 +10162,7 @@
             "params": [
                 {
                     "name": "size",
-                    "typ": "u64"
+                    "typ": "u32"
                 },
                 {
                     "name": "data",
@@ -10046,7 +10190,7 @@
             "custom": false
         },
         {
-            "name": "rlUpdateShaderBufferElements",
+            "name": "rlUpdateShaderBuffer",
             "params": [
                 {
                     "name": "id",
@@ -10058,51 +10202,15 @@
                 },
                 {
                     "name": "dataSize",
-                    "typ": "u64"
+                    "typ": "u32"
                 },
                 {
                     "name": "offset",
-                    "typ": "u64"
+                    "typ": "u32"
                 }
             ],
             "returnType": "void",
             "description": "Update SSBO buffer data",
-            "custom": false
-        },
-        {
-            "name": "rlGetShaderBufferSize",
-            "params": [
-                {
-                    "name": "id",
-                    "typ": "u32"
-                }
-            ],
-            "returnType": "u64",
-            "description": "Get SSBO buffer size",
-            "custom": false
-        },
-        {
-            "name": "rlReadShaderBufferElements",
-            "params": [
-                {
-                    "name": "id",
-                    "typ": "u32"
-                },
-                {
-                    "name": "dest",
-                    "typ": "*anyopaque"
-                },
-                {
-                    "name": "count",
-                    "typ": "u64"
-                },
-                {
-                    "name": "offset",
-                    "typ": "u64"
-                }
-            ],
-            "returnType": "void",
-            "description": "Bind SSBO buffer",
             "custom": false
         },
         {
@@ -10118,11 +10226,35 @@
                 }
             ],
             "returnType": "void",
-            "description": "Copy SSBO buffer data",
+            "description": "Bind SSBO buffer",
             "custom": false
         },
         {
-            "name": "rlCopyBuffersElements",
+            "name": "rlReadShaderBuffer",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "dest",
+                    "typ": "*anyopaque"
+                },
+                {
+                    "name": "count",
+                    "typ": "u32"
+                },
+                {
+                    "name": "offset",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Read SSBO buffer data (GPU->CPU)",
+            "custom": false
+        },
+        {
+            "name": "rlCopyShaderBuffer",
             "params": [
                 {
                     "name": "destId",
@@ -10134,19 +10266,31 @@
                 },
                 {
                     "name": "destOffset",
-                    "typ": "u64"
+                    "typ": "u32"
                 },
                 {
                     "name": "srcOffset",
-                    "typ": "u64"
+                    "typ": "u32"
                 },
                 {
                     "name": "count",
-                    "typ": "u64"
+                    "typ": "u32"
                 }
             ],
             "returnType": "void",
-            "description": "Copy SSBO buffer data",
+            "description": "Copy SSBO data between buffers",
+            "custom": false
+        },
+        {
+            "name": "rlGetShaderBufferSize",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Get SSBO buffer size",
             "custom": false
         },
         {
@@ -13675,136 +13819,32 @@
             "name": "rlGlVersion",
             "values": [
                 {
-                    "name": "OPENGL_11",
+                    "name": "RL_OPENGL_11",
                     "value": 1,
-                    "description": ""
+                    "description": "OpenGL 1.1"
                 },
                 {
-                    "name": "OPENGL_21",
+                    "name": "RL_OPENGL_21",
                     "value": 2,
-                    "description": ""
+                    "description": "OpenGL 2.1 (GLSL 120)"
                 },
                 {
-                    "name": "OPENGL_33",
+                    "name": "RL_OPENGL_33",
                     "value": 3,
-                    "description": ""
+                    "description": "OpenGL 3.3 (GLSL 330)"
                 },
                 {
-                    "name": "OPENGL_43",
+                    "name": "RL_OPENGL_43",
                     "value": 4,
-                    "description": ""
+                    "description": "OpenGL 4.3 (using GLSL 330)"
                 },
                 {
-                    "name": "OPENGL_ES_20",
+                    "name": "RL_OPENGL_ES_20",
                     "value": 5,
-                    "description": ""
+                    "description": "OpenGL ES 2.0 (GLSL 100)"
                 }
             ],
-            "description": "",
-            "custom": false
-        },
-        {
-            "name": "rlFramebufferAttachType",
-            "values": [
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL0",
-                    "value": 0,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL1",
-                    "value": 1,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL2",
-                    "value": 2,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL3",
-                    "value": 3,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL4",
-                    "value": 4,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL5",
-                    "value": 5,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL6",
-                    "value": 6,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_COLOR_CHANNEL7",
-                    "value": 7,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_DEPTH",
-                    "value": 100,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_STENCIL",
-                    "value": 200,
-                    "description": ""
-                }
-            ],
-            "description": "",
-            "custom": false
-        },
-        {
-            "name": "rlFramebufferAttachTextureType",
-            "values": [
-                {
-                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_X",
-                    "value": 0,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_X",
-                    "value": 1,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Y",
-                    "value": 2,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y",
-                    "value": 3,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Z",
-                    "value": 4,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z",
-                    "value": 5,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_TEXTURE2D",
-                    "value": 100,
-                    "description": ""
-                },
-                {
-                    "name": "RL_ATTACHMENT_RENDERBUFFER",
-                    "value": 200,
-                    "description": ""
-                }
-            ],
-            "description": "",
+            "description": "OpenGL version",
             "custom": false
         },
         {
@@ -13963,7 +14003,7 @@
                     "description": "2 bpp"
                 }
             ],
-            "description": "Texture formats (support depends on OpenGL version)",
+            "description": "Texture pixel formats",
             "custom": false
         },
         {
@@ -14231,7 +14271,7 @@
                     "description": "Shader uniform type: sampler2d"
                 }
             ],
-            "description": "Shader uniform data type",
+            "description": "Shader uniform data type ",
             "custom": false
         },
         {
@@ -14259,6 +14299,110 @@
                 }
             ],
             "description": "Shader attribute data types",
+            "custom": false
+        },
+        {
+            "name": "rlFramebufferAttachType",
+            "values": [
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL0",
+                    "value": 0,
+                    "description": "Framebuffer attachmment type: color 0"
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL1",
+                    "value": 1,
+                    "description": "Framebuffer attachmment type: color 1"
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL2",
+                    "value": 2,
+                    "description": "Framebuffer attachmment type: color 2"
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL3",
+                    "value": 3,
+                    "description": "Framebuffer attachmment type: color 3"
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL4",
+                    "value": 4,
+                    "description": "Framebuffer attachmment type: color 4"
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL5",
+                    "value": 5,
+                    "description": "Framebuffer attachmment type: color 5"
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL6",
+                    "value": 6,
+                    "description": "Framebuffer attachmment type: color 6"
+                },
+                {
+                    "name": "RL_ATTACHMENT_COLOR_CHANNEL7",
+                    "value": 7,
+                    "description": "Framebuffer attachmment type: color 7"
+                },
+                {
+                    "name": "RL_ATTACHMENT_DEPTH",
+                    "value": 100,
+                    "description": "Framebuffer attachmment type: depth"
+                },
+                {
+                    "name": "RL_ATTACHMENT_STENCIL",
+                    "value": 200,
+                    "description": "Framebuffer attachmment type: stencil"
+                }
+            ],
+            "description": "Framebuffer attachment type",
+            "custom": false
+        },
+        {
+            "name": "rlFramebufferAttachTextureType",
+            "values": [
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_X",
+                    "value": 0,
+                    "description": "Framebuffer texture attachment type: cubemap, +X side"
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_X",
+                    "value": 1,
+                    "description": "Framebuffer texture attachment type: cubemap, -X side"
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Y",
+                    "value": 2,
+                    "description": "Framebuffer texture attachment type: cubemap, +Y side"
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y",
+                    "value": 3,
+                    "description": "Framebuffer texture attachment type: cubemap, -Y side"
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_POSITIVE_Z",
+                    "value": 4,
+                    "description": "Framebuffer texture attachment type: cubemap, +Z side"
+                },
+                {
+                    "name": "RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z",
+                    "value": 5,
+                    "description": "Framebuffer texture attachment type: cubemap, -Z side"
+                },
+                {
+                    "name": "RL_ATTACHMENT_TEXTURE2D",
+                    "value": 100,
+                    "description": "Framebuffer texture attachment type: texture2d"
+                },
+                {
+                    "name": "RL_ATTACHMENT_RENDERBUFFER",
+                    "value": 200,
+                    "description": "Framebuffer texture attachment type: renderbuffer"
+                }
+            ],
+            "description": "Framebuffer texture attachment type",
             "custom": false
         },
         {
@@ -15792,7 +15936,7 @@
         {
             "name": "RLGL_VERSION",
             "typ": "[]const u8",
-            "value": "\"4.0\"",
+            "value": "\"4.2\"",
             "description": "",
             "custom": false
         },
@@ -15913,6 +16057,13 @@
             "typ": "i32",
             "value": "12288",
             "description": "Anisotropic filter (custom identifier)",
+            "custom": false
+        },
+        {
+            "name": "RL_TEXTURE_MIPMAP_BIAS_RATIO",
+            "typ": "i32",
+            "value": "16384",
+            "description": "Texture mipmap bias, percentage ratio (custom identifier)",
             "custom": false
         },
         {

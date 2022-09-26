@@ -678,6 +678,9 @@ bool mCheckCollisionPointCircle(Vector2 *point, Vector2 *center, float radius);
 // Check if point is inside a triangle
 bool mCheckCollisionPointTriangle(Vector2 *point, Vector2 *p1, Vector2 *p2, Vector2 *p3);
 
+// Check if point is within a polygon described by array of vertices
+bool mCheckCollisionPointPoly(Vector2 *point, Vector2 * points, int pointCount);
+
 // Check the collision between two lines defined by two points each, returns collision point by reference
 bool mCheckCollisionLines(Vector2 *startPos1, Vector2 *endPos1, Vector2 *startPos2, Vector2 *endPos2, Vector2 * collisionPoint);
 
@@ -731,6 +734,9 @@ void mGenImageChecked(Image *out, int width, int height, int checksX, int checks
 
 // Generate image: white noise
 void mGenImageWhiteNoise(Image *out, int width, int height, float factor);
+
+// Generate image: perlin noise
+void mGenImagePerlinNoise(Image *out, int width, int height, int offsetX, int offsetY, float scale);
 
 // Generate image: cellular algorithm, bigger tileSize means bigger cells
 void mGenImageCellular(Image *out, int width, int height, int tileSize);
@@ -846,11 +852,17 @@ void mImageDrawLine(Image * dst, int startPosX, int startPosY, int endPosX, int 
 // Draw line within an image (Vector version)
 void mImageDrawLineV(Image * dst, Vector2 *start, Vector2 *end, Color *color);
 
-// Draw circle within an image
+// Draw a filled circle within an image
 void mImageDrawCircle(Image * dst, int centerX, int centerY, int radius, Color *color);
 
-// Draw circle within an image (Vector version)
+// Draw a filled circle within an image (Vector version)
 void mImageDrawCircleV(Image * dst, Vector2 *center, int radius, Color *color);
+
+// Draw circle outline within an image
+void mImageDrawCircleLines(Image * dst, int centerX, int centerY, int radius, Color *color);
+
+// Draw circle outline within an image (Vector version)
+void mImageDrawCircleLinesV(Image * dst, Vector2 *center, int radius, Color *color);
 
 // Draw rectangle within an image
 void mImageDrawRectangle(Image * dst, int posX, int posY, int width, int height, Color *color);
@@ -1029,6 +1041,12 @@ void mGetGlyphInfo(GlyphInfo *out, Font *font, int codepoint);
 // Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
 void mGetGlyphAtlasRec(Rectangle *out, Font *font, int codepoint);
 
+// Load UTF-8 text encoded from codepoints array
+char * mLoadUTF8(const int * codepoints, int length);
+
+// Unload UTF-8 text encoded from codepoints array
+void mUnloadUTF8(char * text);
+
 // Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
 int * mLoadCodepoints(const char * text, int * count);
 
@@ -1039,13 +1057,16 @@ void mUnloadCodepoints(int * codepoints);
 int mGetCodepointCount(const char * text);
 
 // Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-int mGetCodepoint(const char * text, int * bytesProcessed);
+int mGetCodepoint(const char * text, int * codepointSize);
+
+// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+int mGetCodepointNext(const char * text, int * codepointSize);
+
+// Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+int mGetCodepointPrevious(const char * text, int * codepointSize);
 
 // Encode one codepoint into UTF-8 byte array (array length returned as parameter)
-const char * mCodepointToUTF8(int codepoint, int * byteSize);
-
-// Encode text as codepoints array into UTF-8 text string (WARNING: memory must be freed!)
-char * mTextCodepointsToUTF8(const int * codepoints, int length);
+const char * mCodepointToUTF8(int codepoint, int * utf8Size);
 
 // Copy one string to another, returns bytes copied
 int mTextCopy(char * dst, const char * src);
@@ -1843,25 +1864,25 @@ unsigned int mrlLoadComputeShaderProgram(unsigned int shaderId);
 void mrlComputeShaderDispatch(unsigned int groupX, unsigned int groupY, unsigned int groupZ);
 
 // Load shader storage buffer object (SSBO)
-unsigned int mrlLoadShaderBuffer(unsigned long long size, const void * data, int usageHint);
+unsigned int mrlLoadShaderBuffer(unsigned int size, const void * data, int usageHint);
 
 // Unload shader storage buffer object (SSBO)
 void mrlUnloadShaderBuffer(unsigned int ssboId);
 
 // Update SSBO buffer data
-void mrlUpdateShaderBufferElements(unsigned int id, const void * data, unsigned long long dataSize, unsigned long long offset);
-
-// Get SSBO buffer size
-unsigned long long mrlGetShaderBufferSize(unsigned int id);
+void mrlUpdateShaderBuffer(unsigned int id, const void * data, unsigned int dataSize, unsigned int offset);
 
 // Bind SSBO buffer
-void mrlReadShaderBufferElements(unsigned int id, void * dest, unsigned long long count, unsigned long long offset);
-
-// Copy SSBO buffer data
 void mrlBindShaderBuffer(unsigned int id, unsigned int index);
 
-// Copy SSBO buffer data
-void mrlCopyBuffersElements(unsigned int destId, unsigned int srcId, unsigned long long destOffset, unsigned long long srcOffset, unsigned long long count);
+// Read SSBO buffer data (GPU->CPU)
+void mrlReadShaderBuffer(unsigned int id, void * dest, unsigned int count, unsigned int offset);
+
+// Copy SSBO data between buffers
+void mrlCopyShaderBuffer(unsigned int destId, unsigned int srcId, unsigned int destOffset, unsigned int srcOffset, unsigned int count);
+
+// Get SSBO buffer size
+unsigned int mrlGetShaderBufferSize(unsigned int id);
 
 // Bind image texture
 void mrlBindImageTexture(unsigned int id, unsigned int index, unsigned int format, int readonly);

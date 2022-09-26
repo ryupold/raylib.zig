@@ -3194,6 +3194,19 @@ pub fn CheckCollisionPointTriangle(
     );
 }
 
+/// Check if point is within a polygon described by array of vertices
+pub fn CheckCollisionPointPoly(
+    point: Vector2,
+    points: ?[*]Vector2,
+    pointCount: i32,
+) bool {
+    return raylib.mCheckCollisionPointPoly(
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&point)),
+        points,
+        pointCount,
+    );
+}
+
 /// Check the collision between two lines defined by two points each, returns collision point by reference
 pub fn CheckCollisionLines(
     startPos1: Vector2,
@@ -3460,6 +3473,26 @@ pub fn GenImageWhiteNoise(
         width,
         height,
         factor,
+    );
+    return out;
+}
+
+/// Generate image: perlin noise
+pub fn GenImagePerlinNoise(
+    width: i32,
+    height: i32,
+    offsetX: i32,
+    offsetY: i32,
+    scale: f32,
+) Image {
+    var out: Image = undefined;
+    raylib.mGenImagePerlinNoise(
+        @ptrCast([*c]raylib.Image, &out),
+        width,
+        height,
+        offsetX,
+        offsetY,
+        scale,
     );
     return out;
 }
@@ -3939,7 +3972,7 @@ pub fn ImageDrawLineV(
     );
 }
 
-/// Draw circle within an image
+/// Draw a filled circle within an image
 pub fn ImageDrawCircle(
     dst: ?[*]Image,
     centerX: i32,
@@ -3956,7 +3989,7 @@ pub fn ImageDrawCircle(
     );
 }
 
-/// Draw circle within an image (Vector version)
+/// Draw a filled circle within an image (Vector version)
 pub fn ImageDrawCircleV(
     dst: ?[*]Image,
     center: Vector2,
@@ -3964,6 +3997,38 @@ pub fn ImageDrawCircleV(
     color: Color,
 ) void {
     raylib.mImageDrawCircleV(
+        dst,
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
+        radius,
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+    );
+}
+
+/// Draw circle outline within an image
+pub fn ImageDrawCircleLines(
+    dst: ?[*]Image,
+    centerX: i32,
+    centerY: i32,
+    radius: i32,
+    color: Color,
+) void {
+    raylib.mImageDrawCircleLines(
+        dst,
+        centerX,
+        centerY,
+        radius,
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+    );
+}
+
+/// Draw circle outline within an image (Vector version)
+pub fn ImageDrawCircleLinesV(
+    dst: ?[*]Image,
+    center: Vector2,
+    radius: i32,
+    color: Color,
+) void {
+    raylib.mImageDrawCircleLinesV(
         dst,
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
         radius,
@@ -4820,6 +4885,29 @@ pub fn GetGlyphAtlasRec(
     return out;
 }
 
+/// Load UTF-8 text encoded from codepoints array
+pub fn LoadUTF8(
+    codepoints: ?[*]const i32,
+    length: i32,
+) ?[*]u8 {
+    var out: ?[*]u8 = undefined;
+    raylib.mLoadUTF8(
+        @ptrCast([*c]?[*]u8, &out),
+        codepoints,
+        length,
+    );
+    return out;
+}
+
+/// Unload UTF-8 text encoded from codepoints array
+pub fn UnloadUTF8(
+    text: ?[*]u8,
+) void {
+    raylib.mUnloadUTF8(
+        text,
+    );
+}
+
 /// Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
 pub fn LoadCodepoints(
     text: [*:0]const u8,
@@ -4855,40 +4943,48 @@ pub fn GetCodepointCount(
 /// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
 pub fn GetCodepoint(
     text: [*:0]const u8,
-    bytesProcessed: ?[*]i32,
+    codepointSize: ?[*]i32,
 ) i32 {
     return raylib.mGetCodepoint(
         @intToPtr([*c]const u8, @ptrToInt(text)),
-        bytesProcessed,
+        codepointSize,
+    );
+}
+
+/// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+pub fn GetCodepointNext(
+    text: [*:0]const u8,
+    codepointSize: ?[*]i32,
+) i32 {
+    return raylib.mGetCodepointNext(
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        codepointSize,
+    );
+}
+
+/// Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+pub fn GetCodepointPrevious(
+    text: [*:0]const u8,
+    codepointSize: ?[*]i32,
+) i32 {
+    return raylib.mGetCodepointPrevious(
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+        codepointSize,
     );
 }
 
 /// Encode one codepoint into UTF-8 byte array (array length returned as parameter)
 pub fn CodepointToUTF8(
     codepoint: i32,
-    byteSize: ?[*]i32,
+    utf8Size: ?[*]i32,
 ) [*:0]const u8 {
     return @ptrCast(
         [*:0]const u8,
         raylib.mCodepointToUTF8(
             codepoint,
-            byteSize,
+            utf8Size,
         ),
     );
-}
-
-/// Encode text as codepoints array into UTF-8 text string (WARNING: memory must be freed!)
-pub fn TextCodepointsToUTF8(
-    codepoints: ?[*]const i32,
-    length: i32,
-) ?[*]u8 {
-    var out: ?[*]u8 = undefined;
-    raylib.mTextCodepointsToUTF8(
-        @ptrCast([*c]?[*]u8, &out),
-        codepoints,
-        length,
-    );
-    return out;
 }
 
 /// Copy one string to another, returns bytes copied
@@ -7905,7 +8001,7 @@ pub fn rlComputeShaderDispatch(
 
 /// Load shader storage buffer object (SSBO)
 pub fn rlLoadShaderBuffer(
-    size: u64,
+    size: u32,
     data: *anyopaque,
     usageHint: i32,
 ) u32 {
@@ -7926,13 +8022,13 @@ pub fn rlUnloadShaderBuffer(
 }
 
 /// Update SSBO buffer data
-pub fn rlUpdateShaderBufferElements(
+pub fn rlUpdateShaderBuffer(
     id: u32,
     data: *anyopaque,
-    dataSize: u64,
-    offset: u64,
+    dataSize: u32,
+    offset: u32,
 ) void {
-    raylib.mrlUpdateShaderBufferElements(
+    raylib.mrlUpdateShaderBuffer(
         id,
         @ptrCast([*c]anyopaque, data),
         dataSize,
@@ -7940,31 +8036,7 @@ pub fn rlUpdateShaderBufferElements(
     );
 }
 
-/// Get SSBO buffer size
-pub fn rlGetShaderBufferSize(
-    id: u32,
-) u64 {
-    return raylib.mrlGetShaderBufferSize(
-        id,
-    );
-}
-
 /// Bind SSBO buffer
-pub fn rlReadShaderBufferElements(
-    id: u32,
-    dest: *anyopaque,
-    count: u64,
-    offset: u64,
-) void {
-    raylib.mrlReadShaderBufferElements(
-        id,
-        @ptrCast([*c]anyopaque, dest),
-        count,
-        offset,
-    );
-}
-
-/// Copy SSBO buffer data
 pub fn rlBindShaderBuffer(
     id: u32,
     index: u32,
@@ -7975,20 +8047,44 @@ pub fn rlBindShaderBuffer(
     );
 }
 
-/// Copy SSBO buffer data
-pub fn rlCopyBuffersElements(
+/// Read SSBO buffer data (GPU->CPU)
+pub fn rlReadShaderBuffer(
+    id: u32,
+    dest: *anyopaque,
+    count: u32,
+    offset: u32,
+) void {
+    raylib.mrlReadShaderBuffer(
+        id,
+        @ptrCast([*c]anyopaque, dest),
+        count,
+        offset,
+    );
+}
+
+/// Copy SSBO data between buffers
+pub fn rlCopyShaderBuffer(
     destId: u32,
     srcId: u32,
-    destOffset: u64,
-    srcOffset: u64,
-    count: u64,
+    destOffset: u32,
+    srcOffset: u32,
+    count: u32,
 ) void {
-    raylib.mrlCopyBuffersElements(
+    raylib.mrlCopyShaderBuffer(
         destId,
         srcId,
         destOffset,
         srcOffset,
         count,
+    );
+}
+
+/// Get SSBO buffer size
+pub fn rlGetShaderBufferSize(
+    id: u32,
+) u32 {
+    return raylib.mrlGetShaderBufferSize(
+        id,
     );
 }
 
@@ -10614,62 +10710,18 @@ pub const NPatchLayout = enum(i32) {
     NPATCH_THREE_PATCH_HORIZONTAL = 2,
 };
 
-///
+/// OpenGL version
 pub const rlGlVersion = enum(i32) {
-    ///
-    OPENGL_11 = 1,
-    ///
-    OPENGL_21 = 2,
-    ///
-    OPENGL_33 = 3,
-    ///
-    OPENGL_43 = 4,
-    ///
-    OPENGL_ES_20 = 5,
-};
-
-///
-pub const rlFramebufferAttachType = enum(i32) {
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL0 = 0,
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL1 = 1,
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL2 = 2,
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL3 = 3,
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL4 = 4,
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL5 = 5,
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL6 = 6,
-    ///
-    RL_ATTACHMENT_COLOR_CHANNEL7 = 7,
-    ///
-    RL_ATTACHMENT_DEPTH = 100,
-    ///
-    RL_ATTACHMENT_STENCIL = 200,
-};
-
-///
-pub const rlFramebufferAttachTextureType = enum(i32) {
-    ///
-    RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0,
-    ///
-    RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1,
-    ///
-    RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2,
-    ///
-    RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y = 3,
-    ///
-    RL_ATTACHMENT_CUBEMAP_POSITIVE_Z = 4,
-    ///
-    RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5,
-    ///
-    RL_ATTACHMENT_TEXTURE2D = 100,
-    ///
-    RL_ATTACHMENT_RENDERBUFFER = 200,
+    /// OpenGL 1.1
+    RL_OPENGL_11 = 1,
+    /// OpenGL 2.1 (GLSL 120)
+    RL_OPENGL_21 = 2,
+    /// OpenGL 3.3 (GLSL 330)
+    RL_OPENGL_33 = 3,
+    /// OpenGL 4.3 (using GLSL 330)
+    RL_OPENGL_43 = 4,
+    /// OpenGL ES 2.0 (GLSL 100)
+    RL_OPENGL_ES_20 = 5,
 };
 
 /// Trace log level
@@ -10692,7 +10744,7 @@ pub const rlTraceLogLevel = enum(i32) {
     RL_LOG_NONE = 7,
 };
 
-/// Texture formats (support depends on OpenGL version)
+/// Texture pixel formats
 pub const rlPixelFormat = enum(i32) {
     /// 8 bit per pixel (no alpha)
     RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1,
@@ -10862,6 +10914,50 @@ pub const rlShaderAttributeDataType = enum(i32) {
     RL_SHADER_ATTRIB_VEC4 = 3,
 };
 
+/// Framebuffer attachment type
+pub const rlFramebufferAttachType = enum(i32) {
+    /// Framebuffer attachmment type: color 0
+    RL_ATTACHMENT_COLOR_CHANNEL0 = 0,
+    /// Framebuffer attachmment type: color 1
+    RL_ATTACHMENT_COLOR_CHANNEL1 = 1,
+    /// Framebuffer attachmment type: color 2
+    RL_ATTACHMENT_COLOR_CHANNEL2 = 2,
+    /// Framebuffer attachmment type: color 3
+    RL_ATTACHMENT_COLOR_CHANNEL3 = 3,
+    /// Framebuffer attachmment type: color 4
+    RL_ATTACHMENT_COLOR_CHANNEL4 = 4,
+    /// Framebuffer attachmment type: color 5
+    RL_ATTACHMENT_COLOR_CHANNEL5 = 5,
+    /// Framebuffer attachmment type: color 6
+    RL_ATTACHMENT_COLOR_CHANNEL6 = 6,
+    /// Framebuffer attachmment type: color 7
+    RL_ATTACHMENT_COLOR_CHANNEL7 = 7,
+    /// Framebuffer attachmment type: depth
+    RL_ATTACHMENT_DEPTH = 100,
+    /// Framebuffer attachmment type: stencil
+    RL_ATTACHMENT_STENCIL = 200,
+};
+
+/// Framebuffer texture attachment type
+pub const rlFramebufferAttachTextureType = enum(i32) {
+    /// Framebuffer texture attachment type: cubemap, +X side
+    RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0,
+    /// Framebuffer texture attachment type: cubemap, -X side
+    RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1,
+    /// Framebuffer texture attachment type: cubemap, +Y side
+    RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2,
+    /// Framebuffer texture attachment type: cubemap, -Y side
+    RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y = 3,
+    /// Framebuffer texture attachment type: cubemap, +Z side
+    RL_ATTACHMENT_CUBEMAP_POSITIVE_Z = 4,
+    /// Framebuffer texture attachment type: cubemap, -Z side
+    RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5,
+    /// Framebuffer texture attachment type: texture2d
+    RL_ATTACHMENT_TEXTURE2D = 100,
+    /// Framebuffer texture attachment type: renderbuffer
+    RL_ATTACHMENT_RENDERBUFFER = 200,
+};
+
 /// circle or polygon
 pub const PhysicsShapeType = enum(i32) {
     /// physics shape is a circle
@@ -10955,7 +11051,7 @@ pub const MAGENTA: Color = .{ .r = 255, .g = 0, .b = 255, .a = 255 };
 pub const RAYWHITE: Color = .{ .r = 245, .g = 245, .b = 245, .a = 255 };
 
 ///
-pub const RLGL_VERSION: []const u8 = "4.0";
+pub const RLGL_VERSION: []const u8 = "4.2";
 
 ///
 pub const RL_DEFAULT_BATCH_BUFFER_ELEMENTS: i32 = 8192;
@@ -11007,6 +11103,9 @@ pub const RL_TEXTURE_FILTER_MIP_LINEAR: i32 = 9987;
 
 /// Anisotropic filter (custom identifier)
 pub const RL_TEXTURE_FILTER_ANISOTROPIC: i32 = 12288;
+
+/// Texture mipmap bias, percentage ratio (custom identifier)
+pub const RL_TEXTURE_MIPMAP_BIAS_RATIO: i32 = 16384;
 
 /// GL_REPEAT
 pub const RL_TEXTURE_WRAP_REPEAT: i32 = 10497;
