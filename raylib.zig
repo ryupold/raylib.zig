@@ -10330,7 +10330,7 @@ pub const MouseButton = enum(i32) {
     MOUSE_BUTTON_SIDE = 3,
     /// Mouse button extra (advanced mouse device)
     MOUSE_BUTTON_EXTRA = 4,
-    /// Mouse button fordward (advanced mouse device)
+    /// Mouse button forward (advanced mouse device)
     MOUSE_BUTTON_FORWARD = 5,
     /// Mouse button back (advanced mouse device)
     MOUSE_BUTTON_BACK = 6,

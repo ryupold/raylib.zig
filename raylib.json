@@ -729,7 +729,7 @@
         {
           "type": "float",
           "name": "fovy",
-          "description": "Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic"
+          "description": "Camera field-of-view aperture in Y (degrees) in perspective, used as near plane width in orthographic"
         },
         {
           "type": "int",
@@ -2051,7 +2051,7 @@
         {
           "name": "MOUSE_BUTTON_FORWARD",
           "value": 5,
-          "description": "Mouse button fordward (advanced mouse device)"
+          "description": "Mouse button forward (advanced mouse device)"
         },
         {
           "name": "MOUSE_BUTTON_BACK",
