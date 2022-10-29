@@ -3531,6 +3531,22 @@ pub fn GenImageCellular(
     return out;
 }
 
+/// Generate image: grayscale image from text data
+pub fn GenImageText(
+    width: i32,
+    height: i32,
+    text: [*:0]const u8,
+) Image {
+    var out: Image = undefined;
+    raylib.mGenImageText(
+        @ptrCast([*c]raylib.Image, &out),
+        width,
+        height,
+        @intToPtr([*c]const u8, @ptrToInt(text)),
+    );
+    return out;
+}
+
 /// Create an image duplicate (useful for transformations)
 pub fn ImageCopy(
     image: Image,
@@ -3670,14 +3686,25 @@ pub fn ImageAlphaPremultiply(
     );
 }
 
+/// Apply Gaussian blur using a box blur approximation
+pub fn ImageBlurGaussian(
+    image: *Image,
+    blurSize: i32,
+) void {
+    raylib.mImageBlurGaussian(
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        blurSize,
+    );
+}
+
 /// Resize image (Bicubic scaling algorithm)
 pub fn ImageResize(
-    image: ?[*]Image,
+    image: *Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
     raylib.mImageResize(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         newWidth,
         newHeight,
     );
@@ -3685,12 +3712,12 @@ pub fn ImageResize(
 
 /// Resize image (Nearest-Neighbor scaling algorithm)
 pub fn ImageResizeNN(
-    image: ?[*]Image,
+    image: *Image,
     newWidth: i32,
     newHeight: i32,
 ) void {
     raylib.mImageResizeNN(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         newWidth,
         newHeight,
     );
@@ -3698,7 +3725,7 @@ pub fn ImageResizeNN(
 
 /// Resize canvas and fill with color
 pub fn ImageResizeCanvas(
-    image: ?[*]Image,
+    image: *Image,
     newWidth: i32,
     newHeight: i32,
     offsetX: i32,
@@ -3706,7 +3733,7 @@ pub fn ImageResizeCanvas(
     fill: Color,
 ) void {
     raylib.mImageResizeCanvas(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         newWidth,
         newHeight,
         offsetX,
@@ -3717,23 +3744,23 @@ pub fn ImageResizeCanvas(
 
 /// Compute all mipmap levels for a provided image
 pub fn ImageMipmaps(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageMipmaps(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 /// Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
 pub fn ImageDither(
-    image: ?[*]Image,
+    image: *Image,
     rBpp: i32,
     gBpp: i32,
     bBpp: i32,
     aBpp: i32,
 ) void {
     raylib.mImageDither(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         rBpp,
         gBpp,
         bBpp,
@@ -3743,99 +3770,99 @@ pub fn ImageDither(
 
 /// Flip image vertically
 pub fn ImageFlipVertical(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageFlipVertical(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 /// Flip image horizontally
 pub fn ImageFlipHorizontal(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageFlipHorizontal(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 /// Rotate image clockwise 90deg
 pub fn ImageRotateCW(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageRotateCW(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 /// Rotate image counter-clockwise 90deg
 pub fn ImageRotateCCW(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageRotateCCW(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 /// Modify image color: tint
 pub fn ImageColorTint(
-    image: ?[*]Image,
+    image: *Image,
     color: Color,
 ) void {
     raylib.mImageColorTint(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
 
 /// Modify image color: invert
 pub fn ImageColorInvert(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageColorInvert(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 /// Modify image color: grayscale
 pub fn ImageColorGrayscale(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageColorGrayscale(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
     );
 }
 
 /// Modify image color: contrast (-100 to 100)
 pub fn ImageColorContrast(
-    image: ?[*]Image,
+    image: *Image,
     contrast: f32,
 ) void {
     raylib.mImageColorContrast(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         contrast,
     );
 }
 
 /// Modify image color: brightness (-255 to 255)
 pub fn ImageColorBrightness(
-    image: ?[*]Image,
+    image: *Image,
     brightness: i32,
 ) void {
     raylib.mImageColorBrightness(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         brightness,
     );
 }
 
 /// Modify image color: replace color
 pub fn ImageColorReplace(
-    image: ?[*]Image,
+    image: *Image,
     color: Color,
     replace: Color,
 ) void {
     raylib.mImageColorReplace(
-        image,
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&replace)),
     );
@@ -5468,6 +5495,44 @@ pub fn DrawCylinderWiresEx(
         startRadius,
         endRadius,
         sides,
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+    );
+}
+
+/// Draw a capsule with the center of its sphere caps at startPos and endPos
+pub fn DrawCapsule(
+    startPos: Vector3,
+    endPos: Vector3,
+    radius: f32,
+    slices: i32,
+    rings: i32,
+    color: Color,
+) void {
+    raylib.mDrawCapsule(
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&endPos)),
+        radius,
+        slices,
+        rings,
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+    );
+}
+
+/// Draw capsule wireframe with the center of its sphere caps at startPos and endPos
+pub fn DrawCapsuleWires(
+    startPos: Vector3,
+    endPos: Vector3,
+    radius: f32,
+    slices: i32,
+    rings: i32,
+    color: Color,
+) void {
+    raylib.mDrawCapsuleWires(
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&startPos)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&endPos)),
+        radius,
+        slices,
+        rings,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
@@ -7368,6 +7433,25 @@ pub fn rlSetBlendFactors(
         glSrcFactor,
         glDstFactor,
         glEquation,
+    );
+}
+
+/// Set blending mode factors and equations separately (using OpenGL factors)
+pub fn rlSetBlendFactorsSeparate(
+    glSrcRGB: i32,
+    glDstRGB: i32,
+    glSrcAlpha: i32,
+    glDstAlpha: i32,
+    glEqRGB: i32,
+    glEqAlpha: i32,
+) void {
+    raylib.mrlSetBlendFactorsSeparate(
+        glSrcRGB,
+        glDstRGB,
+        glSrcAlpha,
+        glDstAlpha,
+        glEqRGB,
+        glEqAlpha,
     );
 }
 
@@ -10668,6 +10752,8 @@ pub const BlendMode = enum(i32) {
     BLEND_ALPHA_PREMULTIPLY = 5,
     /// Blend textures using custom src/dst factors (use rlSetBlendMode())
     BLEND_CUSTOM = 6,
+    /// Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendModeSeparate())
+    BLEND_CUSTOM_SEPARATE = 7,
 };
 
 /// Gesture
@@ -10840,6 +10926,8 @@ pub const rlBlendMode = enum(i32) {
     RL_BLEND_ALPHA_PREMULTIPLY = 5,
     /// Blend textures using custom src/dst factors (use rlSetBlendFactors())
     RL_BLEND_CUSTOM = 6,
+    /// Blend textures using custom src/dst factors (use rlSetBlendFactorsSeparate())
+    RL_BLEND_CUSTOM_SEPARATE = 7,
 };
 
 /// Shader location point type
@@ -10985,7 +11073,7 @@ pub const PhysicsShapeType = enum(i32) {
 };
 
 ///
-pub const RAYLIB_VERSION: []const u8 = "4.2";
+pub const RAYLIB_VERSION: []const u8 = "4.5-dev";
 
 ///
 pub const PI: f32 = 3.1415927410125732;

@@ -1223,6 +1223,11 @@ void mGenImageCellular(Image *out, int width, int height, int tileSize)
 	*out = GenImageCellular(width, height, tileSize);
 }
 
+void mGenImageText(Image *out, int width, int height, const char * text)
+{
+	*out = GenImageText(width, height, text);
+}
+
 void mImageCopy(Image *out, Image *image)
 {
 	*out = ImageCopy(*image);
@@ -1276,6 +1281,11 @@ void mImageAlphaMask(Image * image, Image *alphaMask)
 void mImageAlphaPremultiply(Image * image)
 {
 	ImageAlphaPremultiply(image);
+}
+
+void mImageBlurGaussian(Image * image, int blurSize)
+{
+	ImageBlurGaussian(image, blurSize);
 }
 
 void mImageResize(Image * image, int newWidth, int newHeight)
@@ -1911,6 +1921,16 @@ void mDrawCylinderWires(Vector3 *position, float radiusTop, float radiusBottom, 
 void mDrawCylinderWiresEx(Vector3 *startPos, Vector3 *endPos, float startRadius, float endRadius, int sides, Color *color)
 {
 	DrawCylinderWiresEx(*startPos, *endPos, startRadius, endRadius, sides, *color);
+}
+
+void mDrawCapsule(Vector3 *startPos, Vector3 *endPos, float radius, int slices, int rings, Color *color)
+{
+	DrawCapsule(*startPos, *endPos, radius, slices, rings, *color);
+}
+
+void mDrawCapsuleWires(Vector3 *startPos, Vector3 *endPos, float radius, int slices, int rings, Color *color)
+{
+	DrawCapsuleWires(*startPos, *endPos, radius, slices, rings, *color);
 }
 
 void mDrawPlane(Vector3 *centerPos, Vector2 *size, Color *color)
@@ -2801,6 +2821,11 @@ void mrlSetBlendMode(int mode)
 void mrlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation)
 {
 	rlSetBlendFactors(glSrcFactor, glDstFactor, glEquation);
+}
+
+void mrlSetBlendFactorsSeparate(int glSrcRGB, int glDstRGB, int glSrcAlpha, int glDstAlpha, int glEqRGB, int glEqAlpha)
+{
+	rlSetBlendFactorsSeparate(glSrcRGB, glDstRGB, glSrcAlpha, glDstAlpha, glEqRGB, glEqAlpha);
 }
 
 void mrlglInit(int width, int height)

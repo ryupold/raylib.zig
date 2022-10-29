@@ -9,7 +9,7 @@
     {
       "name": "RAYLIB_VERSION",
       "type": "STRING",
-      "value": "4.2",
+      "value": "4.5-dev",
       "description": ""
     },
     {
@@ -905,7 +905,7 @@
     },
     {
       "name": "Transform",
-      "description": "Transform, vectex transformation data",
+      "description": "Transform, vertex transformation data",
       "fields": [
         {
           "type": "Vector3",
@@ -2795,6 +2795,11 @@
           "name": "BLEND_CUSTOM",
           "value": 6,
           "description": "Blend textures using custom src/dst factors (use rlSetBlendMode())"
+        },
+        {
+          "name": "BLEND_CUSTOM_SEPARATE",
+          "value": 7,
+          "description": "Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendModeSeparate())"
         }
       ]
     },
@@ -6397,6 +6402,25 @@
       ]
     },
     {
+      "name": "GenImageText",
+      "description": "Generate image: grayscale image from text data",
+      "returnType": "Image",
+      "params": [
+        {
+          "type": "int",
+          "name": "width"
+        },
+        {
+          "type": "int",
+          "name": "height"
+        },
+        {
+          "type": "const char *",
+          "name": "text"
+        }
+      ]
+    },
+    {
       "name": "ImageCopy",
       "description": "Create an image duplicate (useful for transformations)",
       "returnType": "Image",
@@ -6570,6 +6594,21 @@
         {
           "type": "Image *",
           "name": "image"
+        }
+      ]
+    },
+    {
+      "name": "ImageBlurGaussian",
+      "description": "Apply Gaussian blur using a box blur approximation",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Image *",
+          "name": "image"
+        },
+        {
+          "type": "int",
+          "name": "blurSize"
         }
       ]
     },
@@ -9120,6 +9159,68 @@
         {
           "type": "int",
           "name": "sides"
+        },
+        {
+          "type": "Color",
+          "name": "color"
+        }
+      ]
+    },
+    {
+      "name": "DrawCapsule",
+      "description": "Draw a capsule with the center of its sphere caps at startPos and endPos",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "startPos"
+        },
+        {
+          "type": "Vector3",
+          "name": "endPos"
+        },
+        {
+          "type": "float",
+          "name": "radius"
+        },
+        {
+          "type": "int",
+          "name": "slices"
+        },
+        {
+          "type": "int",
+          "name": "rings"
+        },
+        {
+          "type": "Color",
+          "name": "color"
+        }
+      ]
+    },
+    {
+      "name": "DrawCapsuleWires",
+      "description": "Draw capsule wireframe with the center of its sphere caps at startPos and endPos",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "startPos"
+        },
+        {
+          "type": "Vector3",
+          "name": "endPos"
+        },
+        {
+          "type": "float",
+          "name": "radius"
+        },
+        {
+          "type": "int",
+          "name": "slices"
+        },
+        {
+          "type": "int",
+          "name": "rings"
         },
         {
           "type": "Color",

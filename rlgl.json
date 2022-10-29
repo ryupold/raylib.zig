@@ -1008,6 +1008,41 @@
         },
         {
           "type": "int",
+          "name": "glBlendSrcFactorRGB",
+          "description": "Blending source RGB factor"
+        },
+        {
+          "type": "int",
+          "name": "glBlendDestFactorRGB",
+          "description": "Blending destination RGB factor"
+        },
+        {
+          "type": "int",
+          "name": "glBlendSrcFactorAlpha",
+          "description": "Blending source alpha factor"
+        },
+        {
+          "type": "int",
+          "name": "glBlendDestFactorAlpha",
+          "description": "Blending destination alpha factor"
+        },
+        {
+          "type": "int",
+          "name": "glBlendEquationRGB",
+          "description": "Blending equation for RGB"
+        },
+        {
+          "type": "int",
+          "name": "glBlendEquationAlpha",
+          "description": "Blending equation for alpha"
+        },
+        {
+          "type": "bool",
+          "name": "glCustomBlendModeModified",
+          "description": "Custom blending factor and equation modification status"
+        },
+        {
+          "type": "int",
           "name": "framebufferWidth",
           "description": "Current framebuffer width"
         },
@@ -1019,7 +1054,8 @@
       ]
     }
   ],
-  "aliases": [],
+  "aliases": [
+  ],
   "enums": [
     {
       "name": "rlGlVersion",
@@ -1283,6 +1319,11 @@
           "name": "RL_BLEND_CUSTOM",
           "value": 6,
           "description": "Blend textures using custom src/dst factors (use rlSetBlendFactors())"
+        },
+        {
+          "name": "RL_BLEND_CUSTOM_SEPARATE",
+          "value": 7,
+          "description": "Blend textures using custom src/dst factors (use rlSetBlendFactorsSeparate())"
         }
       ]
     },
@@ -1424,7 +1465,7 @@
     },
     {
       "name": "rlShaderUniformDataType",
-      "description": "Shader uniform data type ",
+      "description": "Shader uniform data type",
       "values": [
         {
           "name": "RL_SHADER_UNIFORM_FLOAT",
@@ -2348,6 +2389,37 @@
         {
           "type": "int",
           "name": "glEquation"
+        }
+      ]
+    },
+    {
+      "name": "rlSetBlendFactorsSeparate",
+      "description": "Set blending mode factors and equations separately (using OpenGL factors)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "glSrcRGB"
+        },
+        {
+          "type": "int",
+          "name": "glDstRGB"
+        },
+        {
+          "type": "int",
+          "name": "glSrcAlpha"
+        },
+        {
+          "type": "int",
+          "name": "glDstAlpha"
+        },
+        {
+          "type": "int",
+          "name": "glEqRGB"
+        },
+        {
+          "type": "int",
+          "name": "glEqAlpha"
         }
       ]
     },

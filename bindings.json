@@ -3689,6 +3689,26 @@
             "custom": false
         },
         {
+            "name": "GenImageText",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "Image",
+            "description": "Generate image: grayscale image from text data",
+            "custom": false
+        },
+        {
             "name": "ImageCopy",
             "params": [
                 {
@@ -3877,11 +3897,27 @@
             "custom": false
         },
         {
+            "name": "ImageBlurGaussian",
+            "params": [
+                {
+                    "name": "image",
+                    "typ": "*Image"
+                },
+                {
+                    "name": "blurSize",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Apply Gaussian blur using a box blur approximation",
+            "custom": true
+        },
+        {
             "name": "ImageResize",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "newWidth",
@@ -3894,14 +3930,14 @@
             ],
             "returnType": "void",
             "description": "Resize image (Bicubic scaling algorithm)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageResizeNN",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "newWidth",
@@ -3914,14 +3950,14 @@
             ],
             "returnType": "void",
             "description": "Resize image (Nearest-Neighbor scaling algorithm)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageResizeCanvas",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "newWidth",
@@ -3946,26 +3982,26 @@
             ],
             "returnType": "void",
             "description": "Resize canvas and fill with color",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageMipmaps",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Compute all mipmap levels for a provided image",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageDither",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "rBpp",
@@ -3986,62 +4022,62 @@
             ],
             "returnType": "void",
             "description": "Dither image data to 16bpp or lower (Floyd-Steinberg dithering)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageFlipVertical",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Flip image vertically",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageFlipHorizontal",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Flip image horizontally",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageRotateCW",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Rotate image clockwise 90deg",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageRotateCCW",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Rotate image counter-clockwise 90deg",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageColorTint",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "color",
@@ -4050,38 +4086,38 @@
             ],
             "returnType": "void",
             "description": "Modify image color: tint",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageColorInvert",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Modify image color: invert",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageColorGrayscale",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Modify image color: grayscale",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageColorContrast",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "contrast",
@@ -4090,14 +4126,14 @@
             ],
             "returnType": "void",
             "description": "Modify image color: contrast (-100 to 100)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageColorBrightness",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "brightness",
@@ -4106,14 +4142,14 @@
             ],
             "returnType": "void",
             "description": "Modify image color: brightness (-255 to 255)",
-            "custom": false
+            "custom": true
         },
         {
             "name": "ImageColorReplace",
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "color",
@@ -4126,7 +4162,7 @@
             ],
             "returnType": "void",
             "description": "Modify image color: replace color",
-            "custom": false
+            "custom": true
         },
         {
             "name": "LoadImageColors",
@@ -6541,6 +6577,70 @@
             ],
             "returnType": "void",
             "description": "Draw a cylinder wires with base at startPos and top at endPos",
+            "custom": false
+        },
+        {
+            "name": "DrawCapsule",
+            "params": [
+                {
+                    "name": "startPos",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "endPos",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "radius",
+                    "typ": "f32"
+                },
+                {
+                    "name": "slices",
+                    "typ": "i32"
+                },
+                {
+                    "name": "rings",
+                    "typ": "i32"
+                },
+                {
+                    "name": "color",
+                    "typ": "Color"
+                }
+            ],
+            "returnType": "void",
+            "description": "Draw a capsule with the center of its sphere caps at startPos and endPos",
+            "custom": false
+        },
+        {
+            "name": "DrawCapsuleWires",
+            "params": [
+                {
+                    "name": "startPos",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "endPos",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "radius",
+                    "typ": "f32"
+                },
+                {
+                    "name": "slices",
+                    "typ": "i32"
+                },
+                {
+                    "name": "rings",
+                    "typ": "i32"
+                },
+                {
+                    "name": "color",
+                    "typ": "Color"
+                }
+            ],
+            "returnType": "void",
+            "description": "Draw capsule wireframe with the center of its sphere caps at startPos and endPos",
             "custom": false
         },
         {
@@ -9216,6 +9316,38 @@
             ],
             "returnType": "void",
             "description": "Set blending mode factor and equation (using OpenGL factors)",
+            "custom": false
+        },
+        {
+            "name": "rlSetBlendFactorsSeparate",
+            "params": [
+                {
+                    "name": "glSrcRGB",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glDstRGB",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glSrcAlpha",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glDstAlpha",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glEqRGB",
+                    "typ": "i32"
+                },
+                {
+                    "name": "glEqAlpha",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set blending mode factors and equations separately (using OpenGL factors)",
             "custom": false
         },
         {
@@ -13677,6 +13809,11 @@
                     "name": "BLEND_CUSTOM",
                     "value": 6,
                     "description": "Blend textures using custom src/dst factors (use rlSetBlendMode())"
+                },
+                {
+                    "name": "BLEND_CUSTOM_SEPARATE",
+                    "value": 7,
+                    "description": "Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendModeSeparate())"
                 }
             ],
             "description": "Color blending modes (pre-defined)",
@@ -14080,6 +14217,11 @@
                     "name": "RL_BLEND_CUSTOM",
                     "value": 6,
                     "description": "Blend textures using custom src/dst factors (use rlSetBlendFactors())"
+                },
+                {
+                    "name": "RL_BLEND_CUSTOM_SEPARATE",
+                    "value": 7,
+                    "description": "Blend textures using custom src/dst factors (use rlSetBlendFactorsSeparate())"
                 }
             ],
             "description": "Color blending modes (pre-defined)",
@@ -14271,7 +14413,7 @@
                     "description": "Shader uniform type: sampler2d"
                 }
             ],
-            "description": "Shader uniform data type ",
+            "description": "Shader uniform data type",
             "custom": false
         },
         {
@@ -15044,7 +15186,7 @@
                     "description": "Scale"
                 }
             ],
-            "description": "Transform, vectex transformation data",
+            "description": "Transform, vertex transformation data",
             "custom": false
         },
         {
@@ -15740,7 +15882,7 @@
         {
             "name": "RAYLIB_VERSION",
             "typ": "[]const u8",
-            "value": "\"4.2\"",
+            "value": "\"4.5-dev\"",
             "description": "",
             "custom": false
         },

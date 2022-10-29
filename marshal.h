@@ -741,6 +741,9 @@ void mGenImagePerlinNoise(Image *out, int width, int height, int offsetX, int of
 // Generate image: cellular algorithm, bigger tileSize means bigger cells
 void mGenImageCellular(Image *out, int width, int height, int tileSize);
 
+// Generate image: grayscale image from text data
+void mGenImageText(Image *out, int width, int height, const char * text);
+
 // Create an image duplicate (useful for transformations)
 void mImageCopy(Image *out, Image *image);
 
@@ -773,6 +776,9 @@ void mImageAlphaMask(Image * image, Image *alphaMask);
 
 // Premultiply alpha channel
 void mImageAlphaPremultiply(Image * image);
+
+// Apply Gaussian blur using a box blur approximation
+void mImageBlurGaussian(Image * image, int blurSize);
 
 // Resize image (Bicubic scaling algorithm)
 void mImageResize(Image * image, int newWidth, int newHeight);
@@ -1154,6 +1160,12 @@ void mDrawCylinderWires(Vector3 *position, float radiusTop, float radiusBottom, 
 
 // Draw a cylinder wires with base at startPos and top at endPos
 void mDrawCylinderWiresEx(Vector3 *startPos, Vector3 *endPos, float startRadius, float endRadius, int sides, Color *color);
+
+// Draw a capsule with the center of its sphere caps at startPos and endPos
+void mDrawCapsule(Vector3 *startPos, Vector3 *endPos, float radius, int slices, int rings, Color *color);
+
+// Draw capsule wireframe with the center of its sphere caps at startPos and endPos
+void mDrawCapsuleWires(Vector3 *startPos, Vector3 *endPos, float radius, int slices, int rings, Color *color);
 
 // Draw a plane XZ
 void mDrawPlane(Vector3 *centerPos, Vector2 *size, Color *color);
@@ -1688,6 +1700,9 @@ void mrlSetBlendMode(int mode);
 
 // Set blending mode factor and equation (using OpenGL factors)
 void mrlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation);
+
+// Set blending mode factors and equations separately (using OpenGL factors)
+void mrlSetBlendFactorsSeparate(int glSrcRGB, int glDstRGB, int glSrcAlpha, int glDstAlpha, int glEqRGB, int glEqAlpha);
 
 // Initialize rlgl (buffers, shaders, textures, states)
 void mrlglInit(int width, int height);
