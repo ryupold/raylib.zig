@@ -22,6 +22,8 @@ Additional infos and WebGL examples [here](https://ryupold.de/pages/raylib.zig/r
   - [x] Colors
   - [x] Versions
 
+For [raygui](https://github.com/raysan5/raygui) bindings see: https://github.com/ryupold/raygui.zig
+
 ## usage
 
 The easy way would be adding this as submodule directly in your source folder.
@@ -29,7 +31,8 @@ Thats what I do until there is an official package manager for Zig.
 
 ```sh
 cd $YOUR_SRC_FOLDER
-git submodule add --recursive https://github.com/ryupold/raylib.zig raylib
+git submodule add https://github.com/ryupold/raylib.zig raylib
+git submodule raylib --init --recursive
 ```
 
 The bindings have been prebuilt so you just need to import raylib.zig
