@@ -115,7 +115,7 @@ fn writeFunctions(
         defer fba.reset();
 
         //--- signature -------------------------
-        const funcDescription : []const u8 = func.description orelse "";
+        const funcDescription: []const u8 = func.description orelse "";
         try file.writeAll(
             try allocPrint(
                 allocator,
@@ -476,8 +476,10 @@ fn isPointer(z: []const u8) bool {
 fn pointerOffset(z: []const u8) usize {
     if (startsWith(z, "*")) return 1;
     if (startsWith(z, "[*]")) return 3;
+    if (startsWith(z, "?[*]")) return 4;
     if (startsWith(z, "[*c]")) return 4;
     if (startsWith(z, "[*:0]")) return 5;
+    if (startsWith(z, "?[*:0]")) return 6;
 
     return 0;
 }
