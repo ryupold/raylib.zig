@@ -167,24 +167,19 @@ pub const Rectangle = extern struct {
     }
 
     pub fn area(self: @This()) f32 {
-        return self.x * self.y;
+        return self.width * self.height;
     }
 
     pub fn include(self: @This(), other: @This()) @This() {
-        return .{
-            .x = std.math.min(self.x, other.x),
-            .y = std.math.min(self.y, other.y),
-            .width = std.math.max(self.width, other.width),
-            .height = std.math.max(self.height, other.height),
-        };
+        return self.includePoint(other.topLeft()).includePoint(other.bottomRight());
     }
 
     pub fn includePoint(self: @This(), point: Vector2) @This() {
         return .{
             .x = std.math.min(self.x, point.x),
             .y = std.math.min(self.y, point.y),
-            .width = std.math.max(self.width, self.width + (self.x - point.x)),
-            .height = std.math.max(self.height, self.height + (self.y - point.y)),
+            .width = point.x - std.math.min(self.x, point.x),
+            .height = point.y - std.math.min(self.y, point.y),
         };
     }
 };

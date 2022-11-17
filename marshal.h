@@ -313,7 +313,7 @@ void mSetSaveFileTextCallback(SaveFileTextCallback *callback);
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite);
 
 // Export data to code (.h), returns true on success
-bool mExportDataAsCode(const char * data, unsigned int size, const char * fileName);
+bool mExportDataAsCode(const unsigned char * data, unsigned int size, const char * fileName);
 
 // Load text data from file (read), returns a '\0' terminated string
 char * mLoadFileText(const char * fileName);
@@ -936,20 +936,11 @@ void mDrawTextureEx(Texture2D *texture, Vector2 *position, float rotation, float
 // Draw a part of a texture defined by a rectangle
 void mDrawTextureRec(Texture2D *texture, Rectangle *source, Vector2 *position, Color *tint);
 
-// Draw texture quad with tiling and offset parameters
-void mDrawTextureQuad(Texture2D *texture, Vector2 *tiling, Vector2 *offset, Rectangle *quad, Color *tint);
-
-// Draw part of a texture (defined by a rectangle) with rotation and scale tiled into dest.
-void mDrawTextureTiled(Texture2D *texture, Rectangle *source, Rectangle *dest, Vector2 *origin, float rotation, float scale, Color *tint);
-
 // Draw a part of a texture defined by a rectangle with 'pro' parameters
 void mDrawTexturePro(Texture2D *texture, Rectangle *source, Rectangle *dest, Vector2 *origin, float rotation, Color *tint);
 
 // Draws a texture (or part of it) that stretches or shrinks nicely
 void mDrawTextureNPatch(Texture2D *texture, NPatchInfo *nPatchInfo, Rectangle *dest, Vector2 *origin, float rotation, Color *tint);
-
-// Draw a textured polygon
-void mDrawTexturePoly(Texture2D *texture, Vector2 *center, Vector2 * points, Vector2 * texcoords, int pointCount, Color *tint);
 
 // Get color with alpha applied, alpha goes from 0.0f to 1.0f
 void mFade(Color *out, Color *color, float alpha);
@@ -1133,12 +1124,6 @@ void mDrawCubeWires(Vector3 *position, float width, float height, float length, 
 
 // Draw cube wires (Vector version)
 void mDrawCubeWiresV(Vector3 *position, Vector3 *size, Color *color);
-
-// Draw cube textured
-void mDrawCubeTexture(Texture2D *texture, Vector3 *position, float width, float height, float length, Color *color);
-
-// Draw cube with a region of a texture
-void mDrawCubeTextureRec(Texture2D *texture, Rectangle *source, Vector3 *position, float width, float height, float length, Color *color);
 
 // Draw sphere
 void mDrawSphere(Vector3 *centerPos, float radius, Color *color);
@@ -1649,6 +1634,9 @@ void mrlEnableBackfaceCulling(void);
 
 // Disable backface culling
 void mrlDisableBackfaceCulling(void);
+
+// Set face culling mode
+void mrlSetCullFace(int mode);
 
 // Enable scissor test
 void mrlEnableScissorTest(void);

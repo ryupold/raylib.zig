@@ -167,24 +167,19 @@ pub const Rectangle = extern struct {
     }
 
     pub fn area(self: @This()) f32 {
-        return self.x * self.y;
+        return self.width * self.height;
     }
 
     pub fn include(self: @This(), other: @This()) @This() {
-        return .{
-            .x = std.math.min(self.x, other.x),
-            .y = std.math.min(self.y, other.y),
-            .width = std.math.max(self.width, other.width),
-            .height = std.math.max(self.height, other.height),
-        };
+        return self.includePoint(other.topLeft()).includePoint(other.bottomRight());
     }
 
     pub fn includePoint(self: @This(), point: Vector2) @This() {
         return .{
             .x = std.math.min(self.x, point.x),
             .y = std.math.min(self.y, point.y),
-            .width = std.math.max(self.width, self.width + (self.x - point.x)),
-            .height = std.math.max(self.height, self.height + (self.y - point.y)),
+            .width = point.x - std.math.min(self.x, point.x),
+            .height = point.y - std.math.min(self.y, point.y),
         };
     }
 };
@@ -4385,44 +4380,6 @@ pub fn DrawTextureRec(
     );
 }
 
-/// Draw texture quad with tiling and offset parameters
-pub fn DrawTextureQuad(
-    texture: Texture2D,
-    tiling: Vector2,
-    offset: Vector2,
-    quad: Rectangle,
-    tint: Color,
-) void {
-    raylib.mDrawTextureQuad(
-        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(&tiling)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(&offset)),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&quad)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
-    );
-}
-
-/// Draw part of a texture (defined by a rectangle) with rotation and scale tiled into dest.
-pub fn DrawTextureTiled(
-    texture: Texture2D,
-    source: Rectangle,
-    dest: Rectangle,
-    origin: Vector2,
-    rotation: f32,
-    scale: f32,
-    tint: Color,
-) void {
-    raylib.mDrawTextureTiled(
-        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&dest)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
-        rotation,
-        scale,
-        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
-    );
-}
-
 /// Draw a part of a texture defined by a rectangle with 'pro' parameters
 pub fn DrawTexturePro(
     texture: Texture2D,
@@ -4457,25 +4414,6 @@ pub fn DrawTextureNPatch(
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&dest)),
         @intToPtr([*c]raylib.Vector2, @ptrToInt(&origin)),
         rotation,
-        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
-    );
-}
-
-/// Draw a textured polygon
-pub fn DrawTexturePoly(
-    texture: Texture2D,
-    center: Vector2,
-    points: ?[*]Vector2,
-    texcoords: ?[*]Vector2,
-    pointCount: i32,
-    tint: Color,
-) void {
-    raylib.mDrawTexturePoly(
-        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
-        @intToPtr([*c]raylib.Vector2, @ptrToInt(&center)),
-        points,
-        texcoords,
-        pointCount,
         @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
     );
 }
@@ -5332,46 +5270,6 @@ pub fn DrawCubeWiresV(
     raylib.mDrawCubeWiresV(
         @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
         @intToPtr([*c]raylib.Vector3, @ptrToInt(&size)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
-    );
-}
-
-/// Draw cube textured
-pub fn DrawCubeTexture(
-    texture: Texture2D,
-    position: Vector3,
-    width: f32,
-    height: f32,
-    length: f32,
-    color: Color,
-) void {
-    raylib.mDrawCubeTexture(
-        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
-        width,
-        height,
-        length,
-        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
-    );
-}
-
-/// Draw cube with a region of a texture
-pub fn DrawCubeTextureRec(
-    texture: Texture2D,
-    source: Rectangle,
-    position: Vector3,
-    width: f32,
-    height: f32,
-    length: f32,
-    color: Color,
-) void {
-    raylib.mDrawCubeTextureRec(
-        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
-        @intToPtr([*c]raylib.Rectangle, @ptrToInt(&source)),
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&position)),
-        width,
-        height,
-        length,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
     );
 }
@@ -7313,6 +7211,15 @@ pub fn rlEnableBackfaceCulling() void {
 /// Disable backface culling
 pub fn rlDisableBackfaceCulling() void {
     raylib.mrlDisableBackfaceCulling();
+}
+
+/// Set face culling mode
+pub fn rlSetCullFace(
+    mode: i32,
+) void {
+    raylib.mrlSetCullFace(
+        mode,
+    );
 }
 
 /// Enable scissor test
@@ -11062,6 +10969,14 @@ pub const rlFramebufferAttachTextureType = enum(i32) {
     RL_ATTACHMENT_TEXTURE2D = 100,
     /// Framebuffer texture attachment type: renderbuffer
     RL_ATTACHMENT_RENDERBUFFER = 200,
+};
+
+/// Face culling mode
+pub const rlCullMode = enum(i32) {
+    ///
+    RL_CULL_FACE_FRONT = 0,
+    ///
+    RL_CULL_FACE_BACK = 1,
 };
 
 /// circle or polygon

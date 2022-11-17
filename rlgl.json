@@ -1641,6 +1641,22 @@
           "description": "Framebuffer texture attachment type: renderbuffer"
         }
       ]
+    },
+    {
+      "name": "rlCullMode",
+      "description": "Face culling mode",
+      "values": [
+        {
+          "name": "RL_CULL_FACE_FRONT",
+          "value": 0,
+          "description": ""
+        },
+        {
+          "name": "RL_CULL_FACE_BACK",
+          "value": 1,
+          "description": ""
+        }
+      ]
     }
   ],
   "callbacks": [
@@ -2244,6 +2260,17 @@
       "name": "rlDisableBackfaceCulling",
       "description": "Disable backface culling",
       "returnType": "void"
+    },
+    {
+      "name": "rlSetCullFace",
+      "description": "Set face culling mode",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "mode"
+        }
+      ]
     },
     {
       "name": "rlEnableScissorTest",

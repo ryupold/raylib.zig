@@ -4929,70 +4929,6 @@
             "custom": false
         },
         {
-            "name": "DrawTextureQuad",
-            "params": [
-                {
-                    "name": "texture",
-                    "typ": "Texture2D"
-                },
-                {
-                    "name": "tiling",
-                    "typ": "Vector2"
-                },
-                {
-                    "name": "offset",
-                    "typ": "Vector2"
-                },
-                {
-                    "name": "quad",
-                    "typ": "Rectangle"
-                },
-                {
-                    "name": "tint",
-                    "typ": "Color"
-                }
-            ],
-            "returnType": "void",
-            "description": "Draw texture quad with tiling and offset parameters",
-            "custom": false
-        },
-        {
-            "name": "DrawTextureTiled",
-            "params": [
-                {
-                    "name": "texture",
-                    "typ": "Texture2D"
-                },
-                {
-                    "name": "source",
-                    "typ": "Rectangle"
-                },
-                {
-                    "name": "dest",
-                    "typ": "Rectangle"
-                },
-                {
-                    "name": "origin",
-                    "typ": "Vector2"
-                },
-                {
-                    "name": "rotation",
-                    "typ": "f32"
-                },
-                {
-                    "name": "scale",
-                    "typ": "f32"
-                },
-                {
-                    "name": "tint",
-                    "typ": "Color"
-                }
-            ],
-            "returnType": "void",
-            "description": "Draw part of a texture (defined by a rectangle) with rotation and scale tiled into dest.",
-            "custom": false
-        },
-        {
             "name": "DrawTexturePro",
             "params": [
                 {
@@ -5054,38 +4990,6 @@
             ],
             "returnType": "void",
             "description": "Draws a texture (or part of it) that stretches or shrinks nicely",
-            "custom": false
-        },
-        {
-            "name": "DrawTexturePoly",
-            "params": [
-                {
-                    "name": "texture",
-                    "typ": "Texture2D"
-                },
-                {
-                    "name": "center",
-                    "typ": "Vector2"
-                },
-                {
-                    "name": "points",
-                    "typ": "?[*]Vector2"
-                },
-                {
-                    "name": "texcoords",
-                    "typ": "?[*]Vector2"
-                },
-                {
-                    "name": "pointCount",
-                    "typ": "i32"
-                },
-                {
-                    "name": "tint",
-                    "typ": "Color"
-                }
-            ],
-            "returnType": "void",
-            "description": "Draw a textured polygon",
             "custom": false
         },
         {
@@ -6305,74 +6209,6 @@
             ],
             "returnType": "void",
             "description": "Draw cube wires (Vector version)",
-            "custom": false
-        },
-        {
-            "name": "DrawCubeTexture",
-            "params": [
-                {
-                    "name": "texture",
-                    "typ": "Texture2D"
-                },
-                {
-                    "name": "position",
-                    "typ": "Vector3"
-                },
-                {
-                    "name": "width",
-                    "typ": "f32"
-                },
-                {
-                    "name": "height",
-                    "typ": "f32"
-                },
-                {
-                    "name": "length",
-                    "typ": "f32"
-                },
-                {
-                    "name": "color",
-                    "typ": "Color"
-                }
-            ],
-            "returnType": "void",
-            "description": "Draw cube textured",
-            "custom": false
-        },
-        {
-            "name": "DrawCubeTextureRec",
-            "params": [
-                {
-                    "name": "texture",
-                    "typ": "Texture2D"
-                },
-                {
-                    "name": "source",
-                    "typ": "Rectangle"
-                },
-                {
-                    "name": "position",
-                    "typ": "Vector3"
-                },
-                {
-                    "name": "width",
-                    "typ": "f32"
-                },
-                {
-                    "name": "height",
-                    "typ": "f32"
-                },
-                {
-                    "name": "length",
-                    "typ": "f32"
-                },
-                {
-                    "name": "color",
-                    "typ": "Color"
-                }
-            ],
-            "returnType": "void",
-            "description": "Draw cube with a region of a texture",
             "custom": false
         },
         {
@@ -9140,6 +8976,18 @@
             "params": [],
             "returnType": "void",
             "description": "Disable backface culling",
+            "custom": false
+        },
+        {
+            "name": "rlSetCullFace",
+            "params": [
+                {
+                    "name": "mode",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set face culling mode",
             "custom": false
         },
         {
@@ -14545,6 +14393,23 @@
                 }
             ],
             "description": "Framebuffer texture attachment type",
+            "custom": false
+        },
+        {
+            "name": "rlCullMode",
+            "values": [
+                {
+                    "name": "RL_CULL_FACE_FRONT",
+                    "value": 0,
+                    "description": ""
+                },
+                {
+                    "name": "RL_CULL_FACE_BACK",
+                    "value": 1,
+                    "description": ""
+                }
+            ],
+            "description": "Face culling mode",
             "custom": false
         },
         {

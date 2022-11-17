@@ -508,7 +508,7 @@ bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite
 	return SaveFileData(fileName, data, bytesToWrite);
 }
 
-bool mExportDataAsCode(const char * data, unsigned int size, const char * fileName)
+bool mExportDataAsCode(const unsigned char * data, unsigned int size, const char * fileName)
 {
 	return ExportDataAsCode(data, size, fileName);
 }
@@ -1548,16 +1548,6 @@ void mDrawTextureRec(Texture2D *texture, Rectangle *source, Vector2 *position, C
 	DrawTextureRec(*texture, *source, *position, *tint);
 }
 
-void mDrawTextureQuad(Texture2D *texture, Vector2 *tiling, Vector2 *offset, Rectangle *quad, Color *tint)
-{
-	DrawTextureQuad(*texture, *tiling, *offset, *quad, *tint);
-}
-
-void mDrawTextureTiled(Texture2D *texture, Rectangle *source, Rectangle *dest, Vector2 *origin, float rotation, float scale, Color *tint)
-{
-	DrawTextureTiled(*texture, *source, *dest, *origin, rotation, scale, *tint);
-}
-
 void mDrawTexturePro(Texture2D *texture, Rectangle *source, Rectangle *dest, Vector2 *origin, float rotation, Color *tint)
 {
 	DrawTexturePro(*texture, *source, *dest, *origin, rotation, *tint);
@@ -1566,11 +1556,6 @@ void mDrawTexturePro(Texture2D *texture, Rectangle *source, Rectangle *dest, Vec
 void mDrawTextureNPatch(Texture2D *texture, NPatchInfo *nPatchInfo, Rectangle *dest, Vector2 *origin, float rotation, Color *tint)
 {
 	DrawTextureNPatch(*texture, *nPatchInfo, *dest, *origin, rotation, *tint);
-}
-
-void mDrawTexturePoly(Texture2D *texture, Vector2 *center, Vector2 * points, Vector2 * texcoords, int pointCount, Color *tint)
-{
-	DrawTexturePoly(*texture, *center, points, texcoords, pointCount, *tint);
 }
 
 void mFade(Color *out, Color *color, float alpha)
@@ -1876,16 +1861,6 @@ void mDrawCubeWires(Vector3 *position, float width, float height, float length, 
 void mDrawCubeWiresV(Vector3 *position, Vector3 *size, Color *color)
 {
 	DrawCubeWiresV(*position, *size, *color);
-}
-
-void mDrawCubeTexture(Texture2D *texture, Vector3 *position, float width, float height, float length, Color *color)
-{
-	DrawCubeTexture(*texture, *position, width, height, length, *color);
-}
-
-void mDrawCubeTextureRec(Texture2D *texture, Rectangle *source, Vector3 *position, float width, float height, float length, Color *color)
-{
-	DrawCubeTextureRec(*texture, *source, *position, width, height, length, *color);
 }
 
 void mDrawSphere(Vector3 *centerPos, float radius, Color *color)
@@ -2736,6 +2711,11 @@ void mrlEnableBackfaceCulling(void)
 void mrlDisableBackfaceCulling(void)
 {
 	rlDisableBackfaceCulling();
+}
+
+void mrlSetCullFace(int mode)
+{
+	rlSetCullFace(mode);
 }
 
 void mrlEnableScissorTest(void)
