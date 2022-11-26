@@ -1,9 +1,9 @@
 const std = @import("std");
 const generate = @import("generate.zig");
 
-const raylibSrc = "raylib/src/";
-
 pub fn build(b: *std.build.Builder) !void {
+    const raylibSrc = "raylib/src/";
+    
     const target = b.standardTargetOptions(.{});
 
     //--- parse raylib and generate JSONs for all signatures --------------------------------------
@@ -62,4 +62,39 @@ pub fn build(b: *std.build.Builder) !void {
     const raylib_parser_install = b.step("raylib_parser", "build ./zig-out/bin/raylib_parser.exe");
     const generateBindings_install = b.addInstallArtifact(raylib_parser_build);
     raylib_parser_install.dependOn(&generateBindings_install.step);
+}
+
+// above: generate library
+// below: linking (use as dependency)
+
+fn current_file() []const u8 {
+    return @src().file;
+}
+
+const cwd = std.fs.path.dirname(current_file()).?;
+const sep = std.fs.path.sep_str;
+const dir_raylib = cwd ++ sep ++ "raylib/src";
+
+pub fn library(b: *std.build.Builder) *std.build.LibExeObjStep {
+    const exe = b.addStaticLibrary("raylib-zig", null);
+    exe.addIncludePath(dir_raylib);
+    exe.addIncludePath(cwd);
+    exe.linkLibC();
+    exe.addCSourceFile(cwd ++ sep ++ "marshal.c", &.{});
+    exe.addObjectFile(dir_raylib ++ sep ++ "libraylib.a");
+    
+    const cmd_make = b.addSystemCommand(&.{"make"});
+    cmd_make.cwd = dir_raylib;
+    cmd_make.expected_exit_code = 0;
+    exe.step.dependOn(&cmd_make.step);
+
+    return exe;
+}
+
+pub fn link(b: *std.build.Builder, exe: *std.build.LibExeObjStep) void {
+    exe.addPackagePath("raylib", cwd ++ sep ++ "raylib.zig");
+    exe.addIncludePath(dir_raylib);
+    exe.addIncludePath(cwd);
+    const lib = library(b);
+    exe.linkLibrary(lib);
 }
