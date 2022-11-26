@@ -75,26 +75,27 @@ const cwd = std.fs.path.dirname(current_file()).?;
 const sep = std.fs.path.sep_str;
 const dir_raylib = cwd ++ sep ++ "raylib/src";
 
-pub fn library(b: *std.build.Builder) *std.build.LibExeObjStep {
+const raylib_build = @import("raylib/src/build.zig");
+
+fn linkThisLibrary(b: *std.build.Builder, target: std.zig.CrossTarget) *std.build.LibExeObjStep {
     const exe = b.addStaticLibrary("raylib-zig", null);
     exe.addIncludePath(dir_raylib);
     exe.addIncludePath(cwd);
     exe.linkLibC();
     exe.addCSourceFile(cwd ++ sep ++ "marshal.c", &.{});
-    exe.addObjectFile(dir_raylib ++ sep ++ "libraylib.a");
-    
-    const cmd_make = b.addSystemCommand(&.{"make"});
-    cmd_make.cwd = dir_raylib;
-    cmd_make.expected_exit_code = 0;
-    exe.step.dependOn(&cmd_make.step);
+    _ = target;
+    // const lib_raylib = raylib_build.addRaylib(b, target);
+    // exe.linkLibrary(lib_raylib);
 
     return exe;
 }
 
-pub fn link(b: *std.build.Builder, exe: *std.build.LibExeObjStep) void {
+pub fn link(b: *std.build.Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget) void {
     exe.addPackagePath("raylib", cwd ++ sep ++ "raylib.zig");
     exe.addIncludePath(dir_raylib);
     exe.addIncludePath(cwd);
-    const lib = library(b);
+    const lib = linkThisLibrary(b, target);
+    const lib_raylib = raylib_build.addRaylib(b, target);
+    exe.linkLibrary(lib_raylib);
     exe.linkLibrary(lib);
 }
