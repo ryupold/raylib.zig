@@ -90,7 +90,8 @@ fn linkThisLibrary(b: *std.build.Builder, target: std.zig.CrossTarget) *std.buil
     return exe;
 }
 
-pub fn link(b: *std.build.Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget) void {
+/// add this package to exe
+pub fn addTo(b: *std.build.Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget) void {
     exe.addPackagePath("raylib", cwd ++ sep ++ "raylib.zig");
     exe.addIncludePath(dir_raylib);
     exe.addIncludePath(cwd);

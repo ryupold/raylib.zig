@@ -36,8 +36,21 @@ git submodule raylib --init --recursive
 ```
 
 The bindings have been prebuilt so you just need to import raylib.zig
+
+build.zig:
 ```zig
-const raylib = @import("raylib/raylib.zig");
+const raylib = @import("path/to/raylib.zig/build.zig");
+
+pub fn build(b: *std.build.Builder) !void {
+    const target = b.standardTargetOptions(.{});
+    const exe = ...;
+    raylib.addTo(b, exe, target);
+}
+```
+
+main.zig:
+```zig
+const raylib = @import("raylib");
 
 pub fn main() void {
     raylib.InitWindow(800, 800, "hello world!");
@@ -57,8 +70,6 @@ pub fn main() void {
     }
 }
 ```
-> Note: you only need the files `raylib.zig`, `marshal.h` and `marshal.c` for this to work
-> See `build.zig` in [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig) for how to build.
 
 ## building
 
