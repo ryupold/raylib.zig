@@ -64,7 +64,7 @@ pub fn main() void {
 
 Builds for Windows, Linux and macOS can just include the C files during normal compilation.
 ```zig
-exe.addIncludeDir("raylib/");
+exe.addIncludePath("raylib/");
 exe.addCSourceFile("raylib/marshal.c", &.{});
 ```
 
