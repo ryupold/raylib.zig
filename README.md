@@ -3,7 +3,7 @@
 # raylib.zig
 Idiomatic [raylib](https://www.raylib.com/) (4.5-dev) bindings for [Zig](https://ziglang.org/) (0.10.0).
 
-For example usage see: [examples-raylib.zig](https://github.com/ryupold/examples-raylib.zig).
+[Example Usage](#usage)
 
 Additional infos and WebGL examples [here](https://ryupold.de/pages/raylib.zig/raylib.zig.html).
 
@@ -24,7 +24,7 @@ Additional infos and WebGL examples [here](https://ryupold.de/pages/raylib.zig/r
 
 For [raygui](https://github.com/raysan5/raygui) bindings see: https://github.com/ryupold/raygui.zig
 
-## usage
+## <a id="usage">usage</a>
 
 The easy way would be adding this as submodule directly in your source folder.
 Thats what I do until there is an official package manager for Zig.
@@ -69,14 +69,6 @@ pub fn main() void {
         raylib.DrawText("hello world!", 100, 100, 20, raylib.YELLOW);
     }
 }
-```
-
-## building
-
-Builds for Windows, Linux and macOS can just include the C files during normal compilation.
-```zig
-exe.addIncludePath("raylib/");
-exe.addCSourceFile("raylib/marshal.c", &.{});
 ```
 
 This weird workaround with `marshal.h/marshal.c` I actually had to make for Webassembly builds to work, because passing structs as function parameters or returning them cannot be done on the Zig side somehow. If I try it, I get a runtime error "index out of bounds". This happens only in WebAssembly builds. So `marshal.c` must be compiled with `emcc`. See [build.zig](https://github.com/ryupold/examples-raylib.zig/blob/main/build.zig) in the examples.
