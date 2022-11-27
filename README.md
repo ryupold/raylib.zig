@@ -71,6 +71,10 @@ pub fn main() void {
 }
 ```
 
+### WebGL (emscripten) builds
+
+For Webassembly builds see [examples-raylib.zig/build.zig](https://github.com/ryupold/examples-raylib.zig/blob/main/build.zig)
+
 This weird workaround with `marshal.h/marshal.c` I actually had to make for Webassembly builds to work, because passing structs as function parameters or returning them cannot be done on the Zig side somehow. If I try it, I get a runtime error "index out of bounds". This happens only in WebAssembly builds. So `marshal.c` must be compiled with `emcc`. See [build.zig](https://github.com/ryupold/examples-raylib.zig/blob/main/build.zig) in the examples.
 
 ## custom definitions
