@@ -1513,7 +1513,7 @@ void mrlRotatef(float angle, float x, float y, float z);
 void mrlScalef(float x, float y, float z);
 
 // Multiply the current matrix by another matrix
-void mrlMultMatrixf(float * matf);
+void mrlMultMatrixf(const float * matf);
 
 // 
 void mrlFrustum(double left, double right, double bottom, double top, double znear, double zfar);
@@ -1888,7 +1888,7 @@ void mrlCopyShaderBuffer(unsigned int destId, unsigned int srcId, unsigned int d
 unsigned int mrlGetShaderBufferSize(unsigned int id);
 
 // Bind image texture
-void mrlBindImageTexture(unsigned int id, unsigned int index, unsigned int format, int readonly);
+void mrlBindImageTexture(unsigned int id, unsigned int index, int format, bool readonly);
 
 // Get internal modelview matrix
 void mrlGetMatrixModelview(Matrix *out);

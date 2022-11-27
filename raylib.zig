@@ -6850,10 +6850,10 @@ pub fn rlScalef(
 
 /// Multiply the current matrix by another matrix
 pub fn rlMultMatrixf(
-    matf: ?[*]f32,
+    matf: ?[*]const f32,
 ) void {
     raylib.mrlMultMatrixf(
-        @ptrCast([*c]f32, matf),
+        @intToPtr([*c]const f32, @ptrToInt(matf)),
     );
 }
 
@@ -8100,8 +8100,8 @@ pub fn rlGetShaderBufferSize(
 pub fn rlBindImageTexture(
     id: u32,
     index: u32,
-    format: u32,
-    readonly: i32,
+    format: i32,
+    readonly: bool,
 ) void {
     raylib.mrlBindImageTexture(
         id,
@@ -10656,9 +10656,9 @@ pub const BlendMode = enum(i32) {
     BLEND_SUBTRACT_COLORS = 4,
     /// Blend premultiplied textures considering alpha
     BLEND_ALPHA_PREMULTIPLY = 5,
-    /// Blend textures using custom src/dst factors (use rlSetBlendMode())
+    /// Blend textures using custom src/dst factors (use rlSetBlendFactors())
     BLEND_CUSTOM = 6,
-    /// Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendModeSeparate())
+    /// Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendFactorsSeparate())
     BLEND_CUSTOM_SEPARATE = 7,
 };
 

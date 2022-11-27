@@ -2508,7 +2508,7 @@ void mrlScalef(float x, float y, float z)
 	rlScalef(x, y, z);
 }
 
-void mrlMultMatrixf(float * matf)
+void mrlMultMatrixf(const float * matf)
 {
 	rlMultMatrixf(matf);
 }
@@ -3133,7 +3133,7 @@ unsigned int mrlGetShaderBufferSize(unsigned int id)
 	return rlGetShaderBufferSize(id);
 }
 
-void mrlBindImageTexture(unsigned int id, unsigned int index, unsigned int format, int readonly)
+void mrlBindImageTexture(unsigned int id, unsigned int index, int format, bool readonly)
 {
 	rlBindImageTexture(id, index, format, readonly);
 }

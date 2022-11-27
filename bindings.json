@@ -8423,7 +8423,7 @@
             "params": [
                 {
                     "name": "matf",
-                    "typ": "?[*]f32"
+                    "typ": "?[*]const f32"
                 }
             ],
             "returnType": "void",
@@ -10286,11 +10286,11 @@
                 },
                 {
                     "name": "format",
-                    "typ": "u32"
+                    "typ": "i32"
                 },
                 {
                     "name": "readonly",
-                    "typ": "i32"
+                    "typ": "bool"
                 }
             ],
             "returnType": "void",
@@ -13656,12 +13656,12 @@
                 {
                     "name": "BLEND_CUSTOM",
                     "value": 6,
-                    "description": "Blend textures using custom src/dst factors (use rlSetBlendMode())"
+                    "description": "Blend textures using custom src/dst factors (use rlSetBlendFactors())"
                 },
                 {
                     "name": "BLEND_CUSTOM_SEPARATE",
                     "value": 7,
-                    "description": "Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendModeSeparate())"
+                    "description": "Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendFactorsSeparate())"
                 }
             ],
             "description": "Color blending modes (pre-defined)",

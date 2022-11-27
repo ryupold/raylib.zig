@@ -1766,7 +1766,7 @@
       "returnType": "void",
       "params": [
         {
-          "type": "float *",
+          "type": "const float *",
           "name": "matf"
         }
       ]
@@ -3465,11 +3465,11 @@
           "name": "index"
         },
         {
-          "type": "unsigned int",
+          "type": "int",
           "name": "format"
         },
         {
-          "type": "int",
+          "type": "bool",
           "name": "readonly"
         }
       ]
