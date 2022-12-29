@@ -1588,6 +1588,21 @@ void mColorFromHSV(Color *out, float hue, float saturation, float value)
 	*out = ColorFromHSV(hue, saturation, value);
 }
 
+void mColorTint(Color *out, Color *color, Color *tint)
+{
+	*out = ColorTint(*color, *tint);
+}
+
+void mColorBrightness(Color *out, Color *color, float factor)
+{
+	*out = ColorBrightness(*color, factor);
+}
+
+void mColorContrast(Color *out, Color *color, float contrast)
+{
+	*out = ColorContrast(*color, contrast);
+}
+
 void mColorAlpha(Color *out, Color *color, float alpha)
 {
 	*out = ColorAlpha(*color, alpha);

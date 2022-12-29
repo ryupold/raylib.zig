@@ -331,6 +331,162 @@
       "description": "GL_COMPUTE_SHADER"
     },
     {
+      "name": "RL_ZERO",
+      "type": "INT",
+      "value": 0,
+      "description": "GL_ZERO"
+    },
+    {
+      "name": "RL_ONE",
+      "type": "INT",
+      "value": 1,
+      "description": "GL_ONE  "
+    },
+    {
+      "name": "RL_SRC_COLOR",
+      "type": "INT",
+      "value": 768,
+      "description": "GL_SRC_COLOR            "
+    },
+    {
+      "name": "RL_ONE_MINUS_SRC_COLOR",
+      "type": "INT",
+      "value": 769,
+      "description": "GL_ONE_MINUS_SRC_COLOR "
+    },
+    {
+      "name": "RL_SRC_ALPHA",
+      "type": "INT",
+      "value": 770,
+      "description": "GL_SRC_ALPHA           "
+    },
+    {
+      "name": "RL_ONE_MINUS_SRC_ALPHA",
+      "type": "INT",
+      "value": 771,
+      "description": "GL_ONE_MINUS_SRC_ALPHA "
+    },
+    {
+      "name": "RL_DST_ALPHA",
+      "type": "INT",
+      "value": 772,
+      "description": "GL_DST_ALPHA           "
+    },
+    {
+      "name": "RL_ONE_MINUS_DST_ALPHA",
+      "type": "INT",
+      "value": 773,
+      "description": "GL_ONE_MINUS_DST_ALPHA "
+    },
+    {
+      "name": "RL_DST_COLOR",
+      "type": "INT",
+      "value": 774,
+      "description": "GL_DST_COLOR           "
+    },
+    {
+      "name": "RL_ONE_MINUS_DST_COLOR",
+      "type": "INT",
+      "value": 775,
+      "description": "GL_ONE_MINUS_DST_COLOR "
+    },
+    {
+      "name": "RL_SRC_ALPHA_SATURATE",
+      "type": "INT",
+      "value": 776,
+      "description": "GL_SRC_ALPHA_SATURATE  "
+    },
+    {
+      "name": "RL_CONSTANT_COLOR",
+      "type": "INT",
+      "value": 32769,
+      "description": "GL_CONSTANT_COLOR          "
+    },
+    {
+      "name": "RL_ONE_MINUS_CONSTANT_COLOR",
+      "type": "INT",
+      "value": 32770,
+      "description": "GL_ONE_MINUS_CONSTANT_COLOR"
+    },
+    {
+      "name": "RL_CONSTANT_ALPHA",
+      "type": "INT",
+      "value": 32771,
+      "description": "GL_CONSTANT_ALPHA          "
+    },
+    {
+      "name": "RL_ONE_MINUS_CONSTANT_ALPHA",
+      "type": "INT",
+      "value": 32772,
+      "description": "GL_ONE_MINUS_CONSTANT_ALPHA"
+    },
+    {
+      "name": "RL_FUNC_ADD",
+      "type": "INT",
+      "value": 32774,
+      "description": "GL_FUNC_ADD             "
+    },
+    {
+      "name": "RL_FUNC_SUBTRACT",
+      "type": "INT",
+      "value": 32778,
+      "description": "GL_FUNC_SUBTRACT        "
+    },
+    {
+      "name": "RL_FUNC_REVERSE_SUBTRACT",
+      "type": "INT",
+      "value": 32779,
+      "description": "GL_FUNC_REVERSE_SUBTRACT"
+    },
+    {
+      "name": "RL_BLEND_EQUATION",
+      "type": "INT",
+      "value": 32777,
+      "description": "GL_BLEND_EQUATION       "
+    },
+    {
+      "name": "RL_BLEND_EQUATION_RGB",
+      "type": "INT",
+      "value": 32777,
+      "description": "GL_BLEND_EQUATION_RGB   // (Same as BLEND_EQUATION)"
+    },
+    {
+      "name": "RL_BLEND_EQUATION_ALPHA",
+      "type": "INT",
+      "value": 34877,
+      "description": "GL_BLEND_EQUATION_ALPHA "
+    },
+    {
+      "name": "RL_BLEND_DST_RGB",
+      "type": "INT",
+      "value": 32968,
+      "description": "GL_BLEND_DST_RGB        "
+    },
+    {
+      "name": "RL_BLEND_SRC_RGB",
+      "type": "INT",
+      "value": 32969,
+      "description": "GL_BLEND_SRC_RGB        "
+    },
+    {
+      "name": "RL_BLEND_DST_ALPHA",
+      "type": "INT",
+      "value": 32970,
+      "description": "GL_BLEND_DST_ALPHA      "
+    },
+    {
+      "name": "RL_BLEND_SRC_ALPHA",
+      "type": "INT",
+      "value": 32971,
+      "description": "GL_BLEND_SRC_ALPHA                   "
+    },
+    {
+      "name": "RL_BLEND_COLOR",
+      "type": "INT",
+      "value": 32773,
+      "description": "GL_BLEND_COLOR               "
+    },
+    {
       "name": "RL_MATRIX_TYPE",
       "type": "GUARD",
       "value": "",

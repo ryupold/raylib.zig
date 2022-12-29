@@ -5077,6 +5077,54 @@
             "custom": false
         },
         {
+            "name": "ColorTint",
+            "params": [
+                {
+                    "name": "color",
+                    "typ": "Color"
+                },
+                {
+                    "name": "tint",
+                    "typ": "Color"
+                }
+            ],
+            "returnType": "Color",
+            "description": "Get color multiplied with another color",
+            "custom": false
+        },
+        {
+            "name": "ColorBrightness",
+            "params": [
+                {
+                    "name": "color",
+                    "typ": "Color"
+                },
+                {
+                    "name": "factor",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "Color",
+            "description": "Get color with brightness correction, brightness factor goes from -1.0f to 1.0f",
+            "custom": false
+        },
+        {
+            "name": "ColorContrast",
+            "params": [
+                {
+                    "name": "color",
+                    "typ": "Color"
+                },
+                {
+                    "name": "contrast",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "Color",
+            "description": "Get color with contrast correction, contrast values between -1.0f and 1.0f",
+            "custom": false
+        },
+        {
             "name": "ColorAlpha",
             "params": [
                 {
@@ -16239,6 +16287,188 @@
             "typ": "i32",
             "value": "37305",
             "description": "GL_COMPUTE_SHADER",
+            "custom": false
+        },
+        {
+            "name": "RL_ZERO",
+            "typ": "i32",
+            "value": "0",
+            "description": "GL_ZERO",
+            "custom": false
+        },
+        {
+            "name": "RL_ONE",
+            "typ": "i32",
+            "value": "1",
+            "description": "GL_ONE  ",
+            "custom": false
+        },
+        {
+            "name": "RL_SRC_COLOR",
+            "typ": "i32",
+            "value": "768",
+            "description": "GL_SRC_COLOR            ",
+            "custom": false
+        },
+        {
+            "name": "RL_ONE_MINUS_SRC_COLOR",
+            "typ": "i32",
+            "value": "769",
+            "description": "GL_ONE_MINUS_SRC_COLOR ",
+            "custom": false
+        },
+        {
+            "name": "RL_SRC_ALPHA",
+            "typ": "i32",
+            "value": "770",
+            "description": "GL_SRC_ALPHA           ",
+            "custom": false
+        },
+        {
+            "name": "RL_ONE_MINUS_SRC_ALPHA",
+            "typ": "i32",
+            "value": "771",
+            "description": "GL_ONE_MINUS_SRC_ALPHA ",
+            "custom": false
+        },
+        {
+            "name": "RL_DST_ALPHA",
+            "typ": "i32",
+            "value": "772",
+            "description": "GL_DST_ALPHA           ",
+            "custom": false
+        },
+        {
+            "name": "RL_ONE_MINUS_DST_ALPHA",
+            "typ": "i32",
+            "value": "773",
+            "description": "GL_ONE_MINUS_DST_ALPHA ",
+            "custom": false
+        },
+        {
+            "name": "RL_DST_COLOR",
+            "typ": "i32",
+            "value": "774",
+            "description": "GL_DST_COLOR           ",
+            "custom": false
+        },
+        {
+            "name": "RL_ONE_MINUS_DST_COLOR",
+            "typ": "i32",
+            "value": "775",
+            "description": "GL_ONE_MINUS_DST_COLOR ",
+            "custom": false
+        },
+        {
+            "name": "RL_SRC_ALPHA_SATURATE",
+            "typ": "i32",
+            "value": "776",
+            "description": "GL_SRC_ALPHA_SATURATE  ",
+            "custom": false
+        },
+        {
+            "name": "RL_CONSTANT_COLOR",
+            "typ": "i32",
+            "value": "32769",
+            "description": "GL_CONSTANT_COLOR          ",
+            "custom": false
+        },
+        {
+            "name": "RL_ONE_MINUS_CONSTANT_COLOR",
+            "typ": "i32",
+            "value": "32770",
+            "description": "GL_ONE_MINUS_CONSTANT_COLOR",
+            "custom": false
+        },
+        {
+            "name": "RL_CONSTANT_ALPHA",
+            "typ": "i32",
+            "value": "32771",
+            "description": "GL_CONSTANT_ALPHA          ",
+            "custom": false
+        },
+        {
+            "name": "RL_ONE_MINUS_CONSTANT_ALPHA",
+            "typ": "i32",
+            "value": "32772",
+            "description": "GL_ONE_MINUS_CONSTANT_ALPHA",
+            "custom": false
+        },
+        {
+            "name": "RL_FUNC_ADD",
+            "typ": "i32",
+            "value": "32774",
+            "description": "GL_FUNC_ADD             ",
+            "custom": false
+        },
+        {
+            "name": "RL_FUNC_SUBTRACT",
+            "typ": "i32",
+            "value": "32778",
+            "description": "GL_FUNC_SUBTRACT        ",
+            "custom": false
+        },
+        {
+            "name": "RL_FUNC_REVERSE_SUBTRACT",
+            "typ": "i32",
+            "value": "32779",
+            "description": "GL_FUNC_REVERSE_SUBTRACT",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_EQUATION",
+            "typ": "i32",
+            "value": "32777",
+            "description": "GL_BLEND_EQUATION       ",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_EQUATION_RGB",
+            "typ": "i32",
+            "value": "32777",
+            "description": "GL_BLEND_EQUATION_RGB   // (Same as BLEND_EQUATION)",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_EQUATION_ALPHA",
+            "typ": "i32",
+            "value": "34877",
+            "description": "GL_BLEND_EQUATION_ALPHA ",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_DST_RGB",
+            "typ": "i32",
+            "value": "32968",
+            "description": "GL_BLEND_DST_RGB        ",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_SRC_RGB",
+            "typ": "i32",
+            "value": "32969",
+            "description": "GL_BLEND_SRC_RGB        ",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_DST_ALPHA",
+            "typ": "i32",
+            "value": "32970",
+            "description": "GL_BLEND_DST_ALPHA      ",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_SRC_ALPHA",
+            "typ": "i32",
+            "value": "32971",
+            "description": "GL_BLEND_SRC_ALPHA                   ",
+            "custom": false
+        },
+        {
+            "name": "RL_BLEND_COLOR",
+            "typ": "i32",
+            "value": "32773",
+            "description": "GL_BLEND_COLOR               ",
             "custom": false
         },
         {

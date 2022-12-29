@@ -4498,6 +4498,48 @@ pub fn ColorFromHSV(
     return out;
 }
 
+/// Get color multiplied with another color
+pub fn ColorTint(
+    color: Color,
+    tint: Color,
+) Color {
+    var out: Color = undefined;
+    raylib.mColorTint(
+        @ptrCast([*c]raylib.Color, &out),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&tint)),
+    );
+    return out;
+}
+
+/// Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
+pub fn ColorBrightness(
+    color: Color,
+    factor: f32,
+) Color {
+    var out: Color = undefined;
+    raylib.mColorBrightness(
+        @ptrCast([*c]raylib.Color, &out),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+        factor,
+    );
+    return out;
+}
+
+/// Get color with contrast correction, contrast values between -1.0f and 1.0f
+pub fn ColorContrast(
+    color: Color,
+    contrast: f32,
+) Color {
+    var out: Color = undefined;
+    raylib.mColorContrast(
+        @ptrCast([*c]raylib.Color, &out),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+        contrast,
+    );
+    return out;
+}
+
 /// Get color with alpha applied, alpha goes from 0.0f to 1.0f
 pub fn ColorAlpha(
     color: Color,
@@ -11203,6 +11245,84 @@ pub const RL_VERTEX_SHADER: i32 = 35633;
 
 /// GL_COMPUTE_SHADER
 pub const RL_COMPUTE_SHADER: i32 = 37305;
+
+/// GL_ZERO
+pub const RL_ZERO: i32 = 0;
+
+/// GL_ONE
+pub const RL_ONE: i32 = 1;
+
+/// GL_SRC_COLOR
+pub const RL_SRC_COLOR: i32 = 768;
+
+/// GL_ONE_MINUS_SRC_COLOR
+pub const RL_ONE_MINUS_SRC_COLOR: i32 = 769;
+
+/// GL_SRC_ALPHA
+pub const RL_SRC_ALPHA: i32 = 770;
+
+/// GL_ONE_MINUS_SRC_ALPHA
+pub const RL_ONE_MINUS_SRC_ALPHA: i32 = 771;
+
+/// GL_DST_ALPHA
+pub const RL_DST_ALPHA: i32 = 772;
+
+/// GL_ONE_MINUS_DST_ALPHA
+pub const RL_ONE_MINUS_DST_ALPHA: i32 = 773;
+
+/// GL_DST_COLOR
+pub const RL_DST_COLOR: i32 = 774;
+
+/// GL_ONE_MINUS_DST_COLOR
+pub const RL_ONE_MINUS_DST_COLOR: i32 = 775;
+
+/// GL_SRC_ALPHA_SATURATE
+pub const RL_SRC_ALPHA_SATURATE: i32 = 776;
+
+/// GL_CONSTANT_COLOR
+pub const RL_CONSTANT_COLOR: i32 = 32769;
+
+/// GL_ONE_MINUS_CONSTANT_COLOR
+pub const RL_ONE_MINUS_CONSTANT_COLOR: i32 = 32770;
+
+/// GL_CONSTANT_ALPHA
+pub const RL_CONSTANT_ALPHA: i32 = 32771;
+
+/// GL_ONE_MINUS_CONSTANT_ALPHA
+pub const RL_ONE_MINUS_CONSTANT_ALPHA: i32 = 32772;
+
+/// GL_FUNC_ADD
+pub const RL_FUNC_ADD: i32 = 32774;
+
+/// GL_FUNC_SUBTRACT
+pub const RL_FUNC_SUBTRACT: i32 = 32778;
+
+/// GL_FUNC_REVERSE_SUBTRACT
+pub const RL_FUNC_REVERSE_SUBTRACT: i32 = 32779;
+
+/// GL_BLEND_EQUATION
+pub const RL_BLEND_EQUATION: i32 = 32777;
+
+/// GL_BLEND_EQUATION_RGB   // (Same as BLEND_EQUATION)
+pub const RL_BLEND_EQUATION_RGB: i32 = 32777;
+
+/// GL_BLEND_EQUATION_ALPHA
+pub const RL_BLEND_EQUATION_ALPHA: i32 = 34877;
+
+/// GL_BLEND_DST_RGB
+pub const RL_BLEND_DST_RGB: i32 = 32968;
+
+/// GL_BLEND_SRC_RGB
+pub const RL_BLEND_SRC_RGB: i32 = 32969;
+
+/// GL_BLEND_DST_ALPHA
+pub const RL_BLEND_DST_ALPHA: i32 = 32970;
+
+/// GL_BLEND_SRC_ALPHA
+pub const RL_BLEND_SRC_ALPHA: i32 = 32971;
+
+/// GL_BLEND_COLOR
+pub const RL_BLEND_COLOR: i32 = 32773;
 
 ///
 pub const GL_SHADING_LANGUAGE_VERSION: i32 = 35724;

@@ -960,6 +960,15 @@ void mColorToHSV(Vector3 *out, Color *color);
 // Get a Color from HSV values, hue [0..360], saturation/value [0..1]
 void mColorFromHSV(Color *out, float hue, float saturation, float value);
 
+// Get color multiplied with another color
+void mColorTint(Color *out, Color *color, Color *tint);
+
+// Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
+void mColorBrightness(Color *out, Color *color, float factor);
+
+// Get color with contrast correction, contrast values between -1.0f and 1.0f
+void mColorContrast(Color *out, Color *color, float contrast);
+
 // Get color with alpha applied, alpha goes from 0.0f to 1.0f
 void mColorAlpha(Color *out, Color *color, float alpha);
 
