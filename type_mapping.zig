@@ -64,10 +64,10 @@ pub const Intermediate = struct {
         }
 
         return @This(){
-            .enums = enums.toOwnedSlice(),
-            .structs = structs.toOwnedSlice(),
-            .functions = functions.toOwnedSlice(),
-            .defines = defines.toOwnedSlice(),
+            .enums = try enums.toOwnedSlice(),
+            .structs = try structs.toOwnedSlice(),
+            .functions = try functions.toOwnedSlice(),
+            .defines = try defines.toOwnedSlice(),
         };
     }
 
@@ -141,10 +141,10 @@ pub const Intermediate = struct {
             }
         }
 
-        self.enums = enums.toOwnedSlice();
-        self.structs = structs.toOwnedSlice();
-        self.functions = functions.toOwnedSlice();
-        self.defines = defines.toOwnedSlice();
+        self.enums = try enums.toOwnedSlice();
+        self.structs = try structs.toOwnedSlice();
+        self.functions = try functions.toOwnedSlice();
+        self.defines = try defines.toOwnedSlice();
     }
 
     pub fn containsStruct(self: @This(), name: []const u8) bool {
@@ -200,7 +200,7 @@ pub fn parseRaylibFunction(allocator: Allocator, func: RaylibFunction) !Function
 
     return Function{
         .name = func.name,
-        .params = args.toOwnedSlice(),
+        .params = try args.toOwnedSlice(),
         .returnType = returnType,
         .description = func.description,
     };
@@ -237,7 +237,7 @@ pub fn parseRaylibStruct(allocator: Allocator, s: RaylibStruct) !Struct {
 
     return Struct{
         .name = if (alias.get(s.name)) |a| a else s.name,
-        .fields = fields.toOwnedSlice(),
+        .fields = try fields.toOwnedSlice(),
         .description = s.description,
     };
 }
@@ -319,7 +319,7 @@ pub fn parseRaylibEnum(allocator: Allocator, e: RaylibEnum) !Enum {
 
     return Enum{
         .name = e.name,
-        .values = values.toOwnedSlice(),
+        .values = try values.toOwnedSlice(),
         .description = e.description,
     };
 }
@@ -589,9 +589,9 @@ pub const CombinedRaylib = struct {
         }
 
         return Intermediate{
-            .functions = functions.toOwnedSlice(),
-            .enums = enums.toOwnedSlice(),
-            .structs = structs.toOwnedSlice(),
+            .functions = try functions.toOwnedSlice(),
+            .enums = try enums.toOwnedSlice(),
+            .structs = try structs.toOwnedSlice(),
         };
     }
 
