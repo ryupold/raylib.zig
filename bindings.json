@@ -1714,12 +1714,12 @@
                 },
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "GamepadButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a gamepad button has been pressed once",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsGamepadButtonDown",
@@ -1730,12 +1730,12 @@
                 },
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "GamepadButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a gamepad button is being pressed",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsGamepadButtonReleased",
@@ -1746,12 +1746,12 @@
                 },
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "GamepadButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a gamepad button has been released once",
-            "custom": false
+            "custom": true
         },
         {
             "name": "IsGamepadButtonUp",
@@ -1762,19 +1762,19 @@
                 },
                 {
                     "name": "button",
-                    "typ": "i32"
+                    "typ": "GamepadButton"
                 }
             ],
             "returnType": "bool",
             "description": "Check if a gamepad button is NOT being pressed",
-            "custom": false
+            "custom": true
         },
         {
             "name": "GetGamepadButtonPressed",
             "params": [],
-            "returnType": "i32",
+            "returnType": "GamepadButton",
             "description": "Get the last gamepad button pressed",
-            "custom": false
+            "custom": true
         },
         {
             "name": "GetGamepadAxisCount",
@@ -1797,12 +1797,12 @@
                 },
                 {
                     "name": "axis",
-                    "typ": "i32"
+                    "typ": "GamepadAxis"
                 }
             ],
             "returnType": "f32",
             "description": "Get axis movement value for a gamepad axis",
-            "custom": false
+            "custom": true
         },
         {
             "name": "SetGamepadMappings",

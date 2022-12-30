@@ -956,3 +956,10 @@ pub fn rlDisableStatePointer(
         vertexAttribType,
     );
 }
+
+/// Get the last gamepad button pressed
+pub fn GetGamepadButtonPressed() ?GamepadButton {
+    if (raylib.GetGamepadButtonPressed() == -1) return null;
+
+    return @intToEnum(GamepadButton, raylib.GetGamepadButtonPressed());
+}

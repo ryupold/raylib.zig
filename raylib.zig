@@ -957,6 +957,13 @@ pub fn rlDisableStatePointer(
     );
 }
 
+/// Get the last gamepad button pressed
+pub fn GetGamepadButtonPressed() ?GamepadButton {
+    if (raylib.GetGamepadButtonPressed() == -1) return null;
+
+    return @intToEnum(GamepadButton, raylib.GetGamepadButtonPressed());
+}
+
 /// Initialize window and OpenGL context
 pub fn InitWindow(
     width: i32,
@@ -2190,50 +2197,45 @@ pub fn GetGamepadName(
 /// Check if a gamepad button has been pressed once
 pub fn IsGamepadButtonPressed(
     gamepad: i32,
-    button: i32,
+    button: GamepadButton,
 ) bool {
     return raylib.mIsGamepadButtonPressed(
         gamepad,
-        button,
+        @enumToInt(button),
     );
 }
 
 /// Check if a gamepad button is being pressed
 pub fn IsGamepadButtonDown(
     gamepad: i32,
-    button: i32,
+    button: GamepadButton,
 ) bool {
     return raylib.mIsGamepadButtonDown(
         gamepad,
-        button,
+        @enumToInt(button),
     );
 }
 
 /// Check if a gamepad button has been released once
 pub fn IsGamepadButtonReleased(
     gamepad: i32,
-    button: i32,
+    button: GamepadButton,
 ) bool {
     return raylib.mIsGamepadButtonReleased(
         gamepad,
-        button,
+        @enumToInt(button),
     );
 }
 
 /// Check if a gamepad button is NOT being pressed
 pub fn IsGamepadButtonUp(
     gamepad: i32,
-    button: i32,
+    button: GamepadButton,
 ) bool {
     return raylib.mIsGamepadButtonUp(
         gamepad,
-        button,
+        @enumToInt(button),
     );
-}
-
-/// Get the last gamepad button pressed
-pub fn GetGamepadButtonPressed() i32 {
-    return raylib.mGetGamepadButtonPressed();
 }
 
 /// Get gamepad axis count for a gamepad
@@ -2248,11 +2250,11 @@ pub fn GetGamepadAxisCount(
 /// Get axis movement value for a gamepad axis
 pub fn GetGamepadAxisMovement(
     gamepad: i32,
-    axis: i32,
+    axis: GamepadAxis,
 ) f32 {
     return raylib.mGetGamepadAxisMovement(
         gamepad,
-        axis,
+        @enumToInt(axis),
     );
 }
 

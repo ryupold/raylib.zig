@@ -435,9 +435,6 @@ bool mIsGamepadButtonReleased(int gamepad, int button);
 // Check if a gamepad button is NOT being pressed
 bool mIsGamepadButtonUp(int gamepad, int button);
 
-// Get the last gamepad button pressed
-int mGetGamepadButtonPressed(void);
-
 // Get gamepad axis count for a gamepad
 int mGetGamepadAxisCount(int gamepad);
 

@@ -713,11 +713,6 @@ bool mIsGamepadButtonUp(int gamepad, int button)
 	return IsGamepadButtonUp(gamepad, button);
 }
 
-int mGetGamepadButtonPressed(void)
-{
-	return GetGamepadButtonPressed();
-}
-
 int mGetGamepadAxisCount(int gamepad)
 {
 	return GetGamepadAxisCount(gamepad);
