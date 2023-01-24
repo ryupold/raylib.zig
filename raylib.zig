@@ -7185,6 +7185,19 @@ pub fn rlTextureParameters(
     );
 }
 
+/// Set cubemap parameters (filter, wrap)
+pub fn rlCubemapParameters(
+    id: u32,
+    param: i32,
+    value: i32,
+) void {
+    raylib.mrlCubemapParameters(
+        id,
+        param,
+        value,
+    );
+}
+
 /// Enable shader program
 pub fn rlEnableShader(
     id: u32,
@@ -11034,6 +11047,15 @@ pub const PhysicsShapeType = enum(i32) {
     /// physics shape is a polygon
     PHYSICS_POLYGON = 1,
 };
+
+///
+pub const RAYLIB_VERSION_MAJOR: i32 = 4;
+
+///
+pub const RAYLIB_VERSION_MINOR: i32 = 5;
+
+///
+pub const RAYLIB_VERSION_PATCH: i32 = 0;
 
 ///
 pub const RAYLIB_VERSION: []const u8 = "4.5-dev";

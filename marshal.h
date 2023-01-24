@@ -1602,6 +1602,9 @@ void mrlDisableTextureCubemap(void);
 // Set texture parameters (filter, wrap)
 void mrlTextureParameters(unsigned int id, int param, int value);
 
+// Set cubemap parameters (filter, wrap)
+void mrlCubemapParameters(unsigned int id, int param, int value);
+
 // Enable shader program
 void mrlEnableShader(unsigned int id);
 

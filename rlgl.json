@@ -535,6 +535,12 @@
       "description": ""
     },
     {
+      "name": "GLAD_GLES2_IMPLEMENTATION",
+      "type": "GUARD",
+      "value": "",
+      "description": ""
+    },
+    {
       "name": "GL_GLEXT_PROTOTYPES",
       "type": "GUARD",
       "value": "",
@@ -2318,6 +2324,25 @@
     {
       "name": "rlTextureParameters",
       "description": "Set texture parameters (filter, wrap)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "unsigned int",
+          "name": "id"
+        },
+        {
+          "type": "int",
+          "name": "param"
+        },
+        {
+          "type": "int",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "name": "rlCubemapParameters",
+      "description": "Set cubemap parameters (filter, wrap)",
       "returnType": "void",
       "params": [
         {

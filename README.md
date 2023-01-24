@@ -1,11 +1,11 @@
 ![logo](logo.png)
 
 # raylib.zig
-Idiomatic [raylib](https://www.raylib.com/) (4.5-dev) bindings for [Zig](https://ziglang.org/) (0.10.0).
+Idiomatic [raylib](https://www.raylib.com/) (4.5-dev) bindings for [Zig](https://ziglang.org/) (master).
 
 [Example Usage](#usage)
 
-Additional infos and WebGL examples [here](https://ryupold.de/pages/raylib.zig/raylib.zig.html).
+Additional infos and WebGL examples [here](https://ryupold.de/?post=raylib.zig).
 
 ## supported platforms
 - Windows

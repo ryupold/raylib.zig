@@ -7,6 +7,24 @@
       "description": ""
     },
     {
+      "name": "RAYLIB_VERSION_MAJOR",
+      "type": "INT",
+      "value": 4,
+      "description": ""
+    },
+    {
+      "name": "RAYLIB_VERSION_MINOR",
+      "type": "INT",
+      "value": 5,
+      "description": ""
+    },
+    {
+      "name": "RAYLIB_VERSION_PATCH",
+      "type": "INT",
+      "value": 0,
+      "description": ""
+    },
+    {
       "name": "RAYLIB_VERSION",
       "type": "STRING",
       "value": "4.5-dev",

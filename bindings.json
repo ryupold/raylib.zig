@@ -8921,6 +8921,26 @@
             "custom": false
         },
         {
+            "name": "rlCubemapParameters",
+            "params": [
+                {
+                    "name": "id",
+                    "typ": "u32"
+                },
+                {
+                    "name": "param",
+                    "typ": "i32"
+                },
+                {
+                    "name": "value",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set cubemap parameters (filter, wrap)",
+            "custom": false
+        },
+        {
             "name": "rlEnableShader",
             "params": [
                 {
@@ -15792,6 +15812,27 @@
         }
     ],
     "defines": [
+        {
+            "name": "RAYLIB_VERSION_MAJOR",
+            "typ": "i32",
+            "value": "4",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "RAYLIB_VERSION_MINOR",
+            "typ": "i32",
+            "value": "5",
+            "description": "",
+            "custom": false
+        },
+        {
+            "name": "RAYLIB_VERSION_PATCH",
+            "typ": "i32",
+            "value": "0",
+            "description": "",
+            "custom": false
+        },
         {
             "name": "RAYLIB_VERSION",
             "typ": "[]const u8",

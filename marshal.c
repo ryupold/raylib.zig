@@ -2658,6 +2658,11 @@ void mrlTextureParameters(unsigned int id, int param, int value)
 	rlTextureParameters(id, param, value);
 }
 
+void mrlCubemapParameters(unsigned int id, int param, int value)
+{
+	rlCubemapParameters(id, param, value);
+}
+
 void mrlEnableShader(unsigned int id)
 {
 	rlEnableShader(id);
