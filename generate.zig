@@ -253,7 +253,7 @@ fn writeCSignature(
     }
 
     if (func.params) |params| {
-        for (params) |param, i| {
+        for (params, 0..) |param, i| {
             const paramType = param.@"type";
             if (mapping.isPrimitiveOrPointer(paramType)) {
                 try file.writeAll(try allocPrint(allocator, "{s} {s}", .{ paramType, param.name }));
@@ -315,7 +315,7 @@ fn writeCFunctions(
         );
 
         if (func.params) |params| {
-            for (params) |param, i| {
+            for (params, 0..) |param, i| {
                 if (mapping.isPrimitiveOrPointer(param.@"type")) {
                     try c.writeAll(
                         try allocPrint(

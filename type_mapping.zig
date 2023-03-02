@@ -81,7 +81,7 @@ pub const Intermediate = struct {
         var defines = std.ArrayList(Define).init(allocator);
         try defines.appendSlice(self.defines);
 
-        outer: for (rlJson.defines.values()) |d, i| {
+        outer: for (rlJson.defines.values(), 0..) |d, i| {
             for (defines.items) |added| {
                 if (eql(added.name, d.name)) {
                     std.log.debug("{s} is customized", .{d.name});
@@ -96,7 +96,7 @@ pub const Intermediate = struct {
                 try defines.append(define);
             }
         }
-        outer: for (rlJson.enums.values()) |e, i| {
+        outer: for (rlJson.enums.values(), 0..) |e, i| {
             const name = if (alias.get(e.name)) |n| n else e.name;
             for (enums.items) |added| {
                 if (eql(added.name, name)) {
@@ -111,7 +111,7 @@ pub const Intermediate = struct {
                 try enums.append(try parseRaylibEnum(allocator, e));
             }
         }
-        outer: for (rlJson.structs.values()) |s, i| {
+        outer: for (rlJson.structs.values(), 0..) |s, i| {
             const name = if (alias.get(s.name)) |n| n else s.name;
             for (structs.items) |added| {
                 if (eql(added.name, name)) {
@@ -127,7 +127,7 @@ pub const Intermediate = struct {
         }
         for (rlJson.defines.values()) |_| {}
 
-        outer: for (rlJson.functions.values()) |f, i| {
+        outer: for (rlJson.functions.values(), 0..) |f, i| {
             for (functions.items) |added| {
                 if (eql(added.name, f.name)) {
                     std.log.debug("{s} is customized", .{f.name});

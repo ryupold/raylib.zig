@@ -3,15 +3,15 @@ const generate = @import("generate.zig");
 
 pub fn build(b: *std.build.Builder) !void {
     const raylibSrc = "raylib/src/";
-    
+
     const target = b.standardTargetOptions(.{});
 
     //--- parse raylib and generate JSONs for all signatures --------------------------------------
     const jsons = b.step("parse", "parse raylib headers and generate raylib jsons");
-    const raylib_parser_build = b.addExecutable("raylib_parser", "raylib_parser.zig");
+    const raylib_parser_build = b.addExecutable(.{ .name = "raylib_parser", .root_source_file = std.build.FileSource.relative("raylib_parser.zig"), .target = target, .optimize = .ReleaseFast });
     raylib_parser_build.addCSourceFile("raylib/parser/raylib_parser.c", &.{});
-    raylib_parser_build.setTarget(target);
-    raylib_parser_build.setBuildMode(.ReleaseFast);
+    // raylib_parser_build.setTarget(target);
+    // raylib_parser_build.setBuildMode(.ReleaseFast);
     raylib_parser_build.linkLibC();
 
     //raylib
@@ -23,7 +23,7 @@ pub fn build(b: *std.build.Builder) !void {
         "-d", "RLAPI",
     });
     jsons.dependOn(&raylib_H.step);
-    
+
     //raymath
     const raymath_H = raylib_parser_build.run();
     raymath_H.addArgs(&.{
@@ -33,7 +33,7 @@ pub fn build(b: *std.build.Builder) !void {
         "-d", "RMAPI",
     });
     jsons.dependOn(&raymath_H.step);
-    
+
     //rlgl
     const rlgl_H = raylib_parser_build.run();
     rlgl_H.addArgs(&.{
@@ -46,12 +46,22 @@ pub fn build(b: *std.build.Builder) !void {
 
     //--- Generate intermediate -------------------------------------------------------------------
     const intermediate = b.step("intermediate", "generate intermediate representation of the results from 'zig build parse' (keep custom=true)");
-    const intermediateZig = b.addExecutable("intermediate", "intermediate.zig");
+    // const intermediateZig = b.addExecutable("intermediate", "intermediate.zig");
+    const intermediateZig = b.addExecutable(.{
+        .name = "intermediate",
+        .root_source_file = std.build.FileSource.relative("intermediate.zig"),
+        .target = target,
+    });
     intermediate.dependOn(&intermediateZig.run().step);
 
     //--- Generate bindings -----------------------------------------------------------------------
     const bindings = b.step("bindings", "generate bindings in from bindings.json");
-    const generateZig = b.addExecutable("generate", "generate.zig");
+    // const generateZig = b.addExecutable("generate", "generate.zig");
+    const generateZig = b.addExecutable(.{
+        .name = "generate",
+        .root_source_file = std.build.FileSource.relative("generate.zig"),
+        .target = target,
+    });
     const fmt = b.addFmt(&.{
         generate.outputFile,
     });
