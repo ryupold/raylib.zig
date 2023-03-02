@@ -156,7 +156,23 @@
                 }
             ],
             "returnType": "void",
-            "description": "Set icon for window (only PLATFORM_DESKTOP)",
+            "description": "Set icon for window (single image, RGBA 32bit, only PLATFORM_DESKTOP)",
+            "custom": false
+        },
+        {
+            "name": "SetWindowIcons",
+            "params": [
+                {
+                    "name": "images",
+                    "typ": "?[*]Image"
+                },
+                {
+                    "name": "count",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)",
             "custom": false
         },
         {
@@ -716,6 +732,18 @@
             ],
             "returnType": "Shader",
             "description": "Load shader from code strings and bind default locations",
+            "custom": false
+        },
+        {
+            "name": "IsShaderReady",
+            "params": [
+                {
+                    "name": "shader",
+                    "typ": "Shader"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check if a shader is ready",
             "custom": false
         },
         {
@@ -2078,11 +2106,11 @@
             "custom": false
         },
         {
-            "name": "SetCameraMode",
+            "name": "UpdateCamera",
             "params": [
                 {
                     "name": "camera",
-                    "typ": "Camera3D"
+                    "typ": "*Camera3D"
                 },
                 {
                     "name": "mode",
@@ -2090,88 +2118,8 @@
                 }
             ],
             "returnType": "void",
-            "description": "Set camera mode (multiple camera modes available)",
+            "description": "Update camera position for selected mode",
             "custom": true
-        },
-        {
-            "name": "TextFormat",
-            "params": [
-                {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                }
-            ],
-            "returnType": "[*:0]const u8",
-            "description": "rewritten in inject.zig",
-            "custom": true
-        },
-        {
-            "name": "SetCameraPanControl",
-            "params": [
-                {
-                    "name": "keyPan",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "void",
-            "description": "Set camera pan key to combine with mouse movement (free camera)",
-            "custom": false
-        },
-        {
-            "name": "SetCameraAltControl",
-            "params": [
-                {
-                    "name": "keyAlt",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "void",
-            "description": "Set camera alt key to combine with mouse movement (free camera)",
-            "custom": false
-        },
-        {
-            "name": "SetCameraSmoothZoomControl",
-            "params": [
-                {
-                    "name": "keySmoothZoom",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "void",
-            "description": "Set camera smooth zoom key to combine with mouse (free camera)",
-            "custom": false
-        },
-        {
-            "name": "SetCameraMoveControls",
-            "params": [
-                {
-                    "name": "keyFront",
-                    "typ": "i32"
-                },
-                {
-                    "name": "keyBack",
-                    "typ": "i32"
-                },
-                {
-                    "name": "keyRight",
-                    "typ": "i32"
-                },
-                {
-                    "name": "keyLeft",
-                    "typ": "i32"
-                },
-                {
-                    "name": "keyUp",
-                    "typ": "i32"
-                },
-                {
-                    "name": "keyDown",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "void",
-            "description": "Set camera move controls (1st person and 3rd person cameras)",
-            "custom": false
         },
         {
             "name": "SetShapesTexture",
@@ -3449,6 +3397,18 @@
             "custom": false
         },
         {
+            "name": "IsImageReady",
+            "params": [
+                {
+                    "name": "image",
+                    "typ": "Image"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check if an image is ready",
+            "custom": false
+        },
+        {
             "name": "UnloadImage",
             "params": [
                 {
@@ -3897,6 +3857,18 @@
             "custom": false
         },
         {
+            "name": "TextFormat",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*:0]const u8"
+                }
+            ],
+            "returnType": "[*:0]const u8",
+            "description": "rewritten in inject.zig",
+            "custom": true
+        },
+        {
             "name": "ImageBlurGaussian",
             "params": [
                 {
@@ -4142,26 +4114,6 @@
             ],
             "returnType": "void",
             "description": "Modify image color: brightness (-255 to 255)",
-            "custom": true
-        },
-        {
-            "name": "ImageColorReplace",
-            "params": [
-                {
-                    "name": "image",
-                    "typ": "*Image"
-                },
-                {
-                    "name": "color",
-                    "typ": "Color"
-                },
-                {
-                    "name": "replace",
-                    "typ": "Color"
-                }
-            ],
-            "returnType": "void",
-            "description": "Modify image color: replace color",
             "custom": true
         },
         {
@@ -4729,6 +4681,18 @@
             "custom": false
         },
         {
+            "name": "IsTextureReady",
+            "params": [
+                {
+                    "name": "texture",
+                    "typ": "Texture2D"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check if a texture is ready",
+            "custom": false
+        },
+        {
             "name": "UnloadTexture",
             "params": [
                 {
@@ -4738,6 +4702,18 @@
             ],
             "returnType": "void",
             "description": "Unload texture from GPU memory (VRAM)",
+            "custom": false
+        },
+        {
+            "name": "IsRenderTextureReady",
+            "params": [
+                {
+                    "name": "target",
+                    "typ": "RenderTexture2D"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check if a render texture is ready",
             "custom": false
         },
         {
@@ -4789,15 +4765,23 @@
             "custom": false
         },
         {
-            "name": "GenTextureMipmaps",
+            "name": "ImageColorReplace",
             "params": [
                 {
-                    "name": "texture",
-                    "typ": "*Texture2D"
+                    "name": "image",
+                    "typ": "*Image"
+                },
+                {
+                    "name": "color",
+                    "typ": "Color"
+                },
+                {
+                    "name": "replace",
+                    "typ": "Color"
                 }
             ],
             "returnType": "void",
-            "description": "Generate GPU mipmaps for a texture",
+            "description": "Modify image color: replace color",
             "custom": true
         },
         {
@@ -5324,15 +5308,27 @@
             "custom": false
         },
         {
-            "name": "Vector3Length",
+            "name": "IsFontReady",
             "params": [
                 {
-                    "name": "v",
-                    "typ": "Vector3"
+                    "name": "font",
+                    "typ": "Font"
                 }
             ],
-            "returnType": "f32",
-            "description": "",
+            "returnType": "bool",
+            "description": "Check if a font is ready",
+            "custom": false
+        },
+        {
+            "name": "GenTextureMipmaps",
+            "params": [
+                {
+                    "name": "texture",
+                    "typ": "*Texture2D"
+                }
+            ],
+            "returnType": "void",
+            "description": "Generate GPU mipmaps for a texture",
             "custom": true
         },
         {
@@ -5856,15 +5852,35 @@
             "custom": false
         },
         {
-            "name": "Vector3LengthSqr",
+            "name": "LoadFontData",
             "params": [
                 {
-                    "name": "v",
-                    "typ": "Vector3"
+                    "name": "fileData",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "dataSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontChars",
+                    "typ": "[*]i32"
+                },
+                {
+                    "name": "glyphCount",
+                    "typ": "i32"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
                 }
             ],
-            "returnType": "f32",
-            "description": "",
+            "returnType": "[*]GlyphInfo",
+            "description": "Load font data for further use",
             "custom": true
         },
         {
@@ -5928,50 +5944,6 @@
             "custom": false
         },
         {
-            "name": "LoadFontData",
-            "params": [
-                {
-                    "name": "fileData",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "dataSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontChars",
-                    "typ": "[*]i32"
-                },
-                {
-                    "name": "glyphCount",
-                    "typ": "i32"
-                },
-                {
-                    "name": "typ",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "[*]GlyphInfo",
-            "description": "Load font data for further use",
-            "custom": true
-        },
-        {
-            "name": "UpdateCamera",
-            "params": [
-                {
-                    "name": "camera",
-                    "typ": "*Camera3D"
-                }
-            ],
-            "returnType": "void",
-            "description": "Update camera position for selected mode",
-            "custom": true
-        },
-        {
             "name": "TextJoin",
             "params": [
                 {
@@ -5989,6 +5961,54 @@
             ],
             "returnType": "[*:0]const u8",
             "description": "overriden in inject.zig",
+            "custom": true
+        },
+        {
+            "name": "rlSetVertexAttribute",
+            "params": [
+                {
+                    "name": "index",
+                    "typ": "u32"
+                },
+                {
+                    "name": "compSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
+                },
+                {
+                    "name": "normalized",
+                    "typ": "bool"
+                },
+                {
+                    "name": "stride",
+                    "typ": "i32"
+                },
+                {
+                    "name": "pointer",
+                    "typ": "*anyopaque"
+                }
+            ],
+            "returnType": "void",
+            "description": "",
+            "custom": true
+        },
+        {
+            "name": "rlCompileShader",
+            "params": [
+                {
+                    "name": "shaderCode",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "u32",
+            "description": "Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)",
             "custom": true
         },
         {
@@ -6601,6 +6621,18 @@
             ],
             "returnType": "Model",
             "description": "Load model from generated mesh (default material)",
+            "custom": false
+        },
+        {
+            "name": "IsModelReady",
+            "params": [
+                {
+                    "name": "model",
+                    "typ": "Model"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check if a model is ready",
             "custom": false
         },
         {
@@ -7255,6 +7287,18 @@
             "custom": false
         },
         {
+            "name": "IsMaterialReady",
+            "params": [
+                {
+                    "name": "material",
+                    "typ": "Material"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Check if a material is ready",
+            "custom": false
+        },
+        {
             "name": "UnloadMaterial",
             "params": [
                 {
@@ -7620,6 +7664,18 @@
             "custom": false
         },
         {
+            "name": "IsWaveReady",
+            "params": [
+                {
+                    "name": "wave",
+                    "typ": "Wave"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Checks if wave data is ready",
+            "custom": false
+        },
+        {
             "name": "LoadSound",
             "params": [
                 {
@@ -7641,6 +7697,18 @@
             ],
             "returnType": "Sound",
             "description": "Load sound from wave data",
+            "custom": false
+        },
+        {
+            "name": "IsSoundReady",
+            "params": [
+                {
+                    "name": "sound",
+                    "typ": "Sound"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Checks if a sound is ready",
             "custom": false
         },
         {
@@ -7966,6 +8034,18 @@
             "custom": false
         },
         {
+            "name": "IsMusicReady",
+            "params": [
+                {
+                    "name": "music",
+                    "typ": "Music"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Checks if a music stream is ready",
+            "custom": false
+        },
+        {
             "name": "UnloadMusicStream",
             "params": [
                 {
@@ -8155,6 +8235,18 @@
             ],
             "returnType": "AudioStream",
             "description": "Load audio stream (to stream raw audio pcm data)",
+            "custom": false
+        },
+        {
+            "name": "IsAudioStreamReady",
+            "params": [
+                {
+                    "name": "stream",
+                    "typ": "AudioStream"
+                }
+            ],
+            "returnType": "bool",
+            "description": "Checks if an audio stream is ready",
             "custom": false
         },
         {
@@ -8370,6 +8462,30 @@
             "custom": false
         },
         {
+            "name": "AttachAudioMixedProcessor",
+            "params": [
+                {
+                    "name": "processor",
+                    "typ": "AudioCallback"
+                }
+            ],
+            "returnType": "void",
+            "description": "Attach audio stream processor to the entire audio pipeline",
+            "custom": false
+        },
+        {
+            "name": "DetachAudioMixedProcessor",
+            "params": [
+                {
+                    "name": "processor",
+                    "typ": "AudioCallback"
+                }
+            ],
+            "returnType": "void",
+            "description": "Detach audio stream processor from the entire audio pipeline",
+            "custom": false
+        },
+        {
             "name": "rlMatrixMode",
             "params": [
                 {
@@ -8392,7 +8508,7 @@
             "name": "rlPopMatrix",
             "params": [],
             "returnType": "void",
-            "description": "Pop lattest inserted matrix from stack",
+            "description": "Pop latest inserted matrix from stack",
             "custom": false
         },
         {
@@ -9286,7 +9402,7 @@
             "name": "rlglClose",
             "params": [],
             "returnType": "void",
-            "description": "De-inititialize rlgl (buffers, shaders, textures)",
+            "description": "De-initialize rlgl (buffers, shaders, textures)",
             "custom": false
         },
         {
@@ -9570,35 +9686,23 @@
             "custom": false
         },
         {
-            "name": "rlSetVertexAttribute",
+            "name": "TextSplit",
             "params": [
                 {
-                    "name": "index",
-                    "typ": "u32"
+                    "name": "text",
+                    "typ": "[*:0]const u8"
                 },
                 {
-                    "name": "compSize",
-                    "typ": "i32"
+                    "name": "delimiter",
+                    "typ": "u8"
                 },
                 {
-                    "name": "typ",
-                    "typ": "i32"
-                },
-                {
-                    "name": "normalized",
-                    "typ": "bool"
-                },
-                {
-                    "name": "stride",
-                    "typ": "i32"
-                },
-                {
-                    "name": "pointer",
-                    "typ": "*anyopaque"
+                    "name": "count",
+                    "typ": "[*]i32"
                 }
             ],
-            "returnType": "void",
-            "description": "",
+            "returnType": "[*]const [*:0]const u8",
+            "description": "overriden in inject.zig",
             "custom": true
         },
         {
@@ -10026,19 +10130,23 @@
             "custom": false
         },
         {
-            "name": "rlCompileShader",
+            "name": "TextAppend",
             "params": [
                 {
-                    "name": "shaderCode",
+                    "name": "text",
+                    "typ": "[*]u8"
+                },
+                {
+                    "name": "append",
                     "typ": "[*:0]const u8"
                 },
                 {
-                    "name": "typ",
-                    "typ": "i32"
+                    "name": "position",
+                    "typ": "[*]i32"
                 }
             ],
-            "returnType": "u32",
-            "description": "Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)",
+            "returnType": "void",
+            "description": "overriden in inject.zig",
             "custom": true
         },
         {
@@ -10202,7 +10310,7 @@
                 }
             ],
             "returnType": "void",
-            "description": "Dispatch compute shader (equivalent to *draw* for graphics pilepine)",
+            "description": "Dispatch compute shader (equivalent to *draw* for graphics pipeline)",
             "custom": false
         },
         {
@@ -10771,6 +10879,22 @@
             "custom": false
         },
         {
+            "name": "Vector2LineAngle",
+            "params": [
+                {
+                    "name": "start",
+                    "typ": "Vector2"
+                },
+                {
+                    "name": "end",
+                    "typ": "Vector2"
+                }
+            ],
+            "returnType": "f32",
+            "description": "",
+            "custom": false
+        },
+        {
             "name": "Vector2Scale",
             "params": [
                 {
@@ -11137,44 +11261,28 @@
             "custom": false
         },
         {
-            "name": "TextSplit",
+            "name": "Vector3Length",
             "params": [
                 {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "delimiter",
-                    "typ": "u8"
-                },
-                {
-                    "name": "count",
-                    "typ": "[*]i32"
+                    "name": "v",
+                    "typ": "Vector3"
                 }
             ],
-            "returnType": "[*]const [*:0]const u8",
-            "description": "overriden in inject.zig",
-            "custom": true
+            "returnType": "f32",
+            "description": "",
+            "custom": false
         },
         {
-            "name": "TextAppend",
+            "name": "Vector3LengthSqr",
             "params": [
                 {
-                    "name": "text",
-                    "typ": "[*]u8"
-                },
-                {
-                    "name": "append",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "position",
-                    "typ": "[*]i32"
+                    "name": "v",
+                    "typ": "Vector3"
                 }
             ],
-            "returnType": "void",
-            "description": "overriden in inject.zig",
-            "custom": true
+            "returnType": "f32",
+            "description": "",
+            "custom": false
         },
         {
             "name": "Vector3DotProduct",
@@ -13030,7 +13138,7 @@
                 {
                     "name": "MOUSE_CURSOR_RESIZE_ALL",
                     "value": 9,
-                    "description": "The omni-directional resize/move cursor shape"
+                    "description": "The omnidirectional resize/move cursor shape"
                 },
                 {
                     "name": "MOUSE_CURSOR_NOT_ALLOWED",
@@ -13645,7 +13753,7 @@
                 {
                     "name": "CUBEMAP_LAYOUT_LINE_HORIZONTAL",
                     "value": 2,
-                    "description": "Layout is defined by an horizontal line with faces"
+                    "description": "Layout is defined by a horizontal line with faces"
                 },
                 {
                     "name": "CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR",
@@ -13660,7 +13768,7 @@
                 {
                     "name": "CUBEMAP_LAYOUT_PANORAMA",
                     "value": 5,
-                    "description": "Layout is defined by a panorama image (equirectangular map)"
+                    "description": "Layout is defined by a panorama image (equirrectangular map)"
                 }
             ],
             "description": "Cubemap layouts",
@@ -14365,52 +14473,52 @@
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL0",
                     "value": 0,
-                    "description": "Framebuffer attachmment type: color 0"
+                    "description": "Framebuffer attachment type: color 0"
                 },
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL1",
                     "value": 1,
-                    "description": "Framebuffer attachmment type: color 1"
+                    "description": "Framebuffer attachment type: color 1"
                 },
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL2",
                     "value": 2,
-                    "description": "Framebuffer attachmment type: color 2"
+                    "description": "Framebuffer attachment type: color 2"
                 },
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL3",
                     "value": 3,
-                    "description": "Framebuffer attachmment type: color 3"
+                    "description": "Framebuffer attachment type: color 3"
                 },
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL4",
                     "value": 4,
-                    "description": "Framebuffer attachmment type: color 4"
+                    "description": "Framebuffer attachment type: color 4"
                 },
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL5",
                     "value": 5,
-                    "description": "Framebuffer attachmment type: color 5"
+                    "description": "Framebuffer attachment type: color 5"
                 },
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL6",
                     "value": 6,
-                    "description": "Framebuffer attachmment type: color 6"
+                    "description": "Framebuffer attachment type: color 6"
                 },
                 {
                     "name": "RL_ATTACHMENT_COLOR_CHANNEL7",
                     "value": 7,
-                    "description": "Framebuffer attachmment type: color 7"
+                    "description": "Framebuffer attachment type: color 7"
                 },
                 {
                     "name": "RL_ATTACHMENT_DEPTH",
                     "value": 100,
-                    "description": "Framebuffer attachmment type: depth"
+                    "description": "Framebuffer attachment type: depth"
                 },
                 {
                     "name": "RL_ATTACHMENT_STENCIL",
                     "value": 200,
-                    "description": "Framebuffer attachmment type: stencil"
+                    "description": "Framebuffer attachment type: stencil"
                 }
             ],
             "description": "Framebuffer attachment type",
@@ -15246,12 +15354,12 @@
                 {
                     "name": "distance",
                     "typ": "f32",
-                    "description": "Distance to nearest hit"
+                    "description": "Distance to the nearest hit"
                 },
                 {
                     "name": "point",
                     "typ": "Vector3",
-                    "description": "Point of nearest hit"
+                    "description": "Point of the nearest hit"
                 },
                 {
                     "name": "normal",
@@ -16341,77 +16449,77 @@
             "name": "RL_ONE",
             "typ": "i32",
             "value": "1",
-            "description": "GL_ONE  ",
+            "description": "GL_ONE",
             "custom": false
         },
         {
             "name": "RL_SRC_COLOR",
             "typ": "i32",
             "value": "768",
-            "description": "GL_SRC_COLOR            ",
+            "description": "GL_SRC_COLOR",
             "custom": false
         },
         {
             "name": "RL_ONE_MINUS_SRC_COLOR",
             "typ": "i32",
             "value": "769",
-            "description": "GL_ONE_MINUS_SRC_COLOR ",
+            "description": "GL_ONE_MINUS_SRC_COLOR",
             "custom": false
         },
         {
             "name": "RL_SRC_ALPHA",
             "typ": "i32",
             "value": "770",
-            "description": "GL_SRC_ALPHA           ",
+            "description": "GL_SRC_ALPHA",
             "custom": false
         },
         {
             "name": "RL_ONE_MINUS_SRC_ALPHA",
             "typ": "i32",
             "value": "771",
-            "description": "GL_ONE_MINUS_SRC_ALPHA ",
+            "description": "GL_ONE_MINUS_SRC_ALPHA",
             "custom": false
         },
         {
             "name": "RL_DST_ALPHA",
             "typ": "i32",
             "value": "772",
-            "description": "GL_DST_ALPHA           ",
+            "description": "GL_DST_ALPHA",
             "custom": false
         },
         {
             "name": "RL_ONE_MINUS_DST_ALPHA",
             "typ": "i32",
             "value": "773",
-            "description": "GL_ONE_MINUS_DST_ALPHA ",
+            "description": "GL_ONE_MINUS_DST_ALPHA",
             "custom": false
         },
         {
             "name": "RL_DST_COLOR",
             "typ": "i32",
             "value": "774",
-            "description": "GL_DST_COLOR           ",
+            "description": "GL_DST_COLOR",
             "custom": false
         },
         {
             "name": "RL_ONE_MINUS_DST_COLOR",
             "typ": "i32",
             "value": "775",
-            "description": "GL_ONE_MINUS_DST_COLOR ",
+            "description": "GL_ONE_MINUS_DST_COLOR",
             "custom": false
         },
         {
             "name": "RL_SRC_ALPHA_SATURATE",
             "typ": "i32",
             "value": "776",
-            "description": "GL_SRC_ALPHA_SATURATE  ",
+            "description": "GL_SRC_ALPHA_SATURATE",
             "custom": false
         },
         {
             "name": "RL_CONSTANT_COLOR",
             "typ": "i32",
             "value": "32769",
-            "description": "GL_CONSTANT_COLOR          ",
+            "description": "GL_CONSTANT_COLOR",
             "custom": false
         },
         {
@@ -16425,7 +16533,7 @@
             "name": "RL_CONSTANT_ALPHA",
             "typ": "i32",
             "value": "32771",
-            "description": "GL_CONSTANT_ALPHA          ",
+            "description": "GL_CONSTANT_ALPHA",
             "custom": false
         },
         {
@@ -16439,14 +16547,28 @@
             "name": "RL_FUNC_ADD",
             "typ": "i32",
             "value": "32774",
-            "description": "GL_FUNC_ADD             ",
+            "description": "GL_FUNC_ADD",
+            "custom": false
+        },
+        {
+            "name": "RL_MIN",
+            "typ": "i32",
+            "value": "32775",
+            "description": "GL_MIN",
+            "custom": false
+        },
+        {
+            "name": "RL_MAX",
+            "typ": "i32",
+            "value": "32776",
+            "description": "GL_MAX",
             "custom": false
         },
         {
             "name": "RL_FUNC_SUBTRACT",
             "typ": "i32",
             "value": "32778",
-            "description": "GL_FUNC_SUBTRACT        ",
+            "description": "GL_FUNC_SUBTRACT",
             "custom": false
         },
         {
@@ -16460,7 +16582,7 @@
             "name": "RL_BLEND_EQUATION",
             "typ": "i32",
             "value": "32777",
-            "description": "GL_BLEND_EQUATION       ",
+            "description": "GL_BLEND_EQUATION",
             "custom": false
         },
         {
@@ -16474,42 +16596,42 @@
             "name": "RL_BLEND_EQUATION_ALPHA",
             "typ": "i32",
             "value": "34877",
-            "description": "GL_BLEND_EQUATION_ALPHA ",
+            "description": "GL_BLEND_EQUATION_ALPHA",
             "custom": false
         },
         {
             "name": "RL_BLEND_DST_RGB",
             "typ": "i32",
             "value": "32968",
-            "description": "GL_BLEND_DST_RGB        ",
+            "description": "GL_BLEND_DST_RGB",
             "custom": false
         },
         {
             "name": "RL_BLEND_SRC_RGB",
             "typ": "i32",
             "value": "32969",
-            "description": "GL_BLEND_SRC_RGB        ",
+            "description": "GL_BLEND_SRC_RGB",
             "custom": false
         },
         {
             "name": "RL_BLEND_DST_ALPHA",
             "typ": "i32",
             "value": "32970",
-            "description": "GL_BLEND_DST_ALPHA      ",
+            "description": "GL_BLEND_DST_ALPHA",
             "custom": false
         },
         {
             "name": "RL_BLEND_SRC_ALPHA",
             "typ": "i32",
             "value": "32971",
-            "description": "GL_BLEND_SRC_ALPHA                   ",
+            "description": "GL_BLEND_SRC_ALPHA",
             "custom": false
         },
         {
             "name": "RL_BLEND_COLOR",
             "typ": "i32",
             "value": "32773",
-            "description": "GL_BLEND_COLOR               ",
+            "description": "GL_BLEND_COLOR",
             "custom": false
         },
         {
@@ -16649,42 +16771,42 @@
             "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_POSITION",
             "typ": "[]const u8",
             "value": "\"vertexPosition\"",
-            "description": "Binded by default to shader location: 0",
+            "description": "Bound by default to shader location: 0",
             "custom": false
         },
         {
             "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD",
             "typ": "[]const u8",
             "value": "\"vertexTexCoord\"",
-            "description": "Binded by default to shader location: 1",
+            "description": "Bound by default to shader location: 1",
             "custom": false
         },
         {
             "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_NORMAL",
             "typ": "[]const u8",
             "value": "\"vertexNormal\"",
-            "description": "Binded by default to shader location: 2",
+            "description": "Bound by default to shader location: 2",
             "custom": false
         },
         {
             "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_COLOR",
             "typ": "[]const u8",
             "value": "\"vertexColor\"",
-            "description": "Binded by default to shader location: 3",
+            "description": "Bound by default to shader location: 3",
             "custom": false
         },
         {
             "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_TANGENT",
             "typ": "[]const u8",
             "value": "\"vertexTangent\"",
-            "description": "Binded by default to shader location: 4",
+            "description": "Bound by default to shader location: 4",
             "custom": false
         },
         {
             "name": "RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD2",
             "typ": "[]const u8",
             "value": "\"vertexTexCoord2\"",
-            "description": "Binded by default to shader location: 5",
+            "description": "Bound by default to shader location: 5",
             "custom": false
         },
         {

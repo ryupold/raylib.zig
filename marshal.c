@@ -93,6 +93,11 @@ void mSetWindowIcon(Image *image)
 	SetWindowIcon(*image);
 }
 
+void mSetWindowIcons(Image * images, int count)
+{
+	SetWindowIcons(images, count);
+}
+
 void mSetWindowTitle(const char * title)
 {
 	SetWindowTitle(title);
@@ -366,6 +371,11 @@ void mLoadShader(Shader *out, const char * vsFileName, const char * fsFileName)
 void mLoadShaderFromMemory(Shader *out, const char * vsCode, const char * fsCode)
 {
 	*out = LoadShaderFromMemory(vsCode, fsCode);
+}
+
+bool mIsShaderReady(Shader *shader)
+{
+	return IsShaderReady(*shader);
 }
 
 int mGetShaderLocation(Shader *shader, const char * uniformName)
@@ -863,34 +873,9 @@ float mGetGesturePinchAngle(void)
 	return GetGesturePinchAngle();
 }
 
-void mSetCameraMode(Camera3D *camera, int mode)
+void mUpdateCamera(Camera * camera, int mode)
 {
-	SetCameraMode(*camera, mode);
-}
-
-void mUpdateCamera(Camera * camera)
-{
-	UpdateCamera(camera);
-}
-
-void mSetCameraPanControl(int keyPan)
-{
-	SetCameraPanControl(keyPan);
-}
-
-void mSetCameraAltControl(int keyAlt)
-{
-	SetCameraAltControl(keyAlt);
-}
-
-void mSetCameraSmoothZoomControl(int keySmoothZoom)
-{
-	SetCameraSmoothZoomControl(keySmoothZoom);
-}
-
-void mSetCameraMoveControls(int keyFront, int keyBack, int keyRight, int keyLeft, int keyUp, int keyDown)
-{
-	SetCameraMoveControls(keyFront, keyBack, keyRight, keyLeft, keyUp, keyDown);
+	UpdateCamera(camera, mode);
 }
 
 void mSetShapesTexture(Texture2D *texture, Rectangle *source)
@@ -1161,6 +1146,11 @@ void mLoadImageFromTexture(Image *out, Texture2D *texture)
 void mLoadImageFromScreen(Image *out)
 {
 	*out = LoadImageFromScreen();
+}
+
+bool mIsImageReady(Image *image)
+{
+	return IsImageReady(*image);
 }
 
 void mUnloadImage(Image *image)
@@ -1488,9 +1478,19 @@ void mLoadRenderTexture(RenderTexture2D *out, int width, int height)
 	*out = LoadRenderTexture(width, height);
 }
 
+bool mIsTextureReady(Texture2D *texture)
+{
+	return IsTextureReady(*texture);
+}
+
 void mUnloadTexture(Texture2D *texture)
 {
 	UnloadTexture(*texture);
+}
+
+bool mIsRenderTextureReady(RenderTexture2D *target)
+{
+	return IsRenderTextureReady(*target);
 }
 
 void mUnloadRenderTexture(RenderTexture2D *target)
@@ -1651,6 +1651,11 @@ void mLoadFontFromImage(Font *out, Image *image, Color *key, int firstChar)
 void mLoadFontFromMemory(Font *out, const char * fileType, const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount)
 {
 	*out = LoadFontFromMemory(fileType, fileData, dataSize, fontSize, fontChars, glyphCount);
+}
+
+bool mIsFontReady(Font *font)
+{
+	return IsFontReady(*font);
 }
 
 GlyphInfo * mLoadFontData(const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount, int type)
@@ -1943,6 +1948,11 @@ void mLoadModelFromMesh(Model *out, Mesh *mesh)
 	*out = LoadModelFromMesh(*mesh);
 }
 
+bool mIsModelReady(Model *model)
+{
+	return IsModelReady(*model);
+}
+
 void mUnloadModel(Model *model)
 {
 	UnloadModel(*model);
@@ -2103,6 +2113,11 @@ void mLoadMaterialDefault(Material *out)
 	*out = LoadMaterialDefault();
 }
 
+bool mIsMaterialReady(Material *material)
+{
+	return IsMaterialReady(*material);
+}
+
 void mUnloadMaterial(Material *material)
 {
 	UnloadMaterial(*material);
@@ -2213,6 +2228,11 @@ void mLoadWaveFromMemory(Wave *out, const char * fileType, const unsigned char *
 	*out = LoadWaveFromMemory(fileType, fileData, dataSize);
 }
 
+bool mIsWaveReady(Wave *wave)
+{
+	return IsWaveReady(*wave);
+}
+
 void mLoadSound(Sound *out, const char * fileName)
 {
 	*out = LoadSound(fileName);
@@ -2221,6 +2241,11 @@ void mLoadSound(Sound *out, const char * fileName)
 void mLoadSoundFromWave(Sound *out, Wave *wave)
 {
 	*out = LoadSoundFromWave(*wave);
+}
+
+bool mIsSoundReady(Sound *sound)
+{
+	return IsSoundReady(*sound);
 }
 
 void mUpdateSound(Sound *sound, const void * data, int sampleCount)
@@ -2338,6 +2363,11 @@ void mLoadMusicStreamFromMemory(Music *out, const char * fileType, const unsigne
 	*out = LoadMusicStreamFromMemory(fileType, data, dataSize);
 }
 
+bool mIsMusicReady(Music *music)
+{
+	return IsMusicReady(*music);
+}
+
 void mUnloadMusicStream(Music *music)
 {
 	UnloadMusicStream(*music);
@@ -2406,6 +2436,11 @@ float mGetMusicTimePlayed(Music *music)
 void mLoadAudioStream(AudioStream *out, unsigned int sampleRate, unsigned int sampleSize, unsigned int channels)
 {
 	*out = LoadAudioStream(sampleRate, sampleSize, channels);
+}
+
+bool mIsAudioStreamReady(AudioStream *stream)
+{
+	return IsAudioStreamReady(*stream);
 }
 
 void mUnloadAudioStream(AudioStream *stream)
@@ -2481,6 +2516,16 @@ void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor)
 void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor)
 {
 	DetachAudioStreamProcessor(*stream, *processor);
+}
+
+void mAttachAudioMixedProcessor(AudioCallback *processor)
+{
+	AttachAudioMixedProcessor(*processor);
+}
+
+void mDetachAudioMixedProcessor(AudioCallback *processor)
+{
+	DetachAudioMixedProcessor(*processor);
 }
 
 void mrlMatrixMode(int mode)
@@ -3296,6 +3341,11 @@ float mVector2DistanceSqr(Vector2 *v1, Vector2 *v2)
 float mVector2Angle(Vector2 *v1, Vector2 *v2)
 {
 	return Vector2Angle(*v1, *v2);
+}
+
+float mVector2LineAngle(Vector2 *start, Vector2 *end)
+{
+	return Vector2LineAngle(*start, *end);
 }
 
 void mVector2Scale(Vector2 *out, Vector2 *v, float scale)

@@ -438,7 +438,10 @@ fn toZig(allocator: Allocator, c: []const u8) ![]const u8 {
 
     const name = if (raylibToZigType.get(stripped)) |primitive| primitive else stripped;
 
-    return try fmt(allocator, "{s}{s}{s}", .{ pointeR, consT, name });
+    if(isPointer(c)) { 
+        return try fmt(allocator, "{s}{s}{s}", .{ pointeR, consT, name });
+    }
+    return name;
 }
 test "toZig" {
     var arena = std.heap.ArenaAllocator.init(talloc);

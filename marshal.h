@@ -60,8 +60,11 @@ void mMinimizeWindow(void);
 // Set window state: not minimized/maximized (only PLATFORM_DESKTOP)
 void mRestoreWindow(void);
 
-// Set icon for window (only PLATFORM_DESKTOP)
+// Set icon for window (single image, RGBA 32bit, only PLATFORM_DESKTOP)
 void mSetWindowIcon(Image *image);
+
+// Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
+void mSetWindowIcons(Image * images, int count);
 
 // Set title for window (only PLATFORM_DESKTOP)
 void mSetWindowTitle(const char * title);
@@ -227,6 +230,9 @@ void mLoadShader(Shader *out, const char * vsFileName, const char * fsFileName);
 
 // Load shader from code strings and bind default locations
 void mLoadShaderFromMemory(Shader *out, const char * vsCode, const char * fsCode);
+
+// Check if a shader is ready
+bool mIsShaderReady(Shader *shader);
 
 // Get shader uniform location
 int mGetShaderLocation(Shader *shader, const char * uniformName);
@@ -525,23 +531,8 @@ void mGetGesturePinchVector(Vector2 *out);
 // Get gesture pinch angle
 float mGetGesturePinchAngle(void);
 
-// Set camera mode (multiple camera modes available)
-void mSetCameraMode(Camera3D *camera, int mode);
-
 // Update camera position for selected mode
-void mUpdateCamera(Camera * camera);
-
-// Set camera pan key to combine with mouse movement (free camera)
-void mSetCameraPanControl(int keyPan);
-
-// Set camera alt key to combine with mouse movement (free camera)
-void mSetCameraAltControl(int keyAlt);
-
-// Set camera smooth zoom key to combine with mouse (free camera)
-void mSetCameraSmoothZoomControl(int keySmoothZoom);
-
-// Set camera move controls (1st person and 3rd person cameras)
-void mSetCameraMoveControls(int keyFront, int keyBack, int keyRight, int keyLeft, int keyUp, int keyDown);
+void mUpdateCamera(Camera * camera, int mode);
 
 // Set texture and rectangle to be used on shapes drawing
 void mSetShapesTexture(Texture2D *texture, Rectangle *source);
@@ -704,6 +695,9 @@ void mLoadImageFromTexture(Image *out, Texture2D *texture);
 
 // Load image from screen buffer and (screenshot)
 void mLoadImageFromScreen(Image *out);
+
+// Check if an image is ready
+bool mIsImageReady(Image *image);
 
 // Unload image from CPU memory (RAM)
 void mUnloadImage(Image *image);
@@ -900,8 +894,14 @@ void mLoadTextureCubemap(Texture2D *out, Image *image, int layout);
 // Load texture for rendering (framebuffer)
 void mLoadRenderTexture(RenderTexture2D *out, int width, int height);
 
+// Check if a texture is ready
+bool mIsTextureReady(Texture2D *texture);
+
 // Unload texture from GPU memory (VRAM)
 void mUnloadTexture(Texture2D *texture);
+
+// Check if a render texture is ready
+bool mIsRenderTextureReady(RenderTexture2D *target);
 
 // Unload render texture from GPU memory (VRAM)
 void mUnloadRenderTexture(RenderTexture2D *target);
@@ -998,6 +998,9 @@ void mLoadFontFromImage(Font *out, Image *image, Color *key, int firstChar);
 
 // Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
 void mLoadFontFromMemory(Font *out, const char * fileType, const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount);
+
+// Check if a font is ready
+bool mIsFontReady(Font *font);
 
 // Load font data for further use
 GlyphInfo * mLoadFontData(const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount, int type);
@@ -1173,6 +1176,9 @@ void mLoadModel(Model *out, const char * fileName);
 // Load model from generated mesh (default material)
 void mLoadModelFromMesh(Model *out, Mesh *mesh);
 
+// Check if a model is ready
+bool mIsModelReady(Model *model);
+
 // Unload model (including meshes) from memory (RAM and/or VRAM)
 void mUnloadModel(Model *model);
 
@@ -1269,6 +1275,9 @@ Material * mLoadMaterials(const char * fileName, int * materialCount);
 // Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
 void mLoadMaterialDefault(Material *out);
 
+// Check if a material is ready
+bool mIsMaterialReady(Material *material);
+
 // Unload material from GPU memory (VRAM)
 void mUnloadMaterial(Material *material);
 
@@ -1335,11 +1344,17 @@ void mLoadWave(Wave *out, const char * fileName);
 // Load wave from memory buffer, fileType refers to extension: i.e. '.wav'
 void mLoadWaveFromMemory(Wave *out, const char * fileType, const unsigned char * fileData, int dataSize);
 
+// Checks if wave data is ready
+bool mIsWaveReady(Wave *wave);
+
 // Load sound from file
 void mLoadSound(Sound *out, const char * fileName);
 
 // Load sound from wave data
 void mLoadSoundFromWave(Sound *out, Wave *wave);
+
+// Checks if a sound is ready
+bool mIsSoundReady(Sound *sound);
 
 // Update sound buffer with new data
 void mUpdateSound(Sound *sound, const void * data, int sampleCount);
@@ -1410,6 +1425,9 @@ void mLoadMusicStream(Music *out, const char * fileName);
 // Load music stream from data
 void mLoadMusicStreamFromMemory(Music *out, const char * fileType, const unsigned char * data, int dataSize);
 
+// Checks if a music stream is ready
+bool mIsMusicReady(Music *music);
+
 // Unload music stream
 void mUnloadMusicStream(Music *music);
 
@@ -1451,6 +1469,9 @@ float mGetMusicTimePlayed(Music *music);
 
 // Load audio stream (to stream raw audio pcm data)
 void mLoadAudioStream(AudioStream *out, unsigned int sampleRate, unsigned int sampleSize, unsigned int channels);
+
+// Checks if an audio stream is ready
+bool mIsAudioStreamReady(AudioStream *stream);
 
 // Unload audio stream and free memory
 void mUnloadAudioStream(AudioStream *stream);
@@ -1497,13 +1518,19 @@ void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
 // Detach audio stream processor from stream
 void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
 
+// Attach audio stream processor to the entire audio pipeline
+void mAttachAudioMixedProcessor(AudioCallback *processor);
+
+// Detach audio stream processor from the entire audio pipeline
+void mDetachAudioMixedProcessor(AudioCallback *processor);
+
 // Choose the current matrix to be transformed
 void mrlMatrixMode(int mode);
 
 // Push the current matrix to stack
 void mrlPushMatrix(void);
 
-// Pop lattest inserted matrix from stack
+// Pop latest inserted matrix from stack
 void mrlPopMatrix(void);
 
 // Reset current matrix to identity matrix
@@ -1704,7 +1731,7 @@ void mrlSetBlendFactorsSeparate(int glSrcRGB, int glDstRGB, int glSrcAlpha, int 
 // Initialize rlgl (buffers, shaders, textures, states)
 void mrlglInit(int width, int height);
 
-// De-inititialize rlgl (buffers, shaders, textures)
+// De-initialize rlgl (buffers, shaders, textures)
 void mrlglClose(void);
 
 // Load OpenGL extensions (loader function required)
@@ -1872,7 +1899,7 @@ void mrlSetShader(unsigned int id, int * locs);
 // Load compute shader program
 unsigned int mrlLoadComputeShaderProgram(unsigned int shaderId);
 
-// Dispatch compute shader (equivalent to *draw* for graphics pilepine)
+// Dispatch compute shader (equivalent to *draw* for graphics pipeline)
 void mrlComputeShaderDispatch(unsigned int groupX, unsigned int groupY, unsigned int groupZ);
 
 // Load shader storage buffer object (SSBO)
@@ -1985,6 +2012,9 @@ float mVector2DistanceSqr(Vector2 *v1, Vector2 *v2);
 
 // 
 float mVector2Angle(Vector2 *v1, Vector2 *v2);
+
+// 
+float mVector2LineAngle(Vector2 *start, Vector2 *end);
 
 // 
 void mVector2Scale(Vector2 *out, Vector2 *v, float scale);

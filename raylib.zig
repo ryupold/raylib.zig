@@ -1069,12 +1069,23 @@ pub fn RestoreWindow() void {
     raylib.mRestoreWindow();
 }
 
-/// Set icon for window (only PLATFORM_DESKTOP)
+/// Set icon for window (single image, RGBA 32bit, only PLATFORM_DESKTOP)
 pub fn SetWindowIcon(
     image: Image,
 ) void {
     raylib.mSetWindowIcon(
         @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+    );
+}
+
+/// Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
+pub fn SetWindowIcons(
+    images: ?[*]Image,
+    count: i32,
+) void {
+    raylib.mSetWindowIcons(
+        @intToPtr([*c]raylib.Image, @ptrToInt(images)),
+        count,
     );
 }
 
@@ -1501,6 +1512,15 @@ pub fn LoadShaderFromMemory(
         @intToPtr([*c]const u8, @ptrToInt(fsCode)),
     );
     return out;
+}
+
+/// Check if a shader is ready
+pub fn IsShaderReady(
+    shader: Shader,
+) bool {
+    return raylib.mIsShaderReady(
+        @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
+    );
 }
 
 /// Get shader uniform location
@@ -2479,60 +2499,14 @@ pub fn GetGesturePinchAngle() f32 {
     return raylib.mGetGesturePinchAngle();
 }
 
-/// Set camera mode (multiple camera modes available)
-pub fn SetCameraMode(
-    camera: Camera3D,
+/// Update camera position for selected mode
+pub fn UpdateCamera(
+    camera: *Camera3D,
     mode: CameraMode,
 ) void {
-    raylib.mSetCameraMode(
-        @intToPtr([*c]raylib.Camera3D, @ptrToInt(&camera)),
+    raylib.mUpdateCamera(
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
         @enumToInt(mode),
-    );
-}
-
-/// Set camera pan key to combine with mouse movement (free camera)
-pub fn SetCameraPanControl(
-    keyPan: i32,
-) void {
-    raylib.mSetCameraPanControl(
-        keyPan,
-    );
-}
-
-/// Set camera alt key to combine with mouse movement (free camera)
-pub fn SetCameraAltControl(
-    keyAlt: i32,
-) void {
-    raylib.mSetCameraAltControl(
-        keyAlt,
-    );
-}
-
-/// Set camera smooth zoom key to combine with mouse (free camera)
-pub fn SetCameraSmoothZoomControl(
-    keySmoothZoom: i32,
-) void {
-    raylib.mSetCameraSmoothZoomControl(
-        keySmoothZoom,
-    );
-}
-
-/// Set camera move controls (1st person and 3rd person cameras)
-pub fn SetCameraMoveControls(
-    keyFront: i32,
-    keyBack: i32,
-    keyRight: i32,
-    keyLeft: i32,
-    keyUp: i32,
-    keyDown: i32,
-) void {
-    raylib.mSetCameraMoveControls(
-        keyFront,
-        keyBack,
-        keyRight,
-        keyLeft,
-        keyUp,
-        keyDown,
     );
 }
 
@@ -3356,6 +3330,15 @@ pub fn LoadImageFromScreen() Image {
     return out;
 }
 
+/// Check if an image is ready
+pub fn IsImageReady(
+    image: Image,
+) bool {
+    return raylib.mIsImageReady(
+        @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+    );
+}
+
 /// Unload image from CPU memory (RAM)
 pub fn UnloadImage(
     image: Image,
@@ -3857,19 +3840,6 @@ pub fn ImageColorBrightness(
     );
 }
 
-/// Modify image color: replace color
-pub fn ImageColorReplace(
-    image: *Image,
-    color: Color,
-    replace: Color,
-) void {
-    raylib.mImageColorReplace(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&replace)),
-    );
-}
-
 /// Load color data from image as a Color array (RGBA - 32bit)
 pub fn LoadImageColors(
     image: Image,
@@ -4254,12 +4224,30 @@ pub fn LoadRenderTexture(
     return out;
 }
 
+/// Check if a texture is ready
+pub fn IsTextureReady(
+    texture: Texture2D,
+) bool {
+    return raylib.mIsTextureReady(
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+    );
+}
+
 /// Unload texture from GPU memory (VRAM)
 pub fn UnloadTexture(
     texture: Texture2D,
 ) void {
     raylib.mUnloadTexture(
         @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
+    );
+}
+
+/// Check if a render texture is ready
+pub fn IsRenderTextureReady(
+    target: RenderTexture2D,
+) bool {
+    return raylib.mIsRenderTextureReady(
+        @intToPtr([*c]raylib.RenderTexture2D, @ptrToInt(&target)),
     );
 }
 
@@ -4296,12 +4284,16 @@ pub fn UpdateTextureRec(
     );
 }
 
-/// Generate GPU mipmaps for a texture
-pub fn GenTextureMipmaps(
-    texture: *Texture2D,
+/// Modify image color: replace color
+pub fn ImageColorReplace(
+    image: *Image,
+    color: Color,
+    replace: Color,
 ) void {
-    raylib.mGenTextureMipmaps(
-        @intToPtr([*c]raylib.Texture2D, @ptrToInt(texture)),
+    raylib.mImageColorReplace(
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&replace)),
     );
 }
 
@@ -4701,12 +4693,21 @@ pub fn LoadFontFromMemory(
     return out;
 }
 
-///
-pub fn Vector3Length(
-    v: Vector3,
-) f32 {
-    return raylib.mVector3Length(
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+/// Check if a font is ready
+pub fn IsFontReady(
+    font: Font,
+) bool {
+    return raylib.mIsFontReady(
+        @intToPtr([*c]raylib.Font, @ptrToInt(&font)),
+    );
+}
+
+/// Generate GPU mipmaps for a texture
+pub fn GenTextureMipmaps(
+    texture: *Texture2D,
+) void {
+    raylib.mGenTextureMipmaps(
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(texture)),
     );
 }
 
@@ -5050,12 +5051,25 @@ pub fn TextLength(
     );
 }
 
-///
-pub fn Vector3LengthSqr(
-    v: Vector3,
-) f32 {
-    return raylib.mVector3LengthSqr(
-        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+/// Load font data for further use
+pub fn LoadFontData(
+    fileData: [*:0]const u8,
+    dataSize: i32,
+    fontSize: i32,
+    fontChars: [*]i32,
+    glyphCount: i32,
+    typ: i32,
+) [*]GlyphInfo {
+    return @ptrCast(
+        [*]GlyphInfo,
+        raylib.mLoadFontData(
+            @intToPtr([*c]const u8, @ptrToInt(fileData)),
+            dataSize,
+            fontSize,
+            @ptrCast([*c]i32, fontChars),
+            glyphCount,
+            typ,
+        ),
     );
 }
 
@@ -5107,34 +5121,33 @@ pub fn TextInsert(
     );
 }
 
-/// Load font data for further use
-pub fn LoadFontData(
-    fileData: [*:0]const u8,
-    dataSize: i32,
-    fontSize: i32,
-    fontChars: [*]i32,
-    glyphCount: i32,
+///
+pub fn rlSetVertexAttribute(
+    index: u32,
+    compSize: i32,
     typ: i32,
-) [*]GlyphInfo {
-    return @ptrCast(
-        [*]GlyphInfo,
-        raylib.mLoadFontData(
-            @intToPtr([*c]const u8, @ptrToInt(fileData)),
-            dataSize,
-            fontSize,
-            @ptrCast([*c]i32, fontChars),
-            glyphCount,
-            typ,
-        ),
+    normalized: bool,
+    stride: i32,
+    pointer: *anyopaque,
+) void {
+    raylib.mrlSetVertexAttribute(
+        index,
+        compSize,
+        typ,
+        normalized,
+        stride,
+        @ptrCast([*c]anyopaque, pointer),
     );
 }
 
-/// Update camera position for selected mode
-pub fn UpdateCamera(
-    camera: *Camera3D,
-) void {
-    raylib.mUpdateCamera(
-        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
+/// Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+pub fn rlCompileShader(
+    shaderCode: [*:0]const u8,
+    typ: i32,
+) u32 {
+    return raylib.mrlCompileShader(
+        @intToPtr([*c]const u8, @ptrToInt(shaderCode)),
+        typ,
     );
 }
 
@@ -5541,6 +5554,15 @@ pub fn LoadModelFromMesh(
         @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
     );
     return out;
+}
+
+/// Check if a model is ready
+pub fn IsModelReady(
+    model: Model,
+) bool {
+    return raylib.mIsModelReady(
+        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
+    );
 }
 
 /// Unload model (including meshes) from memory (RAM and/or VRAM)
@@ -6009,6 +6031,15 @@ pub fn LoadMaterialDefault() Material {
     return out;
 }
 
+/// Check if a material is ready
+pub fn IsMaterialReady(
+    material: Material,
+) bool {
+    return raylib.mIsMaterialReady(
+        @intToPtr([*c]raylib.Material, @ptrToInt(&material)),
+    );
+}
+
 /// Unload material from GPU memory (VRAM)
 pub fn UnloadMaterial(
     material: Material,
@@ -6277,6 +6308,15 @@ pub fn LoadWaveFromMemory(
     return out;
 }
 
+/// Checks if wave data is ready
+pub fn IsWaveReady(
+    wave: Wave,
+) bool {
+    return raylib.mIsWaveReady(
+        @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
+    );
+}
+
 /// Load sound from file
 pub fn LoadSound(
     fileName: [*:0]const u8,
@@ -6299,6 +6339,15 @@ pub fn LoadSoundFromWave(
         @intToPtr([*c]raylib.Wave, @ptrToInt(&wave)),
     );
     return out;
+}
+
+/// Checks if a sound is ready
+pub fn IsSoundReady(
+    sound: Sound,
+) bool {
+    return raylib.mIsSoundReady(
+        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
+    );
 }
 
 /// Update sound buffer with new data
@@ -6540,6 +6589,15 @@ pub fn LoadMusicStreamFromMemory(
     return out;
 }
 
+/// Checks if a music stream is ready
+pub fn IsMusicReady(
+    music: Music,
+) bool {
+    return raylib.mIsMusicReady(
+        @intToPtr([*c]raylib.Music, @ptrToInt(&music)),
+    );
+}
+
 /// Unload music stream
 pub fn UnloadMusicStream(
     music: Music,
@@ -6679,6 +6737,15 @@ pub fn LoadAudioStream(
         channels,
     );
     return out;
+}
+
+/// Checks if an audio stream is ready
+pub fn IsAudioStreamReady(
+    stream: AudioStream,
+) bool {
+    return raylib.mIsAudioStreamReady(
+        @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
+    );
 }
 
 /// Unload audio stream and free memory
@@ -6832,6 +6899,24 @@ pub fn DetachAudioStreamProcessor(
     );
 }
 
+/// Attach audio stream processor to the entire audio pipeline
+pub fn AttachAudioMixedProcessor(
+    processor: AudioCallback,
+) void {
+    raylib.mAttachAudioMixedProcessor(
+        processor,
+    );
+}
+
+/// Detach audio stream processor from the entire audio pipeline
+pub fn DetachAudioMixedProcessor(
+    processor: AudioCallback,
+) void {
+    raylib.mDetachAudioMixedProcessor(
+        processor,
+    );
+}
+
 /// Choose the current matrix to be transformed
 pub fn rlMatrixMode(
     mode: i32,
@@ -6846,7 +6931,7 @@ pub fn rlPushMatrix() void {
     raylib.mrlPushMatrix();
 }
 
-/// Pop lattest inserted matrix from stack
+/// Pop latest inserted matrix from stack
 pub fn rlPopMatrix() void {
     raylib.mrlPopMatrix();
 }
@@ -7435,7 +7520,7 @@ pub fn rlglInit(
     );
 }
 
-/// De-inititialize rlgl (buffers, shaders, textures)
+/// De-initialize rlgl (buffers, shaders, textures)
 pub fn rlglClose() void {
     raylib.mrlglClose();
 }
@@ -7640,25 +7725,6 @@ pub fn rlUnloadVertexBuffer(
 ) void {
     raylib.mrlUnloadVertexBuffer(
         vboId,
-    );
-}
-
-///
-pub fn rlSetVertexAttribute(
-    index: u32,
-    compSize: i32,
-    typ: i32,
-    normalized: bool,
-    stride: i32,
-    pointer: *anyopaque,
-) void {
-    raylib.mrlSetVertexAttribute(
-        index,
-        compSize,
-        typ,
-        normalized,
-        stride,
-        @ptrCast([*c]anyopaque, pointer),
     );
 }
 
@@ -7946,17 +8012,6 @@ pub fn rlLoadShaderCode(
     );
 }
 
-/// Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
-pub fn rlCompileShader(
-    shaderCode: [*:0]const u8,
-    typ: i32,
-) u32 {
-    return raylib.mrlCompileShader(
-        @intToPtr([*c]const u8, @ptrToInt(shaderCode)),
-        typ,
-    );
-}
-
 /// Load custom shader program
 pub fn rlLoadShaderProgram(
     vShaderId: u32,
@@ -8056,7 +8111,7 @@ pub fn rlLoadComputeShaderProgram(
     );
 }
 
-/// Dispatch compute shader (equivalent to *draw* for graphics pilepine)
+/// Dispatch compute shader (equivalent to *draw* for graphics pipeline)
 pub fn rlComputeShaderDispatch(
     groupX: u32,
     groupY: u32,
@@ -8491,6 +8546,17 @@ pub fn Vector2Angle(
 }
 
 ///
+pub fn Vector2LineAngle(
+    start: Vector2,
+    end: Vector2,
+) f32 {
+    return raylib.mVector2LineAngle(
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&start)),
+        @intToPtr([*c]raylib.Vector2, @ptrToInt(&end)),
+    );
+}
+
+///
 pub fn Vector2Scale(
     v: Vector2,
     scale: f32,
@@ -8811,6 +8877,24 @@ pub fn Vector3Perpendicular(
         @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
     );
     return out;
+}
+
+///
+pub fn Vector3Length(
+    v: Vector3,
+) f32 {
+    return raylib.mVector3Length(
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+    );
+}
+
+///
+pub fn Vector3LengthSqr(
+    v: Vector3,
+) f32 {
+    return raylib.mVector3LengthSqr(
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&v)),
+    );
 }
 
 ///
@@ -9934,9 +10018,9 @@ pub const Ray = extern struct {
 pub const RayCollision = extern struct {
     /// Did the ray hit something?
     hit: bool,
-    /// Distance to nearest hit
+    /// Distance to the nearest hit
     distance: f32,
-    /// Point of nearest hit
+    /// Point of the nearest hit
     point: Vector3,
     /// Surface normal of hit
     normal: Vector3,
@@ -10426,7 +10510,7 @@ pub const MouseCursor = enum(i32) {
     MOUSE_CURSOR_RESIZE_NWSE = 7,
     /// The top-right to bottom-left diagonal resize/move arrow shape
     MOUSE_CURSOR_RESIZE_NESW = 8,
-    /// The omni-directional resize/move cursor shape
+    /// The omnidirectional resize/move cursor shape
     MOUSE_CURSOR_RESIZE_ALL = 9,
     /// The operation-not-allowed shape
     MOUSE_CURSOR_NOT_ALLOWED = 10,
@@ -10684,13 +10768,13 @@ pub const CubemapLayout = enum(i32) {
     CUBEMAP_LAYOUT_AUTO_DETECT = 0,
     /// Layout is defined by a vertical line with faces
     CUBEMAP_LAYOUT_LINE_VERTICAL = 1,
-    /// Layout is defined by an horizontal line with faces
+    /// Layout is defined by a horizontal line with faces
     CUBEMAP_LAYOUT_LINE_HORIZONTAL = 2,
     /// Layout is defined by a 3x4 cross with cubemap faces
     CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR = 3,
     /// Layout is defined by a 4x3 cross with cubemap faces
     CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE = 4,
-    /// Layout is defined by a panorama image (equirectangular map)
+    /// Layout is defined by a panorama image (equirrectangular map)
     CUBEMAP_LAYOUT_PANORAMA = 5,
 };
 
@@ -10990,25 +11074,25 @@ pub const rlShaderAttributeDataType = enum(i32) {
 
 /// Framebuffer attachment type
 pub const rlFramebufferAttachType = enum(i32) {
-    /// Framebuffer attachmment type: color 0
+    /// Framebuffer attachment type: color 0
     RL_ATTACHMENT_COLOR_CHANNEL0 = 0,
-    /// Framebuffer attachmment type: color 1
+    /// Framebuffer attachment type: color 1
     RL_ATTACHMENT_COLOR_CHANNEL1 = 1,
-    /// Framebuffer attachmment type: color 2
+    /// Framebuffer attachment type: color 2
     RL_ATTACHMENT_COLOR_CHANNEL2 = 2,
-    /// Framebuffer attachmment type: color 3
+    /// Framebuffer attachment type: color 3
     RL_ATTACHMENT_COLOR_CHANNEL3 = 3,
-    /// Framebuffer attachmment type: color 4
+    /// Framebuffer attachment type: color 4
     RL_ATTACHMENT_COLOR_CHANNEL4 = 4,
-    /// Framebuffer attachmment type: color 5
+    /// Framebuffer attachment type: color 5
     RL_ATTACHMENT_COLOR_CHANNEL5 = 5,
-    /// Framebuffer attachmment type: color 6
+    /// Framebuffer attachment type: color 6
     RL_ATTACHMENT_COLOR_CHANNEL6 = 6,
-    /// Framebuffer attachmment type: color 7
+    /// Framebuffer attachment type: color 7
     RL_ATTACHMENT_COLOR_CHANNEL7 = 7,
-    /// Framebuffer attachmment type: depth
+    /// Framebuffer attachment type: depth
     RL_ATTACHMENT_DEPTH = 100,
-    /// Framebuffer attachmment type: stencil
+    /// Framebuffer attachment type: stencil
     RL_ATTACHMENT_STENCIL = 200,
 };
 
@@ -11318,6 +11402,12 @@ pub const RL_ONE_MINUS_CONSTANT_ALPHA: i32 = 32772;
 /// GL_FUNC_ADD
 pub const RL_FUNC_ADD: i32 = 32774;
 
+/// GL_MIN
+pub const RL_MIN: i32 = 32775;
+
+/// GL_MAX
+pub const RL_MAX: i32 = 32776;
+
 /// GL_FUNC_SUBTRACT
 pub const RL_FUNC_SUBTRACT: i32 = 32778;
 
@@ -11405,22 +11495,22 @@ pub const GL_LUMINANCE: i32 = 6409;
 ///
 pub const GL_LUMINANCE_ALPHA: i32 = 6410;
 
-/// Binded by default to shader location: 0
+/// Bound by default to shader location: 0
 pub const RL_DEFAULT_SHADER_ATTRIB_NAME_POSITION: []const u8 = "vertexPosition";
 
-/// Binded by default to shader location: 1
+/// Bound by default to shader location: 1
 pub const RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD: []const u8 = "vertexTexCoord";
 
-/// Binded by default to shader location: 2
+/// Bound by default to shader location: 2
 pub const RL_DEFAULT_SHADER_ATTRIB_NAME_NORMAL: []const u8 = "vertexNormal";
 
-/// Binded by default to shader location: 3
+/// Bound by default to shader location: 3
 pub const RL_DEFAULT_SHADER_ATTRIB_NAME_COLOR: []const u8 = "vertexColor";
 
-/// Binded by default to shader location: 4
+/// Bound by default to shader location: 4
 pub const RL_DEFAULT_SHADER_ATTRIB_NAME_TANGENT: []const u8 = "vertexTangent";
 
-/// Binded by default to shader location: 5
+/// Bound by default to shader location: 5
 pub const RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD2: []const u8 = "vertexTexCoord2";
 
 /// model-view-projection matrix
