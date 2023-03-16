@@ -188,6 +188,7 @@ pub fn parseRaylibFunction(allocator: Allocator, func: RaylibFunction) !Function
     if (func.params) |params| {
         for (params) |p| {
             const t = try toZig(allocator, p.@"type");
+           
             try args.append(.{
                 .name = p.name,
                 .typ = t,
@@ -471,7 +472,7 @@ const raylibToZigType = std.ComptimeStringMap([]const u8, .{
 
 const fixedMapping = std.ComptimeStringMap([]const u8, .{
     .{ "void *", "*anyopaque" },
-    .{ "const void *", "*anyopaque" },
+    .{ "const void *", "*const anyopaque" },
     .{ "const unsigned char *", "[*:0]const u8" },
     .{ "const char *", "[*:0]const u8" },
     .{ "const char **", "[*]const [*:0]const u8" },

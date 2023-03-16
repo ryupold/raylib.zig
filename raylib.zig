@@ -1549,14 +1549,14 @@ pub fn GetShaderLocationAttrib(
 pub fn SetShaderValue(
     shader: Shader,
     locIndex: i32,
-    value: *anyopaque,
-    uniformType: i32,
+    value: *const anyopaque,
+    uniformType: ShaderUniformDataType,
 ) void {
     raylib.mSetShaderValue(
         @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
         locIndex,
-        @ptrCast([*c]anyopaque, value),
-        uniformType,
+        value,
+        @enumToInt(uniformType),
     );
 }
 
@@ -1564,14 +1564,14 @@ pub fn SetShaderValue(
 pub fn SetShaderValueV(
     shader: Shader,
     locIndex: i32,
-    value: *anyopaque,
+    value: *const anyopaque,
     uniformType: i32,
     count: i32,
 ) void {
     raylib.mSetShaderValueV(
         @intToPtr([*c]raylib.Shader, @ptrToInt(&shader)),
         locIndex,
-        @ptrCast([*c]anyopaque, value),
+        value,
         uniformType,
         count,
     );
@@ -1825,7 +1825,7 @@ pub fn SaveFileData(
 ) bool {
     return raylib.mSaveFileData(
         @intToPtr([*c]const u8, @ptrToInt(fileName)),
-        @ptrCast([*c]anyopaque, data),
+        data,
         bytesToWrite,
     );
 }
@@ -4263,11 +4263,11 @@ pub fn UnloadRenderTexture(
 /// Update GPU texture with new data
 pub fn UpdateTexture(
     texture: Texture2D,
-    pixels: *anyopaque,
+    pixels: *const anyopaque,
 ) void {
     raylib.mUpdateTexture(
         @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
-        @ptrCast([*c]anyopaque, pixels),
+        pixels,
     );
 }
 
@@ -4275,12 +4275,12 @@ pub fn UpdateTexture(
 pub fn UpdateTextureRec(
     texture: Texture2D,
     rec: Rectangle,
-    pixels: *anyopaque,
+    pixels: *const anyopaque,
 ) void {
     raylib.mUpdateTextureRec(
         @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
-        @ptrCast([*c]anyopaque, pixels),
+        pixels,
     );
 }
 
@@ -4584,7 +4584,7 @@ pub fn GetPixelColor(
     var out: Color = undefined;
     raylib.mGetPixelColor(
         @ptrCast([*c]raylib.Color, &out),
-        @ptrCast([*c]anyopaque, srcPtr),
+        srcPtr,
         format,
     );
     return out;
@@ -4597,7 +4597,7 @@ pub fn SetPixelColor(
     format: i32,
 ) void {
     raylib.mSetPixelColor(
-        @ptrCast([*c]anyopaque, dstPtr),
+        dstPtr,
         @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
         format,
     );
@@ -5136,7 +5136,7 @@ pub fn rlSetVertexAttribute(
         typ,
         normalized,
         stride,
-        @ptrCast([*c]anyopaque, pointer),
+        pointer,
     );
 }
 
@@ -5750,14 +5750,14 @@ pub fn UploadMesh(
 pub fn UpdateMeshBuffer(
     mesh: Mesh,
     index: i32,
-    data: *anyopaque,
+    data: *const anyopaque,
     dataSize: i32,
     offset: i32,
 ) void {
     raylib.mUpdateMeshBuffer(
         @intToPtr([*c]raylib.Mesh, @ptrToInt(&mesh)),
         index,
-        @ptrCast([*c]anyopaque, data),
+        data,
         dataSize,
         offset,
     );
@@ -6353,12 +6353,12 @@ pub fn IsSoundReady(
 /// Update sound buffer with new data
 pub fn UpdateSound(
     sound: Sound,
-    data: *anyopaque,
+    data: *const anyopaque,
     sampleCount: i32,
 ) void {
     raylib.mUpdateSound(
         @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
-        @ptrCast([*c]anyopaque, data),
+        data,
         sampleCount,
     );
 }
@@ -6760,12 +6760,12 @@ pub fn UnloadAudioStream(
 /// Update audio stream buffers with data
 pub fn UpdateAudioStream(
     stream: AudioStream,
-    data: *anyopaque,
+    data: *const anyopaque,
     frameCount: i32,
 ) void {
     raylib.mUpdateAudioStream(
         @intToPtr([*c]raylib.AudioStream, @ptrToInt(&stream)),
-        @ptrCast([*c]anyopaque, data),
+        data,
         frameCount,
     );
 }
@@ -7530,7 +7530,7 @@ pub fn rlLoadExtensions(
     loader: *anyopaque,
 ) void {
     raylib.mrlLoadExtensions(
-        @ptrCast([*c]anyopaque, loader),
+        loader,
     );
 }
 
@@ -7656,12 +7656,12 @@ pub fn rlLoadVertexArray() u32 {
 
 /// Load a vertex buffer attribute
 pub fn rlLoadVertexBuffer(
-    buffer: *anyopaque,
+    buffer: *const anyopaque,
     size: i32,
     dynamic: bool,
 ) u32 {
     return raylib.mrlLoadVertexBuffer(
-        @ptrCast([*c]anyopaque, buffer),
+        buffer,
         size,
         dynamic,
     );
@@ -7669,12 +7669,12 @@ pub fn rlLoadVertexBuffer(
 
 /// Load a new attributes element buffer
 pub fn rlLoadVertexBufferElement(
-    buffer: *anyopaque,
+    buffer: *const anyopaque,
     size: i32,
     dynamic: bool,
 ) u32 {
     return raylib.mrlLoadVertexBufferElement(
-        @ptrCast([*c]anyopaque, buffer),
+        buffer,
         size,
         dynamic,
     );
@@ -7683,13 +7683,13 @@ pub fn rlLoadVertexBufferElement(
 /// Update GPU buffer with new data
 pub fn rlUpdateVertexBuffer(
     bufferId: u32,
-    data: *anyopaque,
+    data: *const anyopaque,
     dataSize: i32,
     offset: i32,
 ) void {
     raylib.mrlUpdateVertexBuffer(
         bufferId,
-        @ptrCast([*c]anyopaque, data),
+        data,
         dataSize,
         offset,
     );
@@ -7698,13 +7698,13 @@ pub fn rlUpdateVertexBuffer(
 /// Update vertex buffer elements with new data
 pub fn rlUpdateVertexBufferElements(
     id: u32,
-    data: *anyopaque,
+    data: *const anyopaque,
     dataSize: i32,
     offset: i32,
 ) void {
     raylib.mrlUpdateVertexBufferElements(
         id,
-        @ptrCast([*c]anyopaque, data),
+        data,
         dataSize,
         offset,
     );
@@ -7742,13 +7742,13 @@ pub fn rlSetVertexAttributeDivisor(
 /// Set vertex attribute default value
 pub fn rlSetVertexAttributeDefault(
     locIndex: i32,
-    value: *anyopaque,
+    value: *const anyopaque,
     attribType: i32,
     count: i32,
 ) void {
     raylib.mrlSetVertexAttributeDefault(
         locIndex,
-        @ptrCast([*c]anyopaque, value),
+        value,
         attribType,
         count,
     );
@@ -7769,12 +7769,12 @@ pub fn rlDrawVertexArray(
 pub fn rlDrawVertexArrayElements(
     offset: i32,
     count: i32,
-    buffer: *anyopaque,
+    buffer: *const anyopaque,
 ) void {
     raylib.mrlDrawVertexArrayElements(
         offset,
         count,
-        @ptrCast([*c]anyopaque, buffer),
+        buffer,
     );
 }
 
@@ -7795,27 +7795,27 @@ pub fn rlDrawVertexArrayInstanced(
 pub fn rlDrawVertexArrayElementsInstanced(
     offset: i32,
     count: i32,
-    buffer: *anyopaque,
+    buffer: *const anyopaque,
     instances: i32,
 ) void {
     raylib.mrlDrawVertexArrayElementsInstanced(
         offset,
         count,
-        @ptrCast([*c]anyopaque, buffer),
+        buffer,
         instances,
     );
 }
 
 /// Load texture in GPU
 pub fn rlLoadTexture(
-    data: *anyopaque,
+    data: *const anyopaque,
     width: i32,
     height: i32,
     format: i32,
     mipmapCount: i32,
 ) u32 {
     return raylib.mrlLoadTexture(
-        @ptrCast([*c]anyopaque, data),
+        data,
         width,
         height,
         format,
@@ -7838,12 +7838,12 @@ pub fn rlLoadTextureDepth(
 
 /// Load texture cubemap
 pub fn rlLoadTextureCubemap(
-    data: *anyopaque,
+    data: *const anyopaque,
     size: i32,
     format: i32,
 ) u32 {
     return raylib.mrlLoadTextureCubemap(
-        @ptrCast([*c]anyopaque, data),
+        data,
         size,
         format,
     );
@@ -7857,7 +7857,7 @@ pub fn rlUpdateTexture(
     width: i32,
     height: i32,
     format: i32,
-    data: *anyopaque,
+    data: *const anyopaque,
 ) void {
     raylib.mrlUpdateTexture(
         id,
@@ -7866,7 +7866,7 @@ pub fn rlUpdateTexture(
         width,
         height,
         format,
-        @ptrCast([*c]anyopaque, data),
+        data,
     );
 }
 
@@ -8057,13 +8057,13 @@ pub fn rlGetLocationAttrib(
 /// Set shader value uniform
 pub fn rlSetUniform(
     locIndex: i32,
-    value: *anyopaque,
+    value: *const anyopaque,
     uniformType: i32,
     count: i32,
 ) void {
     raylib.mrlSetUniform(
         locIndex,
-        @ptrCast([*c]anyopaque, value),
+        value,
         uniformType,
         count,
     );
@@ -8127,12 +8127,12 @@ pub fn rlComputeShaderDispatch(
 /// Load shader storage buffer object (SSBO)
 pub fn rlLoadShaderBuffer(
     size: u32,
-    data: *anyopaque,
+    data: *const anyopaque,
     usageHint: i32,
 ) u32 {
     return raylib.mrlLoadShaderBuffer(
         size,
-        @ptrCast([*c]anyopaque, data),
+        data,
         usageHint,
     );
 }
@@ -8149,13 +8149,13 @@ pub fn rlUnloadShaderBuffer(
 /// Update SSBO buffer data
 pub fn rlUpdateShaderBuffer(
     id: u32,
-    data: *anyopaque,
+    data: *const anyopaque,
     dataSize: u32,
     offset: u32,
 ) void {
     raylib.mrlUpdateShaderBuffer(
         id,
-        @ptrCast([*c]anyopaque, data),
+        data,
         dataSize,
         offset,
     );
@@ -8181,7 +8181,7 @@ pub fn rlReadShaderBuffer(
 ) void {
     raylib.mrlReadShaderBuffer(
         id,
-        @ptrCast([*c]anyopaque, dest),
+        dest,
         count,
         offset,
     );

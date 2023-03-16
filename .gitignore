@@ -54,3 +54,5 @@ dkms.conf
 zig-cache/
 
 .vscode/settings.json
+
+.DS_Store

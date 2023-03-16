@@ -202,7 +202,10 @@ fn writeFunctions(
             } else if (bindings.containsStruct(stripType(param.typ))) {
                 try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]raylib.{s}, @ptrToInt(&{s})),\n", .{ stripType(param.typ), param.name }));
             } else if (isPointer(param.typ)) {
-                if (isConst(param.typ)) {
+                if(std.mem.endsWith(u8, param.typ, "anyopaque")) {
+                    try file.writeAll(try allocPrint(allocator, "{s},\n", .{param.name}));    
+                }
+                else if (isConst(param.typ)) {
                     try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]const {s}, @ptrToInt({s})),\n", .{ stripType(param.typ), param.name }));
                 } else {
                     try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]{s}, {s}),\n", .{ stripType(param.typ), param.name }));
