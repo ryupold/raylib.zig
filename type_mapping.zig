@@ -479,6 +479,7 @@ const fixedMapping = std.ComptimeStringMap([]const u8, .{
     .{ "char **", "[*][*:0]u8" },
     .{ "rAudioBuffer *", "*anyopaque" },
     .{ "rAudioProcessor *", "*anyopaque" },
+    .{ "Image *", "*Image" },
 });
 
 //--- Raylib parser JSONs -------------------------------------------------------------------------

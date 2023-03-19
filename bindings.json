@@ -164,7 +164,7 @@
             "params": [
                 {
                     "name": "images",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "count",
@@ -3773,7 +3773,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "newFormat",
@@ -3789,7 +3789,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "fill",
@@ -3805,7 +3805,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "crop",
@@ -3821,7 +3821,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "threshold",
@@ -3837,7 +3837,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "color",
@@ -3857,7 +3857,7 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "alphaMask",
@@ -3873,24 +3873,12 @@
             "params": [
                 {
                     "name": "image",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 }
             ],
             "returnType": "void",
             "description": "Premultiply alpha channel",
             "custom": false
-        },
-        {
-            "name": "TextFormat",
-            "params": [
-                {
-                    "name": "text",
-                    "typ": "[*:0]const u8"
-                }
-            ],
-            "returnType": "[*:0]const u8",
-            "description": "rewritten in inject.zig",
-            "custom": true
         },
         {
             "name": "ImageBlurGaussian",
@@ -3906,7 +3894,7 @@
             ],
             "returnType": "void",
             "description": "Apply Gaussian blur using a box blur approximation",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageResize",
@@ -3926,7 +3914,7 @@
             ],
             "returnType": "void",
             "description": "Resize image (Bicubic scaling algorithm)",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageResizeNN",
@@ -3946,7 +3934,7 @@
             ],
             "returnType": "void",
             "description": "Resize image (Nearest-Neighbor scaling algorithm)",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageResizeCanvas",
@@ -3978,7 +3966,7 @@
             ],
             "returnType": "void",
             "description": "Resize canvas and fill with color",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageMipmaps",
@@ -3990,7 +3978,7 @@
             ],
             "returnType": "void",
             "description": "Compute all mipmap levels for a provided image",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageDither",
@@ -4018,7 +4006,7 @@
             ],
             "returnType": "void",
             "description": "Dither image data to 16bpp or lower (Floyd-Steinberg dithering)",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageFlipVertical",
@@ -4030,7 +4018,7 @@
             ],
             "returnType": "void",
             "description": "Flip image vertically",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageFlipHorizontal",
@@ -4042,7 +4030,7 @@
             ],
             "returnType": "void",
             "description": "Flip image horizontally",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageRotateCW",
@@ -4054,7 +4042,7 @@
             ],
             "returnType": "void",
             "description": "Rotate image clockwise 90deg",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageRotateCCW",
@@ -4066,7 +4054,7 @@
             ],
             "returnType": "void",
             "description": "Rotate image counter-clockwise 90deg",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageColorTint",
@@ -4082,7 +4070,7 @@
             ],
             "returnType": "void",
             "description": "Modify image color: tint",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageColorInvert",
@@ -4094,7 +4082,7 @@
             ],
             "returnType": "void",
             "description": "Modify image color: invert",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageColorGrayscale",
@@ -4106,7 +4094,7 @@
             ],
             "returnType": "void",
             "description": "Modify image color: grayscale",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageColorContrast",
@@ -4122,7 +4110,7 @@
             ],
             "returnType": "void",
             "description": "Modify image color: contrast (-100 to 100)",
-            "custom": true
+            "custom": false
         },
         {
             "name": "ImageColorBrightness",
@@ -4138,7 +4126,27 @@
             ],
             "returnType": "void",
             "description": "Modify image color: brightness (-255 to 255)",
-            "custom": true
+            "custom": false
+        },
+        {
+            "name": "ImageColorReplace",
+            "params": [
+                {
+                    "name": "image",
+                    "typ": "*Image"
+                },
+                {
+                    "name": "color",
+                    "typ": "Color"
+                },
+                {
+                    "name": "replace",
+                    "typ": "Color"
+                }
+            ],
+            "returnType": "void",
+            "description": "Modify image color: replace color",
+            "custom": false
         },
         {
             "name": "LoadImageColors",
@@ -4237,7 +4245,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "color",
@@ -4253,7 +4261,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "posX",
@@ -4277,7 +4285,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "position",
@@ -4297,7 +4305,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "startPosX",
@@ -4329,7 +4337,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "start",
@@ -4353,7 +4361,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "centerX",
@@ -4381,7 +4389,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "center",
@@ -4405,7 +4413,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "centerX",
@@ -4433,7 +4441,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "center",
@@ -4457,7 +4465,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "posX",
@@ -4489,7 +4497,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "position",
@@ -4513,7 +4521,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "rec",
@@ -4533,7 +4541,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "rec",
@@ -4557,7 +4565,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "src",
@@ -4585,7 +4593,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "text",
@@ -4617,7 +4625,7 @@
             "params": [
                 {
                     "name": "dst",
-                    "typ": "?[*]Image"
+                    "typ": "*Image"
                 },
                 {
                     "name": "font",
@@ -4789,23 +4797,15 @@
             "custom": false
         },
         {
-            "name": "ImageColorReplace",
+            "name": "TextFormat",
             "params": [
                 {
-                    "name": "image",
-                    "typ": "*Image"
-                },
-                {
-                    "name": "color",
-                    "typ": "Color"
-                },
-                {
-                    "name": "replace",
-                    "typ": "Color"
+                    "name": "text",
+                    "typ": "[*:0]const u8"
                 }
             ],
-            "returnType": "void",
-            "description": "Modify image color: replace color",
+            "returnType": "[*:0]const u8",
+            "description": "rewritten in inject.zig",
             "custom": true
         },
         {
@@ -5344,15 +5344,15 @@
             "custom": false
         },
         {
-            "name": "GenTextureMipmaps",
+            "name": "TextFormat",
             "params": [
                 {
-                    "name": "texture",
-                    "typ": "*Texture2D"
+                    "name": "text",
+                    "typ": "[*:0]const u8"
                 }
             ],
-            "returnType": "void",
-            "description": "Generate GPU mipmaps for a texture",
+            "returnType": "[*:0]const u8",
+            "description": "rewritten in inject.zig",
             "custom": true
         },
         {
@@ -5876,35 +5876,15 @@
             "custom": false
         },
         {
-            "name": "LoadFontData",
+            "name": "GenTextureMipmaps",
             "params": [
                 {
-                    "name": "fileData",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "dataSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontSize",
-                    "typ": "i32"
-                },
-                {
-                    "name": "fontChars",
-                    "typ": "[*]i32"
-                },
-                {
-                    "name": "glyphCount",
-                    "typ": "i32"
-                },
-                {
-                    "name": "typ",
-                    "typ": "i32"
+                    "name": "texture",
+                    "typ": "*Texture2D"
                 }
             ],
-            "returnType": "[*]GlyphInfo",
-            "description": "Load font data for further use",
+            "returnType": "void",
+            "description": "Generate GPU mipmaps for a texture",
             "custom": true
         },
         {
@@ -5968,6 +5948,38 @@
             "custom": false
         },
         {
+            "name": "LoadFontData",
+            "params": [
+                {
+                    "name": "fileData",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "dataSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontSize",
+                    "typ": "i32"
+                },
+                {
+                    "name": "fontChars",
+                    "typ": "[*]i32"
+                },
+                {
+                    "name": "glyphCount",
+                    "typ": "i32"
+                },
+                {
+                    "name": "typ",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "[*]GlyphInfo",
+            "description": "Load font data for further use",
+            "custom": true
+        },
+        {
             "name": "TextJoin",
             "params": [
                 {
@@ -6017,22 +6029,6 @@
             ],
             "returnType": "void",
             "description": "",
-            "custom": true
-        },
-        {
-            "name": "rlCompileShader",
-            "params": [
-                {
-                    "name": "shaderCode",
-                    "typ": "[*:0]const u8"
-                },
-                {
-                    "name": "typ",
-                    "typ": "i32"
-                }
-            ],
-            "returnType": "u32",
-            "description": "Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)",
             "custom": true
         },
         {
@@ -9672,23 +9668,19 @@
             "custom": false
         },
         {
-            "name": "TextSplit",
+            "name": "rlCompileShader",
             "params": [
                 {
-                    "name": "text",
+                    "name": "shaderCode",
                     "typ": "[*:0]const u8"
                 },
                 {
-                    "name": "delimiter",
-                    "typ": "u8"
-                },
-                {
-                    "name": "count",
-                    "typ": "[*]i32"
+                    "name": "typ",
+                    "typ": "i32"
                 }
             ],
-            "returnType": "[*]const [*:0]const u8",
-            "description": "overriden in inject.zig",
+            "returnType": "u32",
+            "description": "Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)",
             "custom": true
         },
         {
@@ -10116,22 +10108,22 @@
             "custom": false
         },
         {
-            "name": "TextAppend",
+            "name": "TextSplit",
             "params": [
                 {
                     "name": "text",
-                    "typ": "[*]u8"
-                },
-                {
-                    "name": "append",
                     "typ": "[*:0]const u8"
                 },
                 {
-                    "name": "position",
+                    "name": "delimiter",
+                    "typ": "u8"
+                },
+                {
+                    "name": "count",
                     "typ": "[*]i32"
                 }
             ],
-            "returnType": "void",
+            "returnType": "[*]const [*:0]const u8",
             "description": "overriden in inject.zig",
             "custom": true
         },
@@ -12347,6 +12339,26 @@
             "returnType": "i32",
             "description": "",
             "custom": false
+        },
+        {
+            "name": "TextAppend",
+            "params": [
+                {
+                    "name": "text",
+                    "typ": "[*]u8"
+                },
+                {
+                    "name": "append",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "position",
+                    "typ": "[*]i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "overriden in inject.zig",
+            "custom": true
         }
     ],
     "enums": [

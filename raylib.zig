@@ -1080,7 +1080,7 @@ pub fn SetWindowIcon(
 
 /// Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
 pub fn SetWindowIcons(
-    images: ?[*]Image,
+    images: *Image,
     count: i32,
 ) void {
     raylib.mSetWindowIcons(
@@ -3611,7 +3611,7 @@ pub fn ImageTextEx(
 
 /// Convert image data to desired format
 pub fn ImageFormat(
-    image: ?[*]Image,
+    image: *Image,
     newFormat: i32,
 ) void {
     raylib.mImageFormat(
@@ -3622,7 +3622,7 @@ pub fn ImageFormat(
 
 /// Convert image to POT (power-of-two)
 pub fn ImageToPOT(
-    image: ?[*]Image,
+    image: *Image,
     fill: Color,
 ) void {
     raylib.mImageToPOT(
@@ -3633,7 +3633,7 @@ pub fn ImageToPOT(
 
 /// Crop an image to a defined rectangle
 pub fn ImageCrop(
-    image: ?[*]Image,
+    image: *Image,
     crop: Rectangle,
 ) void {
     raylib.mImageCrop(
@@ -3644,7 +3644,7 @@ pub fn ImageCrop(
 
 /// Crop image depending on alpha value
 pub fn ImageAlphaCrop(
-    image: ?[*]Image,
+    image: *Image,
     threshold: f32,
 ) void {
     raylib.mImageAlphaCrop(
@@ -3655,7 +3655,7 @@ pub fn ImageAlphaCrop(
 
 /// Clear alpha channel to desired color
 pub fn ImageAlphaClear(
-    image: ?[*]Image,
+    image: *Image,
     color: Color,
     threshold: f32,
 ) void {
@@ -3668,7 +3668,7 @@ pub fn ImageAlphaClear(
 
 /// Apply alpha mask to image
 pub fn ImageAlphaMask(
-    image: ?[*]Image,
+    image: *Image,
     alphaMask: Image,
 ) void {
     raylib.mImageAlphaMask(
@@ -3679,7 +3679,7 @@ pub fn ImageAlphaMask(
 
 /// Premultiply alpha channel
 pub fn ImageAlphaPremultiply(
-    image: ?[*]Image,
+    image: *Image,
 ) void {
     raylib.mImageAlphaPremultiply(
         @intToPtr([*c]raylib.Image, @ptrToInt(image)),
@@ -3855,6 +3855,19 @@ pub fn ImageColorBrightness(
     );
 }
 
+/// Modify image color: replace color
+pub fn ImageColorReplace(
+    image: *Image,
+    color: Color,
+    replace: Color,
+) void {
+    raylib.mImageColorReplace(
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&replace)),
+    );
+}
+
 /// Load color data from image as a Color array (RGBA - 32bit)
 pub fn LoadImageColors(
     image: Image,
@@ -3933,7 +3946,7 @@ pub fn GetImageColor(
 
 /// Clear image background with given color
 pub fn ImageClearBackground(
-    dst: ?[*]Image,
+    dst: *Image,
     color: Color,
 ) void {
     raylib.mImageClearBackground(
@@ -3944,7 +3957,7 @@ pub fn ImageClearBackground(
 
 /// Draw pixel within an image
 pub fn ImageDrawPixel(
-    dst: ?[*]Image,
+    dst: *Image,
     posX: i32,
     posY: i32,
     color: Color,
@@ -3959,7 +3972,7 @@ pub fn ImageDrawPixel(
 
 /// Draw pixel within an image (Vector version)
 pub fn ImageDrawPixelV(
-    dst: ?[*]Image,
+    dst: *Image,
     position: Vector2,
     color: Color,
 ) void {
@@ -3972,7 +3985,7 @@ pub fn ImageDrawPixelV(
 
 /// Draw line within an image
 pub fn ImageDrawLine(
-    dst: ?[*]Image,
+    dst: *Image,
     startPosX: i32,
     startPosY: i32,
     endPosX: i32,
@@ -3991,7 +4004,7 @@ pub fn ImageDrawLine(
 
 /// Draw line within an image (Vector version)
 pub fn ImageDrawLineV(
-    dst: ?[*]Image,
+    dst: *Image,
     start: Vector2,
     end: Vector2,
     color: Color,
@@ -4006,7 +4019,7 @@ pub fn ImageDrawLineV(
 
 /// Draw a filled circle within an image
 pub fn ImageDrawCircle(
-    dst: ?[*]Image,
+    dst: *Image,
     centerX: i32,
     centerY: i32,
     radius: i32,
@@ -4023,7 +4036,7 @@ pub fn ImageDrawCircle(
 
 /// Draw a filled circle within an image (Vector version)
 pub fn ImageDrawCircleV(
-    dst: ?[*]Image,
+    dst: *Image,
     center: Vector2,
     radius: i32,
     color: Color,
@@ -4038,7 +4051,7 @@ pub fn ImageDrawCircleV(
 
 /// Draw circle outline within an image
 pub fn ImageDrawCircleLines(
-    dst: ?[*]Image,
+    dst: *Image,
     centerX: i32,
     centerY: i32,
     radius: i32,
@@ -4055,7 +4068,7 @@ pub fn ImageDrawCircleLines(
 
 /// Draw circle outline within an image (Vector version)
 pub fn ImageDrawCircleLinesV(
-    dst: ?[*]Image,
+    dst: *Image,
     center: Vector2,
     radius: i32,
     color: Color,
@@ -4070,7 +4083,7 @@ pub fn ImageDrawCircleLinesV(
 
 /// Draw rectangle within an image
 pub fn ImageDrawRectangle(
-    dst: ?[*]Image,
+    dst: *Image,
     posX: i32,
     posY: i32,
     width: i32,
@@ -4089,7 +4102,7 @@ pub fn ImageDrawRectangle(
 
 /// Draw rectangle within an image (Vector version)
 pub fn ImageDrawRectangleV(
-    dst: ?[*]Image,
+    dst: *Image,
     position: Vector2,
     size: Vector2,
     color: Color,
@@ -4104,7 +4117,7 @@ pub fn ImageDrawRectangleV(
 
 /// Draw rectangle within an image
 pub fn ImageDrawRectangleRec(
-    dst: ?[*]Image,
+    dst: *Image,
     rec: Rectangle,
     color: Color,
 ) void {
@@ -4117,7 +4130,7 @@ pub fn ImageDrawRectangleRec(
 
 /// Draw rectangle lines within an image
 pub fn ImageDrawRectangleLines(
-    dst: ?[*]Image,
+    dst: *Image,
     rec: Rectangle,
     thick: i32,
     color: Color,
@@ -4132,7 +4145,7 @@ pub fn ImageDrawRectangleLines(
 
 /// Draw a source image within a destination image (tint applied to source)
 pub fn ImageDraw(
-    dst: ?[*]Image,
+    dst: *Image,
     src: Image,
     srcRec: Rectangle,
     dstRec: Rectangle,
@@ -4149,7 +4162,7 @@ pub fn ImageDraw(
 
 /// Draw text (using default font) within an image (destination)
 pub fn ImageDrawText(
-    dst: ?[*]Image,
+    dst: *Image,
     text: [*:0]const u8,
     posX: i32,
     posY: i32,
@@ -4168,7 +4181,7 @@ pub fn ImageDrawText(
 
 /// Draw text (custom sprite font) within an image (destination)
 pub fn ImageDrawTextEx(
-    dst: ?[*]Image,
+    dst: *Image,
     font: Font,
     text: [*:0]const u8,
     position: Vector2,
@@ -4296,19 +4309,6 @@ pub fn UpdateTextureRec(
         @intToPtr([*c]raylib.Texture2D, @ptrToInt(&texture)),
         @intToPtr([*c]raylib.Rectangle, @ptrToInt(&rec)),
         pixels,
-    );
-}
-
-/// Modify image color: replace color
-pub fn ImageColorReplace(
-    image: *Image,
-    color: Color,
-    replace: Color,
-) void {
-    raylib.mImageColorReplace(
-        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&color)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&replace)),
     );
 }
 
@@ -4717,15 +4717,6 @@ pub fn IsFontReady(
     );
 }
 
-/// Generate GPU mipmaps for a texture
-pub fn GenTextureMipmaps(
-    texture: *Texture2D,
-) void {
-    raylib.mGenTextureMipmaps(
-        @intToPtr([*c]raylib.Texture2D, @ptrToInt(texture)),
-    );
-}
-
 /// Unload font chars info data (RAM)
 pub fn UnloadFontData(
     chars: ?[*]GlyphInfo,
@@ -5066,25 +5057,12 @@ pub fn TextLength(
     );
 }
 
-/// Load font data for further use
-pub fn LoadFontData(
-    fileData: [*:0]const u8,
-    dataSize: i32,
-    fontSize: i32,
-    fontChars: [*]i32,
-    glyphCount: i32,
-    typ: i32,
-) [*]GlyphInfo {
-    return @ptrCast(
-        [*]GlyphInfo,
-        raylib.mLoadFontData(
-            @intToPtr([*c]const u8, @ptrToInt(fileData)),
-            dataSize,
-            fontSize,
-            @ptrCast([*c]i32, fontChars),
-            glyphCount,
-            typ,
-        ),
+/// Generate GPU mipmaps for a texture
+pub fn GenTextureMipmaps(
+    texture: *Texture2D,
+) void {
+    raylib.mGenTextureMipmaps(
+        @intToPtr([*c]raylib.Texture2D, @ptrToInt(texture)),
     );
 }
 
@@ -5136,6 +5114,28 @@ pub fn TextInsert(
     );
 }
 
+/// Load font data for further use
+pub fn LoadFontData(
+    fileData: [*:0]const u8,
+    dataSize: i32,
+    fontSize: i32,
+    fontChars: [*]i32,
+    glyphCount: i32,
+    typ: i32,
+) [*]GlyphInfo {
+    return @ptrCast(
+        [*]GlyphInfo,
+        raylib.mLoadFontData(
+            @intToPtr([*c]const u8, @ptrToInt(fileData)),
+            dataSize,
+            fontSize,
+            @ptrCast([*c]i32, fontChars),
+            glyphCount,
+            typ,
+        ),
+    );
+}
+
 ///
 pub fn rlSetVertexAttribute(
     index: u32,
@@ -5152,17 +5152,6 @@ pub fn rlSetVertexAttribute(
         normalized,
         stride,
         pointer,
-    );
-}
-
-/// Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
-pub fn rlCompileShader(
-    shaderCode: [*:0]const u8,
-    typ: i32,
-) u32 {
-    return raylib.mrlCompileShader(
-        @intToPtr([*c]const u8, @ptrToInt(shaderCode)),
-        typ,
     );
 }
 
@@ -7712,6 +7701,17 @@ pub fn rlUnloadVertexBuffer(
 ) void {
     raylib.mrlUnloadVertexBuffer(
         vboId,
+    );
+}
+
+/// Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+pub fn rlCompileShader(
+    shaderCode: [*:0]const u8,
+    typ: i32,
+) u32 {
+    return raylib.mrlCompileShader(
+        @intToPtr([*c]const u8, @ptrToInt(shaderCode)),
+        typ,
     );
 }
 
