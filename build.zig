@@ -63,9 +63,7 @@ pub fn build(b: *std.build.Builder) !void {
         .root_source_file = std.build.FileSource.relative("generate.zig"),
         .target = target,
     });
-    const fmt = b.addFmt(&.{
-        generate.outputFile,
-    });
+    const fmt = b.addFmt(.{ .paths = &.{generate.outputFile} });
     fmt.step.dependOn(&generateZig.run().step);
     bindings.dependOn(&fmt.step);
 

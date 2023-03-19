@@ -534,6 +534,9 @@ float mGetGesturePinchAngle(void);
 // Update camera position for selected mode
 void mUpdateCamera(Camera * camera, int mode);
 
+// Update camera movement/rotation
+void mUpdateCameraPro(Camera * camera, Vector3 *movement, Vector3 *rotation, float zoom);
+
 // Set texture and rectangle to be used on shapes drawing
 void mSetShapesTexture(Texture2D *texture, Rectangle *source);
 
@@ -1182,9 +1185,6 @@ bool mIsModelReady(Model *model);
 // Unload model (including meshes) from memory (RAM and/or VRAM)
 void mUnloadModel(Model *model);
 
-// Unload model (but not meshes) from memory (RAM and/or VRAM)
-void mUnloadModelKeepMeshes(Model *model);
-
 // Compute model bounding box limits (considers all meshes)
 void mGetModelBoundingBox(BoundingBox *out, Model *model);
 
@@ -1382,15 +1382,6 @@ void mPauseSound(Sound *sound);
 
 // Resume a paused sound
 void mResumeSound(Sound *sound);
-
-// Play a sound (using multichannel buffer pool)
-void mPlaySoundMulti(Sound *sound);
-
-// Stop any sound playing (using multichannel buffer pool)
-void mStopSoundMulti(void);
-
-// Get number of sounds playing in the multichannel
-int mGetSoundsPlaying(void);
 
 // Check if a sound is currently playing
 bool mIsSoundPlaying(Sound *sound);

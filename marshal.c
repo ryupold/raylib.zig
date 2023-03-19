@@ -878,6 +878,11 @@ void mUpdateCamera(Camera * camera, int mode)
 	UpdateCamera(camera, mode);
 }
 
+void mUpdateCameraPro(Camera * camera, Vector3 *movement, Vector3 *rotation, float zoom)
+{
+	UpdateCameraPro(camera, *movement, *rotation, zoom);
+}
+
 void mSetShapesTexture(Texture2D *texture, Rectangle *source)
 {
 	SetShapesTexture(*texture, *source);
@@ -1958,11 +1963,6 @@ void mUnloadModel(Model *model)
 	UnloadModel(*model);
 }
 
-void mUnloadModelKeepMeshes(Model *model)
-{
-	UnloadModelKeepMeshes(*model);
-}
-
 void mGetModelBoundingBox(BoundingBox *out, Model *model)
 {
 	*out = GetModelBoundingBox(*model);
@@ -2291,21 +2291,6 @@ void mPauseSound(Sound *sound)
 void mResumeSound(Sound *sound)
 {
 	ResumeSound(*sound);
-}
-
-void mPlaySoundMulti(Sound *sound)
-{
-	PlaySoundMulti(*sound);
-}
-
-void mStopSoundMulti(void)
-{
-	StopSoundMulti();
-}
-
-int mGetSoundsPlaying(void)
-{
-	return GetSoundsPlaying();
 }
 
 bool mIsSoundPlaying(Sound *sound)

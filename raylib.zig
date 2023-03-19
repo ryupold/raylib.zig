@@ -2510,6 +2510,21 @@ pub fn UpdateCamera(
     );
 }
 
+/// Update camera movement/rotation
+pub fn UpdateCameraPro(
+    camera: ?[*]Camera3D,
+    movement: Vector3,
+    rotation: Vector3,
+    zoom: f32,
+) void {
+    raylib.mUpdateCameraPro(
+        @intToPtr([*c]raylib.Camera3D, @ptrToInt(camera)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&movement)),
+        @intToPtr([*c]raylib.Vector3, @ptrToInt(&rotation)),
+        zoom,
+    );
+}
+
 /// Set texture and rectangle to be used on shapes drawing
 pub fn SetShapesTexture(
     texture: Texture2D,
@@ -5574,15 +5589,6 @@ pub fn UnloadModel(
     );
 }
 
-/// Unload model (but not meshes) from memory (RAM and/or VRAM)
-pub fn UnloadModelKeepMeshes(
-    model: Model,
-) void {
-    raylib.mUnloadModelKeepMeshes(
-        @intToPtr([*c]raylib.Model, @ptrToInt(&model)),
-    );
-}
-
 /// Compute model bounding box limits (considers all meshes)
 pub fn GetModelBoundingBox(
     model: Model,
@@ -6437,25 +6443,6 @@ pub fn ResumeSound(
     raylib.mResumeSound(
         @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
     );
-}
-
-/// Play a sound (using multichannel buffer pool)
-pub fn PlaySoundMulti(
-    sound: Sound,
-) void {
-    raylib.mPlaySoundMulti(
-        @intToPtr([*c]raylib.Sound, @ptrToInt(&sound)),
-    );
-}
-
-/// Stop any sound playing (using multichannel buffer pool)
-pub fn StopSoundMulti() void {
-    raylib.mStopSoundMulti();
-}
-
-/// Get number of sounds playing in the multichannel
-pub fn GetSoundsPlaying() i32 {
-    return raylib.mGetSoundsPlaying();
 }
 
 /// Check if a sound is currently playing
@@ -11142,7 +11129,7 @@ pub const RAYLIB_VERSION_MINOR: i32 = 5;
 pub const RAYLIB_VERSION_PATCH: i32 = 0;
 
 ///
-pub const RAYLIB_VERSION: []const u8 = "4.5-dev";
+pub const RAYLIB_VERSION: []const u8 = "4.5";
 
 ///
 pub const PI: f32 = 3.1415927410125732;
@@ -11226,7 +11213,7 @@ pub const MAGENTA: Color = .{ .r = 255, .g = 0, .b = 255, .a = 255 };
 pub const RAYWHITE: Color = .{ .r = 245, .g = 245, .b = 245, .a = 255 };
 
 ///
-pub const RLGL_VERSION: []const u8 = "4.2";
+pub const RLGL_VERSION: []const u8 = "4.5";
 
 ///
 pub const RL_DEFAULT_BATCH_BUFFER_ELEMENTS: i32 = 8192;

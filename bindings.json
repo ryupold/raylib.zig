@@ -2122,6 +2122,30 @@
             "custom": true
         },
         {
+            "name": "UpdateCameraPro",
+            "params": [
+                {
+                    "name": "camera",
+                    "typ": "?[*]Camera3D"
+                },
+                {
+                    "name": "movement",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "rotation",
+                    "typ": "Vector3"
+                },
+                {
+                    "name": "zoom",
+                    "typ": "f32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Update camera movement/rotation",
+            "custom": false
+        },
+        {
             "name": "SetShapesTexture",
             "params": [
                 {
@@ -6648,18 +6672,6 @@
             "custom": false
         },
         {
-            "name": "UnloadModelKeepMeshes",
-            "params": [
-                {
-                    "name": "model",
-                    "typ": "Model"
-                }
-            ],
-            "returnType": "void",
-            "description": "Unload model (but not meshes) from memory (RAM and/or VRAM)",
-            "custom": false
-        },
-        {
             "name": "GetModelBoundingBox",
             "params": [
                 {
@@ -7833,32 +7845,6 @@
             ],
             "returnType": "void",
             "description": "Resume a paused sound",
-            "custom": false
-        },
-        {
-            "name": "PlaySoundMulti",
-            "params": [
-                {
-                    "name": "sound",
-                    "typ": "Sound"
-                }
-            ],
-            "returnType": "void",
-            "description": "Play a sound (using multichannel buffer pool)",
-            "custom": false
-        },
-        {
-            "name": "StopSoundMulti",
-            "params": [],
-            "returnType": "void",
-            "description": "Stop any sound playing (using multichannel buffer pool)",
-            "custom": false
-        },
-        {
-            "name": "GetSoundsPlaying",
-            "params": [],
-            "returnType": "i32",
-            "description": "Get number of sounds playing in the multichannel",
             "custom": false
         },
         {
@@ -15944,7 +15930,7 @@
         {
             "name": "RAYLIB_VERSION",
             "typ": "[]const u8",
-            "value": "\"4.5-dev\"",
+            "value": "\"4.5\"",
             "description": "",
             "custom": false
         },
@@ -16140,7 +16126,7 @@
         {
             "name": "RLGL_VERSION",
             "typ": "[]const u8",
-            "value": "\"4.2\"",
+            "value": "\"4.5\"",
             "description": "",
             "custom": false
         },
