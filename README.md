@@ -41,7 +41,7 @@ build.zig:
 ```zig
 const raylib = @import("path/to/raylib.zig/build.zig");
 
-pub fn build(b: *std.build.Builder) !void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const exe = ...;
     raylib.addTo(b, exe, target);
