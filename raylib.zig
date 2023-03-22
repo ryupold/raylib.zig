@@ -11123,13 +11123,13 @@ pub const PhysicsShapeType = enum(i32) {
 pub const RAYLIB_VERSION_MAJOR: i32 = 4;
 
 ///
-pub const RAYLIB_VERSION_MINOR: i32 = 5;
+pub const RAYLIB_VERSION_MINOR: i32 = 6;
 
 ///
 pub const RAYLIB_VERSION_PATCH: i32 = 0;
 
 ///
-pub const RAYLIB_VERSION: []const u8 = "4.5";
+pub const RAYLIB_VERSION: []const u8 = "4.6-dev";
 
 ///
 pub const PI: f32 = 3.1415927410125732;

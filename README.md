@@ -1,7 +1,7 @@
 ![logo](logo.png)
 
 # raylib.zig
-Idiomatic [raylib](https://www.raylib.com/) (4.5-dev) bindings for [Zig](https://ziglang.org/) (master).
+Idiomatic [raylib](https://www.raylib.com/) (4.6-dev) bindings for [Zig](https://ziglang.org/) (master).
 
 [Example Usage](#usage)
 

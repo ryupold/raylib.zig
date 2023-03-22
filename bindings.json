@@ -15928,7 +15928,7 @@
         {
             "name": "RAYLIB_VERSION_MINOR",
             "typ": "i32",
-            "value": "5",
+            "value": "6",
             "description": "",
             "custom": false
         },
@@ -15942,7 +15942,7 @@
         {
             "name": "RAYLIB_VERSION",
             "typ": "[]const u8",
-            "value": "\"4.5\"",
+            "value": "\"4.6-dev\"",
             "description": "",
             "custom": false
         },
