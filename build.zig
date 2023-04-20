@@ -18,7 +18,7 @@ pub fn build(b: *std.Build) !void {
     raylib_parser_build.linkLibC();
 
     //raylib
-    const raylib_H = raylib_parser_build.run();
+    const raylib_H = b.addRunArtifact(raylib_parser_build);
     raylib_H.addArgs(&.{
         "-i", raylibSrc ++ "raylib.h",
         "-o", "raylib.json",
@@ -28,7 +28,7 @@ pub fn build(b: *std.Build) !void {
     jsons.dependOn(&raylib_H.step);
 
     //raymath
-    const raymath_H = raylib_parser_build.run();
+    const raymath_H = b.addRunArtifact(raylib_parser_build);
     raymath_H.addArgs(&.{
         "-i", raylibSrc ++ "raymath.h",
         "-o", "raymath.json",
@@ -38,7 +38,7 @@ pub fn build(b: *std.Build) !void {
     jsons.dependOn(&raymath_H.step);
 
     //rlgl
-    const rlgl_H = raylib_parser_build.run();
+    const rlgl_H = b.addRunArtifact(raylib_parser_build);
     rlgl_H.addArgs(&.{
         "-i", raylibSrc ++ "rlgl.h",
         "-o", "rlgl.json",
@@ -49,22 +49,22 @@ pub fn build(b: *std.Build) !void {
 
     //--- Generate intermediate -------------------------------------------------------------------
     const intermediate = b.step("intermediate", "generate intermediate representation of the results from 'zig build parse' (keep custom=true)");
-    const intermediateZig = b.addExecutable(.{
+    var intermediateZigStep = b.addRunArtifact(b.addExecutable(.{
         .name = "intermediate",
         .root_source_file = std.build.FileSource.relative("intermediate.zig"),
         .target = target,
-    });
-    intermediate.dependOn(&intermediateZig.run().step);
+    }));
+    intermediate.dependOn(&intermediateZigStep.step);
 
     //--- Generate bindings -----------------------------------------------------------------------
     const bindings = b.step("bindings", "generate bindings in from bindings.json");
-    const generateZig = b.addExecutable(.{
+    var generateZigStep = b.addRunArtifact(b.addExecutable(.{
         .name = "generate",
         .root_source_file = std.build.FileSource.relative("generate.zig"),
         .target = target,
-    });
+    }));
     const fmt = b.addFmt(.{ .paths = &.{generate.outputFile} });
-    fmt.step.dependOn(&generateZig.run().step);
+    fmt.step.dependOn(&generateZigStep.step);
     bindings.dependOn(&fmt.step);
 
     //--- just build raylib_parser.exe ------------------------------------------------------------
