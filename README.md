@@ -5,7 +5,7 @@ Idiomatic [raylib](https://www.raylib.com/) (4.6-dev) bindings for [Zig](https:/
 
 [Example Usage](#usage)
 
-Additional infos and WebGL examples [here](https://ryupold.de/?post=raylib.zig).
+Additional infos and WebGL examples [here](https://github.com/ryupold/examples-raylib.zig).
 
 ## supported platforms
 - Windows
