@@ -9991,6 +9991,8 @@ pub const ModelAnimation = extern struct {
     bones: ?[*]BoneInfo,
     /// Poses array by frame
     framePoses: ?[*]Transform,
+    /// Animation name
+    name: [32]u8,
 };
 
 /// Ray, ray for raycasting

@@ -16,7 +16,7 @@ pub fn main() !void {
     std.log.info("generating raylib.zig ...", .{});
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer {
-        if (gpa.deinit()) {
+        if (gpa.deinit() == .leak) {
             std.log.err("memory leak detected", .{});
         }
     }
@@ -202,10 +202,9 @@ fn writeFunctions(
             } else if (bindings.containsStruct(stripType(param.typ))) {
                 try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]raylib.{s}, @ptrToInt(&{s})),\n", .{ stripType(param.typ), param.name }));
             } else if (isPointer(param.typ)) {
-                if(std.mem.endsWith(u8, param.typ, "anyopaque")) {
-                    try file.writeAll(try allocPrint(allocator, "{s},\n", .{param.name}));    
-                }
-                else if (isConst(param.typ)) {
+                if (std.mem.endsWith(u8, param.typ, "anyopaque")) {
+                    try file.writeAll(try allocPrint(allocator, "{s},\n", .{param.name}));
+                } else if (isConst(param.typ)) {
                     try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]const {s}, @ptrToInt({s})),\n", .{ stripType(param.typ), param.name }));
                 } else {
                     try file.writeAll(try allocPrint(allocator, "@ptrCast([*c]{s}, {s}),\n", .{ stripType(param.typ), param.name }));
@@ -257,7 +256,7 @@ fn writeCSignature(
 
     if (func.params) |params| {
         for (params, 0..) |param, i| {
-            const paramType = param.@"type";
+            const paramType = param.type;
             if (mapping.isPrimitiveOrPointer(paramType)) {
                 try file.writeAll(try allocPrint(allocator, "{s} {s}", .{ paramType, param.name }));
             } else {
@@ -319,7 +318,7 @@ fn writeCFunctions(
 
         if (func.params) |params| {
             for (params, 0..) |param, i| {
-                if (mapping.isPrimitiveOrPointer(param.@"type")) {
+                if (mapping.isPrimitiveOrPointer(param.type)) {
                     try c.writeAll(
                         try allocPrint(
                             allocator,

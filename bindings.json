@@ -15319,6 +15319,11 @@
                     "name": "framePoses",
                     "typ": "?[*]Transform",
                     "description": "Poses array by frame"
+                },
+                {
+                    "name": "name",
+                    "typ": "[32]u8",
+                    "description": "Animation name"
                 }
             ],
             "description": "ModelAnimation",

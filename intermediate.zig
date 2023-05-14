@@ -14,7 +14,7 @@ pub fn main() !void {
     std.log.info("updating bindings.json ...", .{});
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer {
-        if (gpa.deinit()) {
+        if (gpa.deinit() == .leak) {
             std.log.err("memory leak detected", .{});
         }
     }
