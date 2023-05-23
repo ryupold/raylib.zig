@@ -667,9 +667,7 @@ pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
 pub fn SetConfigFlags(
     flags: ConfigFlags,
 ) void {
-    raylib.SetConfigFlags(
-        @intCast(u32, @enumToInt(flags)),
-    );
+    raylib.SetConfigFlags(@bitCast(c_uint, flags));
 }
 
 /// Load file data as byte array (read)
@@ -10186,37 +10184,40 @@ pub const float16 = extern struct {
 };
 
 /// System/Window config flags
-pub const ConfigFlags = enum(i32) {
-    /// Set to try enabling V-Sync on GPU
-    FLAG_VSYNC_HINT = 64,
+pub const ConfigFlags = packed struct(u32) {
+    FLAG_UNKNOWN_1: bool = false, // 0x0001
     /// Set to run program in fullscreen
-    FLAG_FULLSCREEN_MODE = 2,
+    FLAG_FULLSCREEN_MODE: bool = false, // 0x0002,
     /// Set to allow resizable window
-    FLAG_WINDOW_RESIZABLE = 4,
+    FLAG_WINDOW_RESIZABLE: bool = false, // 0x0004,
     /// Set to disable window decoration (frame and buttons)
-    FLAG_WINDOW_UNDECORATED = 8,
-    /// Set to hide window
-    FLAG_WINDOW_HIDDEN = 128,
-    /// Set to minimize window (iconify)
-    FLAG_WINDOW_MINIMIZED = 512,
-    /// Set to maximize window (expanded to monitor)
-    FLAG_WINDOW_MAXIMIZED = 1024,
-    /// Set to window non focused
-    FLAG_WINDOW_UNFOCUSED = 2048,
-    /// Set to window always on top
-    FLAG_WINDOW_TOPMOST = 4096,
-    /// Set to allow windows running while minimized
-    FLAG_WINDOW_ALWAYS_RUN = 256,
+    FLAG_WINDOW_UNDECORATED: bool = false, // 0x0008,
     /// Set to allow transparent framebuffer
-    FLAG_WINDOW_TRANSPARENT = 16,
-    /// Set to support HighDPI
-    FLAG_WINDOW_HIGHDPI = 8192,
-    /// Set to support mouse passthrough, only supported when FLAG_WINDOW_UNDECORATED
-    FLAG_WINDOW_MOUSE_PASSTHROUGH = 16384,
+    FLAG_WINDOW_TRANSPARENT: bool = false, // 0x0010,
     /// Set to try enabling MSAA 4X
-    FLAG_MSAA_4X_HINT = 32,
+    FLAG_MSAA_4X_HINT: bool = false, // 0x0020,
+    /// Set to try enabling V-Sync on GPU
+    FLAG_VSYNC_HINT: bool = false, // 0x0040,
+    /// Set to hide window
+    FLAG_WINDOW_HIDDEN: bool = false, // 0x0080,
+    /// Set to allow windows running while minimized
+    FLAG_WINDOW_ALWAYS_RUN: bool = false, // 0x0100,
+    /// Set to minimize window (iconify)
+    FLAG_WINDOW_MINIMIZED: bool = false, // 0x0200,
+    /// Set to maximize window (expanded to monitor)
+    FLAG_WINDOW_MAXIMIZED: bool = false, // 0x0400,
+    /// Set to window non focused
+    FLAG_WINDOW_UNFOCUSED: bool = false, // 0x0800,
+    /// Set to window always on top
+    FLAG_WINDOW_TOPMOST: bool = false, // 0x1000,
+    /// Set to support HighDPI
+    FLAG_WINDOW_HIGHDPI: bool = false, // 0x2000,
+    /// Set to support mouse passthrough, only supported when FLAG_WINDOW_UNDECORATED
+    FLAG_WINDOW_MOUSE_PASSTHROUGH: bool = false, // 0x4000,
+    FLAG_UNKNOWN_2: bool = false, // 0x8000
     /// Set to try enabling interlaced video format (for V3D)
-    FLAG_INTERLACED_HINT = 65536,
+    FLAG_INTERLACED_HINT: bool = false, // 0x10000
+    FLAG_PADDING: u15 = 0, // 0xFFFE0000
 };
 
 /// Trace log level
