@@ -32,7 +32,7 @@ Thats what I do until there is an official package manager for Zig.
 ```sh
 cd $YOUR_SRC_FOLDER
 git submodule add https://github.com/ryupold/raylib.zig raylib
-git submodule raylib --init --recursive
+git submodule update --init --recursive
 ```
 
 The bindings have been prebuilt so you just need to import raylib.zig
