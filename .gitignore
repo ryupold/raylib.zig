@@ -51,7 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-zig-cache/
+/zig-cache/
+/zig-out/
 
 .vscode/settings.json
 
