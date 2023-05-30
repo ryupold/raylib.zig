@@ -99,6 +99,9 @@ pub fn build(b: *std.Build) !void {
     raylib_parser_install.dependOn(&generateBindings_install.step);
 
     b.installArtifact(lib_raylib.artifact("raylib"));
+    _ = b.addModule("raylib", .{
+        .source_file = std.build.FileSource.relative("raylib.zig"),
+    });
 }
 
 // above: generate library
