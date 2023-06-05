@@ -31,10 +31,7 @@ pub fn main() !void {
         .ignore_unknown_fields = true,
     });
 
-    defer json.parseFree(mapping.Intermediate, bindings, .{
-        .allocator = allocator,
-        .ignore_unknown_fields = true,
-    });
+    defer json.parseFree(mapping.Intermediate, allocator, bindings);
 
     var file = try fs.cwd().createFile(outputFile, .{});
     defer file.close();
@@ -72,6 +69,10 @@ const Injections = struct {
         while (try reader.readUntilDelimiterOrEofAlloc(allocator, '\n', std.math.maxInt(usize))) |line| {
             if (std.mem.indexOf(u8, line, "pub const ")) |startIndex| {
                 if (std.mem.indexOf(u8, line, " = extern struct {")) |endIndex| {
+                    const s = line["pub const ".len + startIndex .. endIndex];
+                    try symbols.append(s);
+                    std.log.debug("inject symbol: {s}", .{s});
+                } else if (std.mem.indexOf(u8, line, " = packed struct(u32) {")) |endIndex| {
                     const s = line["pub const ".len + startIndex .. endIndex];
                     try symbols.append(s);
                     std.log.debug("inject symbol: {s}", .{s});

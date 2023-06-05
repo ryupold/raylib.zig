@@ -1168,6 +1168,11 @@ bool mExportImage(Image *image, const char * fileName)
 	return ExportImage(*image, fileName);
 }
 
+unsigned char * mExportImageToMemory(Image *image, const char * fileType, int * fileSize)
+{
+	return ExportImageToMemory(*image, fileType, fileSize);
+}
+
 bool mExportImageAsCode(Image *image, const char * fileName)
 {
 	return ExportImageAsCode(*image, fileName);
@@ -1178,20 +1183,19 @@ void mGenImageColor(Image *out, int width, int height, Color *color)
 	*out = GenImageColor(width, height, *color);
 }
 
-void mGenImageGradientLinear(Image *out, int width, int height,int direction, Color *start, Color *end)
+void mGenImageGradientLinear(Image *out, int width, int height, int direction, Color *start, Color *end)
 {
 	*out = GenImageGradientLinear(width, height, direction, *start, *end);
 }
-
 
 void mGenImageGradientRadial(Image *out, int width, int height, float density, Color *inner, Color *outer)
 {
 	*out = GenImageGradientRadial(width, height, density, *inner, *outer);
 }
 
-void mGenImageGradientSquare(Image *out, int width, int height,float density, Color *inner, Color *outer)
+void mGenImageGradientSquare(Image *out, int width, int height, float density, Color *inner, Color *outer)
 {
-	*out = GenImageGradientSquare(width, height, density,*inner, *outer);
+	*out = GenImageGradientSquare(width, height, density, *inner, *outer);
 }
 
 void mGenImageChecked(Image *out, int width, int height, int checksX, int checksY, Color *col1, Color *col2)
@@ -1312,6 +1316,11 @@ void mImageFlipVertical(Image * image)
 void mImageFlipHorizontal(Image * image)
 {
 	ImageFlipHorizontal(image);
+}
+
+void mImageRotate(Image * image, int degrees)
+{
+	ImageRotate(image, degrees);
 }
 
 void mImageRotateCW(Image * image)

@@ -708,20 +708,23 @@ void mUnloadImage(Image *image);
 // Export image data to file, returns true on success
 bool mExportImage(Image *image, const char * fileName);
 
+// Export image to memory buffer
+unsigned char * mExportImageToMemory(Image *image, const char * fileType, int * fileSize);
+
 // Export image as code file defining an array of bytes, returns true on success
 bool mExportImageAsCode(Image *image, const char * fileName);
 
 // Generate image: plain color
 void mGenImageColor(Image *out, int width, int height, Color *color);
 
-// Generate image: linear gradient
-void mGenImageGradientLinear(Image *out, int width, int height,int direction, Color *start, Color *end);
+// Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient
+void mGenImageGradientLinear(Image *out, int width, int height, int direction, Color *start, Color *end);
 
 // Generate image: radial gradient
 void mGenImageGradientRadial(Image *out, int width, int height, float density, Color *inner, Color *outer);
 
-//Generate image: square gradient
-void mGenImageGradientSquare(Image *out, int width, int height,float density, Color *inner, Color *outer);
+// Generate image: square gradient
+void mGenImageGradientSquare(Image *out, int width, int height, float density, Color *inner, Color *outer);
 
 // Generate image: checked
 void mGenImageChecked(Image *out, int width, int height, int checksX, int checksY, Color *col1, Color *col2);
@@ -794,6 +797,9 @@ void mImageFlipVertical(Image * image);
 
 // Flip image horizontally
 void mImageFlipHorizontal(Image * image);
+
+// Rotate image by input angle in degrees (-359 to 359) 
+void mImageRotate(Image * image, int degrees);
 
 // Rotate image clockwise 90deg
 void mImageRotateCW(Image * image);

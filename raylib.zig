@@ -14,6 +14,43 @@ const raylib = @cImport({
 
 //--- structs -------------------------------------------------------------------------------------
 
+/// System/Window config flags
+pub const ConfigFlags = packed struct(u32) {
+    FLAG_UNKNOWN_1: bool = false, // 0x0001
+    /// Set to run program in fullscreen
+    FLAG_FULLSCREEN_MODE: bool = false, // 0x0002,
+    /// Set to allow resizable window
+    FLAG_WINDOW_RESIZABLE: bool = false, // 0x0004,
+    /// Set to disable window decoration (frame and buttons)
+    FLAG_WINDOW_UNDECORATED: bool = false, // 0x0008,
+    /// Set to allow transparent framebuffer
+    FLAG_WINDOW_TRANSPARENT: bool = false, // 0x0010,
+    /// Set to try enabling MSAA 4X
+    FLAG_MSAA_4X_HINT: bool = false, // 0x0020,
+    /// Set to try enabling V-Sync on GPU
+    FLAG_VSYNC_HINT: bool = false, // 0x0040,
+    /// Set to hide window
+    FLAG_WINDOW_HIDDEN: bool = false, // 0x0080,
+    /// Set to allow windows running while minimized
+    FLAG_WINDOW_ALWAYS_RUN: bool = false, // 0x0100,
+    /// Set to minimize window (iconify)
+    FLAG_WINDOW_MINIMIZED: bool = false, // 0x0200,
+    /// Set to maximize window (expanded to monitor)
+    FLAG_WINDOW_MAXIMIZED: bool = false, // 0x0400,
+    /// Set to window non focused
+    FLAG_WINDOW_UNFOCUSED: bool = false, // 0x0800,
+    /// Set to window always on top
+    FLAG_WINDOW_TOPMOST: bool = false, // 0x1000,
+    /// Set to support HighDPI
+    FLAG_WINDOW_HIGHDPI: bool = false, // 0x2000,
+    /// Set to support mouse passthrough, only supported when FLAG_WINDOW_UNDECORATED
+    FLAG_WINDOW_MOUSE_PASSTHROUGH: bool = false, // 0x4000,
+    FLAG_UNKNOWN_2: bool = false, // 0x8000
+    /// Set to try enabling interlaced video format (for V3D)
+    FLAG_INTERLACED_HINT: bool = false, // 0x10000
+    FLAG_PADDING: u15 = 0, // 0xFFFE0000
+};
+
 /// Transform, vectex transformation data
 pub const Transform = extern struct {
     /// Translation
@@ -3372,6 +3409,22 @@ pub fn ExportImage(
     );
 }
 
+/// Export image to memory buffer
+pub fn ExportImageToMemory(
+    image: Image,
+    fileType: [*:0]const u8,
+    fileSize: ?[*]i32,
+) [*:0]const u8 {
+    return @ptrCast(
+        ?[*]u8,
+        raylib.mExportImageToMemory(
+            @intToPtr([*c]raylib.Image, @ptrToInt(&image)),
+            @intToPtr([*c]const u8, @ptrToInt(fileType)),
+            @ptrCast([*c]i32, fileSize),
+        ),
+    );
+}
+
 /// Export image as code file defining an array of bytes, returns true on success
 pub fn ExportImageAsCode(
     image: Image,
@@ -3399,10 +3452,11 @@ pub fn GenImageColor(
     return out;
 }
 
-/// Generate image: vertical gradient
+/// Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient
 pub fn GenImageGradientLinear(
     width: i32,
     height: i32,
+    direction: i32,
     start: Color,
     end: Color,
 ) Image {
@@ -3411,6 +3465,7 @@ pub fn GenImageGradientLinear(
         @ptrCast([*c]raylib.Image, &out),
         width,
         height,
+        direction,
         @intToPtr([*c]raylib.Color, @ptrToInt(&start)),
         @intToPtr([*c]raylib.Color, @ptrToInt(&end)),
     );
@@ -3437,7 +3492,7 @@ pub fn GenImageGradientRadial(
     return out;
 }
 
-/// Generate image: horizontal gradient
+/// Generate image: square gradient
 pub fn GenImageGradientSquare(
     width: i32,
     height: i32,
@@ -3783,6 +3838,17 @@ pub fn ImageFlipHorizontal(
 ) void {
     raylib.mImageFlipHorizontal(
         @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+    );
+}
+
+/// Rotate image by input angle in degrees (-359 to 359)
+pub fn ImageRotate(
+    image: *Image,
+    degrees: i32,
+) void {
+    raylib.mImageRotate(
+        @intToPtr([*c]raylib.Image, @ptrToInt(image)),
+        degrees,
     );
 }
 
@@ -10185,43 +10251,6 @@ pub const float16 = extern struct {
     v: [16]f32,
 };
 
-/// System/Window config flags
-pub const ConfigFlags = packed struct(u32) {
-    FLAG_UNKNOWN_1: bool = false, // 0x0001
-    /// Set to run program in fullscreen
-    FLAG_FULLSCREEN_MODE: bool = false, // 0x0002,
-    /// Set to allow resizable window
-    FLAG_WINDOW_RESIZABLE: bool = false, // 0x0004,
-    /// Set to disable window decoration (frame and buttons)
-    FLAG_WINDOW_UNDECORATED: bool = false, // 0x0008,
-    /// Set to allow transparent framebuffer
-    FLAG_WINDOW_TRANSPARENT: bool = false, // 0x0010,
-    /// Set to try enabling MSAA 4X
-    FLAG_MSAA_4X_HINT: bool = false, // 0x0020,
-    /// Set to try enabling V-Sync on GPU
-    FLAG_VSYNC_HINT: bool = false, // 0x0040,
-    /// Set to hide window
-    FLAG_WINDOW_HIDDEN: bool = false, // 0x0080,
-    /// Set to allow windows running while minimized
-    FLAG_WINDOW_ALWAYS_RUN: bool = false, // 0x0100,
-    /// Set to minimize window (iconify)
-    FLAG_WINDOW_MINIMIZED: bool = false, // 0x0200,
-    /// Set to maximize window (expanded to monitor)
-    FLAG_WINDOW_MAXIMIZED: bool = false, // 0x0400,
-    /// Set to window non focused
-    FLAG_WINDOW_UNFOCUSED: bool = false, // 0x0800,
-    /// Set to window always on top
-    FLAG_WINDOW_TOPMOST: bool = false, // 0x1000,
-    /// Set to support HighDPI
-    FLAG_WINDOW_HIGHDPI: bool = false, // 0x2000,
-    /// Set to support mouse passthrough, only supported when FLAG_WINDOW_UNDECORATED
-    FLAG_WINDOW_MOUSE_PASSTHROUGH: bool = false, // 0x4000,
-    FLAG_UNKNOWN_2: bool = false, // 0x8000
-    /// Set to try enabling interlaced video format (for V3D)
-    FLAG_INTERLACED_HINT: bool = false, // 0x10000
-    FLAG_PADDING: u15 = 0, // 0xFFFE0000
-};
-
 /// Trace log level
 pub const TraceLogLevel = enum(i32) {
     /// Display all logs
@@ -10870,6 +10899,8 @@ pub const rlGlVersion = enum(i32) {
     RL_OPENGL_43 = 4,
     /// OpenGL ES 2.0 (GLSL 100)
     RL_OPENGL_ES_20 = 5,
+    /// OpenGL ES 3.0 (GLSL 300 es)
+    RL_OPENGL_ES_30 = 6,
 };
 
 /// Trace log level
@@ -11137,7 +11168,7 @@ pub const RAYLIB_VERSION_PATCH: i32 = 0;
 pub const RAYLIB_VERSION: []const u8 = "4.6-dev";
 
 ///
-pub const PI: f32 = 3.1415927410125732;
+pub const PI: f32 = 3.14159265358979323846;
 
 /// Light Gray
 pub const LIGHTGRAY: Color = .{ .r = 200, .g = 200, .b = 200, .a = 255 };
@@ -11237,6 +11268,12 @@ pub const RL_MAX_MATRIX_STACK_SIZE: i32 = 32;
 
 /// Maximum number of shader locations supported
 pub const RL_MAX_SHADER_LOCATIONS: i32 = 32;
+
+/// Default near cull distance
+pub const RL_CULL_DISTANCE_NEAR: f64 = 0.01;
+
+/// Default far cull distance
+pub const RL_CULL_DISTANCE_FAR: f64 = 1000.0;
 
 /// GL_TEXTURE_WRAP_S
 pub const RL_TEXTURE_WRAP_S: i32 = 10242;
@@ -11533,4 +11570,4 @@ pub const RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE1: []const u8 = "texture1";
 pub const RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE2: []const u8 = "texture2";
 
 ///
-pub const EPSILON: f32 = 0.0000009999999974752427;
+pub const EPSILON: f32 = 0.000001;
