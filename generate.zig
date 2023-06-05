@@ -478,6 +478,7 @@ fn isPointer(z: []const u8) bool {
 
 fn pointerOffset(z: []const u8) usize {
     if (startsWith(z, "*")) return 1;
+    if (startsWith(z, "?*")) return 2;
     if (startsWith(z, "[*]")) return 3;
     if (startsWith(z, "?[*]")) return 4;
     if (startsWith(z, "[*c]")) return 4;
