@@ -3446,7 +3446,7 @@ pub fn GenImageGradientSquare(
     outer: Color,
 ) Image {
     var out: Image = undefined;
-    raylib.mGenImageGradientSwuare(
+    raylib.mGenImageGradientSquare(
         @ptrCast([*c]raylib.Image, &out),
         width,
         height,
