@@ -714,14 +714,14 @@ bool mExportImageAsCode(Image *image, const char * fileName);
 // Generate image: plain color
 void mGenImageColor(Image *out, int width, int height, Color *color);
 
-// Generate image: vertical gradient
-void mGenImageGradientV(Image *out, int width, int height, Color *top, Color *bottom);
-
-// Generate image: horizontal gradient
-void mGenImageGradientH(Image *out, int width, int height, Color *left, Color *right);
+// Generate image: linear gradient
+void mGenImageGradientLinear(Image *out, int width, int height,int direction, Color *start, Color *end);
 
 // Generate image: radial gradient
 void mGenImageGradientRadial(Image *out, int width, int height, float density, Color *inner, Color *outer);
+
+//Generate image: square gradient
+void mGenImageGradientSquare(Image *out, int width, int height,float density, Color *inner, Color *outer);
 
 // Generate image: checked
 void mGenImageChecked(Image *out, int width, int height, int checksX, int checksY, Color *col1, Color *col2);
