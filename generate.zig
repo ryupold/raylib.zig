@@ -26,11 +26,11 @@ pub fn main() !void {
 
     const bindingsData = try fs.cwd().readFileAlloc(allocator, intermediate.bindingsJSON, std.math.maxInt(usize));
     defer allocator.free(bindingsData);
-    var stream = json.TokenStream.init(bindingsData);
-    const bindings = try json.parse(mapping.Intermediate, &stream, .{
-        .allocator = allocator,
+
+    const bindings = try json.parseFromSlice(mapping.Intermediate, allocator, bindingsData, .{
         .ignore_unknown_fields = true,
     });
+
     defer json.parseFree(mapping.Intermediate, bindings, .{
         .allocator = allocator,
         .ignore_unknown_fields = true,
