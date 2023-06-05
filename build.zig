@@ -104,7 +104,7 @@ pub fn addTo(b: *std.Build, exe: *std.build.LibExeObjStep, target: std.zig.Cross
     exe.addIncludePath(dir_raylib);
     exe.addIncludePath(cwd);
     const lib = linkThisLibrary(b, target, optimize);
-    const lib_raylib = raylib_build.addRaylib(b, target);
+    const lib_raylib = raylib_build.addRaylib(b, target, optimize);
     exe.linkLibrary(lib_raylib);
     exe.linkLibrary(lib);
 }
