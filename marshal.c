@@ -1178,19 +1178,20 @@ void mGenImageColor(Image *out, int width, int height, Color *color)
 	*out = GenImageColor(width, height, *color);
 }
 
-void mGenImageGradientV(Image *out, int width, int height, Color *top, Color *bottom)
+void mGenImageGradientLinear(Image *out, int width, int height,int direction, Color *start, Color *end)
 {
-	*out = GenImageGradientV(width, height, *top, *bottom);
+	*out = GenImageGradientLinear(width, height, direction, *start, *end);
 }
 
-void mGenImageGradientH(Image *out, int width, int height, Color *left, Color *right)
-{
-	*out = GenImageGradientH(width, height, *left, *right);
-}
 
 void mGenImageGradientRadial(Image *out, int width, int height, float density, Color *inner, Color *outer)
 {
 	*out = GenImageGradientRadial(width, height, density, *inner, *outer);
+}
+
+void mGenImageGradientSquare(Image *out, int width, int height,float density, Color *inner, Color *outer)
+{
+	*out = GenImageGradientSquare(width, height, density,*inner, *outer);
 }
 
 void mGenImageChecked(Image *out, int width, int height, int checksX, int checksY, Color *col1, Color *col2)

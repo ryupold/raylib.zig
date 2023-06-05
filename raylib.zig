@@ -3400,37 +3400,19 @@ pub fn GenImageColor(
 }
 
 /// Generate image: vertical gradient
-pub fn GenImageGradientV(
+pub fn GenImageGradientLinear(
     width: i32,
     height: i32,
-    top: Color,
-    bottom: Color,
+    start: Color,
+    end: Color,
 ) Image {
     var out: Image = undefined;
-    raylib.mGenImageGradientV(
+    raylib.mGenImageGradientLinear(
         @ptrCast([*c]raylib.Image, &out),
         width,
         height,
-        @intToPtr([*c]raylib.Color, @ptrToInt(&top)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&bottom)),
-    );
-    return out;
-}
-
-/// Generate image: horizontal gradient
-pub fn GenImageGradientH(
-    width: i32,
-    height: i32,
-    left: Color,
-    right: Color,
-) Image {
-    var out: Image = undefined;
-    raylib.mGenImageGradientH(
-        @ptrCast([*c]raylib.Image, &out),
-        width,
-        height,
-        @intToPtr([*c]raylib.Color, @ptrToInt(&left)),
-        @intToPtr([*c]raylib.Color, @ptrToInt(&right)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&start)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&end)),
     );
     return out;
 }
@@ -3445,6 +3427,26 @@ pub fn GenImageGradientRadial(
 ) Image {
     var out: Image = undefined;
     raylib.mGenImageGradientRadial(
+        @ptrCast([*c]raylib.Image, &out),
+        width,
+        height,
+        density,
+        @intToPtr([*c]raylib.Color, @ptrToInt(&inner)),
+        @intToPtr([*c]raylib.Color, @ptrToInt(&outer)),
+    );
+    return out;
+}
+
+/// Generate image: horizontal gradient
+pub fn GenImageGradientSquare(
+    width: i32,
+    height: i32,
+    density: f32,
+    inner: Color,
+    outer: Color,
+) Image {
+    var out: Image = undefined;
+    raylib.mGenImageGradientSwuare(
         @ptrCast([*c]raylib.Image, &out),
         width,
         height,
