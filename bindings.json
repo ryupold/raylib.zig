@@ -3461,6 +3461,26 @@
             "custom": false
         },
         {
+            "name": "ExportImageToMemory",
+            "params": [
+                {
+                    "name": "image",
+                    "typ": "Image"
+                },
+                {
+                    "name": "fileType",
+                    "typ": "[*:0]const u8"
+                },
+                {
+                    "name": "fileSize",
+                    "typ": "?[*]i32"
+                }
+            ],
+            "returnType": "?[*]u8",
+            "description": "Export image to memory buffer",
+            "custom": false
+        },
+        {
             "name": "ExportImageAsCode",
             "params": [
                 {
@@ -3497,7 +3517,7 @@
             "custom": false
         },
         {
-            "name": "GenImageGradientV",
+            "name": "GenImageGradientLinear",
             "params": [
                 {
                     "name": "width",
@@ -3508,40 +3528,20 @@
                     "typ": "i32"
                 },
                 {
-                    "name": "top",
+                    "name": "direction",
+                    "typ": "i32"
+                },
+                {
+                    "name": "start",
                     "typ": "Color"
                 },
                 {
-                    "name": "bottom",
+                    "name": "end",
                     "typ": "Color"
                 }
             ],
             "returnType": "Image",
-            "description": "Generate image: vertical gradient",
-            "custom": false
-        },
-        {
-            "name": "GenImageGradientH",
-            "params": [
-                {
-                    "name": "width",
-                    "typ": "i32"
-                },
-                {
-                    "name": "height",
-                    "typ": "i32"
-                },
-                {
-                    "name": "left",
-                    "typ": "Color"
-                },
-                {
-                    "name": "right",
-                    "typ": "Color"
-                }
-            ],
-            "returnType": "Image",
-            "description": "Generate image: horizontal gradient",
+            "description": "Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient",
             "custom": false
         },
         {
@@ -3570,6 +3570,34 @@
             ],
             "returnType": "Image",
             "description": "Generate image: radial gradient",
+            "custom": false
+        },
+        {
+            "name": "GenImageGradientSquare",
+            "params": [
+                {
+                    "name": "width",
+                    "typ": "i32"
+                },
+                {
+                    "name": "height",
+                    "typ": "i32"
+                },
+                {
+                    "name": "density",
+                    "typ": "f32"
+                },
+                {
+                    "name": "inner",
+                    "typ": "Color"
+                },
+                {
+                    "name": "outer",
+                    "typ": "Color"
+                }
+            ],
+            "returnType": "Image",
+            "description": "Generate image: square gradient",
             "custom": false
         },
         {
@@ -4030,6 +4058,22 @@
             ],
             "returnType": "void",
             "description": "Flip image horizontally",
+            "custom": false
+        },
+        {
+            "name": "ImageRotate",
+            "params": [
+                {
+                    "name": "image",
+                    "typ": "*Image"
+                },
+                {
+                    "name": "degrees",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Rotate image by input angle in degrees (-359 to 359) ",
             "custom": false
         },
         {
@@ -14001,6 +14045,11 @@
                     "name": "RL_OPENGL_ES_20",
                     "value": 5,
                     "description": "OpenGL ES 2.0 (GLSL 100)"
+                },
+                {
+                    "name": "RL_OPENGL_ES_30",
+                    "value": 6,
+                    "description": "OpenGL ES 3.0 (GLSL 300 es)    "
                 }
             ],
             "description": "OpenGL version",
@@ -15954,7 +16003,7 @@
         {
             "name": "PI",
             "typ": "f32",
-            "value": "3.1415927410125732",
+            "value": "3.14159265358979323846",
             "description": "",
             "custom": false
         },
@@ -16187,6 +16236,20 @@
             "typ": "i32",
             "value": "32",
             "description": "Maximum number of shader locations supported",
+            "custom": false
+        },
+        {
+            "name": "RL_CULL_DISTANCE_NEAR",
+            "typ": "f64",
+            "value": "0.01",
+            "description": "Default near cull distance",
+            "custom": false
+        },
+        {
+            "name": "RL_CULL_DISTANCE_FAR",
+            "typ": "f64",
+            "value": "1000.0",
+            "description": "Default far cull distance",
             "custom": false
         },
         {
@@ -16878,7 +16941,7 @@
         {
             "name": "EPSILON",
             "typ": "f32",
-            "value": "0.0000009999999974752427",
+            "value": "0.000001",
             "description": "",
             "custom": false
         }

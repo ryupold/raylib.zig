@@ -15,13 +15,13 @@
     {
       "name": "PI",
       "type": "FLOAT",
-      "value": 3.14159265358979323846,
+      "value": "3.14159265358979323846",
       "description": ""
     },
     {
       "name": "EPSILON",
       "type": "FLOAT",
-      "value": 0.000001,
+      "value": "0.000001",
       "description": ""
     },
     {

@@ -660,7 +660,7 @@ pub const RaylibFunctionParam = struct {
 pub const RaylibDefine = struct {
     name: []const u8,
     type: []const u8,
-    value: union(enum) { string: []const u8, int: i64, float: f32 },
+    value: []const u8,
     description: ?[]const u8 = null,
 };
 

@@ -9,19 +9,19 @@
     {
       "name": "RAYLIB_VERSION_MAJOR",
       "type": "INT",
-      "value": 4,
+      "value": "4",
       "description": ""
     },
     {
       "name": "RAYLIB_VERSION_MINOR",
       "type": "INT",
-      "value": 6,
+      "value": "6",
       "description": ""
     },
     {
       "name": "RAYLIB_VERSION_PATCH",
       "type": "INT",
-      "value": 0,
+      "value": "0",
       "description": ""
     },
     {
@@ -45,7 +45,7 @@
     {
       "name": "PI",
       "type": "FLOAT",
-      "value": 3.14159265358979323846,
+      "value": "3.14159265358979323846",
       "description": ""
     },
     {
@@ -6207,6 +6207,25 @@
       ]
     },
     {
+      "name": "ExportImageToMemory",
+      "description": "Export image to memory buffer",
+      "returnType": "unsigned char *",
+      "params": [
+        {
+          "type": "Image",
+          "name": "image"
+        },
+        {
+          "type": "const char *",
+          "name": "fileType"
+        },
+        {
+          "type": "int *",
+          "name": "fileSize"
+        }
+      ]
+    },
+    {
       "name": "ExportImageAsCode",
       "description": "Export image as code file defining an array of bytes, returns true on success",
       "returnType": "bool",
@@ -6241,8 +6260,8 @@
       ]
     },
     {
-      "name": "GenImageGradientV",
-      "description": "Generate image: vertical gradient",
+      "name": "GenImageGradientLinear",
+      "description": "Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient",
       "returnType": "Image",
       "params": [
         {
@@ -6254,41 +6273,49 @@
           "name": "height"
         },
         {
-          "type": "Color",
-          "name": "top"
-        },
-        {
-          "type": "Color",
-          "name": "bottom"
-        }
-      ]
-    },
-    {
-      "name": "GenImageGradientH",
-      "description": "Generate image: horizontal gradient",
-      "returnType": "Image",
-      "params": [
-        {
           "type": "int",
-          "name": "width"
-        },
-        {
-          "type": "int",
-          "name": "height"
+          "name": "direction"
         },
         {
           "type": "Color",
-          "name": "left"
+          "name": "start"
         },
         {
           "type": "Color",
-          "name": "right"
+          "name": "end"
         }
       ]
     },
     {
       "name": "GenImageGradientRadial",
       "description": "Generate image: radial gradient",
+      "returnType": "Image",
+      "params": [
+        {
+          "type": "int",
+          "name": "width"
+        },
+        {
+          "type": "int",
+          "name": "height"
+        },
+        {
+          "type": "float",
+          "name": "density"
+        },
+        {
+          "type": "Color",
+          "name": "inner"
+        },
+        {
+          "type": "Color",
+          "name": "outer"
+        }
+      ]
+    },
+    {
+      "name": "GenImageGradientSquare",
+      "description": "Generate image: square gradient",
       "returnType": "Image",
       "params": [
         {
@@ -6746,6 +6773,21 @@
         {
           "type": "Image *",
           "name": "image"
+        }
+      ]
+    },
+    {
+      "name": "ImageRotate",
+      "description": "Rotate image by input angle in degrees (-359 to 359) ",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Image *",
+          "name": "image"
+        },
+        {
+          "type": "int",
+          "name": "degrees"
         }
       ]
     },
