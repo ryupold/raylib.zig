@@ -24,13 +24,11 @@ pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(allocator);
     defer arena.deinit();
 
-    const bindingsData = try fs.cwd().readFileAlloc(allocator, intermediate.bindingsJSON, std.math.maxInt(usize));
-    defer allocator.free(bindingsData);
+    const bindingsData = try fs.cwd().readFileAlloc(arena.allocator(), intermediate.bindingsJSON, std.math.maxInt(usize));
 
-    const bindings = try json.parseFromSlice(mapping.Intermediate, allocator, bindingsData, .{
+    const bindings = try json.parseFromSliceLeaky(mapping.Intermediate, arena.allocator(), bindingsData, .{
         .ignore_unknown_fields = true,
     });
-    defer bindings.deinit();
 
     var file = try fs.cwd().createFile(outputFile, .{});
     defer file.close();

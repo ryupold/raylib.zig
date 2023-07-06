@@ -84,6 +84,9 @@ void mSetWindowSize(int width, int height);
 // Set window opacity [0.0f..1.0f] (only PLATFORM_DESKTOP)
 void mSetWindowOpacity(float opacity);
 
+// Set window focused (only PLATFORM_DESKTOP)
+void mSetWindowFocused(void);
+
 // Get current screen width
 int mGetScreenWidth(void);
 
@@ -798,7 +801,7 @@ void mImageFlipVertical(Image * image);
 // Flip image horizontally
 void mImageFlipHorizontal(Image * image);
 
-// Rotate image by input angle in degrees (-359 to 359) 
+// Rotate image by input angle in degrees (-359 to 359)
 void mImageRotate(Image * image, int degrees);
 
 // Rotate image clockwise 90deg
@@ -1040,6 +1043,9 @@ void mDrawTextCodepoint(Font *font, int codepoint, Vector2 *position, float font
 
 // Draw multiple character (codepoint)
 void mDrawTextCodepoints(Font *font, const int * codepoints, int count, Vector2 *position, float fontSize, float spacing, Color *tint);
+
+// Set vertical line spacing when drawing with line-breaks
+void mSetTextLineSpacing(int spacing);
 
 // Measure string width for default font
 int mMeasureText(const char * text, int fontSize);

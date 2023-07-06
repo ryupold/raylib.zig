@@ -128,6 +128,11 @@ void mSetWindowOpacity(float opacity)
 	SetWindowOpacity(opacity);
 }
 
+void mSetWindowFocused(void)
+{
+	SetWindowFocused();
+}
+
 int mGetScreenWidth(void)
 {
 	return GetScreenWidth();
@@ -1721,6 +1726,11 @@ void mDrawTextCodepoint(Font *font, int codepoint, Vector2 *position, float font
 void mDrawTextCodepoints(Font *font, const int * codepoints, int count, Vector2 *position, float fontSize, float spacing, Color *tint)
 {
 	DrawTextCodepoints(*font, codepoints, count, *position, fontSize, spacing, *tint);
+}
+
+void mSetTextLineSpacing(int spacing)
+{
+	SetTextLineSpacing(spacing);
 }
 
 int mMeasureText(const char * text, int fontSize)

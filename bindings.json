@@ -260,6 +260,13 @@
             "custom": false
         },
         {
+            "name": "SetWindowFocused",
+            "params": [],
+            "returnType": "void",
+            "description": "Set window focused (only PLATFORM_DESKTOP)",
+            "custom": false
+        },
+        {
             "name": "GetWindowHandle",
             "params": [],
             "returnType": "*anyopaque",
@@ -4073,7 +4080,7 @@
                 }
             ],
             "returnType": "void",
-            "description": "Rotate image by input angle in degrees (-359 to 359) ",
+            "description": "Rotate image by input angle in degrees (-359 to 359)",
             "custom": false
         },
         {
@@ -5653,6 +5660,18 @@
             ],
             "returnType": "void",
             "description": "Draw multiple character (codepoint)",
+            "custom": false
+        },
+        {
+            "name": "SetTextLineSpacing",
+            "params": [
+                {
+                    "name": "spacing",
+                    "typ": "i32"
+                }
+            ],
+            "returnType": "void",
+            "description": "Set vertical line spacing when drawing with line-breaks",
             "custom": false
         },
         {
@@ -14049,7 +14068,7 @@
                 {
                     "name": "RL_OPENGL_ES_30",
                     "value": 6,
-                    "description": "OpenGL ES 3.0 (GLSL 300 es)    "
+                    "description": "OpenGL ES 3.0 (GLSL 300 es)"
                 }
             ],
             "description": "OpenGL version",

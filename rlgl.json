@@ -1269,7 +1269,7 @@
         {
           "name": "RL_OPENGL_ES_30",
           "value": 6,
-          "description": "OpenGL ES 3.0 (GLSL 300 es)    "
+          "description": "OpenGL ES 3.0 (GLSL 300 es)"
         }
       ]
     },

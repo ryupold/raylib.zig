@@ -31,7 +31,6 @@ pub const Intermediate = struct {
         var defines = std.ArrayList(Define).init(allocator);
 
         const jsonData = try std.fs.cwd().readFileAlloc(allocator, jsonFile, memoryConstrain);
-        defer allocator.free(jsonData);
 
         const bindingJson = try json.parseFromSliceLeaky(Intermediate, allocator, jsonData, .{
             .ignore_unknown_fields = true,
@@ -519,9 +518,8 @@ pub const CombinedRaylib = struct {
         for (jsonFiles) |jsonFile| {
             std.log.info("parsing {s}", .{jsonFile});
             const jsonData = try std.fs.cwd().readFileAlloc(allocator, jsonFile, memoryConstrain);
-            defer allocator.free(jsonData);
 
-            const bindingJson = try json.parseFromSlice(RaylibJson, allocator, jsonData, .{
+            const bindingJson = try json.parseFromSliceLeaky(RaylibJson, allocator, jsonData, .{
                 .ignore_unknown_fields = true,
                 .duplicate_field_behavior = .use_last,
             });
@@ -558,13 +556,6 @@ pub const CombinedRaylib = struct {
             .defines = defines,
             .functions = functions,
         };
-    }
-
-    pub fn deinit(self: *@This()) void {
-        self.structs.deinit();
-        self.enums.deinit();
-        self.defines.deinit();
-        self.functions.deinit();
     }
 
     pub fn toIntermediate(self: @This(), allocator: Allocator, customs: Intermediate) !Intermediate {

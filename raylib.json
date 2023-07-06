@@ -3275,6 +3275,11 @@
       ]
     },
     {
+      "name": "SetWindowFocused",
+      "description": "Set window focused (only PLATFORM_DESKTOP)",
+      "returnType": "void"
+    },
+    {
       "name": "GetWindowHandle",
       "description": "Get native window handle",
       "returnType": "void *"
@@ -6778,7 +6783,7 @@
     },
     {
       "name": "ImageRotate",
-      "description": "Rotate image by input angle in degrees (-359 to 359) ",
+      "description": "Rotate image by input angle in degrees (-359 to 359)",
       "returnType": "void",
       "params": [
         {
@@ -8305,6 +8310,17 @@
         {
           "type": "Color",
           "name": "tint"
+        }
+      ]
+    },
+    {
+      "name": "SetTextLineSpacing",
+      "description": "Set vertical line spacing when drawing with line-breaks",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "spacing"
         }
       ]
     },

@@ -43,8 +43,9 @@ const raylib = @import("path/to/raylib.zig/build.zig");
 
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
+    const mode = b.standardOptimizeOption(.{});
     const exe = ...;
-    raylib.addTo(b, exe, target);
+    raylib.addTo(b, exe, target, mode);
 }
 ```
 

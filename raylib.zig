@@ -1184,6 +1184,11 @@ pub fn SetWindowOpacity(
     );
 }
 
+/// Set window focused (only PLATFORM_DESKTOP)
+pub fn SetWindowFocused() void {
+    raylib.mSetWindowFocused();
+}
+
 /// Get current screen width
 pub fn GetScreenWidth() i32 {
     return raylib.mGetScreenWidth();
@@ -4919,6 +4924,15 @@ pub fn DrawTextCodepoints(
         fontSize,
         spacing,
         @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&tint))),
+    );
+}
+
+/// Set vertical line spacing when drawing with line-breaks
+pub fn SetTextLineSpacing(
+    spacing: i32,
+) void {
+    raylib.mSetTextLineSpacing(
+        spacing,
     );
 }
 
