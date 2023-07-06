@@ -30,8 +30,7 @@ pub fn main() !void {
     const bindings = try json.parseFromSlice(mapping.Intermediate, allocator, bindingsData, .{
         .ignore_unknown_fields = true,
     });
-
-    defer json.parseFree(mapping.Intermediate, allocator, bindings);
+    defer bindings.deinit();
 
     var file = try fs.cwd().createFile(outputFile, .{});
     defer file.close();

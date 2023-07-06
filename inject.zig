@@ -119,10 +119,10 @@ pub const Rectangle = extern struct {
 
     pub fn toI32(self: @This()) RectangleI {
         return .{
-            .x = @floatToInt(i32, self.x),
-            .y = @floatToInt(i32, self.y),
-            .width = @floatToInt(i32, self.width),
-            .height = @floatToInt(i32, self.height),
+            .x = @as(i32, @intFromFloat(self.x)),
+            .y = @as(i32, @intFromFloat(self.y)),
+            .width = @as(i32, @intFromFloat(self.width)),
+            .height = @as(i32, @intFromFloat(self.height)),
         };
     }
 
@@ -234,10 +234,10 @@ pub const RectangleI = extern struct {
 
     pub fn toF32(self: @This()) Rectangle {
         return .{
-            .x = @intToFloat(f32, self.x),
-            .y = @intToFloat(f32, self.y),
-            .width = @intToFloat(f32, self.width),
-            .height = @intToFloat(f32, self.height),
+            .x = @as(f32, @floatFromInt(self.x)),
+            .y = @as(f32, @floatFromInt(self.y)),
+            .width = @as(f32, @floatFromInt(self.width)),
+            .height = @as(f32, @floatFromInt(self.height)),
         };
     }
 
@@ -347,7 +347,7 @@ pub const Vector2 = extern struct {
     }
 
     pub fn int(self: @This()) Vector2i {
-        return .{ .x = @floatToInt(i32, self.x), .y = @floatToInt(i32, self.y) };
+        return .{ .x = @as(i32, @intFromFloat(self.x)), .y = @as(i32, @intFromFloat(self.y)) };
     }
 
     /// Cross product
@@ -398,7 +398,7 @@ pub const Vector2i = extern struct {
     y: i32 = 0,
 
     pub fn float(self: @This()) Vector2 {
-        return .{ .x = @intToFloat(f32, self.x), .y = @intToFloat(f32, self.y) };
+        return .{ .x = @as(f32, @floatFromInt(self.x)), .y = @as(f32, @floatFromInt(self.y)) };
     }
 };
 
@@ -566,10 +566,10 @@ pub const Vector4 = extern struct {
 
     pub fn toColor(self: @This()) Color {
         return .{
-            .r = @floatToInt(u8, std.math.clamp(self.x * 255, 0, 255)),
-            .g = @floatToInt(u8, std.math.clamp(self.y * 255, 0, 255)),
-            .b = @floatToInt(u8, std.math.clamp(self.z * 255, 0, 255)),
-            .a = @floatToInt(u8, std.math.clamp(self.w * 255, 0, 255)),
+            .r = @as(u8, @intFromFloat(std.math.clamp(self.x * 255, 0, 255))),
+            .g = @as(u8, @intFromFloat(std.math.clamp(self.y * 255, 0, 255))),
+            .b = @as(u8, @intFromFloat(std.math.clamp(self.z * 255, 0, 255))),
+            .a = @as(u8, @intFromFloat(std.math.clamp(self.w * 255, 0, 255))),
         };
     }
 
@@ -607,17 +607,17 @@ pub const Color = extern struct {
 
     pub fn lerpA(self: @This(), targetAlpha: u8, t: f32) @This() {
         var copy = self;
-        const a = @intToFloat(f32, self.a);
-        copy.a = @floatToInt(u8, a * (1 - t) + @intToFloat(f32, targetAlpha) * t);
+        const a = @as(f32, @floatFromInt(self.a));
+        copy.a = @as(u8, @intFromFloat(a * (1 - t) + @as(f32, @floatFromInt(targetAlpha)) * t));
         return copy;
     }
 
     pub fn toVector4(self: @This()) Vector4 {
         return .{
-            .x = @intToFloat(f32, self.r) / 255.0,
-            .y = @intToFloat(f32, self.g) / 255.0,
-            .z = @intToFloat(f32, self.b) / 255.0,
-            .w = @intToFloat(f32, self.a) / 255.0,
+            .x = @as(f32, @floatFromInt(self.r)) / 255.0,
+            .y = @as(f32, @floatFromInt(self.g)) / 255.0,
+            .z = @as(f32, @floatFromInt(self.b)) / 255.0,
+            .w = @as(f32, @floatFromInt(self.a)) / 255.0,
         };
     }
 
@@ -644,8 +644,8 @@ pub const Camera2D = extern struct {
     zoom: f32 = 1,
 };
 
-pub const MATERIAL_MAP_DIFFUSE = @intCast(usize, @enumToInt(MaterialMapIndex.MATERIAL_MAP_ALBEDO));
-pub const MATERIAL_MAP_SPECULAR = @intCast(usize, @enumToInt(MaterialMapIndex.MATERIAL_MAP_METALNESS));
+pub const MATERIAL_MAP_DIFFUSE = @as(usize, @intCast(@intFromEnum(MaterialMapIndex.MATERIAL_MAP_ALBEDO)));
+pub const MATERIAL_MAP_SPECULAR = @as(usize, @intCast(@intFromEnum(MaterialMapIndex.MATERIAL_MAP_METALNESS)));
 
 //--- callbacks -----------------------------------------------------------------------------------
 
@@ -704,15 +704,15 @@ pub fn randomF32(rng: std.rand.Random, min: f32, max: f32) f32 {
 pub fn SetConfigFlags(
     flags: ConfigFlags,
 ) void {
-    raylib.SetConfigFlags(@bitCast(c_uint, flags));
+    raylib.SetConfigFlags(@as(c_uint, @bitCast(flags)));
 }
 
 /// Load file data as byte array (read)
 pub fn LoadFileData(fileName: [*:0]const u8) ![]const u8 {
     var bytesRead: u32 = undefined;
     const data = raylib.LoadFileData(
-        @intToPtr([*c]const u8, @ptrToInt(fileName)),
-        @ptrCast([*c]u32, &bytesRead),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
+        @as([*c]u32, @ptrCast(&bytesRead)),
     );
 
     if (data == null) return error.FileNotFound;
@@ -725,7 +725,7 @@ pub fn UnloadFileData(
     data: []const u8,
 ) void {
     raylib.UnloadFileData(
-        @intToPtr([*c]u8, @ptrToInt(data.ptr)),
+        @as([*c]u8, @ptrFromInt(@intFromPtr(data.ptr))),
     );
 }
 
@@ -747,9 +747,9 @@ pub fn GenImageFontAtlas(
 ) Image {
     var out: Image = undefined;
     mGenImageFontAtlas(
-        @ptrCast([*c]raylib.Image, &out),
-        @ptrCast([*c]raylib.GlyphInfo, chars),
-        @ptrCast([*c][*c]raylib.Rectangle, recs),
+        @as([*c]raylib.Image, @ptrCast(&out)),
+        @as([*c]raylib.GlyphInfo, @ptrCast(chars)),
+        @as([*c][*c]raylib.Rectangle, @ptrCast(recs)),
         glyphCount,
         fontSize,
         padding,
@@ -979,7 +979,7 @@ pub fn rlEnableStatePointer(
 ) void {
     raylib.rlEnableStatePointer(
         vertexAttribType,
-        @ptrCast([*c]anyopaque, buffer),
+        @as([*c]anyopaque, @ptrCast(buffer)),
     );
 }
 
@@ -996,5 +996,5 @@ pub fn rlDisableStatePointer(
 pub fn GetGamepadButtonPressed() ?GamepadButton {
     if (raylib.GetGamepadButtonPressed() == -1) return null;
 
-    return @intToEnum(GamepadButton, raylib.GetGamepadButtonPressed());
+    return @as(GamepadButton, @enumFromInt(raylib.GetGamepadButtonPressed()));
 }

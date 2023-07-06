@@ -33,7 +33,7 @@ pub const Intermediate = struct {
         const jsonData = try std.fs.cwd().readFileAlloc(allocator, jsonFile, memoryConstrain);
         defer allocator.free(jsonData);
 
-        const bindingJson = try json.parseFromSlice(Intermediate, allocator, jsonData, .{
+        const bindingJson = try json.parseFromSliceLeaky(Intermediate, allocator, jsonData, .{
             .ignore_unknown_fields = true,
         });
 
