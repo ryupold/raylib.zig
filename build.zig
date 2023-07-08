@@ -92,9 +92,6 @@ fn linkThisLibrary(b: *std.Build, target: std.zig.CrossTarget, optimize: std.bui
     exe.addIncludePath(cwd);
     exe.linkLibC();
     exe.addCSourceFile(cwd ++ sep ++ "marshal.c", &.{});
-    // const lib_raylib = raylib_build.addRaylib(b, target);
-    // exe.linkLibrary(lib_raylib);
-
     return exe;
 }
 
@@ -104,7 +101,7 @@ pub fn addTo(b: *std.Build, exe: *std.build.LibExeObjStep, target: std.zig.Cross
     exe.addIncludePath(dir_raylib);
     exe.addIncludePath(cwd);
     const lib = linkThisLibrary(b, target, optimize);
-    const lib_raylib = raylib_build.addRaylib(b, target, optimize);
+    const lib_raylib = raylib_build.addRaylib(b, target, optimize, .{});
     exe.linkLibrary(lib_raylib);
     exe.linkLibrary(lib);
 }
