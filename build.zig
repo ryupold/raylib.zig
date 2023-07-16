@@ -87,12 +87,12 @@ const dir_raylib = cwd ++ sep ++ "raylib/src";
 const raylib_build = @import("raylib/src/build.zig");
 
 fn linkThisLibrary(b: *std.Build, target: std.zig.CrossTarget, optimize: std.builtin.Mode) *std.build.LibExeObjStep {
-    const exe = b.addStaticLibrary(.{ .name = "raylib-zig", .target = target, .optimize = optimize });
-    exe.addIncludePath(dir_raylib);
-    exe.addIncludePath(cwd);
-    exe.linkLibC();
-    exe.addCSourceFile(cwd ++ sep ++ "marshal.c", &.{});
-    return exe;
+    const lib = b.addStaticLibrary(.{ .name = "raylib-zig", .target = target, .optimize = optimize });
+    lib.addIncludePath(dir_raylib);
+    lib.addIncludePath(cwd);
+    lib.linkLibC();
+    lib.addCSourceFile(cwd ++ sep ++ "marshal.c", &.{});
+    return lib;
 }
 
 /// add this package to exe

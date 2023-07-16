@@ -35,7 +35,7 @@ git submodule add https://github.com/ryupold/raylib.zig raylib
 git submodule update --init --recursive
 ```
 
-The bindings have been prebuilt so you just need to import raylib.zig
+The bindings have been prebuilt so you just need to add raylib as module
 
 build.zig:
 ```zig
@@ -49,7 +49,7 @@ pub fn build(b: *std.Build) !void {
 }
 ```
 
-main.zig:
+and import in main.zig:
 ```zig
 const raylib = @import("raylib");
 

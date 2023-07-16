@@ -3683,14 +3683,14 @@ void mMatrixFrustum(Matrix *out, double left, double right, double bottom, doubl
 	*out = MatrixFrustum(left, right, bottom, top, near, far);
 }
 
-void mMatrixPerspective(Matrix *out, double fovy, double aspect, double near, double far)
+void mMatrixPerspective(Matrix *out, double fovY, double aspect, double nearPlane, double farPlane)
 {
-	*out = MatrixPerspective(fovy, aspect, near, far);
+	*out = MatrixPerspective(fovY, aspect, nearPlane, farPlane);
 }
 
-void mMatrixOrtho(Matrix *out, double left, double right, double bottom, double top, double near, double far)
+void mMatrixOrtho(Matrix *out, double left, double right, double bottom, double top, double nearPlane, double farPlane)
 {
-	*out = MatrixOrtho(left, right, bottom, top, near, far);
+	*out = MatrixOrtho(left, right, bottom, top, nearPlane, farPlane);
 }
 
 void mMatrixLookAt(Matrix *out, Vector3 *eye, Vector3 *target, Vector3 *up)

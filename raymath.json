@@ -1512,7 +1512,7 @@
       "params": [
         {
           "type": "double",
-          "name": "fovy"
+          "name": "fovY"
         },
         {
           "type": "double",
@@ -1520,11 +1520,11 @@
         },
         {
           "type": "double",
-          "name": "near"
+          "name": "nearPlane"
         },
         {
           "type": "double",
-          "name": "far"
+          "name": "farPlane"
         }
       ]
     },
@@ -1551,11 +1551,11 @@
         },
         {
           "type": "double",
-          "name": "near"
+          "name": "nearPlane"
         },
         {
           "type": "double",
-          "name": "far"
+          "name": "farPlane"
         }
       ]
     },

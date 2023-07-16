@@ -2218,10 +2218,10 @@ void mMatrixScale(Matrix *out, float x, float y, float z);
 void mMatrixFrustum(Matrix *out, double left, double right, double bottom, double top, double near, double far);
 
 // 
-void mMatrixPerspective(Matrix *out, double fovy, double aspect, double near, double far);
+void mMatrixPerspective(Matrix *out, double fovY, double aspect, double nearPlane, double farPlane);
 
 // 
-void mMatrixOrtho(Matrix *out, double left, double right, double bottom, double top, double near, double far);
+void mMatrixOrtho(Matrix *out, double left, double right, double bottom, double top, double nearPlane, double farPlane);
 
 // 
 void mMatrixLookAt(Matrix *out, Vector3 *eye, Vector3 *target, Vector3 *up);

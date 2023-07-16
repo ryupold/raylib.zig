@@ -11964,7 +11964,7 @@
             "name": "MatrixPerspective",
             "params": [
                 {
-                    "name": "fovy",
+                    "name": "fovY",
                     "typ": "f64"
                 },
                 {
@@ -11972,11 +11972,11 @@
                     "typ": "f64"
                 },
                 {
-                    "name": "near",
+                    "name": "nearPlane",
                     "typ": "f64"
                 },
                 {
-                    "name": "far",
+                    "name": "farPlane",
                     "typ": "f64"
                 }
             ],
@@ -12004,11 +12004,11 @@
                     "typ": "f64"
                 },
                 {
-                    "name": "near",
+                    "name": "nearPlane",
                     "typ": "f64"
                 },
                 {
-                    "name": "far",
+                    "name": "farPlane",
                     "typ": "f64"
                 }
             ],

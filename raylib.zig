@@ -9499,18 +9499,18 @@ pub fn MatrixFrustum(
 
 ///
 pub fn MatrixPerspective(
-    fovy: f64,
+    fovY: f64,
     aspect: f64,
-    near: f64,
-    far: f64,
+    nearPlane: f64,
+    farPlane: f64,
 ) Matrix {
     var out: Matrix = undefined;
     raylib.mMatrixPerspective(
         @as([*c]raylib.Matrix, @ptrCast(&out)),
-        fovy,
+        fovY,
         aspect,
-        near,
-        far,
+        nearPlane,
+        farPlane,
     );
     return out;
 }
@@ -9521,8 +9521,8 @@ pub fn MatrixOrtho(
     right: f64,
     bottom: f64,
     top: f64,
-    near: f64,
-    far: f64,
+    nearPlane: f64,
+    farPlane: f64,
 ) Matrix {
     var out: Matrix = undefined;
     raylib.mMatrixOrtho(
@@ -9531,8 +9531,8 @@ pub fn MatrixOrtho(
         right,
         bottom,
         top,
-        near,
-        far,
+        nearPlane,
+        farPlane,
     );
     return out;
 }
