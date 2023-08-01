@@ -88,18 +88,18 @@ const raylib_build = @import("raylib/src/build.zig");
 
 fn linkThisLibrary(b: *std.Build, target: std.zig.CrossTarget, optimize: std.builtin.Mode) *std.build.LibExeObjStep {
     const lib = b.addStaticLibrary(.{ .name = "raylib-zig", .target = target, .optimize = optimize });
-    lib.addIncludePath(dir_raylib);
-    lib.addIncludePath(cwd);
+    lib.addIncludePath(.{ .path = dir_raylib });
+    lib.addIncludePath(.{ .path = cwd });
     lib.linkLibC();
-    lib.addCSourceFile(cwd ++ sep ++ "marshal.c", &.{});
+    lib.addCSourceFile(.{ .file = .{ .path = cwd ++ sep ++ "marshal.c" }, .flags = &.{} });
     return lib;
 }
 
 /// add this package to exe
 pub fn addTo(b: *std.Build, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, optimize: std.builtin.Mode) void {
     exe.addAnonymousModule("raylib", .{ .source_file = .{ .path = cwd ++ sep ++ "raylib.zig" } });
-    exe.addIncludePath(dir_raylib);
-    exe.addIncludePath(cwd);
+    exe.addIncludePath(.{ .path = dir_raylib });
+    exe.addIncludePath(.{ .path = cwd });
     const lib = linkThisLibrary(b, target, optimize);
     const lib_raylib = raylib_build.addRaylib(b, target, optimize, .{});
     exe.linkLibrary(lib_raylib);
