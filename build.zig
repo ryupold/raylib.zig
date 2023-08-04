@@ -14,7 +14,7 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = .ReleaseFast,
     });
-    raylib_parser_build.addCSourceFile("raylib/parser/raylib_parser.c", &.{});
+    raylib_parser_build.addCSourceFile(.{ .file = .{ .path = "raylib/parser/raylib_parser.c" }, .flags = &.{} });
     raylib_parser_build.linkLibC();
 
     //raylib
@@ -69,7 +69,7 @@ pub fn build(b: *std.Build) !void {
 
     //--- just build raylib_parser.exe ------------------------------------------------------------
     const raylib_parser_install = b.step("raylib_parser", "build ./zig-out/bin/raylib_parser.exe");
-    const generateBindings_install = b.addInstallArtifact(raylib_parser_build);
+    const generateBindings_install = b.addInstallArtifact(raylib_parser_build, .{});
     raylib_parser_install.dependOn(&generateBindings_install.step);
 }
 

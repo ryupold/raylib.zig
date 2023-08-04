@@ -41,7 +41,7 @@ pub fn main() !void {
 
     try json.stringify(bindings, .{
         .emit_null_optional_fields = false,
-        .whitespace = .{},
+        .whitespace = .indent_2,
     }, file.writer());
 
     std.log.info("... done", .{});

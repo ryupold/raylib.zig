@@ -51,6 +51,9 @@ void mClearWindowState(unsigned int flags);
 // Toggle window state: fullscreen/windowed (only PLATFORM_DESKTOP)
 void mToggleFullscreen(void);
 
+// Toggle window state: borderless windowed (only PLATFORM_DESKTOP)
+void mToggleBorderlessWindowed(void);
+
 // Set window state: maximized, if resizable (only PLATFORM_DESKTOP)
 void mMaximizeWindow(void);
 
@@ -66,13 +69,13 @@ void mSetWindowIcon(Image *image);
 // Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
 void mSetWindowIcons(Image * images, int count);
 
-// Set title for window (only PLATFORM_DESKTOP)
+// Set title for window (only PLATFORM_DESKTOP and PLATFORM_WEB)
 void mSetWindowTitle(const char * title);
 
 // Set window position on screen (only PLATFORM_DESKTOP)
 void mSetWindowPosition(int x, int y);
 
-// Set monitor for the current window (fullscreen mode)
+// Set monitor for the current window
 void mSetWindowMonitor(int monitor);
 
 // Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
@@ -129,7 +132,7 @@ void mGetWindowPosition(Vector2 *out);
 // Get window scale DPI factor
 void mGetWindowScaleDPI(Vector2 *out);
 
-// Get the human-readable, UTF-8 encoded name of the primary monitor
+// Get the human-readable, UTF-8 encoded name of the specified monitor
 const char * mGetMonitorName(int monitor);
 
 // Set clipboard text content
@@ -1515,13 +1518,13 @@ void mSetAudioStreamBufferSizeDefault(int size);
 // Audio thread callback to request new data
 void mSetAudioStreamCallback(AudioStream *stream, AudioCallback *callback);
 
-// Attach audio stream processor to stream
+// Attach audio stream processor to stream, receives the samples as <float>s
 void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
 
 // Detach audio stream processor from stream
 void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
 
-// Attach audio stream processor to the entire audio pipeline
+// Attach audio stream processor to the entire audio pipeline, receives the samples as <float>s
 void mAttachAudioMixedProcessor(AudioCallback *processor);
 
 // Detach audio stream processor from the entire audio pipeline

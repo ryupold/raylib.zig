@@ -1089,6 +1089,11 @@ pub fn ToggleFullscreen() void {
     raylib.mToggleFullscreen();
 }
 
+/// Toggle window state: borderless windowed (only PLATFORM_DESKTOP)
+pub fn ToggleBorderlessWindowed() void {
+    raylib.mToggleBorderlessWindowed();
+}
+
 /// Set window state: maximized, if resizable (only PLATFORM_DESKTOP)
 pub fn MaximizeWindow() void {
     raylib.mMaximizeWindow();
@@ -1124,7 +1129,7 @@ pub fn SetWindowIcons(
     );
 }
 
-/// Set title for window (only PLATFORM_DESKTOP)
+/// Set title for window (only PLATFORM_DESKTOP and PLATFORM_WEB)
 pub fn SetWindowTitle(
     title: [*:0]const u8,
 ) void {
@@ -1144,7 +1149,7 @@ pub fn SetWindowPosition(
     );
 }
 
-/// Set monitor for the current window (fullscreen mode)
+/// Set monitor for the current window
 pub fn SetWindowMonitor(
     monitor: i32,
 ) void {
@@ -1294,7 +1299,7 @@ pub fn GetWindowScaleDPI() Vector2 {
     return out;
 }
 
-/// Get the human-readable, UTF-8 encoded name of the primary monitor
+/// Get the human-readable, UTF-8 encoded name of the specified monitor
 pub fn GetMonitorName(
     monitor: i32,
 ) [*:0]const u8 {
@@ -6933,7 +6938,7 @@ pub fn SetAudioStreamCallback(
     );
 }
 
-/// Attach audio stream processor to stream
+/// Attach audio stream processor to stream, receives the samples as <float>s
 pub fn AttachAudioStreamProcessor(
     stream: AudioStream,
     processor: AudioCallback,
@@ -6955,7 +6960,7 @@ pub fn DetachAudioStreamProcessor(
     );
 }
 
-/// Attach audio stream processor to the entire audio pipeline
+/// Attach audio stream processor to the entire audio pipeline, receives the samples as <float>s
 pub fn AttachAudioMixedProcessor(
     processor: AudioCallback,
 ) void {

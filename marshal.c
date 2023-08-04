@@ -73,6 +73,11 @@ void mToggleFullscreen(void)
 	ToggleFullscreen();
 }
 
+void mToggleBorderlessWindowed(void)
+{
+	ToggleBorderlessWindowed();
+}
+
 void mMaximizeWindow(void)
 {
 	MaximizeWindow();
