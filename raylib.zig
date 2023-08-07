@@ -6159,7 +6159,7 @@ pub fn SetModelMeshMaterial(
 pub fn LoadModelAnimations(
     fileName: [*:0]const u8,
     animCount: ?[*]u32,
-) [*]const ModelAnimation {
+) ?[*]ModelAnimation {
     return @as(
         ?[*]ModelAnimation,
         @ptrCast(raylib.mLoadModelAnimations(
@@ -10075,7 +10075,7 @@ pub const ModelAnimation = extern struct {
     /// Bones information (skeleton)
     bones: ?[*]BoneInfo,
     /// Poses array by frame
-    framePoses: ?[*]Transform,
+    framePoses: ?[*][*]Transform,
     /// Animation name
     name: [32]u8,
 };
