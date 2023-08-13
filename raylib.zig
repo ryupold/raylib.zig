@@ -3947,7 +3947,7 @@ pub fn ImageColorReplace(
 /// Load color data from image as a Color array (RGBA - 32bit)
 pub fn LoadImageColors(
     image: Image,
-) [*]const Color {
+) ?[*]Color {
     return @as(
         ?[*]Color,
         @ptrCast(raylib.mLoadImageColors(
@@ -3961,7 +3961,7 @@ pub fn LoadImagePalette(
     image: Image,
     maxPaletteSize: i32,
     colorCount: ?[*]i32,
-) [*]const Color {
+) ?[*]Color {
     return @as(
         ?[*]Color,
         @ptrCast(raylib.mLoadImagePalette(
@@ -5036,7 +5036,7 @@ pub fn UnloadUTF8(
 pub fn LoadCodepoints(
     text: [*:0]const u8,
     count: ?[*]i32,
-) [*]const i32 {
+) ?[*]i32 {
     return @as(
         ?[*]i32,
         @ptrCast(raylib.mLoadCodepoints(
@@ -6092,7 +6092,7 @@ pub fn GenMeshCubicmap(
 pub fn LoadMaterials(
     fileName: [*:0]const u8,
     materialCount: ?[*]i32,
-) [*]const Material {
+) ?[*]Material {
     return @as(
         ?[*]Material,
         @ptrCast(raylib.mLoadMaterials(
@@ -6604,7 +6604,7 @@ pub fn WaveFormat(
 /// Load samples data from wave as a 32bit float data array
 pub fn LoadWaveSamples(
     wave: Wave,
-) [*]const f32 {
+) ?[*]f32 {
     return @as(
         ?[*]f32,
         @ptrCast(raylib.mLoadWaveSamples(
@@ -7639,7 +7639,7 @@ pub fn rlGetShaderIdDefault() u32 {
 }
 
 /// Get default shader locations
-pub fn rlGetShaderLocsDefault() [*]const i32 {
+pub fn rlGetShaderLocsDefault() ?[*]i32 {
     return @as(
         ?[*]i32,
         @ptrCast(raylib.mrlGetShaderLocsDefault()),
@@ -8001,7 +8001,7 @@ pub fn rlReadTexturePixels(
     width: i32,
     height: i32,
     format: i32,
-) [*]const anyopaque {
+) *anyopaque {
     return @as(
         *anyopaque,
         @ptrCast(raylib.mrlReadTexturePixels(
