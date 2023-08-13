@@ -15397,7 +15397,7 @@
         },
         {
           "name": "framePoses",
-          "typ": "?[*]Transform",
+          "typ": "?[*][*]Transform",
           "description": "Poses array by frame"
         },
         {
@@ -15407,7 +15407,7 @@
         }
       ],
       "description": "ModelAnimation",
-      "custom": false
+      "custom": true
     },
     {
       "name": "Ray",
