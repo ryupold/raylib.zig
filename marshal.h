@@ -570,6 +570,12 @@ void mDrawLineBezierQuad(Vector2 *startPos, Vector2 *endPos, Vector2 *controlPos
 // Draw line using cubic bezier curves with 2 control points
 void mDrawLineBezierCubic(Vector2 *startPos, Vector2 *endPos, Vector2 *startControlPos, Vector2 *endControlPos, float thick, Color *color);
 
+// Draw a B-Spline line, minimum 4 points
+void mDrawLineBSpline(Vector2 * points, int pointCount, float thick, Color *color);
+
+// Draw a Catmull Rom spline line, minimum 4 points
+void mDrawLineCatmullRom(Vector2 * points, int pointCount, float thick, Color *color);
+
 // Draw lines sequence
 void mDrawLineStrip(Vector2 * points, int pointCount, Color *color);
 
@@ -1368,6 +1374,9 @@ void mLoadSound(Sound *out, const char * fileName);
 // Load sound from wave data
 void mLoadSoundFromWave(Sound *out, Wave *wave);
 
+// Create a new sound that shares the same sample data as the source sound, does not own the sound data
+void mLoadSoundAlias(Sound *out, Sound *source);
+
 // Checks if a sound is ready
 bool mIsSoundReady(Sound *sound);
 
@@ -1379,6 +1388,9 @@ void mUnloadWave(Wave *wave);
 
 // Unload sound
 void mUnloadSound(Sound *sound);
+
+// Unload a sound alias (does not deallocate sample data)
+void mUnloadSoundAlias(Sound *alias);
 
 // Export wave data to file, returns true on success
 bool mExportWave(Wave *wave, const char * fileName);

@@ -938,6 +938,16 @@ void mDrawLineBezierCubic(Vector2 *startPos, Vector2 *endPos, Vector2 *startCont
 	DrawLineBezierCubic(*startPos, *endPos, *startControlPos, *endControlPos, thick, *color);
 }
 
+void mDrawLineBSpline(Vector2 * points, int pointCount, float thick, Color *color)
+{
+	DrawLineBSpline(points, pointCount, thick, *color);
+}
+
+void mDrawLineCatmullRom(Vector2 * points, int pointCount, float thick, Color *color)
+{
+	DrawLineCatmullRom(points, pointCount, thick, *color);
+}
+
 void mDrawLineStrip(Vector2 * points, int pointCount, Color *color)
 {
 	DrawLineStrip(points, pointCount, *color);
@@ -2268,6 +2278,11 @@ void mLoadSoundFromWave(Sound *out, Wave *wave)
 	*out = LoadSoundFromWave(*wave);
 }
 
+void mLoadSoundAlias(Sound *out, Sound *source)
+{
+	*out = LoadSoundAlias(*source);
+}
+
 bool mIsSoundReady(Sound *sound)
 {
 	return IsSoundReady(*sound);
@@ -2286,6 +2301,11 @@ void mUnloadWave(Wave *wave)
 void mUnloadSound(Sound *sound)
 {
 	UnloadSound(*sound);
+}
+
+void mUnloadSoundAlias(Sound *alias)
+{
+	UnloadSoundAlias(*alias);
 }
 
 bool mExportWave(Wave *wave, const char * fileName)

@@ -2701,6 +2701,36 @@ pub fn DrawLineBezierCubic(
     );
 }
 
+/// Draw a B-Spline line, minimum 4 points
+pub fn DrawLineBSpline(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawLineBSpline(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw a Catmull Rom spline line, minimum 4 points
+pub fn DrawLineCatmullRom(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawLineCatmullRom(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
 /// Draw lines sequence
 pub fn DrawLineStrip(
     points: ?[*]Vector2,
@@ -6421,6 +6451,18 @@ pub fn LoadSoundFromWave(
     return out;
 }
 
+/// Create a new sound that shares the same sample data as the source sound, does not own the sound data
+pub fn LoadSoundAlias(
+    source: Sound,
+) Sound {
+    var out: Sound = undefined;
+    raylib.mLoadSoundAlias(
+        @as([*c]raylib.Sound, @ptrCast(&out)),
+        @as([*c]raylib.Sound, @ptrFromInt(@intFromPtr(&source))),
+    );
+    return out;
+}
+
 /// Checks if a sound is ready
 pub fn IsSoundReady(
     sound: Sound,
@@ -6458,6 +6500,15 @@ pub fn UnloadSound(
 ) void {
     raylib.mUnloadSound(
         @as([*c]raylib.Sound, @ptrFromInt(@intFromPtr(&sound))),
+    );
+}
+
+/// Unload a sound alias (does not deallocate sample data)
+pub fn UnloadSoundAlias(
+    alias: Sound,
+) void {
+    raylib.mUnloadSoundAlias(
+        @as([*c]raylib.Sound, @ptrFromInt(@intFromPtr(&alias))),
     );
 }
 
@@ -10750,28 +10801,34 @@ pub const PixelFormat = enum(i32) {
     PIXELFORMAT_UNCOMPRESSED_R32G32B32 = 9,
     /// 32*4 bpp (4 channels - float)
     PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 = 10,
+    /// 16 bpp (1 channel - half float)
+    PIXELFORMAT_UNCOMPRESSED_R16 = 11,
+    /// 16*3 bpp (3 channels - half float)
+    PIXELFORMAT_UNCOMPRESSED_R16G16B16 = 12,
+    /// 16*4 bpp (4 channels - half float)
+    PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 = 13,
     /// 4 bpp (no alpha)
-    PIXELFORMAT_COMPRESSED_DXT1_RGB = 11,
+    PIXELFORMAT_COMPRESSED_DXT1_RGB = 14,
     /// 4 bpp (1 bit alpha)
-    PIXELFORMAT_COMPRESSED_DXT1_RGBA = 12,
+    PIXELFORMAT_COMPRESSED_DXT1_RGBA = 15,
     /// 8 bpp
-    PIXELFORMAT_COMPRESSED_DXT3_RGBA = 13,
+    PIXELFORMAT_COMPRESSED_DXT3_RGBA = 16,
     /// 8 bpp
-    PIXELFORMAT_COMPRESSED_DXT5_RGBA = 14,
+    PIXELFORMAT_COMPRESSED_DXT5_RGBA = 17,
     /// 4 bpp
-    PIXELFORMAT_COMPRESSED_ETC1_RGB = 15,
+    PIXELFORMAT_COMPRESSED_ETC1_RGB = 18,
     /// 4 bpp
-    PIXELFORMAT_COMPRESSED_ETC2_RGB = 16,
+    PIXELFORMAT_COMPRESSED_ETC2_RGB = 19,
     /// 8 bpp
-    PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 17,
+    PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 20,
     /// 4 bpp
-    PIXELFORMAT_COMPRESSED_PVRT_RGB = 18,
+    PIXELFORMAT_COMPRESSED_PVRT_RGB = 21,
     /// 4 bpp
-    PIXELFORMAT_COMPRESSED_PVRT_RGBA = 19,
+    PIXELFORMAT_COMPRESSED_PVRT_RGBA = 22,
     /// 8 bpp
-    PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 20,
+    PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 23,
     /// 2 bpp
-    PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 21,
+    PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 24,
 };
 
 /// Texture parameters: filter mode
@@ -10964,28 +11021,34 @@ pub const rlPixelFormat = enum(i32) {
     RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32 = 9,
     /// 32*4 bpp (4 channels - float)
     RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 = 10,
+    /// 16 bpp (1 channel - half float)
+    RL_PIXELFORMAT_UNCOMPRESSED_R16 = 11,
+    /// 16*3 bpp (3 channels - half float)
+    RL_PIXELFORMAT_UNCOMPRESSED_R16G16B16 = 12,
+    /// 16*4 bpp (4 channels - half float)
+    RL_PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 = 13,
     /// 4 bpp (no alpha)
-    RL_PIXELFORMAT_COMPRESSED_DXT1_RGB = 11,
+    RL_PIXELFORMAT_COMPRESSED_DXT1_RGB = 14,
     /// 4 bpp (1 bit alpha)
-    RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA = 12,
+    RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA = 15,
     /// 8 bpp
-    RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA = 13,
+    RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA = 16,
     /// 8 bpp
-    RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA = 14,
+    RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA = 17,
     /// 4 bpp
-    RL_PIXELFORMAT_COMPRESSED_ETC1_RGB = 15,
+    RL_PIXELFORMAT_COMPRESSED_ETC1_RGB = 18,
     /// 4 bpp
-    RL_PIXELFORMAT_COMPRESSED_ETC2_RGB = 16,
+    RL_PIXELFORMAT_COMPRESSED_ETC2_RGB = 19,
     /// 8 bpp
-    RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 17,
+    RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA = 20,
     /// 4 bpp
-    RL_PIXELFORMAT_COMPRESSED_PVRT_RGB = 18,
+    RL_PIXELFORMAT_COMPRESSED_PVRT_RGB = 21,
     /// 4 bpp
-    RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA = 19,
+    RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA = 22,
     /// 8 bpp
-    RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 20,
+    RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA = 23,
     /// 2 bpp
-    RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 21,
+    RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 24,
 };
 
 /// Texture parameters: filter mode
