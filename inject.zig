@@ -650,22 +650,22 @@ pub const MATERIAL_MAP_SPECULAR = @as(usize, @intCast(@intFromEnum(MaterialMapIn
 //--- callbacks -----------------------------------------------------------------------------------
 
 /// Logging: Redirect trace log messages
-pub const TraceLogCallback = fn (logLevel: c_int, text: [*c]const u8, args: ?*anyopaque) callconv(.C) void;
+pub const TraceLogCallback = *const fn (logLevel: c_int, text: [*c]const u8, args: ?*anyopaque) void;
 
 /// FileIO: Load binary data
-pub const LoadFileDataCallback = fn (fileName: [*c]const u8, bytesRead: [*c]c_uint) callconv(.C) [*c]u8;
+pub const LoadFileDataCallback = *const fn (fileName: [*c]const u8, bytesRead: [*c]c_uint) [*c]u8;
 
 /// FileIO: Save binary data
-pub const SaveFileDataCallback = fn (fileName: [*c]const u8, data: ?*anyopaque, bytesToWrite: c_uint) callconv(.C) bool;
+pub const SaveFileDataCallback = *const fn (fileName: [*c]const u8, data: ?*anyopaque, bytesToWrite: c_uint) bool;
 
 /// FileIO: Load text data
-pub const LoadFileTextCallback = fn (fileName: [*c]const u8) callconv(.C) [*c]u8;
+pub const LoadFileTextCallback = *const fn (fileName: [*c]const u8) [*c]u8;
 
 /// FileIO: Save text data
-pub const SaveFileTextCallback = fn (fileName: [*c]const u8, text: [*c]const u8) callconv(.C) bool;
+pub const SaveFileTextCallback = *const fn (fileName: [*c]const u8, text: [*c]const u8) bool;
 
 /// Audio Loading and Playing Functions (Module: audio)
-pub const AudioCallback = fn (bufferData: ?*anyopaque, frames: u32) callconv(.C) void;
+pub const AudioCallback = *const fn (bufferData: ?*anyopaque, frames: u32) void;
 
 //--- utils ---------------------------------------------------------------------------------------
 

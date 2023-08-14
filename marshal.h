@@ -310,16 +310,16 @@ void mSetTraceLogLevel(int logLevel);
 void mOpenURL(const char * url);
 
 // Set custom file binary data loader
-void mSetLoadFileDataCallback(LoadFileDataCallback *callback);
+void mSetLoadFileDataCallback(LoadFileDataCallback callback);
 
 // Set custom file binary data saver
-void mSetSaveFileDataCallback(SaveFileDataCallback *callback);
+void mSetSaveFileDataCallback(SaveFileDataCallback callback);
 
 // Set custom file text data loader
-void mSetLoadFileTextCallback(LoadFileTextCallback *callback);
+void mSetLoadFileTextCallback(LoadFileTextCallback callback);
 
 // Set custom file text data saver
-void mSetSaveFileTextCallback(SaveFileTextCallback *callback);
+void mSetSaveFileTextCallback(SaveFileTextCallback callback);
 
 // Save data to file from byte array (write), returns true on success
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite);
@@ -1516,19 +1516,19 @@ void mSetAudioStreamPan(AudioStream *stream, float pan);
 void mSetAudioStreamBufferSizeDefault(int size);
 
 // Audio thread callback to request new data
-void mSetAudioStreamCallback(AudioStream *stream, AudioCallback *callback);
+void mSetAudioStreamCallback(AudioStream *stream, AudioCallback callback);
 
 // Attach audio stream processor to stream, receives the samples as <float>s
-void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
+void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback processor);
 
 // Detach audio stream processor from stream
-void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor);
+void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback processor);
 
 // Attach audio stream processor to the entire audio pipeline, receives the samples as <float>s
-void mAttachAudioMixedProcessor(AudioCallback *processor);
+void mAttachAudioMixedProcessor(AudioCallback processor);
 
 // Detach audio stream processor from the entire audio pipeline
-void mDetachAudioMixedProcessor(AudioCallback *processor);
+void mDetachAudioMixedProcessor(AudioCallback processor);
 
 // Choose the current matrix to be transformed
 void mrlMatrixMode(int mode);

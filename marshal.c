@@ -503,24 +503,24 @@ void mOpenURL(const char * url)
 	OpenURL(url);
 }
 
-void mSetLoadFileDataCallback(LoadFileDataCallback *callback)
+void mSetLoadFileDataCallback(LoadFileDataCallback callback)
 {
-	SetLoadFileDataCallback(*callback);
+	SetLoadFileDataCallback(callback);
 }
 
-void mSetSaveFileDataCallback(SaveFileDataCallback *callback)
+void mSetSaveFileDataCallback(SaveFileDataCallback callback)
 {
-	SetSaveFileDataCallback(*callback);
+	SetSaveFileDataCallback(callback);
 }
 
-void mSetLoadFileTextCallback(LoadFileTextCallback *callback)
+void mSetLoadFileTextCallback(LoadFileTextCallback callback)
 {
-	SetLoadFileTextCallback(*callback);
+	SetLoadFileTextCallback(callback);
 }
 
-void mSetSaveFileTextCallback(SaveFileTextCallback *callback)
+void mSetSaveFileTextCallback(SaveFileTextCallback callback)
 {
-	SetSaveFileTextCallback(*callback);
+	SetSaveFileTextCallback(callback);
 }
 
 bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite)
@@ -2513,29 +2513,29 @@ void mSetAudioStreamBufferSizeDefault(int size)
 	SetAudioStreamBufferSizeDefault(size);
 }
 
-void mSetAudioStreamCallback(AudioStream *stream, AudioCallback *callback)
+void mSetAudioStreamCallback(AudioStream *stream, AudioCallback callback)
 {
-	SetAudioStreamCallback(*stream, *callback);
+	SetAudioStreamCallback(*stream, callback);
 }
 
-void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor)
+void mAttachAudioStreamProcessor(AudioStream *stream, AudioCallback processor)
 {
-	AttachAudioStreamProcessor(*stream, *processor);
+	AttachAudioStreamProcessor(*stream, processor);
 }
 
-void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback *processor)
+void mDetachAudioStreamProcessor(AudioStream *stream, AudioCallback processor)
 {
-	DetachAudioStreamProcessor(*stream, *processor);
+	DetachAudioStreamProcessor(*stream, processor);
 }
 
-void mAttachAudioMixedProcessor(AudioCallback *processor)
+void mAttachAudioMixedProcessor(AudioCallback processor)
 {
-	AttachAudioMixedProcessor(*processor);
+	AttachAudioMixedProcessor(processor);
 }
 
-void mDetachAudioMixedProcessor(AudioCallback *processor)
+void mDetachAudioMixedProcessor(AudioCallback processor)
 {
-	DetachAudioMixedProcessor(*processor);
+	DetachAudioMixedProcessor(processor);
 }
 
 void mrlMatrixMode(int mode)

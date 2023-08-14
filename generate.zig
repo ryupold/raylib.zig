@@ -193,7 +193,9 @@ fn writeFunctions(
         }
 
         for (func.params) |param| {
-            if (bindings.containsStruct(stripType(param.typ)) and isPointer(param.typ)) {
+            if (isFunctionPointer(param.typ)) {
+                try file.writeAll(try allocPrint(allocator, "@ptrCast({s}),\n", .{param.name}));
+            } else if (bindings.containsStruct(stripType(param.typ)) and isPointer(param.typ)) {
                 try file.writeAll(try allocPrint(allocator, "@intToPtr([*c]raylib.{s}, @ptrToInt({s})),\n", .{ stripType(param.typ), param.name }));
             } else if (bindings.containsEnum(param.typ)) {
                 try file.writeAll(try allocPrint(allocator, "@enumToInt({s}),\n", .{param.name}));
@@ -255,7 +257,7 @@ fn writeCSignature(
     if (func.params) |params| {
         for (params, 0..) |param, i| {
             const paramType = param.type;
-            if (mapping.isPrimitiveOrPointer(paramType)) {
+            if (mapping.isPrimitiveOrPointer(paramType) or isFunctionPointer(paramType)) {
                 try file.writeAll(try allocPrint(allocator, "{s} {s}", .{ paramType, param.name }));
             } else {
                 try file.writeAll(try allocPrint(allocator, "{s} *{s}", .{ paramType, param.name }));
@@ -316,7 +318,7 @@ fn writeCFunctions(
 
         if (func.params) |params| {
             for (params, 0..) |param, i| {
-                if (mapping.isPrimitiveOrPointer(param.type)) {
+                if (mapping.isPrimitiveOrPointer(param.type) or isFunctionPointer(param.type)) {
                     try c.writeAll(
                         try allocPrint(
                             allocator,
@@ -468,9 +470,13 @@ fn endsWith(haystack: []const u8, needle: []const u8) bool {
     return std.mem.endsWith(u8, haystack, needle);
 }
 
-/// is c pointer type
+/// is pointer type
 fn isPointer(z: []const u8) bool {
     return pointerOffset(z) > 0;
+}
+
+fn isFunctionPointer(z: []const u8) bool {
+    return std.mem.indexOf(u8, z, "fn(") != null or std.mem.endsWith(u8, z, "Callback");
 }
 
 fn pointerOffset(z: []const u8) usize {
