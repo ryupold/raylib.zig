@@ -54,8 +54,8 @@ and import in main.zig:
 const raylib = @import("raylib");
 
 pub fn main() void {
-    raylib.InitWindow(800, 800, "hello world!");
     raylib.SetConfigFlags(raylib.ConfigFlags{ .FLAG_WINDOW_RESIZABLE = true });
+    raylib.InitWindow(800, 800, "hello world!");
     raylib.SetTargetFPS(60);
 
     defer raylib.CloseWindow();
