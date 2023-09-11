@@ -1866,24 +1866,24 @@ pub fn SetSaveFileTextCallback(
 pub fn SaveFileData(
     fileName: [*:0]const u8,
     data: *anyopaque,
-    bytesToWrite: u32,
+    dataSize: i32,
 ) bool {
     return raylib.mSaveFileData(
         @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
         data,
-        bytesToWrite,
+        dataSize,
     );
 }
 
 /// Export data to code (.h), returns true on success
 pub fn ExportDataAsCode(
     data: [*:0]const u8,
-    size: u32,
+    dataSize: i32,
     fileName: [*:0]const u8,
 ) bool {
     return raylib.mExportDataAsCode(
         @as([*c]const u8, @ptrFromInt(@intFromPtr(data))),
-        size,
+        dataSize,
         @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
     );
 }
@@ -2189,6 +2189,15 @@ pub fn IsKeyPressed(
 ) bool {
     return raylib.mIsKeyPressed(
         @intFromEnum(key),
+    );
+}
+
+/// Check if a key has been pressed again (Only PLATFORM_DESKTOP)
+pub fn IsKeyPressedRepeat(
+    key: i32,
+) bool {
+    return raylib.mIsKeyPressedRepeat(
+        key,
     );
 }
 
@@ -3365,6 +3374,22 @@ pub fn LoadImageRaw(
         height,
         format,
         headerSize,
+    );
+    return out;
+}
+
+/// Load image from SVG file data or string with specified size
+pub fn LoadImageSvg(
+    fileNameOrString: [*:0]const u8,
+    width: i32,
+    height: i32,
+) Image {
+    var out: Image = undefined;
+    raylib.mLoadImageSvg(
+        @as([*c]raylib.Image, @ptrCast(&out)),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileNameOrString))),
+        width,
+        height,
     );
     return out;
 }
@@ -4758,20 +4783,20 @@ pub fn LoadFont(
     return out;
 }
 
-/// Load font from file with extended parameters, use NULL for fontChars and 0 for glyphCount to load the default character set
+/// Load font from file with extended parameters, use NULL for codepoints and 0 for codepointCount to load the default character setFont
 pub fn LoadFontEx(
     fileName: [*:0]const u8,
     fontSize: i32,
-    fontChars: ?[*]i32,
-    glyphCount: i32,
+    codepoints: ?[*]i32,
+    codepointCount: i32,
 ) Font {
     var out: Font = undefined;
     raylib.mLoadFontEx(
         @as([*c]raylib.Font, @ptrCast(&out)),
         @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
         fontSize,
-        @as([*c]i32, @ptrCast(fontChars)),
-        glyphCount,
+        @as([*c]i32, @ptrCast(codepoints)),
+        codepointCount,
     );
     return out;
 }
@@ -4798,8 +4823,8 @@ pub fn LoadFontFromMemory(
     fileData: [*:0]const u8,
     dataSize: i32,
     fontSize: i32,
-    fontChars: ?[*]i32,
-    glyphCount: i32,
+    codepoints: ?[*]i32,
+    codepointCount: i32,
 ) Font {
     var out: Font = undefined;
     raylib.mLoadFontFromMemory(
@@ -4808,8 +4833,8 @@ pub fn LoadFontFromMemory(
         @as([*c]const u8, @ptrFromInt(@intFromPtr(fileData))),
         dataSize,
         fontSize,
-        @as([*c]i32, @ptrCast(fontChars)),
-        glyphCount,
+        @as([*c]i32, @ptrCast(codepoints)),
+        codepointCount,
     );
     return out;
 }
@@ -4825,11 +4850,11 @@ pub fn IsFontReady(
 
 /// Unload font chars info data (RAM)
 pub fn UnloadFontData(
-    chars: ?[*]GlyphInfo,
+    glyphs: ?[*]GlyphInfo,
     glyphCount: i32,
 ) void {
     raylib.mUnloadFontData(
-        @as([*c]raylib.GlyphInfo, @ptrFromInt(@intFromPtr(chars))),
+        @as([*c]raylib.GlyphInfo, @ptrFromInt(@intFromPtr(glyphs))),
         glyphCount,
     );
 }
@@ -4945,7 +4970,7 @@ pub fn DrawTextCodepoint(
 pub fn DrawTextCodepoints(
     font: Font,
     codepoints: ?[*]const i32,
-    count: i32,
+    codepointCount: i32,
     position: Vector2,
     fontSize: f32,
     spacing: f32,
@@ -4954,7 +4979,7 @@ pub fn DrawTextCodepoints(
     raylib.mDrawTextCodepoints(
         @as([*c]raylib.Font, @ptrFromInt(@intFromPtr(&font))),
         @as([*c]const i32, @ptrFromInt(@intFromPtr(codepoints))),
-        count,
+        codepointCount,
         @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&position))),
         fontSize,
         spacing,
@@ -6188,13 +6213,13 @@ pub fn SetModelMeshMaterial(
 /// Load model animations from file
 pub fn LoadModelAnimations(
     fileName: [*:0]const u8,
-    animCount: ?[*]u32,
+    animCount: ?[*]i32,
 ) ?[*]ModelAnimation {
     return @as(
         ?[*]ModelAnimation,
         @ptrCast(raylib.mLoadModelAnimations(
             @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
-            @as([*c]u32, @ptrCast(animCount)),
+            @as([*c]i32, @ptrCast(animCount)),
         )),
     );
 }
@@ -6224,11 +6249,11 @@ pub fn UnloadModelAnimation(
 /// Unload animation array data
 pub fn UnloadModelAnimations(
     animations: ?[*]ModelAnimation,
-    count: u32,
+    animCount: i32,
 ) void {
     raylib.mUnloadModelAnimations(
         @as([*c]raylib.ModelAnimation, @ptrFromInt(@intFromPtr(animations))),
-        count,
+        animCount,
     );
 }
 
@@ -9098,6 +9123,34 @@ pub fn Vector3Normalize(
     raylib.mVector3Normalize(
         @as([*c]raylib.Vector3, @ptrCast(&out)),
         @as([*c]raylib.Vector3, @ptrFromInt(@intFromPtr(&v))),
+    );
+    return out;
+}
+
+///
+pub fn Vector3Project(
+    v1: Vector3,
+    v2: Vector3,
+) Vector3 {
+    var out: Vector3 = undefined;
+    raylib.mVector3Project(
+        @as([*c]raylib.Vector3, @ptrCast(&out)),
+        @as([*c]raylib.Vector3, @ptrFromInt(@intFromPtr(&v1))),
+        @as([*c]raylib.Vector3, @ptrFromInt(@intFromPtr(&v2))),
+    );
+    return out;
+}
+
+///
+pub fn Vector3Reject(
+    v1: Vector3,
+    v2: Vector3,
+) Vector3 {
+    var out: Vector3 = undefined;
+    raylib.mVector3Reject(
+        @as([*c]raylib.Vector3, @ptrCast(&out)),
+        @as([*c]raylib.Vector3, @ptrFromInt(@intFromPtr(&v1))),
+        @as([*c]raylib.Vector3, @ptrFromInt(@intFromPtr(&v2))),
     );
     return out;
 }

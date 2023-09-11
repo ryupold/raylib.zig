@@ -322,10 +322,10 @@ void mSetLoadFileTextCallback(LoadFileTextCallback callback);
 void mSetSaveFileTextCallback(SaveFileTextCallback callback);
 
 // Save data to file from byte array (write), returns true on success
-bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite);
+bool mSaveFileData(const char * fileName, void * data, int dataSize);
 
 // Export data to code (.h), returns true on success
-bool mExportDataAsCode(const unsigned char * data, unsigned int size, const char * fileName);
+bool mExportDataAsCode(const unsigned char * data, int dataSize, const char * fileName);
 
 // Load text data from file (read), returns a '\0' terminated string
 char * mLoadFileText(const char * fileName);
@@ -410,6 +410,9 @@ unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize);
 
 // Check if a key has been pressed once
 bool mIsKeyPressed(int key);
+
+// Check if a key has been pressed again (Only PLATFORM_DESKTOP)
+bool mIsKeyPressedRepeat(int key);
 
 // Check if a key is being pressed
 bool mIsKeyDown(int key);
@@ -698,6 +701,9 @@ void mLoadImage(Image *out, const char * fileName);
 
 // Load image from RAW file data
 void mLoadImageRaw(Image *out, const char * fileName, int width, int height, int format, int headerSize);
+
+// Load image from SVG file data or string with specified size
+void mLoadImageSvg(Image *out, const char * fileNameOrString, int width, int height);
 
 // Load image sequence from file (frames appended to image.data)
 void mLoadImageAnim(Image *out, const char * fileName, int * frames);
@@ -1011,23 +1017,23 @@ void mGetFontDefault(Font *out);
 // Load font from file into GPU memory (VRAM)
 void mLoadFont(Font *out, const char * fileName);
 
-// Load font from file with extended parameters, use NULL for fontChars and 0 for glyphCount to load the default character set
-void mLoadFontEx(Font *out, const char * fileName, int fontSize, int * fontChars, int glyphCount);
+// Load font from file with extended parameters, use NULL for codepoints and 0 for codepointCount to load the default character setFont
+void mLoadFontEx(Font *out, const char * fileName, int fontSize, int * codepoints, int codepointCount);
 
 // Load font from Image (XNA style)
 void mLoadFontFromImage(Font *out, Image *image, Color *key, int firstChar);
 
 // Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
-void mLoadFontFromMemory(Font *out, const char * fileType, const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount);
+void mLoadFontFromMemory(Font *out, const char * fileType, const unsigned char * fileData, int dataSize, int fontSize, int * codepoints, int codepointCount);
 
 // Check if a font is ready
 bool mIsFontReady(Font *font);
 
 // Load font data for further use
-GlyphInfo * mLoadFontData(const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount, int type);
+GlyphInfo * mLoadFontData(const unsigned char * fileData, int dataSize, int fontSize, int * codepoints, int codepointCount, int type);
 
 // Unload font chars info data (RAM)
-void mUnloadFontData(GlyphInfo * chars, int glyphCount);
+void mUnloadFontData(GlyphInfo * glyphs, int glyphCount);
 
 // Unload font from GPU memory (VRAM)
 void mUnloadFont(Font *font);
@@ -1051,7 +1057,7 @@ void mDrawTextPro(Font *font, const char * text, Vector2 *position, Vector2 *ori
 void mDrawTextCodepoint(Font *font, int codepoint, Vector2 *position, float fontSize, Color *tint);
 
 // Draw multiple character (codepoint)
-void mDrawTextCodepoints(Font *font, const int * codepoints, int count, Vector2 *position, float fontSize, float spacing, Color *tint);
+void mDrawTextCodepoints(Font *font, const int * codepoints, int codepointCount, Vector2 *position, float fontSize, float spacing, Color *tint);
 
 // Set vertical line spacing when drawing with line-breaks
 void mSetTextLineSpacing(int spacing);
@@ -1309,7 +1315,7 @@ void mSetMaterialTexture(Material * material, int mapType, Texture2D *texture);
 void mSetModelMeshMaterial(Model * model, int meshId, int materialId);
 
 // Load model animations from file
-ModelAnimation * mLoadModelAnimations(const char * fileName, unsigned int * animCount);
+ModelAnimation * mLoadModelAnimations(const char * fileName, int * animCount);
 
 // Update model animation pose
 void mUpdateModelAnimation(Model *model, ModelAnimation *anim, int frame);
@@ -1318,7 +1324,7 @@ void mUpdateModelAnimation(Model *model, ModelAnimation *anim, int frame);
 void mUnloadModelAnimation(ModelAnimation *anim);
 
 // Unload animation array data
-void mUnloadModelAnimations(ModelAnimation * animations, unsigned int count);
+void mUnloadModelAnimations(ModelAnimation * animations, int animCount);
 
 // Check model animation skeleton match
 bool mIsModelAnimationValid(Model *model, ModelAnimation *anim);
@@ -2132,6 +2138,12 @@ void mVector3Divide(Vector3 *out, Vector3 *v1, Vector3 *v2);
 
 // 
 void mVector3Normalize(Vector3 *out, Vector3 *v);
+
+// 
+void mVector3Project(Vector3 *out, Vector3 *v1, Vector3 *v2);
+
+// 
+void mVector3Reject(Vector3 *out, Vector3 *v1, Vector3 *v2);
 
 // 
 void mVector3OrthoNormalize(Vector3 * v1, Vector3 * v2);

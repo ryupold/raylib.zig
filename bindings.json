@@ -1241,8 +1241,8 @@
           "typ": "[*:0]const u8"
         },
         {
-          "name": "bytesRead",
-          "typ": "?[*]u32"
+          "name": "dataSize",
+          "typ": "?[*]i32"
         }
       ],
       "returnType": "?[*]u8",
@@ -1273,8 +1273,8 @@
           "typ": "*anyopaque"
         },
         {
-          "name": "bytesToWrite",
-          "typ": "u32"
+          "name": "dataSize",
+          "typ": "i32"
         }
       ],
       "returnType": "bool",
@@ -1289,8 +1289,8 @@
           "typ": "[*:0]const u8"
         },
         {
-          "name": "size",
-          "typ": "u32"
+          "name": "dataSize",
+          "typ": "i32"
         },
         {
           "name": "fileName",
@@ -1660,6 +1660,18 @@
       "returnType": "bool",
       "description": "Check if a key has been pressed once",
       "custom": true
+    },
+    {
+      "name": "IsKeyPressedRepeat",
+      "params": [
+        {
+          "name": "key",
+          "typ": "i32"
+        }
+      ],
+      "returnType": "bool",
+      "description": "Check if a key has been pressed again (Only PLATFORM_DESKTOP)",
+      "custom": false
     },
     {
       "name": "IsKeyDown",
@@ -3425,6 +3437,26 @@
       ],
       "returnType": "Image",
       "description": "Load image from RAW file data",
+      "custom": false
+    },
+    {
+      "name": "LoadImageSvg",
+      "params": [
+        {
+          "name": "fileNameOrString",
+          "typ": "[*:0]const u8"
+        },
+        {
+          "name": "width",
+          "typ": "i32"
+        },
+        {
+          "name": "height",
+          "typ": "i32"
+        }
+      ],
+      "returnType": "Image",
+      "description": "Load image from SVG file data or string with specified size",
       "custom": false
     },
     {
@@ -5373,16 +5405,16 @@
           "typ": "i32"
         },
         {
-          "name": "fontChars",
+          "name": "codepoints",
           "typ": "?[*]i32"
         },
         {
-          "name": "glyphCount",
+          "name": "codepointCount",
           "typ": "i32"
         }
       ],
       "returnType": "Font",
-      "description": "Load font from file with extended parameters, use NULL for fontChars and 0 for glyphCount to load the default character set",
+      "description": "Load font from file with extended parameters, use NULL for codepoints and 0 for codepointCount to load the default character setFont",
       "custom": false
     },
     {
@@ -5425,11 +5457,11 @@
           "typ": "i32"
         },
         {
-          "name": "fontChars",
+          "name": "codepoints",
           "typ": "?[*]i32"
         },
         {
-          "name": "glyphCount",
+          "name": "codepointCount",
           "typ": "i32"
         }
       ],
@@ -5465,11 +5497,11 @@
       "name": "GenImageFontAtlas",
       "params": [
         {
-          "name": "chars",
+          "name": "glyphs",
           "typ": "?[*]const GlyphInfo"
         },
         {
-          "name": "recs",
+          "name": "glyphRecs",
           "typ": "?[*]Rectangle"
         },
         {
@@ -5497,7 +5529,7 @@
       "name": "UnloadFontData",
       "params": [
         {
-          "name": "chars",
+          "name": "glyphs",
           "typ": "?[*]GlyphInfo"
         },
         {
@@ -5693,7 +5725,7 @@
           "typ": "?[*]const i32"
         },
         {
-          "name": "count",
+          "name": "codepointCount",
           "typ": "i32"
         },
         {
@@ -7485,7 +7517,7 @@
         },
         {
           "name": "animCount",
-          "typ": "?[*]u32"
+          "typ": "?[*]i32"
         }
       ],
       "returnType": "?[*]ModelAnimation",
@@ -7532,8 +7564,8 @@
           "typ": "?[*]ModelAnimation"
         },
         {
-          "name": "count",
-          "typ": "u32"
+          "name": "animCount",
+          "typ": "i32"
         }
       ],
       "returnType": "void",
@@ -11501,6 +11533,38 @@
       "params": [
         {
           "name": "v",
+          "typ": "Vector3"
+        }
+      ],
+      "returnType": "Vector3",
+      "description": "",
+      "custom": false
+    },
+    {
+      "name": "Vector3Project",
+      "params": [
+        {
+          "name": "v1",
+          "typ": "Vector3"
+        },
+        {
+          "name": "v2",
+          "typ": "Vector3"
+        }
+      ],
+      "returnType": "Vector3",
+      "description": "",
+      "custom": false
+    },
+    {
+      "name": "Vector3Reject",
+      "params": [
+        {
+          "name": "v1",
+          "typ": "Vector3"
+        },
+        {
+          "name": "v2",
           "typ": "Vector3"
         }
       ],

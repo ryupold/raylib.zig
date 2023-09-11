@@ -1009,6 +1009,36 @@
       ]
     },
     {
+      "name": "Vector3Project",
+      "description": "",
+      "returnType": "Vector3",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "v1"
+        },
+        {
+          "type": "Vector3",
+          "name": "v2"
+        }
+      ]
+    },
+    {
+      "name": "Vector3Reject",
+      "description": "",
+      "returnType": "Vector3",
+      "params": [
+        {
+          "type": "Vector3",
+          "name": "v1"
+        },
+        {
+          "type": "Vector3",
+          "name": "v2"
+        }
+      ]
+    },
+    {
       "name": "Vector3OrthoNormalize",
       "description": "",
       "returnType": "void",

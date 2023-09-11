@@ -523,14 +523,14 @@ void mSetSaveFileTextCallback(SaveFileTextCallback callback)
 	SetSaveFileTextCallback(callback);
 }
 
-bool mSaveFileData(const char * fileName, void * data, unsigned int bytesToWrite)
+bool mSaveFileData(const char * fileName, void * data, int dataSize)
 {
-	return SaveFileData(fileName, data, bytesToWrite);
+	return SaveFileData(fileName, data, dataSize);
 }
 
-bool mExportDataAsCode(const unsigned char * data, unsigned int size, const char * fileName)
+bool mExportDataAsCode(const unsigned char * data, int dataSize, const char * fileName)
 {
-	return ExportDataAsCode(data, size, fileName);
+	return ExportDataAsCode(data, dataSize, fileName);
 }
 
 char * mLoadFileText(const char * fileName)
@@ -671,6 +671,11 @@ unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize)
 bool mIsKeyPressed(int key)
 {
 	return IsKeyPressed(key);
+}
+
+bool mIsKeyPressedRepeat(int key)
+{
+	return IsKeyPressedRepeat(key);
 }
 
 bool mIsKeyDown(int key)
@@ -1151,6 +1156,11 @@ void mLoadImage(Image *out, const char * fileName)
 void mLoadImageRaw(Image *out, const char * fileName, int width, int height, int format, int headerSize)
 {
 	*out = LoadImageRaw(fileName, width, height, format, headerSize);
+}
+
+void mLoadImageSvg(Image *out, const char * fileNameOrString, int width, int height)
+{
+	*out = LoadImageSvg(fileNameOrString, width, height);
 }
 
 void mLoadImageAnim(Image *out, const char * fileName, int * frames)
@@ -1673,9 +1683,9 @@ void mLoadFont(Font *out, const char * fileName)
 	*out = LoadFont(fileName);
 }
 
-void mLoadFontEx(Font *out, const char * fileName, int fontSize, int * fontChars, int glyphCount)
+void mLoadFontEx(Font *out, const char * fileName, int fontSize, int * codepoints, int codepointCount)
 {
-	*out = LoadFontEx(fileName, fontSize, fontChars, glyphCount);
+	*out = LoadFontEx(fileName, fontSize, codepoints, codepointCount);
 }
 
 void mLoadFontFromImage(Font *out, Image *image, Color *key, int firstChar)
@@ -1683,9 +1693,9 @@ void mLoadFontFromImage(Font *out, Image *image, Color *key, int firstChar)
 	*out = LoadFontFromImage(*image, *key, firstChar);
 }
 
-void mLoadFontFromMemory(Font *out, const char * fileType, const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount)
+void mLoadFontFromMemory(Font *out, const char * fileType, const unsigned char * fileData, int dataSize, int fontSize, int * codepoints, int codepointCount)
 {
-	*out = LoadFontFromMemory(fileType, fileData, dataSize, fontSize, fontChars, glyphCount);
+	*out = LoadFontFromMemory(fileType, fileData, dataSize, fontSize, codepoints, codepointCount);
 }
 
 bool mIsFontReady(Font *font)
@@ -1693,14 +1703,14 @@ bool mIsFontReady(Font *font)
 	return IsFontReady(*font);
 }
 
-GlyphInfo * mLoadFontData(const unsigned char * fileData, int dataSize, int fontSize, int * fontChars, int glyphCount, int type)
+GlyphInfo * mLoadFontData(const unsigned char * fileData, int dataSize, int fontSize, int * codepoints, int codepointCount, int type)
 {
-	return LoadFontData(fileData, dataSize, fontSize, fontChars, glyphCount, type);
+	return LoadFontData(fileData, dataSize, fontSize, codepoints, codepointCount, type);
 }
 
-void mUnloadFontData(GlyphInfo * chars, int glyphCount)
+void mUnloadFontData(GlyphInfo * glyphs, int glyphCount)
 {
-	UnloadFontData(chars, glyphCount);
+	UnloadFontData(glyphs, glyphCount);
 }
 
 void mUnloadFont(Font *font)
@@ -1738,9 +1748,9 @@ void mDrawTextCodepoint(Font *font, int codepoint, Vector2 *position, float font
 	DrawTextCodepoint(*font, codepoint, *position, fontSize, *tint);
 }
 
-void mDrawTextCodepoints(Font *font, const int * codepoints, int count, Vector2 *position, float fontSize, float spacing, Color *tint)
+void mDrawTextCodepoints(Font *font, const int * codepoints, int codepointCount, Vector2 *position, float fontSize, float spacing, Color *tint)
 {
-	DrawTextCodepoints(*font, codepoints, count, *position, fontSize, spacing, *tint);
+	DrawTextCodepoints(*font, codepoints, codepointCount, *position, fontSize, spacing, *tint);
 }
 
 void mSetTextLineSpacing(int spacing)
@@ -2168,7 +2178,7 @@ void mSetModelMeshMaterial(Model * model, int meshId, int materialId)
 	SetModelMeshMaterial(model, meshId, materialId);
 }
 
-ModelAnimation * mLoadModelAnimations(const char * fileName, unsigned int * animCount)
+ModelAnimation * mLoadModelAnimations(const char * fileName, int * animCount)
 {
 	return LoadModelAnimations(fileName, animCount);
 }
@@ -2183,9 +2193,9 @@ void mUnloadModelAnimation(ModelAnimation *anim)
 	UnloadModelAnimation(*anim);
 }
 
-void mUnloadModelAnimations(ModelAnimation * animations, unsigned int count)
+void mUnloadModelAnimations(ModelAnimation * animations, int animCount)
 {
-	UnloadModelAnimations(animations, count);
+	UnloadModelAnimations(animations, animCount);
 }
 
 bool mIsModelAnimationValid(Model *model, ModelAnimation *anim)
@@ -3541,6 +3551,16 @@ void mVector3Divide(Vector3 *out, Vector3 *v1, Vector3 *v2)
 void mVector3Normalize(Vector3 *out, Vector3 *v)
 {
 	*out = Vector3Normalize(*v);
+}
+
+void mVector3Project(Vector3 *out, Vector3 *v1, Vector3 *v2)
+{
+	*out = Vector3Project(*v1, *v2);
+}
+
+void mVector3Reject(Vector3 *out, Vector3 *v1, Vector3 *v2)
+{
+	*out = Vector3Reject(*v1, *v2);
 }
 
 void mVector3OrthoNormalize(Vector3 * v1, Vector3 * v2)
