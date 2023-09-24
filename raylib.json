@@ -3006,8 +3006,8 @@
           "name": "fileName"
         },
         {
-          "type": "unsigned int *",
-          "name": "bytesRead"
+          "type": "int *",
+          "name": "dataSize"
         }
       ]
     },
@@ -3025,8 +3025,8 @@
           "name": "data"
         },
         {
-          "type": "unsigned int",
-          "name": "bytesToWrite"
+          "type": "int",
+          "name": "dataSize"
         }
       ]
     },
@@ -3261,6 +3261,21 @@
     {
       "name": "SetWindowMinSize",
       "description": "Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "width"
+        },
+        {
+          "type": "int",
+          "name": "height"
+        }
+      ]
+    },
+    {
+      "name": "SetWindowMaxSize",
+      "description": "Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)",
       "returnType": "void",
       "params": [
         {
@@ -4363,7 +4378,7 @@
     },
     {
       "name": "GetApplicationDirectory",
-      "description": "Get the directory if the running application (uses static string)",
+      "description": "Get the directory of the running application (uses static string)",
       "returnType": "const char *"
     },
     {
@@ -4917,7 +4932,7 @@
       "returnType": "bool",
       "params": [
         {
-          "type": "int",
+          "type": "unsigned int",
           "name": "gesture"
         }
       ]

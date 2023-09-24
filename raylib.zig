@@ -1169,6 +1169,17 @@ pub fn SetWindowMinSize(
     );
 }
 
+/// Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)
+pub fn SetWindowMaxSize(
+    width: i32,
+    height: i32,
+) void {
+    raylib.mSetWindowMaxSize(
+        width,
+        height,
+    );
+}
+
 /// Set window dimensions
 pub fn SetWindowSize(
     width: i32,
@@ -2026,7 +2037,7 @@ pub fn GetWorkingDirectory() [*:0]const u8 {
     );
 }
 
-/// Get the directory if the running application (uses static string)
+/// Get the directory of the running application (uses static string)
 pub fn GetApplicationDirectory() [*:0]const u8 {
     return @as(
         [*:0]const u8,
@@ -2508,7 +2519,7 @@ pub fn SetGesturesEnabled(
 
 /// Check if a gesture have been detected
 pub fn IsGestureDetected(
-    gesture: i32,
+    gesture: u32,
 ) bool {
     return raylib.mIsGestureDetected(
         gesture,

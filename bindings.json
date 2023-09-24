@@ -239,6 +239,22 @@
       "custom": false
     },
     {
+      "name": "SetWindowMaxSize",
+      "params": [
+        {
+          "name": "width",
+          "typ": "i32"
+        },
+        {
+          "name": "height",
+          "typ": "i32"
+        }
+      ],
+      "returnType": "void",
+      "description": "Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)",
+      "custom": false
+    },
+    {
       "name": "SetWindowSize",
       "params": [
         {
@@ -1464,7 +1480,7 @@
       "name": "GetApplicationDirectory",
       "params": [],
       "returnType": "[*:0]const u8",
-      "description": "Get the directory if the running application (uses static string)",
+      "description": "Get the directory of the running application (uses static string)",
       "custom": false
     },
     {
@@ -2082,7 +2098,7 @@
       "params": [
         {
           "name": "gesture",
-          "typ": "i32"
+          "typ": "u32"
         }
       ],
       "returnType": "bool",

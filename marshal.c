@@ -123,6 +123,11 @@ void mSetWindowMinSize(int width, int height)
 	SetWindowMinSize(width, height);
 }
 
+void mSetWindowMaxSize(int width, int height)
+{
+	SetWindowMaxSize(width, height);
+}
+
 void mSetWindowSize(int width, int height)
 {
 	SetWindowSize(width, height);
@@ -853,7 +858,7 @@ void mSetGesturesEnabled(unsigned int flags)
 	SetGesturesEnabled(flags);
 }
 
-bool mIsGestureDetected(int gesture)
+bool mIsGestureDetected(unsigned int gesture)
 {
 	return IsGestureDetected(gesture);
 }

@@ -81,6 +81,9 @@ void mSetWindowMonitor(int monitor);
 // Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
 void mSetWindowMinSize(int width, int height);
 
+// Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)
+void mSetWindowMaxSize(int width, int height);
+
 // Set window dimensions
 void mSetWindowSize(int width, int height);
 
@@ -366,7 +369,7 @@ const char * mGetPrevDirectoryPath(const char * dirPath);
 // Get current working directory (uses static string)
 const char * mGetWorkingDirectory(void);
 
-// Get the directory if the running application (uses static string)
+// Get the directory of the running application (uses static string)
 const char * mGetApplicationDirectory(void);
 
 // Change working directory, return true on success
@@ -520,7 +523,7 @@ int mGetTouchPointCount(void);
 void mSetGesturesEnabled(unsigned int flags);
 
 // Check if a gesture have been detected
-bool mIsGestureDetected(int gesture);
+bool mIsGestureDetected(unsigned int gesture);
 
 // Get latest detected gesture
 int mGetGestureDetected(void);
