@@ -12,11 +12,11 @@ void rlEnableStatePointer(int vertexAttribType, void *buffer);
 void rlDisableStatePointer(int vertexAttribType);// Initialize window and OpenGL context
 void mInitWindow(int width, int height, const char * title);
 
-// Check if KEY_ESCAPE pressed or Close icon pressed
-bool mWindowShouldClose(void);
-
 // Close window and unload OpenGL context
 void mCloseWindow(void);
+
+// Check if application should close (KEY_ESCAPE pressed or windows close icon clicked)
+bool mWindowShouldClose(void);
 
 // Check if window has been initialized successfully
 bool mIsWindowReady(void);

@@ -8,14 +8,14 @@ void mInitWindow(int width, int height, const char * title)
 	InitWindow(width, height, title);
 }
 
-bool mWindowShouldClose(void)
-{
-	return WindowShouldClose();
-}
-
 void mCloseWindow(void)
 {
 	CloseWindow();
+}
+
+bool mWindowShouldClose(void)
+{
+	return WindowShouldClose();
 }
 
 bool mIsWindowReady(void)

@@ -1012,14 +1012,14 @@ pub fn InitWindow(
     );
 }
 
-/// Check if KEY_ESCAPE pressed or Close icon pressed
-pub fn WindowShouldClose() bool {
-    return raylib.mWindowShouldClose();
-}
-
 /// Close window and unload OpenGL context
 pub fn CloseWindow() void {
     raylib.mCloseWindow();
+}
+
+/// Check if application should close (KEY_ESCAPE pressed or windows close icon clicked)
+pub fn WindowShouldClose() bool {
+    return raylib.mWindowShouldClose();
 }
 
 /// Check if window has been initialized successfully

@@ -3093,14 +3093,14 @@
       ]
     },
     {
-      "name": "WindowShouldClose",
-      "description": "Check if KEY_ESCAPE pressed or Close icon pressed",
-      "returnType": "bool"
-    },
-    {
       "name": "CloseWindow",
       "description": "Close window and unload OpenGL context",
       "returnType": "void"
+    },
+    {
+      "name": "WindowShouldClose",
+      "description": "Check if application should close (KEY_ESCAPE pressed or windows close icon clicked)",
+      "returnType": "bool"
     },
     {
       "name": "IsWindowReady",

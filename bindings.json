@@ -21,17 +21,17 @@
       "custom": false
     },
     {
-      "name": "WindowShouldClose",
-      "params": [],
-      "returnType": "bool",
-      "description": "Check if KEY_ESCAPE pressed or Close icon pressed",
-      "custom": false
-    },
-    {
       "name": "CloseWindow",
       "params": [],
       "returnType": "void",
       "description": "Close window and unload OpenGL context",
+      "custom": false
+    },
+    {
+      "name": "WindowShouldClose",
+      "params": [],
+      "returnType": "bool",
+      "description": "Check if application should close (KEY_ESCAPE pressed or windows close icon clicked)",
       "custom": false
     },
     {
