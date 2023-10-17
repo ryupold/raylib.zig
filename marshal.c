@@ -2268,6 +2268,11 @@ void mSetMasterVolume(float volume)
 	SetMasterVolume(volume);
 }
 
+float mGetMasterVolume(void)
+{
+	return GetMasterVolume();
+}
+
 void mLoadWave(Wave *out, const char * fileName)
 {
 	*out = LoadWave(fileName);

@@ -7806,6 +7806,13 @@
       "custom": false
     },
     {
+      "name": "GetMasterVolume",
+      "params": [],
+      "returnType": "f32",
+      "description": "Get master volume (listener)",
+      "custom": false
+    },
+    {
       "name": "LoadWave",
       "params": [
         {

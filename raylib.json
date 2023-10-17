@@ -10340,6 +10340,11 @@
       ]
     },
     {
+      "name": "GetMasterVolume",
+      "description": "Get master volume (listener)",
+      "returnType": "float"
+    },
+    {
       "name": "LoadWave",
       "description": "Load wave data from file",
       "returnType": "Wave",

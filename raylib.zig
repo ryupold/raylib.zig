@@ -6426,6 +6426,11 @@ pub fn SetMasterVolume(
     );
 }
 
+/// Get master volume (listener)
+pub fn GetMasterVolume() f32 {
+    return raylib.mGetMasterVolume();
+}
+
 /// Load wave data from file
 pub fn LoadWave(
     fileName: [*:0]const u8,

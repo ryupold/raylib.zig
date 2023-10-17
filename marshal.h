@@ -1368,6 +1368,9 @@ bool mIsAudioDeviceReady(void);
 // Set master volume (listener)
 void mSetMasterVolume(float volume);
 
+// Get master volume (listener)
+float mGetMasterVolume(void);
+
 // Load wave data from file
 void mLoadWave(Wave *out, const char * fileName);
 
