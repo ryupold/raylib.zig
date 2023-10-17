@@ -1349,25 +1349,6 @@ pub fn DisableEventWaiting() void {
     raylib.mDisableEventWaiting();
 }
 
-/// Swap back buffer with front buffer (screen drawing)
-pub fn SwapScreenBuffer() void {
-    raylib.mSwapScreenBuffer();
-}
-
-/// Register all input events
-pub fn PollInputEvents() void {
-    raylib.mPollInputEvents();
-}
-
-/// Wait for some time (halt program execution)
-pub fn WaitTime(
-    seconds: f64,
-) void {
-    raylib.mWaitTime(
-        seconds,
-    );
-}
-
 /// Shows cursor
 pub fn ShowCursor() void {
     raylib.mShowCursor();
@@ -1775,11 +1756,6 @@ pub fn SetTargetFPS(
     );
 }
 
-/// Get current FPS
-pub fn GetFPS() i32 {
-    return raylib.mGetFPS();
-}
-
 /// Get time in seconds for last frame drawn (delta time)
 pub fn GetFrameTime() f32 {
     return raylib.mGetFrameTime();
@@ -1788,6 +1764,30 @@ pub fn GetFrameTime() f32 {
 /// Get elapsed time in seconds since InitWindow()
 pub fn GetTime() f64 {
     return raylib.mGetTime();
+}
+
+/// Get current FPS
+pub fn GetFPS() i32 {
+    return raylib.mGetFPS();
+}
+
+/// Swap back buffer with front buffer (screen drawing)
+pub fn SwapScreenBuffer() void {
+    raylib.mSwapScreenBuffer();
+}
+
+/// Register all input events
+pub fn PollInputEvents() void {
+    raylib.mPollInputEvents();
+}
+
+/// Wait for some time (halt program execution)
+pub fn WaitTime(
+    seconds: f64,
+) void {
+    raylib.mWaitTime(
+        seconds,
+    );
 }
 
 /// Get a random value between min and max (both included)
@@ -1819,21 +1819,21 @@ pub fn TakeScreenshot(
     );
 }
 
-/// Set the current threshold (minimum) log level
-pub fn SetTraceLogLevel(
-    logLevel: i32,
-) void {
-    raylib.mSetTraceLogLevel(
-        logLevel,
-    );
-}
-
 /// Open URL with default system browser (if available)
 pub fn OpenURL(
     url: [*:0]const u8,
 ) void {
     raylib.mOpenURL(
         @as([*c]const u8, @ptrFromInt(@intFromPtr(url))),
+    );
+}
+
+/// Set the current threshold (minimum) log level
+pub fn SetTraceLogLevel(
+    logLevel: i32,
+) void {
+    raylib.mSetTraceLogLevel(
+        logLevel,
     );
 }
 
@@ -2239,15 +2239,6 @@ pub fn IsKeyUp(
     );
 }
 
-/// Set a custom key to exit program (default is ESC)
-pub fn SetExitKey(
-    key: KeyboardKey,
-) void {
-    raylib.mSetExitKey(
-        @intFromEnum(key),
-    );
-}
-
 /// Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
 pub fn GetKeyPressed() i32 {
     return raylib.mGetKeyPressed();
@@ -2256,6 +2247,15 @@ pub fn GetKeyPressed() i32 {
 /// Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
 pub fn GetCharPressed() i32 {
     return raylib.mGetCharPressed();
+}
+
+/// Set a custom key to exit program (default is ESC)
+pub fn SetExitKey(
+    key: KeyboardKey,
+) void {
+    raylib.mSetExitKey(
+        @intFromEnum(key),
+    );
 }
 
 /// Check if a gamepad is available

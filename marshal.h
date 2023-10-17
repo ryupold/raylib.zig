@@ -150,15 +150,6 @@ void mEnableEventWaiting(void);
 // Disable waiting for events on EndDrawing(), automatic events polling
 void mDisableEventWaiting(void);
 
-// Swap back buffer with front buffer (screen drawing)
-void mSwapScreenBuffer(void);
-
-// Register all input events
-void mPollInputEvents(void);
-
-// Wait for some time (halt program execution)
-void mWaitTime(double seconds);
-
 // Shows cursor
 void mShowCursor(void);
 
@@ -288,14 +279,23 @@ void mGetWorldToScreen2D(Vector2 *out, Vector2 *position, Camera2D *camera);
 // Set target FPS (maximum)
 void mSetTargetFPS(int fps);
 
-// Get current FPS
-int mGetFPS(void);
-
 // Get time in seconds for last frame drawn (delta time)
 float mGetFrameTime(void);
 
 // Get elapsed time in seconds since InitWindow()
 double mGetTime(void);
+
+// Get current FPS
+int mGetFPS(void);
+
+// Swap back buffer with front buffer (screen drawing)
+void mSwapScreenBuffer(void);
+
+// Register all input events
+void mPollInputEvents(void);
+
+// Wait for some time (halt program execution)
+void mWaitTime(double seconds);
 
 // Get a random value between min and max (both included)
 int mGetRandomValue(int min, int max);
@@ -306,11 +306,11 @@ void mSetRandomSeed(unsigned int seed);
 // Takes a screenshot of current screen (filename extension defines format)
 void mTakeScreenshot(const char * fileName);
 
-// Set the current threshold (minimum) log level
-void mSetTraceLogLevel(int logLevel);
-
 // Open URL with default system browser (if available)
 void mOpenURL(const char * url);
+
+// Set the current threshold (minimum) log level
+void mSetTraceLogLevel(int logLevel);
 
 // Set custom file binary data loader
 void mSetLoadFileDataCallback(LoadFileDataCallback callback);
@@ -426,14 +426,14 @@ bool mIsKeyReleased(int key);
 // Check if a key is NOT being pressed
 bool mIsKeyUp(int key);
 
-// Set a custom key to exit program (default is ESC)
-void mSetExitKey(int key);
-
 // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
 int mGetKeyPressed(void);
 
 // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
 int mGetCharPressed(void);
+
+// Set a custom key to exit program (default is ESC)
+void mSetExitKey(int key);
 
 // Check if a gamepad is available
 bool mIsGamepadAvailable(int gamepad);

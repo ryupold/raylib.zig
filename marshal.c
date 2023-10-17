@@ -238,21 +238,6 @@ void mDisableEventWaiting(void)
 	DisableEventWaiting();
 }
 
-void mSwapScreenBuffer(void)
-{
-	SwapScreenBuffer();
-}
-
-void mPollInputEvents(void)
-{
-	PollInputEvents();
-}
-
-void mWaitTime(double seconds)
-{
-	WaitTime(seconds);
-}
-
 void mShowCursor(void)
 {
 	ShowCursor();
@@ -468,11 +453,6 @@ void mSetTargetFPS(int fps)
 	SetTargetFPS(fps);
 }
 
-int mGetFPS(void)
-{
-	return GetFPS();
-}
-
 float mGetFrameTime(void)
 {
 	return GetFrameTime();
@@ -481,6 +461,26 @@ float mGetFrameTime(void)
 double mGetTime(void)
 {
 	return GetTime();
+}
+
+int mGetFPS(void)
+{
+	return GetFPS();
+}
+
+void mSwapScreenBuffer(void)
+{
+	SwapScreenBuffer();
+}
+
+void mPollInputEvents(void)
+{
+	PollInputEvents();
+}
+
+void mWaitTime(double seconds)
+{
+	WaitTime(seconds);
 }
 
 int mGetRandomValue(int min, int max)
@@ -498,14 +498,14 @@ void mTakeScreenshot(const char * fileName)
 	TakeScreenshot(fileName);
 }
 
-void mSetTraceLogLevel(int logLevel)
-{
-	SetTraceLogLevel(logLevel);
-}
-
 void mOpenURL(const char * url)
 {
 	OpenURL(url);
+}
+
+void mSetTraceLogLevel(int logLevel)
+{
+	SetTraceLogLevel(logLevel);
 }
 
 void mSetLoadFileDataCallback(LoadFileDataCallback callback)
@@ -698,11 +698,6 @@ bool mIsKeyUp(int key)
 	return IsKeyUp(key);
 }
 
-void mSetExitKey(int key)
-{
-	SetExitKey(key);
-}
-
 int mGetKeyPressed(void)
 {
 	return GetKeyPressed();
@@ -711,6 +706,11 @@ int mGetKeyPressed(void)
 int mGetCharPressed(void)
 {
 	return GetCharPressed();
+}
+
+void mSetExitKey(int key)
+{
+	SetExitKey(key);
 }
 
 bool mIsGamepadAvailable(int gamepad)

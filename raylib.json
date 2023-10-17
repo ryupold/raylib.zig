@@ -3468,27 +3468,6 @@
       "returnType": "void"
     },
     {
-      "name": "SwapScreenBuffer",
-      "description": "Swap back buffer with front buffer (screen drawing)",
-      "returnType": "void"
-    },
-    {
-      "name": "PollInputEvents",
-      "description": "Register all input events",
-      "returnType": "void"
-    },
-    {
-      "name": "WaitTime",
-      "description": "Wait for some time (halt program execution)",
-      "returnType": "void",
-      "params": [
-        {
-          "type": "double",
-          "name": "seconds"
-        }
-      ]
-    },
-    {
       "name": "ShowCursor",
       "description": "Shows cursor",
       "returnType": "void"
@@ -3972,11 +3951,6 @@
       ]
     },
     {
-      "name": "GetFPS",
-      "description": "Get current FPS",
-      "returnType": "int"
-    },
-    {
       "name": "GetFrameTime",
       "description": "Get time in seconds for last frame drawn (delta time)",
       "returnType": "float"
@@ -3985,6 +3959,32 @@
       "name": "GetTime",
       "description": "Get elapsed time in seconds since InitWindow()",
       "returnType": "double"
+    },
+    {
+      "name": "GetFPS",
+      "description": "Get current FPS",
+      "returnType": "int"
+    },
+    {
+      "name": "SwapScreenBuffer",
+      "description": "Swap back buffer with front buffer (screen drawing)",
+      "returnType": "void"
+    },
+    {
+      "name": "PollInputEvents",
+      "description": "Register all input events",
+      "returnType": "void"
+    },
+    {
+      "name": "WaitTime",
+      "description": "Wait for some time (halt program execution)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "double",
+          "name": "seconds"
+        }
+      ]
     },
     {
       "name": "GetRandomValue",
@@ -4031,6 +4031,17 @@
         {
           "type": "unsigned int",
           "name": "flags"
+        }
+      ]
+    },
+    {
+      "name": "OpenURL",
+      "description": "Open URL with default system browser (if available)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "const char *",
+          "name": "url"
         }
       ]
     },
@@ -4098,17 +4109,6 @@
         {
           "type": "void *",
           "name": "ptr"
-        }
-      ]
-    },
-    {
-      "name": "OpenURL",
-      "description": "Open URL with default system browser (if available)",
-      "returnType": "void",
-      "params": [
-        {
-          "type": "const char *",
-          "name": "url"
         }
       ]
     },
@@ -4604,6 +4604,16 @@
       ]
     },
     {
+      "name": "GetKeyPressed",
+      "description": "Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty",
+      "returnType": "int"
+    },
+    {
+      "name": "GetCharPressed",
+      "description": "Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty",
+      "returnType": "int"
+    },
+    {
       "name": "SetExitKey",
       "description": "Set a custom key to exit program (default is ESC)",
       "returnType": "void",
@@ -4613,16 +4623,6 @@
           "name": "key"
         }
       ]
-    },
-    {
-      "name": "GetKeyPressed",
-      "description": "Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty",
-      "returnType": "int"
-    },
-    {
-      "name": "GetCharPressed",
-      "description": "Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty",
-      "returnType": "int"
     },
     {
       "name": "IsGamepadAvailable",

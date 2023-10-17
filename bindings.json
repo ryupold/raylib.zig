@@ -470,32 +470,6 @@
       "custom": false
     },
     {
-      "name": "SwapScreenBuffer",
-      "params": [],
-      "returnType": "void",
-      "description": "Swap back buffer with front buffer (screen drawing)",
-      "custom": false
-    },
-    {
-      "name": "PollInputEvents",
-      "params": [],
-      "returnType": "void",
-      "description": "Register all input events",
-      "custom": false
-    },
-    {
-      "name": "WaitTime",
-      "params": [
-        {
-          "name": "seconds",
-          "typ": "f64"
-        }
-      ],
-      "returnType": "void",
-      "description": "Wait for some time (halt program execution)",
-      "custom": false
-    },
-    {
       "name": "ShowCursor",
       "params": [],
       "returnType": "void",
@@ -1037,13 +1011,6 @@
       "custom": false
     },
     {
-      "name": "GetFPS",
-      "params": [],
-      "returnType": "i32",
-      "description": "Get current FPS",
-      "custom": false
-    },
-    {
       "name": "GetFrameTime",
       "params": [],
       "returnType": "f32",
@@ -1055,6 +1022,39 @@
       "params": [],
       "returnType": "f64",
       "description": "Get elapsed time in seconds since InitWindow()",
+      "custom": false
+    },
+    {
+      "name": "GetFPS",
+      "params": [],
+      "returnType": "i32",
+      "description": "Get current FPS",
+      "custom": false
+    },
+    {
+      "name": "SwapScreenBuffer",
+      "params": [],
+      "returnType": "void",
+      "description": "Swap back buffer with front buffer (screen drawing)",
+      "custom": false
+    },
+    {
+      "name": "PollInputEvents",
+      "params": [],
+      "returnType": "void",
+      "description": "Register all input events",
+      "custom": false
+    },
+    {
+      "name": "WaitTime",
+      "params": [
+        {
+          "name": "seconds",
+          "typ": "f64"
+        }
+      ],
+      "returnType": "void",
+      "description": "Wait for some time (halt program execution)",
       "custom": false
     },
     {
@@ -1108,6 +1108,18 @@
       "returnType": "void",
       "description": "Setup init configuration flags (view FLAGS)",
       "custom": true
+    },
+    {
+      "name": "OpenURL",
+      "params": [
+        {
+          "name": "url",
+          "typ": "[*:0]const u8"
+        }
+      ],
+      "returnType": "void",
+      "description": "Open URL with default system browser (if available)",
+      "custom": false
     },
     {
       "name": "TraceLog",
@@ -1175,18 +1187,6 @@
       ],
       "returnType": "void",
       "description": "Internal memory free",
-      "custom": false
-    },
-    {
-      "name": "OpenURL",
-      "params": [
-        {
-          "name": "url",
-          "typ": "[*:0]const u8"
-        }
-      ],
-      "returnType": "void",
-      "description": "Open URL with default system browser (if available)",
       "custom": false
     },
     {
@@ -1726,18 +1726,6 @@
       "custom": true
     },
     {
-      "name": "SetExitKey",
-      "params": [
-        {
-          "name": "key",
-          "typ": "KeyboardKey"
-        }
-      ],
-      "returnType": "void",
-      "description": "Set a custom key to exit program (default is ESC)",
-      "custom": true
-    },
-    {
       "name": "GetKeyPressed",
       "params": [],
       "returnType": "i32",
@@ -1750,6 +1738,18 @@
       "returnType": "i32",
       "description": "Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty",
       "custom": false
+    },
+    {
+      "name": "SetExitKey",
+      "params": [
+        {
+          "name": "key",
+          "typ": "KeyboardKey"
+        }
+      ],
+      "returnType": "void",
+      "description": "Set a custom key to exit program (default is ESC)",
+      "custom": true
     },
     {
       "name": "IsGamepadAvailable",
