@@ -603,6 +603,9 @@ void mDrawCircleV(Vector2 *center, float radius, Color *color);
 // Draw circle outline
 void mDrawCircleLines(int centerX, int centerY, float radius, Color *color);
 
+// Draw circle outline (Vector version)
+void mDrawCircleLinesV(Vector2 *center, float radius, Color *color);
+
 // Draw ellipse
 void mDrawEllipse(int centerX, int centerY, float radiusH, float radiusV, Color *color);
 

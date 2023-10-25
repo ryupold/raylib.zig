@@ -2624,6 +2624,26 @@
       "custom": false
     },
     {
+      "name": "DrawCircleLinesV",
+      "params": [
+        {
+          "name": "center",
+          "typ": "Vector2"
+        },
+        {
+          "name": "radius",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw circle outline (Vector version)",
+      "custom": false
+    },
+    {
       "name": "DrawEllipse",
       "params": [
         {
@@ -16195,14 +16215,14 @@
     {
       "name": "RAYLIB_VERSION_MAJOR",
       "typ": "i32",
-      "value": "4",
+      "value": "5",
       "description": "",
       "custom": false
     },
     {
       "name": "RAYLIB_VERSION_MINOR",
       "typ": "i32",
-      "value": "6",
+      "value": "0",
       "description": "",
       "custom": false
     },
@@ -16216,7 +16236,7 @@
     {
       "name": "RAYLIB_VERSION",
       "typ": "[]const u8",
-      "value": "\"4.6-dev\"",
+      "value": "\"5.0-dev\"",
       "description": "",
       "custom": false
     },

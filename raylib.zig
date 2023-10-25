@@ -2862,6 +2862,19 @@ pub fn DrawCircleLines(
     );
 }
 
+/// Draw circle outline (Vector version)
+pub fn DrawCircleLinesV(
+    center: Vector2,
+    radius: f32,
+    color: Color,
+) void {
+    raylib.mDrawCircleLinesV(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&center))),
+        radius,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
 /// Draw ellipse
 pub fn DrawEllipse(
     centerX: i32,
@@ -11307,16 +11320,16 @@ pub const PhysicsShapeType = enum(i32) {
 };
 
 ///
-pub const RAYLIB_VERSION_MAJOR: i32 = 4;
+pub const RAYLIB_VERSION_MAJOR: i32 = 5;
 
 ///
-pub const RAYLIB_VERSION_MINOR: i32 = 6;
+pub const RAYLIB_VERSION_MINOR: i32 = 0;
 
 ///
 pub const RAYLIB_VERSION_PATCH: i32 = 0;
 
 ///
-pub const RAYLIB_VERSION: []const u8 = "4.6-dev";
+pub const RAYLIB_VERSION: []const u8 = "5.0-dev";
 
 ///
 pub const PI: f32 = 3.14159265358979323846;

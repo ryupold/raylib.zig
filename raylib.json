@@ -9,13 +9,13 @@
     {
       "name": "RAYLIB_VERSION_MAJOR",
       "type": "INT",
-      "value": "4",
+      "value": "5",
       "description": ""
     },
     {
       "name": "RAYLIB_VERSION_MINOR",
       "type": "INT",
-      "value": "6",
+      "value": "0",
       "description": ""
     },
     {
@@ -27,7 +27,7 @@
     {
       "name": "RAYLIB_VERSION",
       "type": "STRING",
-      "value": "4.6-dev",
+      "value": "5.0-dev",
       "description": ""
     },
     {
@@ -5412,6 +5412,25 @@
         {
           "type": "int",
           "name": "centerY"
+        },
+        {
+          "type": "float",
+          "name": "radius"
+        },
+        {
+          "type": "Color",
+          "name": "color"
+        }
+      ]
+    },
+    {
+      "name": "DrawCircleLinesV",
+      "description": "Draw circle outline (Vector version)",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Vector2",
+          "name": "center"
         },
         {
           "type": "float",

@@ -993,6 +993,11 @@ void mDrawCircleLines(int centerX, int centerY, float radius, Color *color)
 	DrawCircleLines(centerX, centerY, radius, *color);
 }
 
+void mDrawCircleLinesV(Vector2 *center, float radius, Color *color)
+{
+	DrawCircleLinesV(*center, radius, *color);
+}
+
 void mDrawEllipse(int centerX, int centerY, float radiusH, float radiusV, Color *color)
 {
 	DrawEllipse(centerX, centerY, radiusH, radiusV, *color);
