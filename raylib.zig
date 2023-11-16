@@ -1790,6 +1790,15 @@ pub fn WaitTime(
     );
 }
 
+/// Set the seed for the random number generator
+pub fn SetRandomSeed(
+    seed: u32,
+) void {
+    raylib.mSetRandomSeed(
+        seed,
+    );
+}
+
 /// Get a random value between min and max (both included)
 pub fn GetRandomValue(
     min: i32,
@@ -1801,12 +1810,28 @@ pub fn GetRandomValue(
     );
 }
 
-/// Set the seed for the random number generator
-pub fn SetRandomSeed(
-    seed: u32,
+/// Load random values sequence, no values repeated
+pub fn LoadRandomSequence(
+    count: u32,
+    min: i32,
+    max: i32,
+) ?[*]i32 {
+    return @as(
+        ?[*]i32,
+        @ptrCast(raylib.mLoadRandomSequence(
+            count,
+            min,
+            max,
+        )),
+    );
+}
+
+/// Unload random values sequence
+pub fn UnloadRandomSequence(
+    sequence: ?[*]i32,
 ) void {
-    raylib.mSetRandomSeed(
-        seed,
+    raylib.mUnloadRandomSequence(
+        @as([*c]i32, @ptrCast(sequence)),
     );
 }
 
@@ -2191,6 +2216,75 @@ pub fn DecodeDataBase64(
             @as([*c]const u8, @ptrFromInt(@intFromPtr(data))),
             @as([*c]i32, @ptrCast(outputSize)),
         )),
+    );
+}
+
+/// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+pub fn LoadAutomationEventList(
+    fileName: [*:0]const u8,
+) AutomationEventList {
+    var out: AutomationEventList = undefined;
+    raylib.mLoadAutomationEventList(
+        @as([*c]raylib.AutomationEventList, @ptrCast(&out)),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
+    );
+    return out;
+}
+
+/// Unload automation events list from file
+pub fn UnloadAutomationEventList(
+    list: ?[*]AutomationEventList,
+) void {
+    raylib.mUnloadAutomationEventList(
+        @as([*c]raylib.AutomationEventList, @ptrFromInt(@intFromPtr(list))),
+    );
+}
+
+/// Export automation events list as text file
+pub fn ExportAutomationEventList(
+    list: AutomationEventList,
+    fileName: [*:0]const u8,
+) bool {
+    return raylib.mExportAutomationEventList(
+        @as([*c]raylib.AutomationEventList, @ptrFromInt(@intFromPtr(&list))),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
+    );
+}
+
+/// Set automation event list to record to
+pub fn SetAutomationEventList(
+    list: ?[*]AutomationEventList,
+) void {
+    raylib.mSetAutomationEventList(
+        @as([*c]raylib.AutomationEventList, @ptrFromInt(@intFromPtr(list))),
+    );
+}
+
+/// Set automation event internal base frame to start recording
+pub fn SetAutomationEventBaseFrame(
+    frame: i32,
+) void {
+    raylib.mSetAutomationEventBaseFrame(
+        frame,
+    );
+}
+
+/// Start recording automation events (AutomationEventList must be set)
+pub fn StartAutomationEventRecording() void {
+    raylib.mStartAutomationEventRecording();
+}
+
+/// Stop recording automation events
+pub fn StopAutomationEventRecording() void {
+    raylib.mStopAutomationEventRecording();
+}
+
+/// Play a recorded automation event
+pub fn PlayAutomationEvent(
+    event: AutomationEvent,
+) void {
+    raylib.mPlayAutomationEvent(
+        @as([*c]raylib.AutomationEvent, @ptrFromInt(@intFromPtr(&event))),
     );
 }
 
@@ -2642,7 +2736,7 @@ pub fn DrawLine(
     );
 }
 
-/// Draw a line (Vector version)
+/// Draw a line (using gl lines)
 pub fn DrawLineV(
     startPos: Vector2,
     endPos: Vector2,
@@ -2655,7 +2749,7 @@ pub fn DrawLineV(
     );
 }
 
-/// Draw a line defining thickness
+/// Draw a line (using triangles/quads)
 pub fn DrawLineEx(
     startPos: Vector2,
     endPos: Vector2,
@@ -2670,7 +2764,20 @@ pub fn DrawLineEx(
     );
 }
 
-/// Draw a line using cubic-bezier curves in-out
+/// Draw lines sequence (using gl lines)
+pub fn DrawLineStrip(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    color: Color,
+) void {
+    raylib.mDrawLineStrip(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw line segment cubic-bezier in-out interpolation
 pub fn DrawLineBezier(
     startPos: Vector2,
     endPos: Vector2,
@@ -2681,85 +2788,6 @@ pub fn DrawLineBezier(
         @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&startPos))),
         @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&endPos))),
         thick,
-        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
-    );
-}
-
-/// Draw line using quadratic bezier curves with a control point
-pub fn DrawLineBezierQuad(
-    startPos: Vector2,
-    endPos: Vector2,
-    controlPos: Vector2,
-    thick: f32,
-    color: Color,
-) void {
-    raylib.mDrawLineBezierQuad(
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&startPos))),
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&endPos))),
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&controlPos))),
-        thick,
-        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
-    );
-}
-
-/// Draw line using cubic bezier curves with 2 control points
-pub fn DrawLineBezierCubic(
-    startPos: Vector2,
-    endPos: Vector2,
-    startControlPos: Vector2,
-    endControlPos: Vector2,
-    thick: f32,
-    color: Color,
-) void {
-    raylib.mDrawLineBezierCubic(
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&startPos))),
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&endPos))),
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&startControlPos))),
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&endControlPos))),
-        thick,
-        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
-    );
-}
-
-/// Draw a B-Spline line, minimum 4 points
-pub fn DrawLineBSpline(
-    points: ?[*]Vector2,
-    pointCount: i32,
-    thick: f32,
-    color: Color,
-) void {
-    raylib.mDrawLineBSpline(
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
-        pointCount,
-        thick,
-        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
-    );
-}
-
-/// Draw a Catmull Rom spline line, minimum 4 points
-pub fn DrawLineCatmullRom(
-    points: ?[*]Vector2,
-    pointCount: i32,
-    thick: f32,
-    color: Color,
-) void {
-    raylib.mDrawLineCatmullRom(
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
-        pointCount,
-        thick,
-        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
-    );
-}
-
-/// Draw lines sequence
-pub fn DrawLineStrip(
-    points: ?[*]Vector2,
-    pointCount: i32,
-    color: Color,
-) void {
-    raylib.mDrawLineStrip(
-        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
-        pointCount,
         @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
     );
 }
@@ -3231,6 +3259,264 @@ pub fn DrawPolyLinesEx(
         lineThick,
         @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
     );
+}
+
+/// Draw spline: Linear, minimum 2 points
+pub fn DrawSplineLinear(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineLinear(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline: B-Spline, minimum 4 points
+pub fn DrawSplineBasis(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineBasis(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline: Catmull-Rom, minimum 4 points
+pub fn DrawSplineCatmullRom(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineCatmullRom(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
+pub fn DrawSplineBezierQuadratic(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineBezierQuadratic(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
+pub fn DrawSplineBezierCubic(
+    points: ?[*]Vector2,
+    pointCount: i32,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineBezierCubic(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(points))),
+        pointCount,
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline segment: Linear, 2 points
+pub fn DrawSplineSegmentLinear(
+    p1: Vector2,
+    p2: Vector2,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineSegmentLinear(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p2))),
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline segment: B-Spline, 4 points
+pub fn DrawSplineSegmentBasis(
+    p1: Vector2,
+    p2: Vector2,
+    p3: Vector2,
+    p4: Vector2,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineSegmentBasis(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p3))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p4))),
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline segment: Catmull-Rom, 4 points
+pub fn DrawSplineSegmentCatmullRom(
+    p1: Vector2,
+    p2: Vector2,
+    p3: Vector2,
+    p4: Vector2,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineSegmentCatmullRom(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p3))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p4))),
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline segment: Quadratic Bezier, 2 points, 1 control point
+pub fn DrawSplineSegmentBezierQuadratic(
+    p1: Vector2,
+    c2: Vector2,
+    p3: Vector2,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineSegmentBezierQuadratic(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&c2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p3))),
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Draw spline segment: Cubic Bezier, 2 points, 2 control points
+pub fn DrawSplineSegmentBezierCubic(
+    p1: Vector2,
+    c2: Vector2,
+    c3: Vector2,
+    p4: Vector2,
+    thick: f32,
+    color: Color,
+) void {
+    raylib.mDrawSplineSegmentBezierCubic(
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&c2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&c3))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p4))),
+        thick,
+        @as([*c]raylib.Color, @ptrFromInt(@intFromPtr(&color))),
+    );
+}
+
+/// Get (evaluate) spline point: Linear
+pub fn GetSplinePointLinear(
+    startPos: Vector2,
+    endPos: Vector2,
+    t: f32,
+) Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetSplinePointLinear(
+        @as([*c]raylib.Vector2, @ptrCast(&out)),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&startPos))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&endPos))),
+        t,
+    );
+    return out;
+}
+
+/// Get (evaluate) spline point: B-Spline
+pub fn GetSplinePointBasis(
+    p1: Vector2,
+    p2: Vector2,
+    p3: Vector2,
+    p4: Vector2,
+    t: f32,
+) Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetSplinePointBasis(
+        @as([*c]raylib.Vector2, @ptrCast(&out)),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p3))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p4))),
+        t,
+    );
+    return out;
+}
+
+/// Get (evaluate) spline point: Catmull-Rom
+pub fn GetSplinePointCatmullRom(
+    p1: Vector2,
+    p2: Vector2,
+    p3: Vector2,
+    p4: Vector2,
+    t: f32,
+) Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetSplinePointCatmullRom(
+        @as([*c]raylib.Vector2, @ptrCast(&out)),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p3))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p4))),
+        t,
+    );
+    return out;
+}
+
+/// Get (evaluate) spline point: Quadratic Bezier
+pub fn GetSplinePointBezierQuad(
+    p1: Vector2,
+    c2: Vector2,
+    p3: Vector2,
+    t: f32,
+) Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetSplinePointBezierQuad(
+        @as([*c]raylib.Vector2, @ptrCast(&out)),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&c2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p3))),
+        t,
+    );
+    return out;
+}
+
+/// Get (evaluate) spline point: Cubic Bezier
+pub fn GetSplinePointBezierCubic(
+    p1: Vector2,
+    c2: Vector2,
+    c3: Vector2,
+    p4: Vector2,
+    t: f32,
+) Vector2 {
+    var out: Vector2 = undefined;
+    raylib.mGetSplinePointBezierCubic(
+        @as([*c]raylib.Vector2, @ptrCast(&out)),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p1))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&c2))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&c3))),
+        @as([*c]raylib.Vector2, @ptrFromInt(@intFromPtr(&p4))),
+        t,
+    );
+    return out;
 }
 
 /// Check collision between two rectangles
@@ -7486,6 +7772,31 @@ pub fn rlActiveDrawBuffers(
     );
 }
 
+/// Blit active framebuffer to main framebuffer
+pub fn rlBlitFramebuffer(
+    srcX: i32,
+    srcY: i32,
+    srcWidth: i32,
+    srcHeight: i32,
+    dstX: i32,
+    dstY: i32,
+    dstWidth: i32,
+    dstHeight: i32,
+    bufferMask: i32,
+) void {
+    raylib.mrlBlitFramebuffer(
+        srcX,
+        srcY,
+        srcWidth,
+        srcHeight,
+        dstX,
+        dstY,
+        dstWidth,
+        dstHeight,
+        bufferMask,
+    );
+}
+
 /// Enable color blending
 pub fn rlEnableColorBlend() void {
     raylib.mrlEnableColorBlend();
@@ -7565,7 +7876,12 @@ pub fn rlEnableWireMode() void {
     raylib.mrlEnableWireMode();
 }
 
-/// Disable wire mode
+/// Enable point mode
+pub fn rlEnablePointMode() void {
+    raylib.mrlEnablePointMode();
+}
+
+/// Disable wire mode ( and point ) maybe rename
 pub fn rlDisableWireMode() void {
     raylib.mrlDisableWireMode();
 }
@@ -10343,6 +10659,26 @@ pub const FilePathList = extern struct {
     count: u32,
     /// Filepaths entries
     paths: [*][*:0]u8,
+};
+
+/// Automation event
+pub const AutomationEvent = extern struct {
+    /// Event frame
+    frame: u32,
+    /// Event type (AutomationEventType)
+    type: u32,
+    /// Event parameters (if required)
+    params: [4]i32,
+};
+
+/// Automation event list
+pub const AutomationEventList = extern struct {
+    /// Events max entries (MAX_AUTOMATION_EVENTS)
+    capacity: u32,
+    /// Events entries count
+    count: u32,
+    /// Events entries
+    events: ?[*]AutomationEvent,
 };
 
 /// Dynamic vertex buffers (position + texcoords + colors + indices arrays)

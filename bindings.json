@@ -1058,6 +1058,18 @@
       "custom": false
     },
     {
+      "name": "SetRandomSeed",
+      "params": [
+        {
+          "name": "seed",
+          "typ": "u32"
+        }
+      ],
+      "returnType": "void",
+      "description": "Set the seed for the random number generator",
+      "custom": false
+    },
+    {
       "name": "GetRandomValue",
       "params": [
         {
@@ -1074,15 +1086,35 @@
       "custom": false
     },
     {
-      "name": "SetRandomSeed",
+      "name": "LoadRandomSequence",
       "params": [
         {
-          "name": "seed",
+          "name": "count",
           "typ": "u32"
+        },
+        {
+          "name": "min",
+          "typ": "i32"
+        },
+        {
+          "name": "max",
+          "typ": "i32"
+        }
+      ],
+      "returnType": "?[*]i32",
+      "description": "Load random values sequence, no values repeated",
+      "custom": false
+    },
+    {
+      "name": "UnloadRandomSequence",
+      "params": [
+        {
+          "name": "sequence",
+          "typ": "?[*]i32"
         }
       ],
       "returnType": "void",
-      "description": "Set the seed for the random number generator",
+      "description": "Unload random values sequence",
       "custom": false
     },
     {
@@ -1663,6 +1695,96 @@
       ],
       "returnType": "?[*]u8",
       "description": "Decode Base64 string data, memory must be MemFree()",
+      "custom": false
+    },
+    {
+      "name": "LoadAutomationEventList",
+      "params": [
+        {
+          "name": "fileName",
+          "typ": "[*:0]const u8"
+        }
+      ],
+      "returnType": "AutomationEventList",
+      "description": "Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS",
+      "custom": false
+    },
+    {
+      "name": "UnloadAutomationEventList",
+      "params": [
+        {
+          "name": "list",
+          "typ": "?[*]AutomationEventList"
+        }
+      ],
+      "returnType": "void",
+      "description": "Unload automation events list from file",
+      "custom": false
+    },
+    {
+      "name": "ExportAutomationEventList",
+      "params": [
+        {
+          "name": "list",
+          "typ": "AutomationEventList"
+        },
+        {
+          "name": "fileName",
+          "typ": "[*:0]const u8"
+        }
+      ],
+      "returnType": "bool",
+      "description": "Export automation events list as text file",
+      "custom": false
+    },
+    {
+      "name": "SetAutomationEventList",
+      "params": [
+        {
+          "name": "list",
+          "typ": "?[*]AutomationEventList"
+        }
+      ],
+      "returnType": "void",
+      "description": "Set automation event list to record to",
+      "custom": false
+    },
+    {
+      "name": "SetAutomationEventBaseFrame",
+      "params": [
+        {
+          "name": "frame",
+          "typ": "i32"
+        }
+      ],
+      "returnType": "void",
+      "description": "Set automation event internal base frame to start recording",
+      "custom": false
+    },
+    {
+      "name": "StartAutomationEventRecording",
+      "params": [],
+      "returnType": "void",
+      "description": "Start recording automation events (AutomationEventList must be set)",
+      "custom": false
+    },
+    {
+      "name": "StopAutomationEventRecording",
+      "params": [],
+      "returnType": "void",
+      "description": "Stop recording automation events",
+      "custom": false
+    },
+    {
+      "name": "PlayAutomationEvent",
+      "params": [
+        {
+          "name": "event",
+          "typ": "AutomationEvent"
+        }
+      ],
+      "returnType": "void",
+      "description": "Play a recorded automation event",
       "custom": false
     },
     {
@@ -2284,7 +2406,7 @@
         }
       ],
       "returnType": "void",
-      "description": "Draw a line (Vector version)",
+      "description": "Draw a line (using gl lines)",
       "custom": false
     },
     {
@@ -2308,7 +2430,27 @@
         }
       ],
       "returnType": "void",
-      "description": "Draw a line defining thickness",
+      "description": "Draw a line (using triangles/quads)",
+      "custom": false
+    },
+    {
+      "name": "DrawLineStrip",
+      "params": [
+        {
+          "name": "points",
+          "typ": "?[*]Vector2"
+        },
+        {
+          "name": "pointCount",
+          "typ": "i32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw lines sequence (using gl lines)",
       "custom": false
     },
     {
@@ -2332,135 +2474,7 @@
         }
       ],
       "returnType": "void",
-      "description": "Draw a line using cubic-bezier curves in-out",
-      "custom": false
-    },
-    {
-      "name": "DrawLineBezierQuad",
-      "params": [
-        {
-          "name": "startPos",
-          "typ": "Vector2"
-        },
-        {
-          "name": "endPos",
-          "typ": "Vector2"
-        },
-        {
-          "name": "controlPos",
-          "typ": "Vector2"
-        },
-        {
-          "name": "thick",
-          "typ": "f32"
-        },
-        {
-          "name": "color",
-          "typ": "Color"
-        }
-      ],
-      "returnType": "void",
-      "description": "Draw line using quadratic bezier curves with a control point",
-      "custom": false
-    },
-    {
-      "name": "DrawLineBezierCubic",
-      "params": [
-        {
-          "name": "startPos",
-          "typ": "Vector2"
-        },
-        {
-          "name": "endPos",
-          "typ": "Vector2"
-        },
-        {
-          "name": "startControlPos",
-          "typ": "Vector2"
-        },
-        {
-          "name": "endControlPos",
-          "typ": "Vector2"
-        },
-        {
-          "name": "thick",
-          "typ": "f32"
-        },
-        {
-          "name": "color",
-          "typ": "Color"
-        }
-      ],
-      "returnType": "void",
-      "description": "Draw line using cubic bezier curves with 2 control points",
-      "custom": false
-    },
-    {
-      "name": "DrawLineBSpline",
-      "params": [
-        {
-          "name": "points",
-          "typ": "?[*]Vector2"
-        },
-        {
-          "name": "pointCount",
-          "typ": "i32"
-        },
-        {
-          "name": "thick",
-          "typ": "f32"
-        },
-        {
-          "name": "color",
-          "typ": "Color"
-        }
-      ],
-      "returnType": "void",
-      "description": "Draw a B-Spline line, minimum 4 points",
-      "custom": false
-    },
-    {
-      "name": "DrawLineCatmullRom",
-      "params": [
-        {
-          "name": "points",
-          "typ": "?[*]Vector2"
-        },
-        {
-          "name": "pointCount",
-          "typ": "i32"
-        },
-        {
-          "name": "thick",
-          "typ": "f32"
-        },
-        {
-          "name": "color",
-          "typ": "Color"
-        }
-      ],
-      "returnType": "void",
-      "description": "Draw a Catmull Rom spline line, minimum 4 points",
-      "custom": false
-    },
-    {
-      "name": "DrawLineStrip",
-      "params": [
-        {
-          "name": "points",
-          "typ": "?[*]Vector2"
-        },
-        {
-          "name": "pointCount",
-          "typ": "i32"
-        },
-        {
-          "name": "color",
-          "typ": "Color"
-        }
-      ],
-      "returnType": "void",
-      "description": "Draw lines sequence",
+      "description": "Draw line segment cubic-bezier in-out interpolation",
       "custom": false
     },
     {
@@ -3225,6 +3239,402 @@
       ],
       "returnType": "void",
       "description": "Draw a polygon outline of n sides with extended parameters",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineLinear",
+      "params": [
+        {
+          "name": "points",
+          "typ": "?[*]Vector2"
+        },
+        {
+          "name": "pointCount",
+          "typ": "i32"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline: Linear, minimum 2 points",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineBasis",
+      "params": [
+        {
+          "name": "points",
+          "typ": "?[*]Vector2"
+        },
+        {
+          "name": "pointCount",
+          "typ": "i32"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline: B-Spline, minimum 4 points",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineCatmullRom",
+      "params": [
+        {
+          "name": "points",
+          "typ": "?[*]Vector2"
+        },
+        {
+          "name": "pointCount",
+          "typ": "i32"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline: Catmull-Rom, minimum 4 points",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineBezierQuadratic",
+      "params": [
+        {
+          "name": "points",
+          "typ": "?[*]Vector2"
+        },
+        {
+          "name": "pointCount",
+          "typ": "i32"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineBezierCubic",
+      "params": [
+        {
+          "name": "points",
+          "typ": "?[*]Vector2"
+        },
+        {
+          "name": "pointCount",
+          "typ": "i32"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineSegmentLinear",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline segment: Linear, 2 points",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineSegmentBasis",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p4",
+          "typ": "Vector2"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline segment: B-Spline, 4 points",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineSegmentCatmullRom",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p4",
+          "typ": "Vector2"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline segment: Catmull-Rom, 4 points",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineSegmentBezierQuadratic",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "c2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline segment: Quadratic Bezier, 2 points, 1 control point",
+      "custom": false
+    },
+    {
+      "name": "DrawSplineSegmentBezierCubic",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "c2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "c3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p4",
+          "typ": "Vector2"
+        },
+        {
+          "name": "thick",
+          "typ": "f32"
+        },
+        {
+          "name": "color",
+          "typ": "Color"
+        }
+      ],
+      "returnType": "void",
+      "description": "Draw spline segment: Cubic Bezier, 2 points, 2 control points",
+      "custom": false
+    },
+    {
+      "name": "GetSplinePointLinear",
+      "params": [
+        {
+          "name": "startPos",
+          "typ": "Vector2"
+        },
+        {
+          "name": "endPos",
+          "typ": "Vector2"
+        },
+        {
+          "name": "t",
+          "typ": "f32"
+        }
+      ],
+      "returnType": "Vector2",
+      "description": "Get (evaluate) spline point: Linear",
+      "custom": false
+    },
+    {
+      "name": "GetSplinePointBasis",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p4",
+          "typ": "Vector2"
+        },
+        {
+          "name": "t",
+          "typ": "f32"
+        }
+      ],
+      "returnType": "Vector2",
+      "description": "Get (evaluate) spline point: B-Spline",
+      "custom": false
+    },
+    {
+      "name": "GetSplinePointCatmullRom",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p4",
+          "typ": "Vector2"
+        },
+        {
+          "name": "t",
+          "typ": "f32"
+        }
+      ],
+      "returnType": "Vector2",
+      "description": "Get (evaluate) spline point: Catmull-Rom",
+      "custom": false
+    },
+    {
+      "name": "GetSplinePointBezierQuad",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "c2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "t",
+          "typ": "f32"
+        }
+      ],
+      "returnType": "Vector2",
+      "description": "Get (evaluate) spline point: Quadratic Bezier",
+      "custom": false
+    },
+    {
+      "name": "GetSplinePointBezierCubic",
+      "params": [
+        {
+          "name": "p1",
+          "typ": "Vector2"
+        },
+        {
+          "name": "c2",
+          "typ": "Vector2"
+        },
+        {
+          "name": "c3",
+          "typ": "Vector2"
+        },
+        {
+          "name": "p4",
+          "typ": "Vector2"
+        },
+        {
+          "name": "t",
+          "typ": "f32"
+        }
+      ],
+      "returnType": "Vector2",
+      "description": "Get (evaluate) spline point: Cubic Bezier",
       "custom": false
     },
     {
@@ -9306,6 +9716,50 @@
       "custom": false
     },
     {
+      "name": "rlBlitFramebuffer",
+      "params": [
+        {
+          "name": "srcX",
+          "typ": "i32"
+        },
+        {
+          "name": "srcY",
+          "typ": "i32"
+        },
+        {
+          "name": "srcWidth",
+          "typ": "i32"
+        },
+        {
+          "name": "srcHeight",
+          "typ": "i32"
+        },
+        {
+          "name": "dstX",
+          "typ": "i32"
+        },
+        {
+          "name": "dstY",
+          "typ": "i32"
+        },
+        {
+          "name": "dstWidth",
+          "typ": "i32"
+        },
+        {
+          "name": "dstHeight",
+          "typ": "i32"
+        },
+        {
+          "name": "bufferMask",
+          "typ": "i32"
+        }
+      ],
+      "returnType": "void",
+      "description": "Blit active framebuffer to main framebuffer",
+      "custom": false
+    },
+    {
       "name": "rlEnableColorBlend",
       "params": [],
       "returnType": "void",
@@ -9419,10 +9873,17 @@
       "custom": false
     },
     {
+      "name": "rlEnablePointMode",
+      "params": [],
+      "returnType": "void",
+      "description": "Enable point mode",
+      "custom": false
+    },
+    {
       "name": "rlDisableWireMode",
       "params": [],
       "returnType": "void",
-      "description": "Disable wire mode",
+      "description": "Disable wire mode ( and point ) maybe rename",
       "custom": false
     },
     {
@@ -15916,6 +16377,50 @@
         }
       ],
       "description": "File path list",
+      "custom": false
+    },
+    {
+      "name": "AutomationEvent",
+      "fields": [
+        {
+          "name": "frame",
+          "typ": "u32",
+          "description": "Event frame"
+        },
+        {
+          "name": "type",
+          "typ": "u32",
+          "description": "Event type (AutomationEventType)"
+        },
+        {
+          "name": "params",
+          "typ": "[4]i32",
+          "description": "Event parameters (if required)"
+        }
+      ],
+      "description": "Automation event",
+      "custom": false
+    },
+    {
+      "name": "AutomationEventList",
+      "fields": [
+        {
+          "name": "capacity",
+          "typ": "u32",
+          "description": "Events max entries (MAX_AUTOMATION_EVENTS)"
+        },
+        {
+          "name": "count",
+          "typ": "u32",
+          "description": "Events entries count"
+        },
+        {
+          "name": "events",
+          "typ": "?[*]AutomationEvent",
+          "description": "Events entries"
+        }
+      ],
+      "description": "Automation event list",
       "custom": false
     },
     {

@@ -553,13 +553,13 @@
       "description": ""
     },
     {
-      "name": "GLAD_GLES2_IMPLEMENTATION",
+      "name": "GL_GLEXT_PROTOTYPES",
       "type": "GUARD",
       "value": "",
       "description": ""
     },
     {
-      "name": "GL_GLEXT_PROTOTYPES",
+      "name": "GLAD_GLES2_IMPLEMENTATION",
       "type": "GUARD",
       "value": "",
       "description": ""
@@ -2441,6 +2441,49 @@
       ]
     },
     {
+      "name": "rlBlitFramebuffer",
+      "description": "Blit active framebuffer to main framebuffer",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "int",
+          "name": "srcX"
+        },
+        {
+          "type": "int",
+          "name": "srcY"
+        },
+        {
+          "type": "int",
+          "name": "srcWidth"
+        },
+        {
+          "type": "int",
+          "name": "srcHeight"
+        },
+        {
+          "type": "int",
+          "name": "dstX"
+        },
+        {
+          "type": "int",
+          "name": "dstY"
+        },
+        {
+          "type": "int",
+          "name": "dstWidth"
+        },
+        {
+          "type": "int",
+          "name": "dstHeight"
+        },
+        {
+          "type": "int",
+          "name": "bufferMask"
+        }
+      ]
+    },
+    {
       "name": "rlEnableColorBlend",
       "description": "Enable color blending",
       "returnType": "void"
@@ -2530,8 +2573,13 @@
       "returnType": "void"
     },
     {
+      "name": "rlEnablePointMode",
+      "description": "Enable point mode",
+      "returnType": "void"
+    },
+    {
       "name": "rlDisableWireMode",
-      "description": "Disable wire mode",
+      "description": "Disable wire mode ( and point ) maybe rename",
       "returnType": "void"
     },
     {

@@ -483,14 +483,24 @@ void mWaitTime(double seconds)
 	WaitTime(seconds);
 }
 
+void mSetRandomSeed(unsigned int seed)
+{
+	SetRandomSeed(seed);
+}
+
 int mGetRandomValue(int min, int max)
 {
 	return GetRandomValue(min, max);
 }
 
-void mSetRandomSeed(unsigned int seed)
+int * mLoadRandomSequence(unsigned int count, int min, int max)
 {
-	SetRandomSeed(seed);
+	return LoadRandomSequence(count, min, max);
+}
+
+void mUnloadRandomSequence(int * sequence)
+{
+	UnloadRandomSequence(sequence);
 }
 
 void mTakeScreenshot(const char * fileName)
@@ -671,6 +681,46 @@ char * mEncodeDataBase64(const unsigned char * data, int dataSize, int * outputS
 unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize)
 {
 	return DecodeDataBase64(data, outputSize);
+}
+
+void mLoadAutomationEventList(AutomationEventList *out, const char * fileName)
+{
+	*out = LoadAutomationEventList(fileName);
+}
+
+void mUnloadAutomationEventList(AutomationEventList * list)
+{
+	UnloadAutomationEventList(list);
+}
+
+bool mExportAutomationEventList(AutomationEventList *list, const char * fileName)
+{
+	return ExportAutomationEventList(*list, fileName);
+}
+
+void mSetAutomationEventList(AutomationEventList * list)
+{
+	SetAutomationEventList(list);
+}
+
+void mSetAutomationEventBaseFrame(int frame)
+{
+	SetAutomationEventBaseFrame(frame);
+}
+
+void mStartAutomationEventRecording(void)
+{
+	StartAutomationEventRecording();
+}
+
+void mStopAutomationEventRecording(void)
+{
+	StopAutomationEventRecording();
+}
+
+void mPlayAutomationEvent(AutomationEvent *event)
+{
+	PlayAutomationEvent(*event);
 }
 
 bool mIsKeyPressed(int key)
@@ -933,34 +983,14 @@ void mDrawLineEx(Vector2 *startPos, Vector2 *endPos, float thick, Color *color)
 	DrawLineEx(*startPos, *endPos, thick, *color);
 }
 
-void mDrawLineBezier(Vector2 *startPos, Vector2 *endPos, float thick, Color *color)
-{
-	DrawLineBezier(*startPos, *endPos, thick, *color);
-}
-
-void mDrawLineBezierQuad(Vector2 *startPos, Vector2 *endPos, Vector2 *controlPos, float thick, Color *color)
-{
-	DrawLineBezierQuad(*startPos, *endPos, *controlPos, thick, *color);
-}
-
-void mDrawLineBezierCubic(Vector2 *startPos, Vector2 *endPos, Vector2 *startControlPos, Vector2 *endControlPos, float thick, Color *color)
-{
-	DrawLineBezierCubic(*startPos, *endPos, *startControlPos, *endControlPos, thick, *color);
-}
-
-void mDrawLineBSpline(Vector2 * points, int pointCount, float thick, Color *color)
-{
-	DrawLineBSpline(points, pointCount, thick, *color);
-}
-
-void mDrawLineCatmullRom(Vector2 * points, int pointCount, float thick, Color *color)
-{
-	DrawLineCatmullRom(points, pointCount, thick, *color);
-}
-
 void mDrawLineStrip(Vector2 * points, int pointCount, Color *color)
 {
 	DrawLineStrip(points, pointCount, *color);
+}
+
+void mDrawLineBezier(Vector2 *startPos, Vector2 *endPos, float thick, Color *color)
+{
+	DrawLineBezier(*startPos, *endPos, thick, *color);
 }
 
 void mDrawCircle(int centerX, int centerY, float radius, Color *color)
@@ -1106,6 +1136,81 @@ void mDrawPolyLines(Vector2 *center, int sides, float radius, float rotation, Co
 void mDrawPolyLinesEx(Vector2 *center, int sides, float radius, float rotation, float lineThick, Color *color)
 {
 	DrawPolyLinesEx(*center, sides, radius, rotation, lineThick, *color);
+}
+
+void mDrawSplineLinear(Vector2 * points, int pointCount, float thick, Color *color)
+{
+	DrawSplineLinear(points, pointCount, thick, *color);
+}
+
+void mDrawSplineBasis(Vector2 * points, int pointCount, float thick, Color *color)
+{
+	DrawSplineBasis(points, pointCount, thick, *color);
+}
+
+void mDrawSplineCatmullRom(Vector2 * points, int pointCount, float thick, Color *color)
+{
+	DrawSplineCatmullRom(points, pointCount, thick, *color);
+}
+
+void mDrawSplineBezierQuadratic(Vector2 * points, int pointCount, float thick, Color *color)
+{
+	DrawSplineBezierQuadratic(points, pointCount, thick, *color);
+}
+
+void mDrawSplineBezierCubic(Vector2 * points, int pointCount, float thick, Color *color)
+{
+	DrawSplineBezierCubic(points, pointCount, thick, *color);
+}
+
+void mDrawSplineSegmentLinear(Vector2 *p1, Vector2 *p2, float thick, Color *color)
+{
+	DrawSplineSegmentLinear(*p1, *p2, thick, *color);
+}
+
+void mDrawSplineSegmentBasis(Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float thick, Color *color)
+{
+	DrawSplineSegmentBasis(*p1, *p2, *p3, *p4, thick, *color);
+}
+
+void mDrawSplineSegmentCatmullRom(Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float thick, Color *color)
+{
+	DrawSplineSegmentCatmullRom(*p1, *p2, *p3, *p4, thick, *color);
+}
+
+void mDrawSplineSegmentBezierQuadratic(Vector2 *p1, Vector2 *c2, Vector2 *p3, float thick, Color *color)
+{
+	DrawSplineSegmentBezierQuadratic(*p1, *c2, *p3, thick, *color);
+}
+
+void mDrawSplineSegmentBezierCubic(Vector2 *p1, Vector2 *c2, Vector2 *c3, Vector2 *p4, float thick, Color *color)
+{
+	DrawSplineSegmentBezierCubic(*p1, *c2, *c3, *p4, thick, *color);
+}
+
+void mGetSplinePointLinear(Vector2 *out, Vector2 *startPos, Vector2 *endPos, float t)
+{
+	*out = GetSplinePointLinear(*startPos, *endPos, t);
+}
+
+void mGetSplinePointBasis(Vector2 *out, Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float t)
+{
+	*out = GetSplinePointBasis(*p1, *p2, *p3, *p4, t);
+}
+
+void mGetSplinePointCatmullRom(Vector2 *out, Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float t)
+{
+	*out = GetSplinePointCatmullRom(*p1, *p2, *p3, *p4, t);
+}
+
+void mGetSplinePointBezierQuad(Vector2 *out, Vector2 *p1, Vector2 *c2, Vector2 *p3, float t)
+{
+	*out = GetSplinePointBezierQuad(*p1, *c2, *p3, t);
+}
+
+void mGetSplinePointBezierCubic(Vector2 *out, Vector2 *p1, Vector2 *c2, Vector2 *c3, Vector2 *p4, float t)
+{
+	*out = GetSplinePointBezierCubic(*p1, *c2, *c3, *p4, t);
 }
 
 bool mCheckCollisionRecs(Rectangle *rec1, Rectangle *rec2)
@@ -2788,6 +2893,11 @@ void mrlActiveDrawBuffers(int count)
 	rlActiveDrawBuffers(count);
 }
 
+void mrlBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight, int bufferMask)
+{
+	rlBlitFramebuffer(srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight, bufferMask);
+}
+
 void mrlEnableColorBlend(void)
 {
 	rlEnableColorBlend();
@@ -2851,6 +2961,11 @@ void mrlScissor(int x, int y, int width, int height)
 void mrlEnableWireMode(void)
 {
 	rlEnableWireMode();
+}
+
+void mrlEnablePointMode(void)
+{
+	rlEnablePointMode();
 }
 
 void mrlDisableWireMode(void)

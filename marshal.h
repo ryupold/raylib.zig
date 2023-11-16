@@ -297,11 +297,17 @@ void mPollInputEvents(void);
 // Wait for some time (halt program execution)
 void mWaitTime(double seconds);
 
+// Set the seed for the random number generator
+void mSetRandomSeed(unsigned int seed);
+
 // Get a random value between min and max (both included)
 int mGetRandomValue(int min, int max);
 
-// Set the seed for the random number generator
-void mSetRandomSeed(unsigned int seed);
+// Load random values sequence, no values repeated
+int * mLoadRandomSequence(unsigned int count, int min, int max);
+
+// Unload random values sequence
+void mUnloadRandomSequence(int * sequence);
 
 // Takes a screenshot of current screen (filename extension defines format)
 void mTakeScreenshot(const char * fileName);
@@ -410,6 +416,30 @@ char * mEncodeDataBase64(const unsigned char * data, int dataSize, int * outputS
 
 // Decode Base64 string data, memory must be MemFree()
 unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize);
+
+// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+void mLoadAutomationEventList(AutomationEventList *out, const char * fileName);
+
+// Unload automation events list from file
+void mUnloadAutomationEventList(AutomationEventList * list);
+
+// Export automation events list as text file
+bool mExportAutomationEventList(AutomationEventList *list, const char * fileName);
+
+// Set automation event list to record to
+void mSetAutomationEventList(AutomationEventList * list);
+
+// Set automation event internal base frame to start recording
+void mSetAutomationEventBaseFrame(int frame);
+
+// Start recording automation events (AutomationEventList must be set)
+void mStartAutomationEventRecording(void);
+
+// Stop recording automation events
+void mStopAutomationEventRecording(void);
+
+// Play a recorded automation event
+void mPlayAutomationEvent(AutomationEvent *event);
 
 // Check if a key has been pressed once
 bool mIsKeyPressed(int key);
@@ -561,29 +591,17 @@ void mDrawPixelV(Vector2 *position, Color *color);
 // Draw a line
 void mDrawLine(int startPosX, int startPosY, int endPosX, int endPosY, Color *color);
 
-// Draw a line (Vector version)
+// Draw a line (using gl lines)
 void mDrawLineV(Vector2 *startPos, Vector2 *endPos, Color *color);
 
-// Draw a line defining thickness
+// Draw a line (using triangles/quads)
 void mDrawLineEx(Vector2 *startPos, Vector2 *endPos, float thick, Color *color);
 
-// Draw a line using cubic-bezier curves in-out
-void mDrawLineBezier(Vector2 *startPos, Vector2 *endPos, float thick, Color *color);
-
-// Draw line using quadratic bezier curves with a control point
-void mDrawLineBezierQuad(Vector2 *startPos, Vector2 *endPos, Vector2 *controlPos, float thick, Color *color);
-
-// Draw line using cubic bezier curves with 2 control points
-void mDrawLineBezierCubic(Vector2 *startPos, Vector2 *endPos, Vector2 *startControlPos, Vector2 *endControlPos, float thick, Color *color);
-
-// Draw a B-Spline line, minimum 4 points
-void mDrawLineBSpline(Vector2 * points, int pointCount, float thick, Color *color);
-
-// Draw a Catmull Rom spline line, minimum 4 points
-void mDrawLineCatmullRom(Vector2 * points, int pointCount, float thick, Color *color);
-
-// Draw lines sequence
+// Draw lines sequence (using gl lines)
 void mDrawLineStrip(Vector2 * points, int pointCount, Color *color);
+
+// Draw line segment cubic-bezier in-out interpolation
+void mDrawLineBezier(Vector2 *startPos, Vector2 *endPos, float thick, Color *color);
 
 // Draw a color-filled circle
 void mDrawCircle(int centerX, int centerY, float radius, Color *color);
@@ -671,6 +689,51 @@ void mDrawPolyLines(Vector2 *center, int sides, float radius, float rotation, Co
 
 // Draw a polygon outline of n sides with extended parameters
 void mDrawPolyLinesEx(Vector2 *center, int sides, float radius, float rotation, float lineThick, Color *color);
+
+// Draw spline: Linear, minimum 2 points
+void mDrawSplineLinear(Vector2 * points, int pointCount, float thick, Color *color);
+
+// Draw spline: B-Spline, minimum 4 points
+void mDrawSplineBasis(Vector2 * points, int pointCount, float thick, Color *color);
+
+// Draw spline: Catmull-Rom, minimum 4 points
+void mDrawSplineCatmullRom(Vector2 * points, int pointCount, float thick, Color *color);
+
+// Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
+void mDrawSplineBezierQuadratic(Vector2 * points, int pointCount, float thick, Color *color);
+
+// Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
+void mDrawSplineBezierCubic(Vector2 * points, int pointCount, float thick, Color *color);
+
+// Draw spline segment: Linear, 2 points
+void mDrawSplineSegmentLinear(Vector2 *p1, Vector2 *p2, float thick, Color *color);
+
+// Draw spline segment: B-Spline, 4 points
+void mDrawSplineSegmentBasis(Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float thick, Color *color);
+
+// Draw spline segment: Catmull-Rom, 4 points
+void mDrawSplineSegmentCatmullRom(Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float thick, Color *color);
+
+// Draw spline segment: Quadratic Bezier, 2 points, 1 control point
+void mDrawSplineSegmentBezierQuadratic(Vector2 *p1, Vector2 *c2, Vector2 *p3, float thick, Color *color);
+
+// Draw spline segment: Cubic Bezier, 2 points, 2 control points
+void mDrawSplineSegmentBezierCubic(Vector2 *p1, Vector2 *c2, Vector2 *c3, Vector2 *p4, float thick, Color *color);
+
+// Get (evaluate) spline point: Linear
+void mGetSplinePointLinear(Vector2 *out, Vector2 *startPos, Vector2 *endPos, float t);
+
+// Get (evaluate) spline point: B-Spline
+void mGetSplinePointBasis(Vector2 *out, Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float t);
+
+// Get (evaluate) spline point: Catmull-Rom
+void mGetSplinePointCatmullRom(Vector2 *out, Vector2 *p1, Vector2 *p2, Vector2 *p3, Vector2 *p4, float t);
+
+// Get (evaluate) spline point: Quadratic Bezier
+void mGetSplinePointBezierQuad(Vector2 *out, Vector2 *p1, Vector2 *c2, Vector2 *p3, float t);
+
+// Get (evaluate) spline point: Cubic Bezier
+void mGetSplinePointBezierCubic(Vector2 *out, Vector2 *p1, Vector2 *c2, Vector2 *c3, Vector2 *p4, float t);
 
 // Check collision between two rectangles
 bool mCheckCollisionRecs(Rectangle *rec1, Rectangle *rec2);
@@ -1680,6 +1743,9 @@ void mrlDisableFramebuffer(void);
 // Activate multiple draw color buffers
 void mrlActiveDrawBuffers(int count);
 
+// Blit active framebuffer to main framebuffer
+void mrlBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight, int bufferMask);
+
 // Enable color blending
 void mrlEnableColorBlend(void);
 
@@ -1719,7 +1785,10 @@ void mrlScissor(int x, int y, int width, int height);
 // Enable wire mode
 void mrlEnableWireMode(void);
 
-// Disable wire mode
+// Enable point mode
+void mrlEnablePointMode(void);
+
+// Disable wire mode ( and point ) maybe rename
 void mrlDisableWireMode(void);
 
 // Set the line drawing width
