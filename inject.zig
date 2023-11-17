@@ -712,7 +712,7 @@ pub fn LoadFileData(fileName: [*:0]const u8) ![]const u8 {
     var bytesRead: u32 = undefined;
     const data = raylib.LoadFileData(
         @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
-        @as([*c]u32, @ptrCast(&bytesRead)),
+        @as([*c]c_int, @ptrCast(&bytesRead)),
     );
 
     if (data == null) return error.FileNotFound;
