@@ -95,7 +95,6 @@ pub const Matrix = extern struct {
             .m6 = 0,
             .m7 = 0,
             .m8 = 0,
-            .m8 = 0,
             .m9 = 0,
             .m10 = 0,
             .m11 = 0,
