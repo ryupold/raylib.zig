@@ -96,7 +96,7 @@ fn linkThisLibrary(b: *std.Build, target: std.zig.CrossTarget, optimize: std.bui
 }
 
 /// add this package to exe
-pub fn addTo(b: *std.Build, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, optimize: std.builtin.Mode) void {
+pub fn addTo(b: *std.Build, exe: *std.build.Step.Compile, target: std.zig.CrossTarget, optimize: std.builtin.Mode) void {
     exe.addAnonymousModule("raylib", .{ .source_file = .{ .path = cwd ++ sep ++ "raylib.zig" } });
     exe.addIncludePath(.{ .path = dir_raylib });
     exe.addIncludePath(.{ .path = cwd });
@@ -104,4 +104,28 @@ pub fn addTo(b: *std.Build, exe: *std.build.LibExeObjStep, target: std.zig.Cross
     const lib_raylib = raylib_build.addRaylib(b, target, optimize, .{});
     exe.linkLibrary(lib_raylib);
     exe.linkLibrary(lib);
+}
+
+pub fn linkSystemDependencies(exe: *std.build.Step.Compile) void {
+    switch (exe.target.getOsTag()) {
+        .macos => {
+            exe.linkFramework("Foundation");
+            exe.linkFramework("Cocoa");
+            exe.linkFramework("OpenGL");
+            exe.linkFramework("CoreAudio");
+            exe.linkFramework("CoreVideo");
+            exe.linkFramework("IOKit");
+        },
+        .linux => {
+            exe.addLibraryPath(.{ .path = "/usr/lib64/" });
+            exe.linkSystemLibrary("GL");
+            exe.linkSystemLibrary("rt");
+            exe.linkSystemLibrary("dl");
+            exe.linkSystemLibrary("m");
+            exe.linkSystemLibrary("X11");
+        },
+        else => {},
+    }
+
+    exe.linkLibC();
 }
