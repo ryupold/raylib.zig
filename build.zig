@@ -96,12 +96,12 @@ fn linkThisLibrary(b: *std.Build, target: std.zig.CrossTarget, optimize: std.bui
 }
 
 /// add this package to exe
-pub fn addTo(b: *std.Build, exe: *std.build.Step.Compile, target: std.zig.CrossTarget, optimize: std.builtin.Mode) void {
+pub fn addTo(b: *std.Build, exe: *std.build.Step.Compile, target: std.zig.CrossTarget, optimize: std.builtin.Mode, raylibOptions: raylib_build.Options) void {
     exe.addAnonymousModule("raylib", .{ .source_file = .{ .path = cwd ++ sep ++ "raylib.zig" } });
     exe.addIncludePath(.{ .path = dir_raylib });
     exe.addIncludePath(.{ .path = cwd });
     const lib = linkThisLibrary(b, target, optimize);
-    const lib_raylib = raylib_build.addRaylib(b, target, optimize, .{});
+    const lib_raylib = raylib_build.addRaylib(b, target, optimize, raylibOptions);
     exe.linkLibrary(lib_raylib);
     exe.linkLibrary(lib);
 }
@@ -117,12 +117,25 @@ pub fn linkSystemDependencies(exe: *std.build.Step.Compile) void {
             exe.linkFramework("IOKit");
         },
         .linux => {
-            exe.addLibraryPath(.{ .path = "/usr/lib64/" });
+            exe.addLibraryPath(.{ .path = "/usr/lib" });
+            exe.addIncludePath(.{ .path = "/usr/include" });
             exe.linkSystemLibrary("GL");
             exe.linkSystemLibrary("rt");
             exe.linkSystemLibrary("dl");
             exe.linkSystemLibrary("m");
             exe.linkSystemLibrary("X11");
+        },
+        .freebsd, .openbsd, .netbsd, .dragonfly => {
+            exe.linkSystemLibrary("GL");
+            exe.linkSystemLibrary("rt");
+            exe.linkSystemLibrary("dl");
+            exe.linkSystemLibrary("m");
+            exe.linkSystemLibrary("X11");
+            exe.linkSystemLibrary("Xrandr");
+            exe.linkSystemLibrary("Xinerama");
+            exe.linkSystemLibrary("Xi");
+            exe.linkSystemLibrary("Xxf86vm");
+            exe.linkSystemLibrary("Xcursor");
         },
         else => {},
     }
