@@ -15,7 +15,7 @@
     {
       "name": "RAYLIB_VERSION_MINOR",
       "type": "INT",
-      "value": "0",
+      "value": "1",
       "description": ""
     },
     {
@@ -27,7 +27,7 @@
     {
       "name": "RAYLIB_VERSION",
       "type": "STRING",
-      "value": "5.0-dev",
+      "value": "5.1-dev",
       "description": ""
     },
     {
@@ -7213,6 +7213,25 @@
         {
           "type": "int",
           "name": "blurSize"
+        }
+      ]
+    },
+    {
+      "name": "ImageKernelConvolution",
+      "description": "Apply Custom Square image convolution kernel",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "Image *",
+          "name": "image"
+        },
+        {
+          "type": "float*",
+          "name": "kernel"
+        },
+        {
+          "type": "int",
+          "name": "kernelSize"
         }
       ]
     },

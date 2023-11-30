@@ -4465,6 +4465,26 @@
       "custom": false
     },
     {
+      "name": "ImageKernelConvolution",
+      "params": [
+        {
+          "name": "image",
+          "typ": "*Image"
+        },
+        {
+          "name": "kernel",
+          "typ": "?[*]f32"
+        },
+        {
+          "name": "kernelSize",
+          "typ": "i32"
+        }
+      ],
+      "returnType": "void",
+      "description": "Apply Custom Square image convolution kernel",
+      "custom": false
+    },
+    {
       "name": "ImageResize",
       "params": [
         {
@@ -16727,7 +16747,7 @@
     {
       "name": "RAYLIB_VERSION_MINOR",
       "typ": "i32",
-      "value": "0",
+      "value": "1",
       "description": "",
       "custom": false
     },
@@ -16741,7 +16761,7 @@
     {
       "name": "RAYLIB_VERSION",
       "typ": "[]const u8",
-      "value": "\"5.0-dev\"",
+      "value": "\"5.1-dev\"",
       "description": "",
       "custom": false
     },

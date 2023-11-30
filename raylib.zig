@@ -4126,6 +4126,19 @@ pub fn ImageBlurGaussian(
     );
 }
 
+/// Apply Custom Square image convolution kernel
+pub fn ImageKernelConvolution(
+    image: *Image,
+    kernel: ?[*]f32,
+    kernelSize: i32,
+) void {
+    raylib.mImageKernelConvolution(
+        @as([*c]raylib.Image, @ptrFromInt(@intFromPtr(image))),
+        @as([*c]f32, @ptrCast(kernel)),
+        kernelSize,
+    );
+}
+
 /// Resize image (Bicubic scaling algorithm)
 pub fn ImageResize(
     image: *Image,
@@ -11658,13 +11671,13 @@ pub const PhysicsShapeType = enum(i32) {
 pub const RAYLIB_VERSION_MAJOR: i32 = 5;
 
 ///
-pub const RAYLIB_VERSION_MINOR: i32 = 0;
+pub const RAYLIB_VERSION_MINOR: i32 = 1;
 
 ///
 pub const RAYLIB_VERSION_PATCH: i32 = 0;
 
 ///
-pub const RAYLIB_VERSION: []const u8 = "5.0-dev";
+pub const RAYLIB_VERSION: []const u8 = "5.1-dev";
 
 ///
 pub const PI: f32 = 3.14159265358979323846;

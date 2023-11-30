@@ -1428,6 +1428,11 @@ void mImageBlurGaussian(Image * image, int blurSize)
 	ImageBlurGaussian(image, blurSize);
 }
 
+void mImageKernelConvolution(Image * image, float* kernel, int kernelSize)
+{
+	ImageKernelConvolution(image, kernel, kernelSize);
+}
+
 void mImageResize(Image * image, int newWidth, int newHeight)
 {
 	ImageResize(image, newWidth, newHeight);

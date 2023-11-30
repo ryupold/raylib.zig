@@ -523,6 +523,12 @@
       "description": ""
     },
     {
+      "name": "GLAD_API_CALL_EXPORT_BUILD",
+      "type": "GUARD",
+      "value": "",
+      "description": ""
+    },
+    {
       "name": "APIENTRY",
       "type": "UNKNOWN",
       "value": "__stdcall",

@@ -864,6 +864,9 @@ void mImageAlphaPremultiply(Image * image);
 // Apply Gaussian blur using a box blur approximation
 void mImageBlurGaussian(Image * image, int blurSize);
 
+// Apply Custom Square image convolution kernel
+void mImageKernelConvolution(Image * image, float* kernel, int kernelSize);
+
 // Resize image (Bicubic scaling algorithm)
 void mImageResize(Image * image, int newWidth, int newHeight);
 
