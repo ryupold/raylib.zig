@@ -211,10 +211,10 @@ pub const Rectangle = extern struct {
     }
 
     pub fn includePoint(self: @This(), point: Vector2) @This() {
-        const minX = std.math.min(self.x, point.x);
-        const minY = std.math.min(self.y, point.y);
-        const maxX = std.math.max(self.x + self.width, point.x);
-        const maxY = std.math.max(self.y + self.height, point.y);
+        const minX = @min(self.x, point.x);
+        const minY = @min(self.y, point.y);
+        const maxX = @max(self.x + self.width, point.x);
+        const maxY = @max(self.y + self.height, point.y);
 
         return .{
             .x = minX,

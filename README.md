@@ -45,7 +45,7 @@ pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const mode = b.standardOptimizeOption(.{});
     const exe = ...;
-    raylib.addTo(b, exe, target, mode);
+    raylib.addTo(b, exe, target, mode, .{});
 }
 ```
 
