@@ -5673,6 +5673,15 @@ pub fn TextToInteger(
     );
 }
 
+/// Get float value from text (negative values not supported)
+pub fn TextToFloat(
+    text: [*:0]const u8,
+) f32 {
+    return raylib.mTextToFloat(
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(text))),
+    );
+}
+
 /// Draw a line in 3D world space
 pub fn DrawLine3D(
     startPos: Vector3,
@@ -6257,17 +6266,6 @@ pub fn DrawMeshInstanced(
     );
 }
 
-/// Export mesh data to file, returns true on success
-pub fn ExportMesh(
-    mesh: Mesh,
-    fileName: [*:0]const u8,
-) bool {
-    return raylib.mExportMesh(
-        @as([*c]raylib.Mesh, @ptrFromInt(@intFromPtr(&mesh))),
-        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
-    );
-}
-
 /// Compute mesh bounding box limits
 pub fn GetMeshBoundingBox(
     mesh: Mesh,
@@ -6286,6 +6284,28 @@ pub fn GenMeshTangents(
 ) void {
     raylib.mGenMeshTangents(
         @as([*c]raylib.Mesh, @ptrFromInt(@intFromPtr(mesh))),
+    );
+}
+
+/// Export mesh data to file, returns true on success
+pub fn ExportMesh(
+    mesh: Mesh,
+    fileName: [*:0]const u8,
+) bool {
+    return raylib.mExportMesh(
+        @as([*c]raylib.Mesh, @ptrFromInt(@intFromPtr(&mesh))),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
+    );
+}
+
+/// Export mesh as code file (.h) defining multiple arrays of vertex attributes
+pub fn ExportMeshAsCode(
+    mesh: Mesh,
+    fileName: [*:0]const u8,
+) bool {
+    return raylib.mExportMeshAsCode(
+        @as([*c]raylib.Mesh, @ptrFromInt(@intFromPtr(&mesh))),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
     );
 }
 
@@ -8148,7 +8168,7 @@ pub fn rlLoadVertexArray() u32 {
     return raylib.mrlLoadVertexArray();
 }
 
-/// Load a vertex buffer attribute
+/// Load a vertex buffer object
 pub fn rlLoadVertexBuffer(
     buffer: *const anyopaque,
     size: i32,
@@ -8161,7 +8181,7 @@ pub fn rlLoadVertexBuffer(
     );
 }
 
-/// Load a new attributes element buffer
+/// Load vertex buffer elements object
 pub fn rlLoadVertexBufferElement(
     buffer: *const anyopaque,
     size: i32,
@@ -8174,7 +8194,7 @@ pub fn rlLoadVertexBufferElement(
     );
 }
 
-/// Update GPU buffer with new data
+/// Update vertex buffer object data on GPU buffer
 pub fn rlUpdateVertexBuffer(
     bufferId: u32,
     data: *const anyopaque,
@@ -8189,7 +8209,7 @@ pub fn rlUpdateVertexBuffer(
     );
 }
 
-/// Update vertex buffer elements with new data
+/// Update vertex buffer elements data on GPU buffer
 pub fn rlUpdateVertexBufferElements(
     id: u32,
     data: *const anyopaque,
@@ -8204,7 +8224,7 @@ pub fn rlUpdateVertexBufferElements(
     );
 }
 
-///
+/// Unload vertex array (vao)
 pub fn rlUnloadVertexArray(
     vaoId: u32,
 ) void {
@@ -8213,7 +8233,7 @@ pub fn rlUnloadVertexArray(
     );
 }
 
-///
+/// Unload vertex buffer object
 pub fn rlUnloadVertexBuffer(
     vboId: u32,
 ) void {
@@ -8233,7 +8253,7 @@ pub fn rlCompileShader(
     );
 }
 
-///
+/// Set vertex attribute data divisor
 pub fn rlSetVertexAttributeDivisor(
     index: u32,
     divisor: i32,
@@ -8244,7 +8264,7 @@ pub fn rlSetVertexAttributeDivisor(
     );
 }
 
-/// Set vertex attribute default value
+/// Set vertex attribute default value, when attribute to provided
 pub fn rlSetVertexAttributeDefault(
     locIndex: i32,
     value: *const anyopaque,
@@ -8259,7 +8279,7 @@ pub fn rlSetVertexAttributeDefault(
     );
 }
 
-///
+/// Draw vertex array (currently active vao)
 pub fn rlDrawVertexArray(
     offset: i32,
     count: i32,
@@ -8270,7 +8290,7 @@ pub fn rlDrawVertexArray(
     );
 }
 
-///
+/// Draw vertex array elements
 pub fn rlDrawVertexArrayElements(
     offset: i32,
     count: i32,
@@ -8283,7 +8303,7 @@ pub fn rlDrawVertexArrayElements(
     );
 }
 
-///
+/// Draw vertex array (currently active vao) with instancing
 pub fn rlDrawVertexArrayInstanced(
     offset: i32,
     count: i32,
@@ -8296,7 +8316,7 @@ pub fn rlDrawVertexArrayInstanced(
     );
 }
 
-///
+/// Draw vertex array elements with instancing
 pub fn rlDrawVertexArrayElementsInstanced(
     offset: i32,
     count: i32,
@@ -8311,7 +8331,7 @@ pub fn rlDrawVertexArrayElementsInstanced(
     );
 }
 
-/// Load texture in GPU
+/// Load texture data
 pub fn rlLoadTexture(
     data: *const anyopaque,
     width: i32,
@@ -8341,7 +8361,7 @@ pub fn rlLoadTextureDepth(
     );
 }
 
-/// Load texture cubemap
+/// Load texture cubemap data
 pub fn rlLoadTextureCubemap(
     data: *const anyopaque,
     size: i32,
@@ -8354,7 +8374,7 @@ pub fn rlLoadTextureCubemap(
     );
 }
 
-/// Update GPU texture with new data
+/// Update texture with new data on GPU
 pub fn rlUpdateTexture(
     id: u32,
     offsetX: i32,
@@ -10629,8 +10649,6 @@ pub const VrDeviceInfo = extern struct {
     hScreenSize: f32,
     /// Vertical size in meters
     vScreenSize: f32,
-    /// Screen center in meters
-    vScreenCenter: f32,
     /// Distance between eye and display in meters
     eyeToScreenDistance: f32,
     /// Lens separation distance in meters

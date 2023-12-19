@@ -6712,6 +6712,18 @@
       "custom": false
     },
     {
+      "name": "TextToFloat",
+      "params": [
+        {
+          "name": "text",
+          "typ": "[*:0]const u8"
+        }
+      ],
+      "returnType": "f32",
+      "description": "Get float value from text (negative values not supported)",
+      "custom": false
+    },
+    {
       "name": "DrawLine3D",
       "params": [
         {
@@ -7628,22 +7640,6 @@
       "custom": false
     },
     {
-      "name": "ExportMesh",
-      "params": [
-        {
-          "name": "mesh",
-          "typ": "Mesh"
-        },
-        {
-          "name": "fileName",
-          "typ": "[*:0]const u8"
-        }
-      ],
-      "returnType": "bool",
-      "description": "Export mesh data to file, returns true on success",
-      "custom": false
-    },
-    {
       "name": "GetMeshBoundingBox",
       "params": [
         {
@@ -7665,6 +7661,38 @@
       ],
       "returnType": "void",
       "description": "Compute mesh tangents",
+      "custom": false
+    },
+    {
+      "name": "ExportMesh",
+      "params": [
+        {
+          "name": "mesh",
+          "typ": "Mesh"
+        },
+        {
+          "name": "fileName",
+          "typ": "[*:0]const u8"
+        }
+      ],
+      "returnType": "bool",
+      "description": "Export mesh data to file, returns true on success",
+      "custom": false
+    },
+    {
+      "name": "ExportMeshAsCode",
+      "params": [
+        {
+          "name": "mesh",
+          "typ": "Mesh"
+        },
+        {
+          "name": "fileName",
+          "typ": "[*:0]const u8"
+        }
+      ],
+      "returnType": "bool",
+      "description": "Export mesh as code file (.h) defining multiple arrays of vertex attributes",
       "custom": false
     },
     {
@@ -10270,7 +10298,7 @@
         }
       ],
       "returnType": "u32",
-      "description": "Load a vertex buffer attribute",
+      "description": "Load a vertex buffer object",
       "custom": false
     },
     {
@@ -10290,7 +10318,7 @@
         }
       ],
       "returnType": "u32",
-      "description": "Load a new attributes element buffer",
+      "description": "Load vertex buffer elements object",
       "custom": false
     },
     {
@@ -10314,7 +10342,7 @@
         }
       ],
       "returnType": "void",
-      "description": "Update GPU buffer with new data",
+      "description": "Update vertex buffer object data on GPU buffer",
       "custom": false
     },
     {
@@ -10338,7 +10366,7 @@
         }
       ],
       "returnType": "void",
-      "description": "Update vertex buffer elements with new data",
+      "description": "Update vertex buffer elements data on GPU buffer",
       "custom": false
     },
     {
@@ -10350,7 +10378,7 @@
         }
       ],
       "returnType": "void",
-      "description": "",
+      "description": "Unload vertex array (vao)",
       "custom": false
     },
     {
@@ -10362,7 +10390,7 @@
         }
       ],
       "returnType": "void",
-      "description": "",
+      "description": "Unload vertex buffer object",
       "custom": false
     },
     {
@@ -10394,7 +10422,7 @@
         }
       ],
       "returnType": "void",
-      "description": "",
+      "description": "Set vertex attribute data divisor",
       "custom": false
     },
     {
@@ -10418,7 +10446,7 @@
         }
       ],
       "returnType": "void",
-      "description": "Set vertex attribute default value",
+      "description": "Set vertex attribute default value, when attribute to provided",
       "custom": false
     },
     {
@@ -10434,7 +10462,7 @@
         }
       ],
       "returnType": "void",
-      "description": "",
+      "description": "Draw vertex array (currently active vao)",
       "custom": false
     },
     {
@@ -10454,7 +10482,7 @@
         }
       ],
       "returnType": "void",
-      "description": "",
+      "description": "Draw vertex array elements",
       "custom": false
     },
     {
@@ -10474,7 +10502,7 @@
         }
       ],
       "returnType": "void",
-      "description": "",
+      "description": "Draw vertex array (currently active vao) with instancing",
       "custom": false
     },
     {
@@ -10498,7 +10526,7 @@
         }
       ],
       "returnType": "void",
-      "description": "",
+      "description": "Draw vertex array elements with instancing",
       "custom": false
     },
     {
@@ -10526,7 +10554,7 @@
         }
       ],
       "returnType": "u32",
-      "description": "Load texture in GPU",
+      "description": "Load texture data",
       "custom": false
     },
     {
@@ -10566,7 +10594,7 @@
         }
       ],
       "returnType": "u32",
-      "description": "Load texture cubemap",
+      "description": "Load texture cubemap data",
       "custom": false
     },
     {
@@ -10602,7 +10630,7 @@
         }
       ],
       "returnType": "void",
-      "description": "Update GPU texture with new data",
+      "description": "Update texture with new data on GPU",
       "custom": false
     },
     {
@@ -16295,11 +16323,6 @@
           "name": "vScreenSize",
           "typ": "f32",
           "description": "Vertical size in meters"
-        },
-        {
-          "name": "vScreenCenter",
-          "typ": "f32",
-          "description": "Screen center in meters"
         },
         {
           "name": "eyeToScreenDistance",

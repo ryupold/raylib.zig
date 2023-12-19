@@ -1209,6 +1209,9 @@ const char * mTextToPascal(const char * text);
 // Get integer value from text (negative values not supported)
 int mTextToInteger(const char * text);
 
+// Get float value from text (negative values not supported)
+float mTextToFloat(const char * text);
+
 // Draw a line in 3D world space
 void mDrawLine3D(Vector3 *startPos, Vector3 *endPos, Color *color);
 
@@ -1326,14 +1329,17 @@ void mDrawMesh(Mesh *mesh, Material *material, Matrix *transform);
 // Draw multiple mesh instances with material and different transforms
 void mDrawMeshInstanced(Mesh *mesh, Material *material, const Matrix * transforms, int instances);
 
-// Export mesh data to file, returns true on success
-bool mExportMesh(Mesh *mesh, const char * fileName);
-
 // Compute mesh bounding box limits
 void mGetMeshBoundingBox(BoundingBox *out, Mesh *mesh);
 
 // Compute mesh tangents
 void mGenMeshTangents(Mesh * mesh);
+
+// Export mesh data to file, returns true on success
+bool mExportMesh(Mesh *mesh, const char * fileName);
+
+// Export mesh as code file (.h) defining multiple arrays of vertex attributes
+bool mExportMeshAsCode(Mesh *mesh, const char * fileName);
 
 // Generate polygonal mesh
 void mGenMeshPoly(Mesh *out, int sides, float radius);
@@ -1890,55 +1896,55 @@ void mrlSetTexture(unsigned int id);
 // Load vertex array (vao) if supported
 unsigned int mrlLoadVertexArray(void);
 
-// Load a vertex buffer attribute
+// Load a vertex buffer object
 unsigned int mrlLoadVertexBuffer(const void * buffer, int size, bool dynamic);
 
-// Load a new attributes element buffer
+// Load vertex buffer elements object
 unsigned int mrlLoadVertexBufferElement(const void * buffer, int size, bool dynamic);
 
-// Update GPU buffer with new data
+// Update vertex buffer object data on GPU buffer
 void mrlUpdateVertexBuffer(unsigned int bufferId, const void * data, int dataSize, int offset);
 
-// Update vertex buffer elements with new data
+// Update vertex buffer elements data on GPU buffer
 void mrlUpdateVertexBufferElements(unsigned int id, const void * data, int dataSize, int offset);
 
-// 
+// Unload vertex array (vao)
 void mrlUnloadVertexArray(unsigned int vaoId);
 
-// 
+// Unload vertex buffer object
 void mrlUnloadVertexBuffer(unsigned int vboId);
 
-// 
+// Set vertex attribute data configuration
 void mrlSetVertexAttribute(unsigned int index, int compSize, int type, bool normalized, int stride, const void * pointer);
 
-// 
+// Set vertex attribute data divisor
 void mrlSetVertexAttributeDivisor(unsigned int index, int divisor);
 
-// Set vertex attribute default value
+// Set vertex attribute default value, when attribute to provided
 void mrlSetVertexAttributeDefault(int locIndex, const void * value, int attribType, int count);
 
-// 
+// Draw vertex array (currently active vao)
 void mrlDrawVertexArray(int offset, int count);
 
-// 
+// Draw vertex array elements
 void mrlDrawVertexArrayElements(int offset, int count, const void * buffer);
 
-// 
+// Draw vertex array (currently active vao) with instancing
 void mrlDrawVertexArrayInstanced(int offset, int count, int instances);
 
-// 
+// Draw vertex array elements with instancing
 void mrlDrawVertexArrayElementsInstanced(int offset, int count, const void * buffer, int instances);
 
-// Load texture in GPU
+// Load texture data
 unsigned int mrlLoadTexture(const void * data, int width, int height, int format, int mipmapCount);
 
 // Load depth texture/renderbuffer (to be attached to fbo)
 unsigned int mrlLoadTextureDepth(int width, int height, bool useRenderBuffer);
 
-// Load texture cubemap
+// Load texture cubemap data
 unsigned int mrlLoadTextureCubemap(const void * data, int size, int format);
 
-// Update GPU texture with new data
+// Update texture with new data on GPU
 void mrlUpdateTexture(unsigned int id, int offsetX, int offsetY, int width, int height, int format, const void * data);
 
 // Get OpenGL internal formats

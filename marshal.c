@@ -2003,6 +2003,11 @@ int mTextToInteger(const char * text)
 	return TextToInteger(text);
 }
 
+float mTextToFloat(const char * text)
+{
+	return TextToFloat(text);
+}
+
 void mDrawLine3D(Vector3 *startPos, Vector3 *endPos, Color *color)
 {
 	DrawLine3D(*startPos, *endPos, *color);
@@ -2198,11 +2203,6 @@ void mDrawMeshInstanced(Mesh *mesh, Material *material, const Matrix * transform
 	DrawMeshInstanced(*mesh, *material, transforms, instances);
 }
 
-bool mExportMesh(Mesh *mesh, const char * fileName)
-{
-	return ExportMesh(*mesh, fileName);
-}
-
 void mGetMeshBoundingBox(BoundingBox *out, Mesh *mesh)
 {
 	*out = GetMeshBoundingBox(*mesh);
@@ -2211,6 +2211,16 @@ void mGetMeshBoundingBox(BoundingBox *out, Mesh *mesh)
 void mGenMeshTangents(Mesh * mesh)
 {
 	GenMeshTangents(mesh);
+}
+
+bool mExportMesh(Mesh *mesh, const char * fileName)
+{
+	return ExportMesh(*mesh, fileName);
+}
+
+bool mExportMeshAsCode(Mesh *mesh, const char * fileName)
+{
+	return ExportMeshAsCode(*mesh, fileName);
 }
 
 void mGenMeshPoly(Mesh *out, int sides, float radius)
