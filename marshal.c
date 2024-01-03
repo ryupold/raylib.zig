@@ -688,9 +688,9 @@ void mLoadAutomationEventList(AutomationEventList *out, const char * fileName)
 	*out = LoadAutomationEventList(fileName);
 }
 
-void mUnloadAutomationEventList(AutomationEventList * list)
+void mUnloadAutomationEventList(AutomationEventList *list)
 {
-	UnloadAutomationEventList(list);
+	UnloadAutomationEventList(*list);
 }
 
 bool mExportAutomationEventList(AutomationEventList *list, const char * fileName)
@@ -956,6 +956,16 @@ void mUpdateCameraPro(Camera * camera, Vector3 *movement, Vector3 *rotation, flo
 void mSetShapesTexture(Texture2D *texture, Rectangle *source)
 {
 	SetShapesTexture(*texture, *source);
+}
+
+void mGetShapesTexture(Texture2D *out)
+{
+	*out = GetShapesTexture();
+}
+
+void mGetShapesTextureRectangle(Rectangle *out)
+{
+	*out = GetShapesTextureRectangle();
 }
 
 void mDrawPixel(int posX, int posY, Color *color)
@@ -1281,6 +1291,11 @@ void mLoadImageSvg(Image *out, const char * fileNameOrString, int width, int hei
 void mLoadImageAnim(Image *out, const char * fileName, int * frames)
 {
 	*out = LoadImageAnim(fileName, frames);
+}
+
+void mLoadImageAnimFromMemory(Image *out, const char * fileType, const unsigned char * fileData, int dataSize, int * frames)
+{
+	*out = LoadImageAnimFromMemory(fileType, fileData, dataSize, frames);
 }
 
 void mLoadImageFromMemory(Image *out, const char * fileType, const unsigned char * fileData, int dataSize)
@@ -1968,7 +1983,7 @@ const char * mTextSubtext(const char * text, int position, int length)
 	return TextSubtext(text, position, length);
 }
 
-char * mTextReplace(char * text, const char * replace, const char * by)
+char * mTextReplace(const char * text, const char * replace, const char * by)
 {
 	return TextReplace(text, replace, by);
 }
@@ -2913,6 +2928,11 @@ void mrlBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight, int dst
 	rlBlitFramebuffer(srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight, bufferMask);
 }
 
+void mrlBindFramebuffer(unsigned int target, unsigned int framebuffer)
+{
+	rlBindFramebuffer(target, framebuffer);
+}
+
 void mrlEnableColorBlend(void)
 {
 	rlEnableColorBlend();
@@ -2951,6 +2971,11 @@ void mrlEnableBackfaceCulling(void)
 void mrlDisableBackfaceCulling(void)
 {
 	rlDisableBackfaceCulling();
+}
+
+void mrlColorMask(bool r, bool g, bool b, bool a)
+{
+	rlColorMask(r, g, b, a);
 }
 
 void mrlSetCullFace(int mode)

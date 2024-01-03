@@ -421,7 +421,7 @@ unsigned char * mDecodeDataBase64(const unsigned char * data, int * outputSize);
 void mLoadAutomationEventList(AutomationEventList *out, const char * fileName);
 
 // Unload automation events list from file
-void mUnloadAutomationEventList(AutomationEventList * list);
+void mUnloadAutomationEventList(AutomationEventList *list);
 
 // Export automation events list as text file
 bool mExportAutomationEventList(AutomationEventList *list, const char * fileName);
@@ -581,6 +581,12 @@ void mUpdateCameraPro(Camera * camera, Vector3 *movement, Vector3 *rotation, flo
 
 // Set texture and rectangle to be used on shapes drawing
 void mSetShapesTexture(Texture2D *texture, Rectangle *source);
+
+// Get texture that is used for shapes drawing
+void mGetShapesTexture(Texture2D *out);
+
+// Get texture source rectangle that is used for shapes drawing
+void mGetShapesTextureRectangle(Rectangle *out);
 
 // Draw a pixel
 void mDrawPixel(int posX, int posY, Color *color);
@@ -776,6 +782,9 @@ void mLoadImageSvg(Image *out, const char * fileNameOrString, int width, int hei
 
 // Load image sequence from file (frames appended to image.data)
 void mLoadImageAnim(Image *out, const char * fileName, int * frames);
+
+// Load image sequence from memory buffer
+void mLoadImageAnimFromMemory(Image *out, const char * fileType, const unsigned char * fileData, int dataSize, int * frames);
 
 // Load image from memory buffer, fileType refers to extension: i.e. '.png'
 void mLoadImageFromMemory(Image *out, const char * fileType, const unsigned char * fileData, int dataSize);
@@ -1189,7 +1198,7 @@ unsigned int mTextLength(const char * text);
 const char * mTextSubtext(const char * text, int position, int length);
 
 // Replace text string (WARNING: memory must be freed!)
-char * mTextReplace(char * text, const char * replace, const char * by);
+char * mTextReplace(const char * text, const char * replace, const char * by);
 
 // Insert text in a position (WARNING: memory must be freed!)
 char * mTextInsert(const char * text, const char * insert, int position);
@@ -1755,6 +1764,9 @@ void mrlActiveDrawBuffers(int count);
 // Blit active framebuffer to main framebuffer
 void mrlBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight, int bufferMask);
 
+// Bind framebuffer (FBO) 
+void mrlBindFramebuffer(unsigned int target, unsigned int framebuffer);
+
 // Enable color blending
 void mrlEnableColorBlend(void);
 
@@ -1778,6 +1790,9 @@ void mrlEnableBackfaceCulling(void);
 
 // Disable backface culling
 void mrlDisableBackfaceCulling(void);
+
+// Color mask control
+void mrlColorMask(bool r, bool g, bool b, bool a);
 
 // Set face culling mode
 void mrlSetCullFace(int mode);

@@ -505,6 +505,18 @@
       "description": "GL_BLEND_COLOR"
     },
     {
+      "name": "RL_READ_FRAMEBUFFER",
+      "type": "INT",
+      "value": "36008",
+      "description": "GL_READ_FRAMEBUFFER"
+    },
+    {
+      "name": "RL_DRAW_FRAMEBUFFER",
+      "type": "INT",
+      "value": "36009",
+      "description": "GL_DRAW_FRAMEBUFFER"
+    },
+    {
       "name": "RL_MATRIX_TYPE",
       "type": "GUARD",
       "value": "",
@@ -2496,6 +2508,21 @@
       ]
     },
     {
+      "name": "rlBindFramebuffer",
+      "description": "Bind framebuffer (FBO) ",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "unsigned int",
+          "name": "target"
+        },
+        {
+          "type": "unsigned int",
+          "name": "framebuffer"
+        }
+      ]
+    },
+    {
       "name": "rlEnableColorBlend",
       "description": "Enable color blending",
       "returnType": "void"
@@ -2534,6 +2561,29 @@
       "name": "rlDisableBackfaceCulling",
       "description": "Disable backface culling",
       "returnType": "void"
+    },
+    {
+      "name": "rlColorMask",
+      "description": "Color mask control",
+      "returnType": "void",
+      "params": [
+        {
+          "type": "bool",
+          "name": "r"
+        },
+        {
+          "type": "bool",
+          "name": "g"
+        },
+        {
+          "type": "bool",
+          "name": "b"
+        },
+        {
+          "type": "bool",
+          "name": "a"
+        }
+      ]
     },
     {
       "name": "rlSetCullFace",

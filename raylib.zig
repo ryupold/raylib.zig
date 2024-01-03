@@ -2232,10 +2232,10 @@ pub fn LoadAutomationEventList(
 
 /// Unload automation events list from file
 pub fn UnloadAutomationEventList(
-    list: ?[*]AutomationEventList,
+    list: AutomationEventList,
 ) void {
     raylib.mUnloadAutomationEventList(
-        @as([*c]raylib.AutomationEventList, @ptrFromInt(@intFromPtr(list))),
+        @as([*c]raylib.AutomationEventList, @ptrFromInt(@intFromPtr(&list))),
     );
 }
 
@@ -2692,6 +2692,24 @@ pub fn SetShapesTexture(
         @as([*c]raylib.Texture2D, @ptrFromInt(@intFromPtr(&texture))),
         @as([*c]raylib.Rectangle, @ptrFromInt(@intFromPtr(&source))),
     );
+}
+
+/// Get texture that is used for shapes drawing
+pub fn GetShapesTexture() Texture2D {
+    var out: Texture2D = undefined;
+    raylib.mGetShapesTexture(
+        @as([*c]raylib.Texture2D, @ptrCast(&out)),
+    );
+    return out;
+}
+
+/// Get texture source rectangle that is used for shapes drawing
+pub fn GetShapesTextureRectangle() Rectangle {
+    var out: Rectangle = undefined;
+    raylib.mGetShapesTextureRectangle(
+        @as([*c]raylib.Rectangle, @ptrCast(&out)),
+    );
+    return out;
 }
 
 /// Draw a pixel
@@ -3712,6 +3730,24 @@ pub fn LoadImageAnim(
     raylib.mLoadImageAnim(
         @as([*c]raylib.Image, @ptrCast(&out)),
         @as([*c]const u8, @ptrFromInt(@intFromPtr(fileName))),
+        @as([*c]i32, @ptrCast(frames)),
+    );
+    return out;
+}
+
+/// Load image sequence from memory buffer
+pub fn LoadImageAnimFromMemory(
+    fileType: [*:0]const u8,
+    fileData: [*:0]const u8,
+    dataSize: i32,
+    frames: ?[*]i32,
+) Image {
+    var out: Image = undefined;
+    raylib.mLoadImageAnimFromMemory(
+        @as([*c]raylib.Image, @ptrCast(&out)),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileType))),
+        @as([*c]const u8, @ptrFromInt(@intFromPtr(fileData))),
+        dataSize,
         @as([*c]i32, @ptrCast(frames)),
     );
     return out;
@@ -5546,14 +5582,14 @@ pub fn TextSubtext(
 
 /// Replace text string (WARNING: memory must be freed!)
 pub fn TextReplace(
-    text: ?[*]u8,
+    text: [*:0]const u8,
     replace: [*:0]const u8,
     by: [*:0]const u8,
 ) [*:0]const u8 {
     return @as(
         ?[*]u8,
         @ptrCast(raylib.mTextReplace(
-            @as([*c]u8, @ptrCast(text)),
+            @as([*c]const u8, @ptrFromInt(@intFromPtr(text))),
             @as([*c]const u8, @ptrFromInt(@intFromPtr(replace))),
             @as([*c]const u8, @ptrFromInt(@intFromPtr(by))),
         )),
@@ -7829,6 +7865,17 @@ pub fn rlBlitFramebuffer(
     );
 }
 
+/// Bind framebuffer (FBO)
+pub fn rlBindFramebuffer(
+    target: u32,
+    framebuffer: u32,
+) void {
+    raylib.mrlBindFramebuffer(
+        target,
+        framebuffer,
+    );
+}
+
 /// Enable color blending
 pub fn rlEnableColorBlend() void {
     raylib.mrlEnableColorBlend();
@@ -7867,6 +7914,21 @@ pub fn rlEnableBackfaceCulling() void {
 /// Disable backface culling
 pub fn rlDisableBackfaceCulling() void {
     raylib.mrlDisableBackfaceCulling();
+}
+
+/// Color mask control
+pub fn rlColorMask(
+    r: bool,
+    g: bool,
+    b: bool,
+    a: bool,
+) void {
+    raylib.mrlColorMask(
+        r,
+        g,
+        b,
+        a,
+    );
 }
 
 /// Set face culling mode
@@ -11996,6 +12058,12 @@ pub const RL_BLEND_SRC_ALPHA: i32 = 32971;
 
 /// GL_BLEND_COLOR
 pub const RL_BLEND_COLOR: i32 = 32773;
+
+/// GL_READ_FRAMEBUFFER
+pub const RL_READ_FRAMEBUFFER: i32 = 36008;
+
+/// GL_DRAW_FRAMEBUFFER
+pub const RL_DRAW_FRAMEBUFFER: i32 = 36009;
 
 ///
 pub const GL_SHADING_LANGUAGE_VERSION: i32 = 35724;

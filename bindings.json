@@ -1714,7 +1714,7 @@
       "params": [
         {
           "name": "list",
-          "typ": "?[*]AutomationEventList"
+          "typ": "AutomationEventList"
         }
       ],
       "returnType": "void",
@@ -2323,6 +2323,20 @@
       ],
       "returnType": "void",
       "description": "Set texture and rectangle to be used on shapes drawing",
+      "custom": false
+    },
+    {
+      "name": "GetShapesTexture",
+      "params": [],
+      "returnType": "Texture2D",
+      "description": "Get texture that is used for shapes drawing",
+      "custom": false
+    },
+    {
+      "name": "GetShapesTextureRectangle",
+      "params": [],
+      "returnType": "Rectangle",
+      "description": "Get texture source rectangle that is used for shapes drawing",
       "custom": false
     },
     {
@@ -3919,6 +3933,30 @@
       ],
       "returnType": "Image",
       "description": "Load image sequence from file (frames appended to image.data)",
+      "custom": false
+    },
+    {
+      "name": "LoadImageAnimFromMemory",
+      "params": [
+        {
+          "name": "fileType",
+          "typ": "[*:0]const u8"
+        },
+        {
+          "name": "fileData",
+          "typ": "[*:0]const u8"
+        },
+        {
+          "name": "dataSize",
+          "typ": "i32"
+        },
+        {
+          "name": "frames",
+          "typ": "?[*]i32"
+        }
+      ],
+      "returnType": "Image",
+      "description": "Load image sequence from memory buffer",
       "custom": false
     },
     {
@@ -6528,7 +6566,7 @@
       "params": [
         {
           "name": "text",
-          "typ": "?[*]u8"
+          "typ": "[*:0]const u8"
         },
         {
           "name": "replace",
@@ -9808,6 +9846,22 @@
       "custom": false
     },
     {
+      "name": "rlBindFramebuffer",
+      "params": [
+        {
+          "name": "target",
+          "typ": "u32"
+        },
+        {
+          "name": "framebuffer",
+          "typ": "u32"
+        }
+      ],
+      "returnType": "void",
+      "description": "Bind framebuffer (FBO) ",
+      "custom": false
+    },
+    {
       "name": "rlEnableColorBlend",
       "params": [],
       "returnType": "void",
@@ -9861,6 +9915,30 @@
       "params": [],
       "returnType": "void",
       "description": "Disable backface culling",
+      "custom": false
+    },
+    {
+      "name": "rlColorMask",
+      "params": [
+        {
+          "name": "r",
+          "typ": "bool"
+        },
+        {
+          "name": "g",
+          "typ": "bool"
+        },
+        {
+          "name": "b",
+          "typ": "bool"
+        },
+        {
+          "name": "a",
+          "typ": "bool"
+        }
+      ],
+      "returnType": "void",
+      "description": "Color mask control",
       "custom": false
     },
     {
@@ -17486,6 +17564,20 @@
       "typ": "i32",
       "value": "32773",
       "description": "GL_BLEND_COLOR",
+      "custom": false
+    },
+    {
+      "name": "RL_READ_FRAMEBUFFER",
+      "typ": "i32",
+      "value": "36008",
+      "description": "GL_READ_FRAMEBUFFER",
+      "custom": false
+    },
+    {
+      "name": "RL_DRAW_FRAMEBUFFER",
+      "typ": "i32",
+      "value": "36009",
+      "description": "GL_DRAW_FRAMEBUFFER",
       "custom": false
     },
     {
