@@ -80,30 +80,35 @@ fn current_file() []const u8 {
     return @src().file;
 }
 
-const cwd = std.fs.path.dirname(current_file()).?;
 const sep = std.fs.path.sep_str;
-const dir_raylib = cwd ++ sep ++ "raylib/src";
+const cwd = std.fs.path.dirname(current_file()).?;
+const dir_raylib = cwd ++ sep ++ "raylib" ++ sep ++ "src";
 
 const raylib_build = @import("raylib/src/build.zig");
 
-fn linkThisLibrary(b: *std.Build, target: std.zig.CrossTarget, optimize: std.builtin.Mode) *std.build.LibExeObjStep {
-    const lib = b.addStaticLibrary(.{ .name = "raylib-zig", .target = target, .optimize = optimize });
+fn linkThisLibrary(b: *std.Build, target: std.Target.Query, optimize: std.builtin.Mode) *std.Build.Step.Compile {
+    const lib = b.addStaticLibrary(.{ .name = "raylib.zig", .target = b.resolveTargetQuery(target), .optimize = optimize });
     lib.addIncludePath(.{ .path = dir_raylib });
     lib.addIncludePath(.{ .path = cwd });
     lib.linkLibC();
     lib.addCSourceFile(.{ .file = .{ .path = cwd ++ sep ++ "marshal.c" }, .flags = &.{} });
+    std.log.info("include '{s}' to {s}", .{ dir_raylib, lib.name });
+    std.log.info("include '{s}' to {s}", .{ cwd, lib.name });
     return lib;
 }
 
 /// add this package to exe
-pub fn addTo(b: *std.Build, exe: *std.build.Step.Compile, target: std.zig.CrossTarget, optimize: std.builtin.Mode, raylibOptions: raylib_build.Options) void {
-    exe.addAnonymousModule("raylib", .{ .source_file = .{ .path = cwd ++ sep ++ "raylib.zig" } });
+pub fn addTo(b: *std.Build, exe: *std.Build.Step.Compile, target: std.Target.Query, optimize: std.builtin.Mode, raylibOptions: raylib_build.Options) void {
+    exe.root_module.addAnonymousImport("raylib", .{ .root_source_file = .{ .path = cwd ++ sep ++ "raylib.zig" } });
+    std.log.info("include '{s}' to {s}", .{ dir_raylib, exe.name });
+    std.log.info("include '{s}' to {s}", .{ cwd, exe.name });
     exe.addIncludePath(.{ .path = dir_raylib });
     exe.addIncludePath(.{ .path = cwd });
     const lib = linkThisLibrary(b, target, optimize);
-    const lib_raylib = raylib_build.addRaylib(b, target, optimize, raylibOptions);
+    const lib_raylib = raylib_build.addRaylib(b, b.resolveTargetQuery(target), optimize, raylibOptions) catch |err| std.debug.panic("addRaylib: {any}", .{err});
     exe.linkLibrary(lib_raylib);
     exe.linkLibrary(lib);
+    std.log.info("linked raylib.zig", .{});
 }
 
 pub fn linkSystemDependencies(exe: *std.build.Step.Compile) void {
