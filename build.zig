@@ -47,8 +47,9 @@ pub fn build(b: *std.Build) !void {
 
     //raylib
     const raylib_H = b.addRunArtifact(raylib_parser_build);
+    const path_raylib_H = try b.allocator.dupe(u8, raylib.path("src/raylib.h").getPath(b));
     raylib_H.addArgs(&.{
-        "-i", raylib.path("src/raylib.h").getPath(b),
+        "-i", path_raylib_H,
         "-o", "raylib.json",
         "-f", "JSON",
         "-d", "RLAPI",
@@ -57,8 +58,9 @@ pub fn build(b: *std.Build) !void {
 
     //raymath
     const raymath_H = b.addRunArtifact(raylib_parser_build);
+    const path_raymath_H = try b.allocator.dupe(u8, raylib.path("src/raymath.h").getPath(b));
     raymath_H.addArgs(&.{
-        "-i", raylib.path("src/raymath.h").getPath(b),
+        "-i", path_raymath_H,
         "-o", "raymath.json",
         "-f", "JSON",
         "-d", "RMAPI",
@@ -67,8 +69,9 @@ pub fn build(b: *std.Build) !void {
 
     //rlgl
     const rlgl_H = b.addRunArtifact(raylib_parser_build);
+    const path_rlgl_H = try b.allocator.dupe(u8, raylib.path("src/rlgl.h").getPath(b));
     rlgl_H.addArgs(&.{
-        "-i", raylib.path("src/rlgl.h").getPath(b),
+        "-i", path_rlgl_H,
         "-o", "rlgl.json",
         "-f", "JSON",
         "-d", "RLAPI",
