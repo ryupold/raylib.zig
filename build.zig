@@ -12,23 +12,30 @@ pub fn build(b: *std.Build) !void {
     });
 
     // Set up "raylib_zig" module for use as a dependency.
-    const module = b.addModule("raylib_zig", .{
-        .root_source_file = .{.path = "raylib.zig"},
-        .target = target,
-        .optimize = optimize,
-    });
-    module.addIncludePath(.{
-        .path = try b.build_root.join(b.allocator, &[_][]const u8 {"."})
-    });
-    module.addIncludePath(raylib.path("src"));
-    module.addCSourceFiles(.{
-        .files = &[_][]const u8{
-            try b.build_root.join(b.allocator, &[_][]const u8 {"marshal.c"}),
+    switch (target.result.os.tag) {
+        .wasi, .emscripten => {
+            @panic("TODO: support emscripten build");
         },
-        .flags = &.{}
-    });
-    module.linkLibrary(raylib.artifact("raylib"));
-    module.link_libc = true;
+        else => {
+            const module = b.addModule("raylib_zig", .{
+                .root_source_file = .{.path = "raylib.zig"},
+                .target = target,
+                .optimize = optimize,
+            });
+            module.addIncludePath(.{
+                .path = try b.build_root.join(b.allocator, &[_][]const u8 {"."})
+            });
+            module.addIncludePath(raylib.path("src"));
+            module.addCSourceFiles(.{
+                .files = &[_][]const u8{
+                    try b.build_root.join(b.allocator, &[_][]const u8 {"marshal.c"}),
+                },
+                .flags = &.{}
+            });
+            module.linkLibrary(raylib.artifact("raylib"));
+            module.link_libc = true;
+        },
+    }
 
     // Set up binding generation library & exes.
     //--- parse raylib and generate JSONs for all signatures --------------------------------------
