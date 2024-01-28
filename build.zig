@@ -12,29 +12,30 @@ pub fn build(b: *std.Build) !void {
     });
 
     // Set up "raylib_zig" module for use as a dependency.
-    switch (target.result.os.tag) {
-        .wasi, .emscripten => {
-            @panic("TODO: support emscripten build");
+    const module = b.addModule("raylib_zig", .{
+        .root_source_file = .{.path = "raylib.zig"},
+        .target = target,
+        .optimize = optimize,
+    });
+    module.addIncludePath(.{
+        .path = try b.build_root.join(b.allocator, &.{"."})
+    });
+    module.addIncludePath(raylib.path("src"));
+    module.addCSourceFiles(.{
+        .files = &[_][]const u8{
+            try b.build_root.join(b.allocator, &.{"marshal.c"}),
         },
-        else => {
-            const module = b.addModule("raylib_zig", .{
-                .root_source_file = .{.path = "raylib.zig"},
-                .target = target,
-                .optimize = optimize,
-            });
-            module.addIncludePath(.{
-                .path = try b.build_root.join(b.allocator, &[_][]const u8 {"."})
-            });
-            module.addIncludePath(raylib.path("src"));
-            module.addCSourceFiles(.{
-                .files = &[_][]const u8{
-                    try b.build_root.join(b.allocator, &[_][]const u8 {"marshal.c"}),
-                },
-                .flags = &.{}
-            });
-            module.linkLibrary(raylib.artifact("raylib"));
-            module.link_libc = true;
-        },
+        .flags = &.{}
+    });
+    module.linkLibrary(raylib.artifact("raylib"));
+    module.link_libc = true;
+    if (target.result.os.tag == .emscripten) {
+        if (b.sysroot == null) {
+            @panic("Pass '--sysroot \"$EMSDK/upstream/emscripten\"'");
+        }
+        const cache_include = try std.fs.path.join(b.allocator, &.{ b.sysroot.?, "cache", "sysroot", "include" });
+        module.addIncludePath(.{ .path = cache_include });
+        // TODO hm... yeah, we have to link with emcc and stuff, so this isn't gonna cut it.
     }
 
     // Set up binding generation library & exes.
