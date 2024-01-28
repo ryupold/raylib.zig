@@ -11,8 +11,8 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
     src: []const u8,
     target: std.Build.ResolvedTarget,
     optimize: std.builtin.OptimizeMode,
-    custom_entrypoint: ?[]const u8 = null,
     deps: ?[]const std.Build.Module.Import = null,
+    createRunStep: bool,
 }) !*std.Build.Step.Compile {
     const this_builder = raylib_zig.builder;
     const raylib = this_builder.dependency("raylib", .{
@@ -21,7 +21,7 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
     });
 
     const module = app_builder.createModule(.{
-        .root_source_file = .{.path = raylib_zig.path("raylib.zig").getPath(this_builder)},
+        .root_source_file = raylib_zig.path("raylib.zig"),
         .target = options.target,
         .optimize = options.optimize,
     });
@@ -35,7 +35,6 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
         },
         .flags = &.{}
     });
-    module.linkLibrary(raylib.artifact("raylib"));
     module.link_libc = true;
 
     var compile: *std.Build.Step.Compile = undefined;
@@ -53,30 +52,15 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
                 .target = options.target,
                 .optimize = options.optimize,
             });
-            // There are some symbols that need to be defined in C.
-            // const webhack_c_file_step = b.addWriteFiles();
-            // const webhack_c_file = webhack_c_file_step.add("webhack.c", webhack_c);
-            // exe_lib.addCSourceFile(.{ .file = webhack_c_file, .flags = &[_][]u8{} });
-            // Since it's creating a static library, the symbols raylib uses to webgl
-            // and glfw don't need to be linked by emscripten yet.
-            // exe_lib.step.dependOn(&webhack_c_file_step.step);
-            // const exe_lib = compileForEmscripten(b, ex.name, ex.path, target, optimize);
-            compile.root_module.addImport("raylib", module);
-            // exe_lib.addModule("raylib-math", raylib_math);
-            // const raylib_artifact = getArtifact(b, target, optimize);
-
-            // Note that raylib itself isn't actually added to the exe_lib
-            // output file, so it also needs to be linked with emscripten.
-            // exe_lib.linkLibrary(raylib_artifact);
-            const link_step = try linkWithEmscripten(app_builder, &.{ compile });
-            // link_step.addArg("--embed-file");
-            // link_step.addArg("resources/");
+            const link_step = try linkWithEmscripten(app_builder, &.{compile, raylib.artifact("raylib")});
             app_builder.getInstallStep().dependOn(&link_step.step);
 
-            // const run_step = try emscriptenRunStep(b);
-            // run_step.step.dependOn(&link_step.step);
-            // const run_option = b.step(ex.name, ex.desc);
-            // run_option.dependOn(&run_step.step);
+            if (options.createRunStep) {
+                const run_step = try emscriptenRunStep(app_builder);
+                run_step.step.dependOn(&link_step.step);
+                const run_option = app_builder.step("run", "Run");
+                run_option.dependOn(&run_step.step);
+            }
         },
         else => {
             compile = app_builder.addExecutable(.{
@@ -85,9 +69,26 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
                 .target = options.target,
                 .optimize = options.optimize,
             });
-            compile.root_module.addImport("raylib", module);
+            compile.linkLibrary(raylib.artifact("raylib"));
+
+            if (options.createRunStep) {
+                const run_cmd = app_builder.addRunArtifact(compile);
+                run_cmd.step.dependOn(app_builder.getInstallStep());
+                if (app_builder.args) |args| {
+                    run_cmd.addArgs(args);
+                }
+                const run_option = app_builder.step("run", "Run");
+                run_option.dependOn(&run_cmd.step);
+            }
         }
     }
+    if (options.deps) |deps| {
+        for (deps) |dep| {
+            compile.root_module.addImport(dep.name, dep.module);
+        }
+    }
+    compile.root_module.addImport("raylib", module);
+
     return compile;
 }
 
@@ -100,7 +101,6 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
 
-    // Set up binding generation library & exes.
     //--- parse raylib and generate JSONs for all signatures --------------------------------------
     const jsons = b.step("parse", "parse raylib headers and generate raylib jsons");
     const raylib_parser_build = b.addExecutable(.{
@@ -174,18 +174,19 @@ pub fn build(b: *std.Build) !void {
     raylib_parser_install.dependOn(&generateBindings_install.step);
 }
 
-// Links a set of items together using emscripten.
-//
-// Will accept objects and static libraries as items to link. As for files to
-// include, it is recomended to have a single resources directory and just pass
-// the entire directory instead of passing every file individually. The entire
-// path given will be the path to read the file within the program. So, if
-// "resources/image.png" is passed, your program will use "resources/image.png"
-// as the path to load the file.
-//
-// TODO: Test if shared libraries are accepted, I don't remember if emcc can
-//       link a shared library with a project or not.
-// TODO: Add a parameter that allows a custom output directory.
+fn emscriptenRunStep(b: *std.Build) !*std.Build.Step.Run {
+    const emrun_exe = switch (builtin.os.tag) {
+        .windows => "emrun.bat",
+        else => "emrun",
+    };
+    const emrun_exe_path = try std.fmt.allocPrint(b.allocator, "{s}" ++ std.fs.path.sep_str ++ "{s}", .{
+        b.sysroot.?, emrun_exe
+    });
+
+    const run_cmd = b.addSystemCommand(&[_][]const u8{ emrun_exe_path, emccOutputDir ++ emccOutputFile });
+    return run_cmd;
+}
+
 fn linkWithEmscripten(
     b: *std.Build,
     itemsToLink: []const *std.Build.Step.Compile,
@@ -198,21 +199,20 @@ fn linkWithEmscripten(
         b.sysroot.?, emcc_exe
     });
 
-    // Create the output directory because emcc can't do it.
-    const mkdir_command = b.addSystemCommand(&.{ "mkdir", "-p", emccOutputDir });
+    // Create the output directory.
+    try b.build_root.handle.makePath(emccOutputDir);
 
-    // Actually link everything together.
+    // Link everything together with emcc.
+    // TODO: The build doesn't work on Windows if emc_exe_path and any of the item
+    // emitted bin paths have spaces.
     const emcc_command = switch (builtin.os.tag) {
         .windows => b.addSystemCommand(&.{"cmd", "/C", emcc_exe_path}),
         else => b.addSystemCommand(&.{emcc_exe_path}),
     };
-
     for (itemsToLink) |item| {
         emcc_command.addFileArg(item.getEmittedBin());
         emcc_command.step.dependOn(&item.step);
     }
-    // This puts the file in zig-out/htmlout/index.html.
-    emcc_command.step.dependOn(&mkdir_command.step);
     emcc_command.addArgs(&[_][]const u8{
         "-o",
         emccOutputDir ++ emccOutputFile,
