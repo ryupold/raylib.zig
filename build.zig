@@ -11,7 +11,6 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
     src: []const u8,
     target: std.Build.ResolvedTarget,
     optimize: std.builtin.OptimizeMode,
-    deps: ?[]const std.Build.Module.Import = null,
     createRunStep: bool,
 }) !*std.Build.Step.Compile {
     const this_builder = raylib_zig.builder;
@@ -80,11 +79,6 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
                 const run_option = app_builder.step("run", "Run");
                 run_option.dependOn(&run_cmd.step);
             }
-        }
-    }
-    if (options.deps) |deps| {
-        for (deps) |dep| {
-            compile.root_module.addImport(dep.name, dep.module);
         }
     }
     compile.root_module.addImport("raylib", module);
