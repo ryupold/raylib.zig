@@ -26,26 +26,44 @@ For [raygui](https://github.com/raysan5/raygui) bindings see: https://github.com
 
 ## <a id="usage">usage</a>
 
-The easy way would be adding this as submodule directly in your source folder.
-Thats what I do until there is an official package manager for Zig.
-
-```sh
-cd $YOUR_SRC_FOLDER
-git submodule add https://github.com/ryupold/raylib.zig raylib
-git submodule update --init --recursive
+Add this as a dependency to your `build.zig.zon`
+```zig
+.{
+    .name = "example",
+    .version = "1.0.0",
+    .paths = ...,
+    .dependencies = .{
+        .raylib_zig = .{
+            .url = "https://github.com/kapricorn-media/raylib.zig/archive/7c882c229e8dc4fb6168e9a1cfed4ab1df31f40f.tar.gz",
+            .hash = "1220141e38f5d075c77a9d4fbd5c2b622ed1f0207ff2bdfc67af3488609e5067289b",
+        },
+    },
+}
 ```
 
-The bindings have been prebuilt so you just need to add raylib as module
-
-build.zig:
+Then add the following setup to your `build.zig`:
 ```zig
-const raylib = @import("path/to/raylib.zig/build.zig");
+const std = @import("std");
 
-pub fn build(b: *std.Build) !void {
+const raylib_zig_build = @import("raylib_zig");
+
+pub fn build(b: *std.Build) !void
+{
     const target = b.standardTargetOptions(.{});
-    const mode = b.standardOptimizeOption(.{});
-    const exe = ...;
-    raylib.addTo(b, exe, target, mode, .{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const raylib_zig = b.dependency("raylib_zig", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    const compile = try raylib_zig_build.setup(b, raylib_zig, .{
+        .name = "example",
+        .src = "src/main.zig",
+        .target = target,
+        .optimize = optimize,
+        .createRunStep = true,
+    });
+    b.installArtifact(compile);
 }
 ```
 
@@ -63,7 +81,7 @@ pub fn main() void {
     while (!raylib.WindowShouldClose()) {
         raylib.BeginDrawing();
         defer raylib.EndDrawing();
-        
+
         raylib.ClearBackground(raylib.BLACK);
         raylib.DrawFPS(10, 10);
 
@@ -72,11 +90,9 @@ pub fn main() void {
 }
 ```
 
-### WebGL (emscripten) builds
+### WASM / emscripten builds
 
-For Webassembly builds see [examples-raylib.zig/build.zig](https://github.com/ryupold/examples-raylib.zig/blob/main/build.zig)
-
-This weird workaround with `marshal.h/marshal.c` I actually had to make for Webassembly builds to work, because passing structs as function parameters or returning them cannot be done on the Zig side somehow. If I try it, I get a runtime error "index out of bounds". This happens only in WebAssembly builds. So `marshal.c` must be compiled with `emcc`. See [build.zig](https://github.com/ryupold/examples-raylib.zig/blob/main/build.zig) in the examples.
+Download and install the [emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html), and then add the flags `-Dtarget=wasm32-emscripten` and `--sysroot <emscripten-sdk-path>/upstream/emscripten` to the zig build.
 
 ## custom definitions
 An easy way to fix binding mistakes is to edit them in `bindings.json` and setting the custom flag to true. This way the binding will not be overriden when calling `zig build intermediate`. 
