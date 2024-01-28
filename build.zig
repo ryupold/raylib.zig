@@ -3,9 +3,6 @@ const builtin = @import("builtin");
 
 const generate = @import("generate.zig");
 
-const emccOutputDir = "zig-out" ++ std.fs.path.sep_str ++ "htmlout" ++ std.fs.path.sep_str;
-const emccOutputFile = "index.html";
-
 pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options: struct {
     name: []const u8,
     src: []const u8,
@@ -13,33 +10,14 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
     optimize: std.builtin.OptimizeMode,
     createRunStep: bool,
 }) !*std.Build.Step.Compile {
-    const this_builder = raylib_zig.builder;
-    const raylib = this_builder.dependency("raylib", .{
+    const raylib = raylib_zig.builder.dependency("raylib", .{
         .target = options.target,
         .optimize = options.optimize,
     });
-
-    const module = app_builder.createModule(.{
-        .root_source_file = raylib_zig.path("raylib.zig"),
-        .target = options.target,
-        .optimize = options.optimize,
-    });
-    module.addIncludePath(.{ .path = try this_builder.build_root.join(app_builder.allocator, &.{"."}) });
-    module.addIncludePath(raylib.path("src"));
-    module.addCSourceFiles(.{ .files = &.{
-        raylib_zig.path("marshal.c").getPath(this_builder),
-    }, .flags = &.{} });
-    module.link_libc = true;
 
     var compile: *std.Build.Step.Compile = undefined;
     switch (options.target.result.os.tag) {
         .emscripten => {
-            if (app_builder.sysroot == null) {
-                @panic("Pass '--sysroot \"$EMSDK/upstream/emscripten\"'");
-            }
-            const cache_include = try std.fs.path.join(app_builder.allocator, &.{ app_builder.sysroot.?, "cache", "sysroot", "include" });
-            module.addIncludePath(.{ .path = cache_include });
-
             compile = app_builder.addStaticLibrary(.{
                 .name = options.name,
                 .root_source_file = .{ .path = options.src },
@@ -76,7 +54,7 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
             }
         },
     }
-    compile.root_module.addImport("raylib", module);
+    compile.root_module.addImport("raylib", raylib_zig.module("raylib"));
 
     return compile;
 }
@@ -89,6 +67,25 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
+
+    // Add raylib module for use in dependencies.
+    const module = b.addModule("raylib", .{
+        .root_source_file = .{ .path = "raylib.zig" },
+        .target = target,
+        .optimize = optimize,
+    });
+    module.addIncludePath(.{ .path = "." });
+    module.addIncludePath(raylib.path("src"));
+    const marshal_c_path = try b.build_root.join(b.allocator, &.{"marshal.c"});
+    module.addCSourceFile(.{ .file = .{.path = marshal_c_path}, .flags = &.{} });
+    module.link_libc = true;
+    if (target.result.os.tag == .emscripten) {
+        if (b.sysroot == null) {
+            @panic("Pass '--sysroot \"$EMSDK/upstream/emscripten\"'");
+        }
+        const emscripten_include_path = try std.fs.path.join(b.allocator, &.{ b.sysroot.?, "cache", "sysroot", "include" });
+        module.addIncludePath(.{ .path = emscripten_include_path });
+    }
 
     //--- parse raylib and generate JSONs for all signatures --------------------------------------
     const jsons = b.step("parse", "parse raylib headers and generate raylib jsons");
@@ -159,6 +156,9 @@ pub fn build(b: *std.Build) !void {
     const generateBindings_install = b.addInstallArtifact(raylib_parser_build, .{});
     raylib_parser_install.dependOn(&generateBindings_install.step);
 }
+
+const emccOutputDir = "zig-out" ++ std.fs.path.sep_str ++ "htmlout" ++ std.fs.path.sep_str;
+const emccOutputFile = "index.html";
 
 fn emscriptenRunStep(b: *std.Build) !*std.Build.Step.Run {
     const emrun_exe = switch (builtin.os.tag) {
