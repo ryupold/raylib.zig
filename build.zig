@@ -24,16 +24,11 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
         .target = options.target,
         .optimize = options.optimize,
     });
-    module.addIncludePath(.{
-        .path = try this_builder.build_root.join(app_builder.allocator, &.{"."})
-    });
+    module.addIncludePath(.{ .path = try this_builder.build_root.join(app_builder.allocator, &.{"."}) });
     module.addIncludePath(raylib.path("src"));
-    module.addCSourceFiles(.{
-        .files = &.{
-            raylib_zig.path("marshal.c").getPath(this_builder),
-        },
-        .flags = &.{}
-    });
+    module.addCSourceFiles(.{ .files = &.{
+        raylib_zig.path("marshal.c").getPath(this_builder),
+    }, .flags = &.{} });
     module.link_libc = true;
 
     var compile: *std.Build.Step.Compile = undefined;
@@ -47,11 +42,11 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
 
             compile = app_builder.addStaticLibrary(.{
                 .name = options.name,
-                .root_source_file = .{.path = options.src},
+                .root_source_file = .{ .path = options.src },
                 .target = options.target,
                 .optimize = options.optimize,
             });
-            const link_step = try linkWithEmscripten(app_builder, &.{compile, raylib.artifact("raylib")});
+            const link_step = try linkWithEmscripten(app_builder, &.{ compile, raylib.artifact("raylib") });
             app_builder.getInstallStep().dependOn(&link_step.step);
 
             if (options.createRunStep) {
@@ -64,7 +59,7 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
         else => {
             compile = app_builder.addExecutable(.{
                 .name = options.name,
-                .root_source_file = .{.path = options.src},
+                .root_source_file = .{ .path = options.src },
                 .target = options.target,
                 .optimize = options.optimize,
             });
@@ -79,7 +74,7 @@ pub fn setup(app_builder: *std.Build, raylib_zig: *std.Build.Dependency, options
                 const run_option = app_builder.step("run", "Run");
                 run_option.dependOn(&run_cmd.step);
             }
-        }
+        },
     }
     compile.root_module.addImport("raylib", module);
 
@@ -99,14 +94,11 @@ pub fn build(b: *std.Build) !void {
     const jsons = b.step("parse", "parse raylib headers and generate raylib jsons");
     const raylib_parser_build = b.addExecutable(.{
         .name = "raylib_parser",
-        .root_source_file = .{.path = "raylib_parser.zig"},
+        .root_source_file = .{ .path = "raylib_parser.zig" },
         .target = target,
         .optimize = optimize,
     });
-    raylib_parser_build.addCSourceFile(.{
-        .file = raylib.path("parser/raylib_parser.c"),
-        .flags = &.{}
-    });
+    raylib_parser_build.addCSourceFile(.{ .file = raylib.path("parser/raylib_parser.c"), .flags = &.{} });
     raylib_parser_build.linkLibC();
 
     //raylib
@@ -146,7 +138,7 @@ pub fn build(b: *std.Build) !void {
     const intermediate = b.step("intermediate", "generate intermediate representation of the results from 'zig build parse' (keep custom=true)");
     var intermediateZigStep = b.addRunArtifact(b.addExecutable(.{
         .name = "intermediate",
-        .root_source_file = .{.path = "intermediate.zig"},
+        .root_source_file = .{ .path = "intermediate.zig" },
         .target = target,
     }));
     intermediate.dependOn(&intermediateZigStep.step);
@@ -155,7 +147,7 @@ pub fn build(b: *std.Build) !void {
     const bindings = b.step("bindings", "generate bindings in from bindings.json");
     var generateZigStep = b.addRunArtifact(b.addExecutable(.{
         .name = "generate",
-        .root_source_file = .{.path = "generate.zig"},
+        .root_source_file = .{ .path = "generate.zig" },
         .target = target,
     }));
     const fmt = b.addFmt(.{ .paths = &.{generate.outputFile} });
@@ -173,9 +165,7 @@ fn emscriptenRunStep(b: *std.Build) !*std.Build.Step.Run {
         .windows => "emrun.bat",
         else => "emrun",
     };
-    const emrun_exe_path = try std.fmt.allocPrint(b.allocator, "{s}" ++ std.fs.path.sep_str ++ "{s}", .{
-        b.sysroot.?, emrun_exe
-    });
+    const emrun_exe_path = try std.fmt.allocPrint(b.allocator, "{s}" ++ std.fs.path.sep_str ++ "{s}", .{ b.sysroot.?, emrun_exe });
 
     const run_cmd = b.addSystemCommand(&[_][]const u8{ emrun_exe_path, emccOutputDir ++ emccOutputFile });
     return run_cmd;
@@ -189,9 +179,7 @@ fn linkWithEmscripten(
         .windows => "emcc.bat",
         else => "emcc",
     };
-    const emcc_exe_path = try std.fmt.allocPrint(b.allocator, "{s}" ++ std.fs.path.sep_str ++ "{s}", .{
-        b.sysroot.?, emcc_exe
-    });
+    const emcc_exe_path = try std.fmt.allocPrint(b.allocator, "{s}" ++ std.fs.path.sep_str ++ "{s}", .{ b.sysroot.?, emcc_exe });
 
     // Create the output directory.
     try b.build_root.handle.makePath(emccOutputDir);
@@ -200,7 +188,7 @@ fn linkWithEmscripten(
     // TODO: The build doesn't work on Windows if emc_exe_path and any of the item
     // emitted bin paths have spaces.
     const emcc_command = switch (builtin.os.tag) {
-        .windows => b.addSystemCommand(&.{"cmd", "/C", emcc_exe_path}),
+        .windows => b.addSystemCommand(&.{ "cmd", "/C", emcc_exe_path }),
         else => b.addSystemCommand(&.{emcc_exe_path}),
     };
     for (itemsToLink) |item| {
