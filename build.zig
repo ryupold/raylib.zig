@@ -76,6 +76,7 @@ pub fn build(b: *std.Build) !void {
     });
     module.addIncludePath(.{ .path = "." });
     module.addIncludePath(raylib.path("src"));
+    // TODO: relative path doesn't work here when used as a dependency, not sure why...
     const marshal_c_path = try b.build_root.join(b.allocator, &.{"marshal.c"});
     module.addCSourceFile(.{ .file = .{.path = marshal_c_path}, .flags = &.{} });
     module.link_libc = true;
