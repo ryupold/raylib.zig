@@ -34,8 +34,8 @@ Add this as a dependency to your `build.zig.zon`
     .paths = ...,
     .dependencies = .{
         .raylib_zig = .{
-            .url = "https://github.com/kapricorn-media/raylib.zig/archive/7c882c229e8dc4fb6168e9a1cfed4ab1df31f40f.tar.gz",
-            .hash = "1220141e38f5d075c77a9d4fbd5c2b622ed1f0207ff2bdfc67af3488609e5067289b",
+            .url = "https://github.com/ryupold/raylib.zig/archive/<commit>.tar.gz",
+            .hash = "<hash>",
         },
     },
 }
